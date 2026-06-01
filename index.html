@@ -650,8 +650,6 @@ async function sbFetch(path,opts={}){
     return r.ok?r.json():null;
   }catch{return null;}
 }
-/storage/v1/object/public/${BUCKET}/${name.split("/").map(encodeURIComponent).join("/")}`;}
-
 let allFiles=[],allProds=[];
 const FILES = [
   {n:'abacaxi-decorativo-abacaxi.jpg',u:'https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/abacaxi-decorativo-abacaxi.jpg'},
