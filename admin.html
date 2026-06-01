@@ -1899,7 +1899,7 @@ function getUrl(nome){
 
 // ── PRODUCTS ──────────────────────────────────────────────────────────
 async function loadProds(){
-  const d=await sbGet('/rest/v1/produtos?select=*&order=nome');
+  const d=await sbGet('/rest/v1/produtos?select=*&order=name');
   allProds=Array.isArray(d)?d:[];
   document.getElementById('nb-prods').textContent=allProds.length||0;
   filtProds=[...allProds];
@@ -1911,9 +1911,9 @@ function filterProds(){
   const cat=document.getElementById('pcat').value;
   const st=document.getElementById('pst').value;
   filtProds=allProds.filter(p=>{
-    const mq=!q||p.nome.toLowerCase().includes(q);
-    const mc=!cat||(p.colecoes||[]).includes(cat);
-    const ms=!st||(st==='ativo'&&p.ativo&&!p.esgotado&&!p.oculto)||(st==='esgotado'&&p.esgotado)||(st==='oculto'&&p.oculto)||(st==='destaque'&&p.destaque)||(st==='sempreco'&&!p.preco);
+    const mq=!q||p.name.toLowerCase().includes(q);
+    const mc=!cat||(p.collections||[]).includes(cat);
+    const ms=!st||(st==='ativo'&&p.ativo&&!p.esgotado&&!p.oculto)||(st==='esgotado'&&p.esgotado)||(st==='oculto'&&p.oculto)||(st==='destaque'&&p.destaque)||(st==='sempreco'&&!p.price);
     return mq&&mc&&ms;
   });
   renderProdTable();
@@ -1925,21 +1925,21 @@ function renderProdTable(){
   if(!filtProds.length){el.innerHTML='<div class="empty"><div class="empty-icon">🌸</div><p>Nenhum produto</p></div>';return;}
   el.innerHTML=`<div class="tbl-head pc-grid"><span>Foto</span><span>Produto</span><span>Coleções</span><span>Preço</span><span>Prazo</span><span>Status</span><span>Ações</span></div>`
     +filtProds.map(p=>{
-      const url=getUrl(p.nome);
-      const cats=(p.colecoes||[]).slice(0,2).join(', ');
+      const url=getUrl(p.name);
+      const cats=(p.collections||[]).slice(0,2).join(', ');
       const pill=p.esgotado?'<span class="pill esgotado">⊘ Esgotado</span>':p.oculto?'<span class="pill oculto">○ Oculto</span>':p.destaque?'<span class="pill destaque">⭐ Destaque</span>':p.ativo?'<span class="pill active">● Ativo</span>':'<span class="pill inactive">○ Inativo</span>';
       return `<div class="tbl-row pc-grid">
         <div class="tr-img">${url?`<img src="${url}" loading="lazy">`:'<div class="tr-img-ph">🌸</div>'}</div>
-        <div><div class="tr-name">${p.nome}</div><div class="tr-cat">${cats||'—'}</div></div>
+        <div><div class="tr-name">${p.name}</div><div class="tr-cat">${cats||'—'}</div></div>
         <div style="font-size:.72rem;color:rgba(13,9,13,.45)">${cats||'—'}</div>
-        <div><input class="inline-price" value="${p.preco||''}" placeholder="Sem preço" data-id="${p.id}" onblur="saveInlinePrice(this)" onkeydown="if(event.key==='Enter')this.blur()"></div>
+        <div><input class="inline-price" value="${p.price||''}" placeholder="Sem preço" data-id="${p.id}" onblur="saveInlinePrice(this)" onkeydown="if(event.key==='Enter')this.blur()"></div>
         <div style="font-size:.82rem">${p.prazo_producao_dias||7}d</div>
         <div>${pill}</div>
         <div class="ibtns">
           <button class="ibtn edit" onclick="editProd(${p.id})" title="Editar">✏️</button>
           <button class="ibtn eye" onclick="toggleField(${p.id},'oculto',${!p.oculto})" title="${p.oculto?'Mostrar':'Ocultar'}">${p.oculto?'👁':'🙈'}</button>
           <button class="ibtn ${p.esgotado?'edit':'del'}" onclick="toggleField(${p.id},'esgotado',${!p.esgotado})" title="${p.esgotado?'Disponível':'Esgotado'}">${p.esgotado?'✅':'⊘'}</button>
-          <button class="ibtn del" onclick="deleteProd(${p.id},'${p.nome.replace(/'/g,"\\'")}')" title="Excluir">🗑</button>
+          <button class="ibtn del" onclick="deleteProd(${p.id},'${p.name.replace(/'/g,"\\'")}')" title="Excluir">🗑</button>
         </div>
       </div>`;
     }).join('');
@@ -1948,11 +1948,11 @@ function renderProdTable(){
 async function saveInlinePrice(input){
   const id=input.dataset.id;
   const val=input.value.trim();
-  const preco=val?parseFloat(val.replace(',','.')):null;
-  await sbPatch(`/rest/v1/produtos?id=eq.${id}`,{preco});
+  const price=val?parseFloat(val.replace(',','.')):null;
+  await sbPatch(`/rest/v1/produtos?id=eq.${id}`,{price});
   const p=allProds.find(x=>x.id==id);
-  if(p)p.preco=preco;
-  toast(preco?`Preço salvo: R$ ${preco.toFixed(2)}`:'Preço removido','ok');
+  if(p)p.price=price;
+  toast(price?`Preço salvo: R$ ${price.toFixed(2)}`:'Preço removido','ok');
 }
 
 async function toggleField(id,field,val){
@@ -1999,13 +1999,13 @@ function editProd(id){
   if(!p)return;
   editProdId=id;
   document.getElementById('mProdTitle').textContent='Editar produto';
-  document.getElementById('mNome').value=p.nome||'';
+  document.getElementById('mNome').value=p.name||'';
   document.getElementById('mDesc').value=p.descricao||'';
-  document.getElementById('mPreco').value=p.preco||'';
+  document.getElementById('mPreco').value=p.price||'';
   document.getElementById('mPrecoPromo').value=p.preco_promocional||'';
   document.getElementById('mPrazo').value=p.prazo_producao_dias||7;
   document.getElementById('mNota').value=p.nota_interna||'';
-  const cols=Array.isArray(p.colecoes)?p.colecoes:(p.colecoes?[p.colecoes]:[]);
+  const cols=Array.isArray(p.collections)?p.collections:(p.collections?[p.collections]:[]);
   document.getElementById('colsGrid').innerHTML=buildCols(cols);
   document.getElementById('sizesGrid').innerHTML=buildSizes([]);
   loadVars(id);
@@ -2013,7 +2013,7 @@ function editProd(id){
   document.getElementById('togDestaque').classList.toggle('on',!!p.destaque);
   document.getElementById('togEsgotado').classList.toggle('on',!!p.esgotado);
   document.getElementById('togOculto').classList.toggle('on',!!p.oculto);
-  loadPhotos(p.nome);
+  loadPhotos(p.name);
   document.getElementById('prodModal').classList.add('open');
 }
 
@@ -2065,11 +2065,11 @@ async function saveProd(){
   const payload={
     nome,
     descricao:document.getElementById('mDesc').value.trim()||null,
-    preco:document.getElementById('mPreco').value?+document.getElementById('mPreco').value:null,
+    price:document.getElementById('mPreco').value?+document.getElementById('mPreco').value:null,
     preco_promocional:document.getElementById('mPrecoPromo').value?+document.getElementById('mPrecoPromo').value:null,
     prazo_producao_dias:+document.getElementById('mPrazo').value||7,
     nota_interna:document.getElementById('mNota').value.trim()||null,
-    colecoes:getSelCols(),
+    collections:getSelCols(),
     ativo:document.getElementById('togAtivo').classList.contains('on'),
     destaque:document.getElementById('togDestaque').classList.contains('on'),
     esgotado:document.getElementById('togEsgotado').classList.contains('on'),
@@ -2101,7 +2101,7 @@ document.getElementById('prodModal').addEventListener('click',e=>{if(e.target===
 async function syncCatalog(){
   if(!confirm('Sincronizar bucket → banco? Novos produtos serão criados.'))return;
   toast('Sincronizando...','info');
-  const existing=new Set(allProds.map(p=>slugify(p.nome)));
+  const existing=new Set(allProds.map(p=>slugify(p.name)));
   const seen=new Map();
   for(const f of FILES){const base=f.n.replace(/\.[^.]+$/,'');const pre=base.includes('-')?base.substring(0,base.lastIndexOf('-')):base;if(!seen.has(pre))seen.set(pre,f);}
   let n=0;
@@ -2216,7 +2216,7 @@ function renderClients(){
   if(!allClients.length){el.innerHTML='<div class="empty"><div class="empty-icon">👥</div><p>Nenhum cliente</p></div>';return;}
   el.innerHTML=`<div class="tbl-head" style="display:grid;grid-template-columns:1fr 1fr 1fr 120px"><span>Nome</span><span>E-mail</span><span>Telefone</span><span>Cadastro</span></div>`
     +allClients.map(c=>`<div class="tbl-row" style="display:grid;grid-template-columns:1fr 1fr 1fr 120px">
-      <span style="font-weight:600">${c.nome}</span>
+      <span style="font-weight:600">${c.name}</span>
       <span style="font-size:.82rem;color:rgba(13,9,13,.5)">${c.email}</span>
       <span style="font-size:.82rem;color:rgba(13,9,13,.5)">${c.telefone||'—'}</span>
       <span style="font-size:.72rem;color:rgba(13,9,13,.35)">${fmtDate(c.created_at)}</span>
@@ -2312,7 +2312,7 @@ function renderFrete(){
   +allFrete.map(f=>`
     <div class="frete-row">
       <div>
-        <input style="border:none;background:transparent;font-family:var(--fb);font-size:.88rem;font-weight:600;width:100%;outline:none" value="${f.nome}" onblur="saveFrete(${f.id},{nome:this.value})">
+        <input style="border:none;background:transparent;font-family:var(--fb);font-size:.88rem;font-weight:600;width:100%;outline:none" value="${f.name}" onblur="saveFrete(${f.id},{name:this.value})">
         <div style="font-size:.7rem;color:rgba(13,9,13,.35)">${(f.estados||[]).join(', ')||'Todos os estados'}</div>
       </div>
       <input type="number" style="border:1.5px solid rgba(244,121,154,.18);border-radius:8px;padding:5px 8px;font-family:var(--fb);font-size:.85rem;width:90px" value="${f.valor||0}" onblur="saveFrete(${f.id},{valor:+this.value})">
@@ -2323,7 +2323,7 @@ function renderFrete(){
 }
 async function saveFrete(id,payload){await sbPatch(`/rest/v1/frete_regras?id=eq.${id}`,payload);toast('Frete salvo','ok');}
 async function addFrete(){
-  const r=await sbPost('/rest/v1/frete_regras',{nome:'Nova região',valor:20,prazo_dias:7,ativo:true});
+  const r=await sbPost('/rest/v1/frete_regras',{name:'Nova região',valor:20,prazo_dias:7,ativo:true});
   if(r)allFrete.push(r[0]);
   toast('Regra criada','ok');await loadFrete();
 }
@@ -2400,7 +2400,7 @@ function renderDash(){
   const pedHoje=allOrders.filter(p=>new Date(p.created_at).toDateString()===hoje).length;
   const receita=allOrders.filter(p=>p.status==='pago').reduce((s,p)=>s+(p.total||0),0);
   const emProd=allOrders.filter(p=>p.status==='producao').length;
-  const prodsAtivos=allProds.filter(p=>p.ativo&&!p.oculto&&p.preco).length;
+  const prodsAtivos=allProds.filter(p=>p.ativo&&!p.oculto&&p.price).length;
   document.getElementById('dPedHoje').textContent=pedHoje;
   document.getElementById('dReceita').textContent=receita?fmt(receita):'R$ 0,00';
   document.getElementById('dProds').textContent=prodsAtivos;
