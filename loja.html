@@ -180,12 +180,22 @@ nav{position:sticky;top:0;z-index:100;background:rgba(12,9,13,.95);backdrop-filt
   <div>
     <h1>Tudo feito<br>com <em>muito amor</em> 🌸</h1>
     <p>325 produtos • Sob encomenda • Feito à mão em </p>
-    <div class="hero-badge-row">
-      <span class="hbadge">🎭 Fantasias</span>
-      <span class="hbadge">👶 Para Bebês</span>
-      <span class="hbadge">🖼️ Decoração</span>
-      <span class="hbadge">💛 Almofadas</span>
-      <span class="hbadge">🦊 Raposas</span>
+    <div class="hero-badge-row" id="heroBadges">
+      <span class="hbadge active" data-filter="" data-type="cat">✨ Todos</span>
+      <span class="hbadge" data-filter="Fantasias" data-type="cat">🎭 Fantasias</span>
+      <span class="hbadge" data-filter="Para bebês" data-type="cat">👶 Para Bebês</span>
+      <span class="hbadge" data-filter="Almofadas" data-type="cat">💛 Almofadas</span>
+      <span class="hbadge" data-filter="Decoração" data-type="cat">🖼️ Decoração</span>
+      <span class="hbadge" data-filter="Educativo" data-type="cat">🎓 Educativo</span>
+      <span class="hbadge" data-filter="flamingo" data-type="search">🦩 Flamingos</span>
+      <span class="hbadge" data-filter="raposa" data-type="search">🦊 Raposas</span>
+      <span class="hbadge" data-filter="unicornio" data-type="search">🦄 Unicórnios</span>
+      <span class="hbadge" data-filter="passaro" data-type="search">🦜 Pássaros</span>
+      <span class="hbadge" data-filter="dragao" data-type="search">🐉 Dragões</span>
+      <span class="hbadge" data-filter="dinossauro" data-type="search">🦕 Dinossauros</span>
+      <span class="hbadge" data-filter="sereia" data-type="search">🧜 Sereias</span>
+      <span class="hbadge" data-filter="coelho" data-type="search">🐰 Coelhos</span>
+      <span class="hbadge" data-filter="borboleta" data-type="search">🦋 Borboletas</span>
     </div>
   </div>
 </div>
@@ -205,19 +215,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(12,9,13,.95);backdrop-filt
       <li class="cat-item" data-cat="Lembrancinhas"><span class="cat-icon">🎁</span> Lembrancinhas</li>
       <li class="cat-item" data-cat="Bolsas & mochilas"><span class="cat-icon">👜</span> Bolsas</li>
     </ul>
-    <h3 style="margin-top:8px">Por tema</h3>
-    <ul class="cat-list" id="catListTheme">
-      <li class="cat-item" data-search="flamingo"><span class="cat-icon">🦩</span> Flamingos</li>
-      <li class="cat-item" data-search="raposa"><span class="cat-icon">🦊</span> Raposas</li>
-      <li class="cat-item" data-search="unicornio"><span class="cat-icon">🦄</span> Unicórnios</li>
-      <li class="cat-item" data-search="passaro arara tucano"><span class="cat-icon">🦜</span> Pássaros</li>
-      <li class="cat-item" data-search="dragao"><span class="cat-icon">🐉</span> Dragões</li>
-      <li class="cat-item" data-search="dinossauro"><span class="cat-icon">🦕</span> Dinossauros</li>
-      <li class="cat-item" data-search="sereia"><span class="cat-icon">🧜</span> Sereias</li>
-      <li class="cat-item" data-search="coelho"><span class="cat-icon">🐰</span> Coelhos</li>
-      <li class="cat-item" data-search="borboleta"><span class="cat-icon">🦋</span> Borboletas</li>
-      <li class="cat-item" data-search="natal rena"><span class="cat-icon">🎄</span> Natal</li>
-    </ul>
+
     <div class="sidebar-section">
       <h3>Ordenar</h3>
       <select class="sort-select" id="sortSelect">
@@ -1866,21 +1864,6 @@ function closeSidebar(){
   document.getElementById('sidebar').classList.remove('mobile-open');
   document.getElementById('sidebarOverlay').classList.remove('open');
 }
-
-// Theme category list (sidebar)
-document.getElementById('catListTheme').addEventListener('click',e=>{
-  const li=e.target.closest('.cat-item');
-  if(!li||!li.dataset.search)return;
-  // Clear all active
-  document.querySelectorAll('.cat-item').forEach(x=>x.classList.remove('active'));
-  li.classList.add('active');
-  // Set search query
-  searchQ=li.dataset.search.split(' ')[0]; // use first keyword
-  currentCat='Todas';
-  document.getElementById('searchInput').value=li.dataset.search.split(' ')[0];
-  applyFilters();
-  closeSidebar();
-});
 
 // Hero badges
 document.getElementById('heroBadges').addEventListener('click',e=>{
