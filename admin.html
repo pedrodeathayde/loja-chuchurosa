@@ -334,11 +334,15 @@ img{display:block;max-width:100%}
         <div class="tsearch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input type="text" id="ps" placeholder="Buscar..." oninput="filterProds()"></div>
         <select class="tfilter" id="pcat" onchange="filterProds()">
           <option value="">Todas as coleções</option>
-          <option>Fantasias</option><option>Pássaros</option><option>Para bebês</option>
-          <option>Decoração</option><option>Almofadas</option><option>Raposas</option>
-          <option>Tiaras &amp; acessórios</option><option>Educativo</option>
-          <option>Plush &amp; pelúcia</option><option>Flores</option><option>Asas</option>
-          <option>Lembrancinhas</option><option>Bolsas &amp; mochilas</option><option>Natal</option>
+          <option>Fantasias</option>
+          <option>Para bebês</option>
+          <option>Decoração</option>
+          <option>Almofadas</option>
+          <option>Tiaras &amp; acessórios</option>
+          <option>Educativo</option>
+          <option>Plush &amp; pelúcia</option>
+          <option>Lembrancinhas</option>
+          <option>Bolsas &amp; mochilas</option>
         </select>
         <select class="tfilter" id="pst" onchange="filterProds()">
           <option value="">Todos os status</option>
@@ -1972,7 +1976,7 @@ async function deleteProd(id,nome){
   renderProdTable();
 }
 
-const COLS=['Fantasias','Pássaros','Para bebês','Decoração','Almofadas','Raposas','Tiaras & acessórios','Educativo','Plush & pelúcia','Flores','Asas','Lembrancinhas','Bolsas & mochilas','Natal'];
+const COLS=['Fantasias','Para bebês','Decoração','Almofadas','Tiaras & acessórios','Educativo','Plush & pelúcia','Lembrancinhas','Bolsas & mochilas'];
 const SIZES=['Único','PP','P','M','G','GG','0-3m','3-6m','6-12m','1-2 anos','2-4 anos','4-6 anos','6-8 anos','8-10 anos'];
 
 function openNewProd(){
