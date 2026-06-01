@@ -432,14 +432,14 @@ function renderSummary(){
         <div class="os-img-ph"${i.url?' style="display:none"':''}>🌸</div>
       </div>
       <div>
-        <div class="os-name">${i.nome}</div>
+        <div class="os-name">${i.name}</div>
         <div class="os-qty">Qtd: ${i.qty}</div>
       </div>
-      <div class="os-price">${i.preco?fmt(i.preco*i.qty):'—'}</div>
+      <div class="os-price">${i.price?fmt(i.price*i.qty):'—'}</div>
     </div>`).join('');
 
   // Totals
-  const subtotal = cart.reduce((s,i)=>s+(i.preco||0)*i.qty,0);
+  const subtotal = cart.reduce((s,i)=>s+(i.price||0)*i.qty,0);
   const desconto = payMethod==='pix' ? subtotal*0.05 : 0;
   const total = subtotal - desconto;
 
@@ -578,7 +578,7 @@ async function placeOrder(){
   const nome  = document.getElementById('fNome').value.trim();
   const email = document.getElementById('fEmail').value.trim();
   const tel   = document.getElementById('fTel').value.trim();
-  const subtotal = cart.reduce((s,i)=>s+(i.preco||0)*i.qty,0);
+  const subtotal = cart.reduce((s,i)=>s+(i.price||0)*i.qty,0);
   const desconto = payMethod==='pix' ? subtotal*0.05 : 0;
   const total    = subtotal - desconto;
   const maxPrazo = Math.max(...cart.map(i=>i.prazo||7));
@@ -640,10 +640,10 @@ async function placeOrder(){
     orderId = pData[0]?.id;
 
     // 3. Save itens
-    const itens = cart.filter(i=>i.preco).map(i=>({
+    const itens = cart.filter(i=>i.price).map(i=>({
       pedido_id:orderId,
-      nome_produto:i.nome,
-      preco_unitario:i.preco,
+      nome_produto:i.name,
+      preco_unitario:i.price,
       quantidade:i.qty,
     }));
     if(itens.length){
