@@ -1635,19 +1635,42 @@ async function loadFromDB(){
 }
 
 function mergeProducts(){
-  const catalog=buildCatalog();
-  if(!dbProducts.length){ allProducts=catalog; return; }
-  const dbMap=new Map(dbProducts.map(p=>[
-    p.name.toLowerCase().replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,''),
-    p
-  ]));
-  allProducts=catalog.map(cp=>{
-    const db=dbMap.get(cp.id);
-    if(db) return{...cp,id:db.id,name:db.name,price:db.price,preco_promocional:db.preco_promocional,
-      descricao:db.descricao,prazo_producao_dias:db.prazo_producao_dias||7,
-      collections:db.collections||cp.collections,destaque:db.destaque};
-    return cp;
-  });
+  if(dbProducts.length){
+    const urlMap=new Map();
+    for(const f of FILES){
+      const base=f.n.replace(/\.[^.]+$/,'');
+      const prefix=base.includes('-')?base.substring(0,base.lastIndexOf('-')):base;
+      if(!urlMap.has(prefix))urlMap.set(prefix,f.u);
+    }
+    function getUrlForName(name){
+      const slug=name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+      if(urlMap.has(slug))return urlMap.get(slug);
+      const parts=slug.split('-');
+      for(let i=parts.length-1;i>=2;i--){
+        const k=parts.slice(0,i).join('-');
+        if(urlMap.has(k))return urlMap.get(k);
+      }
+      const short=parts.slice(0,3).join('-');
+      const match=FILES.find(f=>f.n.startsWith(short));
+      return match?match.u:'';
+    }
+    allProducts=dbProducts
+      .filter(p=>p.ativo&&!p.oculto)
+      .map(p=>({
+        id:p.id,
+        name:p.name,
+        price:p.price,
+        preco_promocional:p.preco_promocional,
+        descricao:p.descricao,
+        prazo_producao_dias:p.prazo_producao_dias||7,
+        collections:p.collections||[],
+        destaque:p.destaque||false,
+        esgotado:p.esgotado||false,
+        url:getUrlForName(p.name),
+      }));
+    return;
+  }
+  allProducts=buildCatalog();
 }
 
 function applyFilters(){
