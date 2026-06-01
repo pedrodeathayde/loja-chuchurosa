@@ -316,9 +316,9 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
   <div class="hbg"></div>
   <div class="orb o1"></div><div class="orb o2"></div>
   <div>
-    <div class="hbadge"><span class="dot"></span>Feito com amor</div>
+    <div class="hbadge"><span class="dot"></span>Feito com amor em Nova Odessa, SP</div>
     <div class="hero-logo-wrap" id="heroLogoWrap"></div>
-    <h1 class="ht">Criatividade<br>que <em> encanta</em></h1>
+    <h1 class="ht">Criatividade<br>que <em>encanta</em></h1>
     <p class="hsub">325 produtos feitos à mão — fantasias, brinquedos, decoração e muito mais para crianças de todas as idades.</p>
     <div class="hact">
       <a href="https://loja.chuchurosa.com.br" class="bp">Explorar a loja</a>
@@ -507,7 +507,7 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
     <div class="at rl reveal">
       <div class="slabel">Nossa história</div>
       <h2 class="st">Criatividade com<br><em>propósito</em></h2>
-      <p>Fundada em 2009, a Chuchu Rosa nasceu com um objetivo simples e poderoso: criar produtos que proporcionem experiências diferentes e divertidas.</p>
+      <p>Fundada em 2009, a Chuchu Rosa nasceu em Nova Odessa, SP, com um objetivo simples e poderoso: criar produtos que proporcionem experiências diferentes e divertidas.</p>
       <p>Cada item é produzido com carinho no nosso ateliê — do design à execução, tudo feito especialmente para você.</p>
       <div class="stats-g">
         <div class="sc"><div class="sc-n">15+</div><div class="sc-l">Anos de história</div></div>
@@ -573,12 +573,13 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
       <div class="ft-col"><h4>Contato</h4><ul>
         <li><a href="mailto:contato@chuchurosa.com.br">contato@chuchurosa.com.br</a></li>
         <li><a href="https://wa.me/5519993041555">(19) 99304-1555</a></li>
+        <li><a href="#">Nova Odessa, SP</a></li>
         <li><a href="https://loja.chuchurosa.com.br">loja.chuchurosa.com.br</a></li>
       </ul></div>
     </div>
     <div class="ft-bot">
       <p>© <span id="yr"></span> <span>Chuchu Rosa®</span>. Todos os direitos reservados.</p>
-      <p>Feito de<span>♥</span></p>
+      <p>Feito com <span>♥</span> em Nova Odessa</p>
     </div>
   </div>
 </footer>
@@ -2026,9 +2027,9 @@ function populate(){
 
 function makeCard(prod,catLabel){
   const url=firstImg(prod);
-  const name=prod.nome||prod.name||'Produto';
-  const price=prod.preco||prod.price;
-  const cat=catLabel||(prod.colecoes||'').split(',')[0]||'';
+  const name=prod.name||prod.name||'Produto';
+  const price=prod.price||prod.price;
+  const cat=catLabel||(prod.collections||'').split(',')[0]||'';
   return `<div class="pcard" onclick="window.open('https://loja.chuchurosa.com.br','_blank')">
     <div class="pcard-img">${url?`<img src="${url}" alt="${name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=pcard-ph>🌸</div>'">`:'<div class="pcard-ph">🌸</div>'}</div>
     <div class="pcard-info">
@@ -2046,7 +2047,7 @@ function buildGrid(elId, kws, catLabel, limit=8){
   let prods = [];
   if(allProds.length){
     prods = allProds.filter(p=>{
-      const c = (p.colecoes||p.categoria||'').toLowerCase();
+      const c = (p.collections||p.categoria||'').toLowerCase();
       return kws.some(k=>c.includes(k.toLowerCase()));
     }).slice(0,limit);
   }
