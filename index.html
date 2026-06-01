@@ -1971,13 +1971,7 @@ function firstImg(prod){
 }
 
 
-// Build allFiles and allProds from local catalog — no API needed
-function initCatalog(){
-  allFiles = CATALOG.map(p=>({name:p.n, url:p.u, url2:p.u2, cols:p.c}));
-  allProds = CATALOG.map((p,i)=>({
-    id:i, nome:p.n, colecoes:p.c.join(','), fotos:[{url:p.u}], preco:null
-  }));
-  }
+
 
 
 function setImg(id,url,phId){
