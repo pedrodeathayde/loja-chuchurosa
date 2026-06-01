@@ -23,24 +23,28 @@ img{display:block;max-width:100%}
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:var(--cream)}
 ::-webkit-scrollbar-thumb{background:var(--pink);border-radius:3px}
-nav{position:sticky;top:0;z-index:100;background:rgba(255,249,246,.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(244,121,154,.12);padding:0 48px;height:68px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+nav{position:sticky;top:0;z-index:100;background:rgba(12,9,13,.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(244,121,154,.15);padding:0 48px;height:68px;display:flex;align-items:center;justify-content:space-between;gap:24px}
 .nav-logo canvas{height:38px;width:auto}
 .nav-search{flex:1;max-width:480px;position:relative}
-.nav-search input{width:100%;padding:10px 18px 10px 44px;border:1.5px solid rgba(244,121,154,.2);border-radius:100px;font-family:var(--fb);font-size:.9rem;background:#fff;color:var(--dark);outline:none;transition:border-color .2s}
-.nav-search input:focus{border-color:var(--pink)}
-.nav-search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--pink);width:18px;height:18px}
+.nav-search input{width:100%;padding:10px 18px 10px 44px;border:1.5px solid rgba(244,121,154,.25);border-radius:100px;font-family:var(--fb);font-size:.9rem;background:rgba(255,255,255,.08);color:#fff;outline:none;transition:border-color .2s}
+.nav-search input:focus{border-color:var(--pink);background:rgba(255,255,255,.12)}.nav-search input::placeholder{color:rgba(255,255,255,.35)}
+.nav-search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--pink2);width:18px;height:18px}
 .nav-right{display:flex;align-items:center;gap:16px}
 .nav-cart{position:relative;background:var(--pink);color:#fff;border:none;border-radius:100px;padding:9px 20px;font-family:var(--fb);font-size:.85rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .2s}
 .nav-cart:hover{background:var(--rose);transform:translateY(-1px)}
 .cart-count{background:#fff;color:var(--rose);border-radius:100px;font-size:.72rem;font-weight:700;padding:1px 7px;min-width:20px;text-align:center}
-.nav-home{color:var(--pink);font-size:.85rem;font-weight:500;opacity:.7;transition:opacity .2s}
+.nav-home{display:none}
 .nav-home:hover{opacity:1}
-.shop-hero{background:var(--dark);color:#fff;padding:48px;display:flex;align-items:center;justify-content:space-between;gap:24px}
-.shop-hero h1{font-family:var(--fd);font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;line-height:1.1}
-.shop-hero h1 em{font-style:italic;color:var(--pink2)}
-.shop-hero p{color:rgba(255,255,255,.45);font-size:.95rem;margin-top:10px}
-.hero-badge-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
-.hbadge{background:rgba(244,121,154,.12);border:1px solid rgba(244,121,154,.25);border-radius:100px;padding:6px 16px;font-size:.75rem;font-weight:600;color:var(--pink2);letter-spacing:.06em}
+.shop-hero{position:relative;overflow:hidden;color:#fff;padding:72px 48px 60px;display:flex;align-items:center;justify-content:space-between;gap:32px}
+.shop-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 90% 80% at 50% 0%,rgba(244,121,154,.18),transparent 70%),radial-gradient(ellipse 60% 60% at 85% 80%,rgba(212,187,255,.1),transparent 60%),var(--dark);z-index:0}
+.shop-hero>*{position:relative;z-index:1}
+.shop-hero h1{font-family:var(--fd);font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.05;letter-spacing:-.03em}
+.shop-hero h1 em{font-style:italic;background:linear-gradient(135deg,var(--pink2),var(--pink),var(--rose));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.shop-hero p{color:rgba(255,255,255,.5);font-size:.95rem;margin-top:10px;line-height:1.7}
+.hero-badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}
+.hbadge{background:rgba(244,121,154,.1);border:1px solid rgba(244,121,154,.2);border-radius:100px;padding:7px 18px;font-size:.78rem;font-weight:600;color:var(--pink2);letter-spacing:.04em;cursor:pointer;transition:all .25s;user-select:none}
+.hbadge:hover{background:rgba(244,121,154,.2);border-color:rgba(244,121,154,.4);transform:translateY(-2px)}
+.hbadge.active{background:var(--pink);border-color:var(--pink);color:#fff;box-shadow:0 6px 20px rgba(244,121,154,.35)}
 .shop-body{display:grid;grid-template-columns:260px 1fr;gap:0;min-height:80vh}
 .sidebar{background:#fff;border-right:1px solid rgba(244,121,154,.1);padding:32px 24px;position:sticky;top:68px;height:calc(100vh - 68px);overflow-y:auto}
 .sidebar h3{font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--dark);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(244,121,154,.12)}
@@ -138,19 +142,36 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,249,246,.95);backdrop-
 @media(max-width:500px){
   .prod-grid{grid-template-columns:1fr 1fr}
 }
+
+/* HAMBURGER */
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:transparent}
+.hamburger span{display:block;width:22px;height:2px;background:var(--pink2);border-radius:2px;transition:all .3s}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199}
+.sidebar-overlay.open{display:block}
+@media(max-width:900px){
+  .hamburger{display:flex}
+  .filter-btn{display:none}
+  .sidebar{display:none;position:fixed;top:0;left:0;bottom:0;z-index:200;width:280px;transform:translateX(-100%);transition:transform .35s cubic-bezier(.25,.46,.45,.94);overflow-y:auto}
+  .sidebar.mobile-open{display:block;transform:translateX(0)}
+}
+
+/* NEW CATEGORIES */
+.cat-item.active{background:rgba(244,121,154,.12);color:var(--rose);font-weight:600}
 </style>
 </head>
 <body>
 
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 <nav>
+  <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
   <a href="index.html" id="navLogo"></a>
   <div class="nav-search">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
     <input type="text" id="searchInput" placeholder="Buscar produtos...">
   </div>
   <div class="nav-right">
-    <a href="index.html" class="nav-home">← Início</a>
-    <button class="filter-btn" id="filterBtn">⚙️ Filtros</button>
     <button class="nav-cart" id="cartBtn">🛍️ Carrinho <span class="cart-count" id="cartCount">0</span></button>
   </div>
 </nav>
@@ -158,7 +179,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,249,246,.95);backdrop-
 <div class="shop-hero">
   <div>
     <h1>Tudo feito<br>com <em>muito amor</em> 🌸</h1>
-    <p>325 produtos • Sob encomenda • Feito à mão de ❤</p>
+    <p>325 produtos • Sob encomenda • Feito à mão em </p>
     <div class="hero-badge-row">
       <span class="hbadge">🎭 Fantasias</span>
       <span class="hbadge">👶 Para Bebês</span>
@@ -173,21 +194,29 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,249,246,.95);backdrop-
   <aside class="sidebar" id="sidebar">
     <h3>Coleções</h3>
     <ul class="cat-list" id="catList">
-      <li class="cat-item active" data-cat="Todas"><span class="cat-icon">🌸</span> Todas</li>
-      <li class="cat-item" data-cat="Fantasias"><span class="cat-icon">🎭</span> Fantasias <span class="cat-count">146</span></li>
-      <li class="cat-item" data-cat="Pássaros"><span class="cat-icon">🦜</span> Pássaros <span class="cat-count">48</span></li>
-      <li class="cat-item" data-cat="Para bebês"><span class="cat-icon">👶</span> Para Bebês <span class="cat-count">74</span></li>
-      <li class="cat-item" data-cat="Decoração"><span class="cat-icon">🖼️</span> Decoração <span class="cat-count">75</span></li>
-      <li class="cat-item" data-cat="Almofadas"><span class="cat-icon">💛</span> Almofadas <span class="cat-count">28</span></li>
-      <li class="cat-item" data-cat="Raposas"><span class="cat-icon">🦊</span> Raposas <span class="cat-count">19</span></li>
-      <li class="cat-item" data-cat="Tiaras & acessórios"><span class="cat-icon">👑</span> Tiaras & Acessórios <span class="cat-count">46</span></li>
-      <li class="cat-item" data-cat="Educativo"><span class="cat-icon">🎓</span> Educativo <span class="cat-count">29</span></li>
-      <li class="cat-item" data-cat="Plush & pelúcia"><span class="cat-icon">🧸</span> Plush & Pelúcia <span class="cat-count">12</span></li>
-      <li class="cat-item" data-cat="Flores"><span class="cat-icon">🌸</span> Flores <span class="cat-count">12</span></li>
-      <li class="cat-item" data-cat="Asas"><span class="cat-icon">🪽</span> Asas <span class="cat-count">13</span></li>
-      <li class="cat-item" data-cat="Lembrancinhas"><span class="cat-icon">🎁</span> Lembrancinhas <span class="cat-count">10</span></li>
-      <li class="cat-item" data-cat="Bolsas & mochilas"><span class="cat-icon">👜</span> Bolsas & Mochilas <span class="cat-count">5</span></li>
-      <li class="cat-item" data-cat="Natal"><span class="cat-icon">🎄</span> Natal <span class="cat-count">4</span></li>
+      <li class="cat-item active" data-cat="Todas"><span class="cat-icon">✨</span> Todos os produtos</li>
+      <li class="cat-item" data-cat="Fantasias"><span class="cat-icon">🎭</span> Fantasias</li>
+      <li class="cat-item" data-cat="Para bebês"><span class="cat-icon">👶</span> Para Bebês</li>
+      <li class="cat-item" data-cat="Decoração"><span class="cat-icon">🖼️</span> Decoração</li>
+      <li class="cat-item" data-cat="Almofadas"><span class="cat-icon">💛</span> Almofadas</li>
+      <li class="cat-item" data-cat="Tiaras & acessórios"><span class="cat-icon">👑</span> Acessórios</li>
+      <li class="cat-item" data-cat="Educativo"><span class="cat-icon">🎓</span> Educativo</li>
+      <li class="cat-item" data-cat="Plush & pelúcia"><span class="cat-icon">🧸</span> Pelúcia & Plush</li>
+      <li class="cat-item" data-cat="Lembrancinhas"><span class="cat-icon">🎁</span> Lembrancinhas</li>
+      <li class="cat-item" data-cat="Bolsas & mochilas"><span class="cat-icon">👜</span> Bolsas</li>
+    </ul>
+    <h3 style="margin-top:8px">Por tema</h3>
+    <ul class="cat-list" id="catListTheme">
+      <li class="cat-item" data-search="flamingo"><span class="cat-icon">🦩</span> Flamingos</li>
+      <li class="cat-item" data-search="raposa"><span class="cat-icon">🦊</span> Raposas</li>
+      <li class="cat-item" data-search="unicornio"><span class="cat-icon">🦄</span> Unicórnios</li>
+      <li class="cat-item" data-search="passaro arara tucano"><span class="cat-icon">🦜</span> Pássaros</li>
+      <li class="cat-item" data-search="dragao"><span class="cat-icon">🐉</span> Dragões</li>
+      <li class="cat-item" data-search="dinossauro"><span class="cat-icon">🦕</span> Dinossauros</li>
+      <li class="cat-item" data-search="sereia"><span class="cat-icon">🧜</span> Sereias</li>
+      <li class="cat-item" data-search="coelho"><span class="cat-icon">🐰</span> Coelhos</li>
+      <li class="cat-item" data-search="borboleta"><span class="cat-icon">🦋</span> Borboletas</li>
+      <li class="cat-item" data-search="natal rena"><span class="cat-icon">🎄</span> Natal</li>
     </ul>
     <div class="sidebar-section">
       <h3>Ordenar</h3>
@@ -1827,7 +1856,59 @@ document.getElementById('priceMin').addEventListener('change',e=>{ priceMin=e.ta
 document.getElementById('priceMax').addEventListener('change',e=>{ priceMax=e.target.value?+e.target.value:null; applyFilters(); });
 document.getElementById('gridViewBtn').addEventListener('click',()=>{ viewMode='grid'; document.getElementById('gridViewBtn').classList.add('active'); document.getElementById('listViewBtn').classList.remove('active'); renderGrid(); });
 document.getElementById('listViewBtn').addEventListener('click',()=>{ viewMode='list'; document.getElementById('listViewBtn').classList.add('active'); document.getElementById('gridViewBtn').classList.remove('active'); renderGrid(); });
-document.getElementById('filterBtn').addEventListener('click',()=>{ document.getElementById('sidebar').classList.toggle('mobile-open'); });
+
+// Hamburger / sidebar
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('mobile-open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
+// Theme category list (sidebar)
+document.getElementById('catListTheme').addEventListener('click',e=>{
+  const li=e.target.closest('.cat-item');
+  if(!li||!li.dataset.search)return;
+  // Clear all active
+  document.querySelectorAll('.cat-item').forEach(x=>x.classList.remove('active'));
+  li.classList.add('active');
+  // Set search query
+  searchQ=li.dataset.search.split(' ')[0]; // use first keyword
+  currentCat='Todas';
+  document.getElementById('searchInput').value=li.dataset.search.split(' ')[0];
+  applyFilters();
+  closeSidebar();
+});
+
+// Hero badges
+document.getElementById('heroBadges').addEventListener('click',e=>{
+  const badge=e.target.closest('.hbadge');
+  if(!badge)return;
+  document.querySelectorAll('.hbadge').forEach(b=>b.classList.remove('active'));
+  badge.classList.add('active');
+  const type=badge.dataset.type;
+  const filter=badge.dataset.filter||'';
+  if(type==='cat'){
+    currentCat=filter||'Todas';
+    searchQ='';
+    document.getElementById('searchInput').value='';
+    // sync sidebar
+    document.querySelectorAll('#catList .cat-item').forEach(li=>{
+      li.classList.toggle('active',li.dataset.cat===(filter||'Todas'));
+    });
+  } else {
+    // search filter
+    searchQ=filter;
+    currentCat='Todas';
+    document.getElementById('searchInput').value=filter;
+    document.querySelectorAll('#catList .cat-item').forEach(li=>li.classList.remove('active'));
+    document.querySelector('#catList .cat-item[data-cat="Todas"]')?.classList.add('active');
+  }
+  applyFilters();
+});
+
 
 const urlParams=new URLSearchParams(window.location.search);
 if(urlParams.get('cat')){ currentCat=urlParams.get('cat'); document.querySelectorAll('.cat-item').forEach(li=>li.classList.toggle('active',li.dataset.cat===currentCat)); }
