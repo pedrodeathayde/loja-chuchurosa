@@ -1634,10 +1634,10 @@ async function loadProduct(){
     const name = prefix.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
     product = {
       id: savedId,
-      nome: name,
-      colecoes: [],
+      name: name,
+      collections: [],
       prazo_producao_dias: 7,
-      preco: null,
+      price: null,
     };
   }
 
@@ -1647,7 +1647,7 @@ async function loadProduct(){
     if(prefix) images = getFilesForPrefix(prefix);
     // Fallback: search by name keywords
     if(!images.length){
-      const kw = product.nome.toLowerCase().replace(/ /g,'-').replace(/[^a-z0-9-]/g,'');
+      const kw = product.name.toLowerCase().replace(/ /g,'-').replace(/[^a-z0-9-]/g,'');
       images = FILES.filter(f=>f.n.startsWith(kw) || f.n.includes(kw.split('-').slice(0,3).join('-'))).map(f=>f.u).slice(0,8);
     }
   }
@@ -1660,13 +1660,13 @@ async function loadProduct(){
 function renderProduct(){
   if(!product) return;
 
-  document.title = product.nome + ' — Chuchu Rosa';
-  document.getElementById('pageTitle').textContent = product.nome + ' — Chuchu Rosa';
-  document.getElementById('bcName').textContent = product.nome;
-  document.getElementById('pName').textContent = product.nome;
+  document.title = product.name + ' — Chuchu Rosa';
+  document.getElementById('pageTitle').textContent = product.name + ' — Chuchu Rosa';
+  document.getElementById('bcName').textContent = product.name;
+  document.getElementById('pName').textContent = product.name;
 
   // Categories
-  const cats = product.colecoes || [];
+  const cats = product.collections || [];
   document.getElementById('pCats').textContent = Array.isArray(cats) ? cats.join(' · ') : cats;
 
   // Tags
@@ -1680,10 +1680,10 @@ function renderProduct(){
 
   // Price
   const pw = document.getElementById('priceWrap');
-  if(product.preco){
+  if(product.price){
     pw.innerHTML = `
-      ${product.preco_promocional ? `<div class="price-old">${fmt(product.preco)}</div>` : ''}
-      <div class="price-main"><small>R$</small>${(product.preco_promocional||product.preco).toFixed(2).replace('.',',')}</div>
+      ${product.preco_promocional ? `<div class="price-old">${fmt(product.price)}</div>` : ''}
+      <div class="price-main"><small>R$</small>${(product.preco_promocional||product.price).toFixed(2).replace('.',',')}</div>
       <div class="price-installment">em até 12x sem juros no cartão</div>`;
   } else {
     pw.innerHTML = `<div class="price-consult">Entre em contato para consultar o preço</div>`;
@@ -1768,7 +1768,7 @@ document.getElementById('qtyPlus').addEventListener('click',()=>{
 
 // ── ACTIONS ───────────────────────────────────────────────────────────
 document.getElementById('btnBuy').addEventListener('click',()=>{
-  if(!product||!product.preco){openWhatsApp();return;}
+  if(!product||!product.price){openWhatsApp();return;}
   addToCartAction();
   window.location.href='checkout.html';
 });
@@ -1783,15 +1783,15 @@ function addToCartAction(){
   const ex = cart.find(x=>x.id==product.id);
   if(ex) ex.qty+=qty;
   else cart.push({
-    id:product.id, nome:product.nome, preco:product.preco,
+    id:product.id, name:product.name, price:product.price,
     url:images[0]||'', prazo:product.prazo_producao_dias||7, qty
   });
   saveCart();
-  showToast(`<span>${product.nome}</span> adicionado ao carrinho`);
+  showToast(`<span>${product.name}</span> adicionado ao carrinho`);
 }
 
 function openWhatsApp(){
-  const msg = product ? `Olá! Tenho interesse no produto: ${product.nome}` : 'Olá! Tenho interesse em um produto.';
+  const msg = product ? `Olá! Tenho interesse no produto: ${product.name}` : 'Olá! Tenho interesse em um produto.';
   window.open(`https://wa.me/5519993041555?text=${encodeURIComponent(msg)}`,'_blank');
 }
 
@@ -1800,7 +1800,7 @@ function fmt(v){ return 'R$ '+parseFloat(v).toFixed(2).replace('.',','); }
 // ── RELATED ───────────────────────────────────────────────────────────
 function loadRelated(){
   if(!product) return;
-  const cats = product.colecoes || [];
+  const cats = product.collections || [];
   const catKey = Array.isArray(cats) ? cats[0] : cats;
   if(!catKey) return;
 
@@ -1830,7 +1830,7 @@ function loadRelated(){
     const prefix=base.includes('-')?base.substring(0,base.lastIndexOf('-')):base;
     if(!relSeen.has(prefix)){
       relSeen.set(prefix,true);
-      related.push({prefix,url:f.u,nome:prefix.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase())});
+      related.push({prefix,url:f.u,name:prefix.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase())});
     }
     if(related.length>=4) break;
   }
@@ -1839,11 +1839,11 @@ function loadRelated(){
   document.getElementById('relatedGrid').innerHTML = related.map(r=>`
     <div class="rcard" onclick="goProduct('${r.prefix}')">
       <div class="rcard-img">
-        <img src="${r.url}" alt="${r.nome}" loading="lazy">
+        <img src="${r.url}" alt="${r.name}" loading="lazy">
         <div class="rcard-ph" style="display:none">🌸</div>
       </div>
       <div class="rcard-info">
-        <div class="rcard-name">${r.nome}</div>
+        <div class="rcard-name">${r.name}</div>
         <div class="rcard-price">Ver produto →</div>
       </div>
     </div>`).join('');
@@ -1869,12 +1869,12 @@ function renderCartItems(){
   foot.style.display='block';
   const maxPrazo=Math.max(...cart.map(i=>i.prazo||7));
   document.getElementById('cartPrazoBox').textContent=`⏱ Prazo estimado: ${maxPrazo} dias úteis após confirmação do pagamento.`;
-  document.getElementById('cartTotal').textContent='R$ '+cart.reduce((s,i)=>s+(i.preco||0)*i.qty,0).toFixed(2).replace('.',',');
+  document.getElementById('cartTotal').textContent='R$ '+cart.reduce((s,i)=>s+(i.price||0)*i.qty,0).toFixed(2).replace('.',',');
   body.innerHTML=cart.map(i=>`
     <div class="cart-item-row">
       <div class="cir-img">${i.url?`<img src="${i.url}" loading="lazy">`:'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.5rem">🌸</div>'}</div>
       <div>
-        <div class="cir-name">${i.nome}</div>
+        <div class="cir-name">${i.name}</div>
         <div class="cir-prazo">⏱ ${i.prazo||7} dias úteis</div>
         <div class="cir-qty">
           <button class="cqb" onclick="cqty('${i.id}',-1)">−</button>
@@ -1883,7 +1883,7 @@ function renderCartItems(){
         </div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-        <div class="cir-price">${i.preco?'R$ '+(i.preco*i.qty).toFixed(2).replace('.',','):'—'}</div>
+        <div class="cir-price">${i.price?'R$ '+(i.price*i.qty).toFixed(2).replace('.',','):'—'}</div>
         <button class="cir-rm" onclick="crm('${i.id}')">🗑</button>
       </div>
     </div>`).join('');
