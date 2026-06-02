@@ -3167,24 +3167,17 @@ async function testWa(){
   toast('Enviando mensagem de teste...','info');
   try{
     // Route through Supabase Edge Function to avoid CORS
-    const r=await fetch(`${SB}/functions/v1/notify-pedido`,{
+    // Call Edge Function directly — bypass via query params to avoid body override
+    const params=new URLSearchParams({
+      test:'1',
+      nome:'Teste Admin',
+      tel:numero,
+      wa:numero,
+      k:key
+    });
+    const r=await fetch(`${SB}/functions/v1/notify-pedido?${params}`,{
       method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'Authorization':'Bearer '+KEY,
-        'apikey':KEY
-      },
-      body:JSON.stringify({
-        test:true,
-        record:{
-          id:'TESTE',
-          visitante_nome:'Teste Admin',
-          visitante_telefone:numero,
-          total:'99.90',
-          status:'pendente'
-        },
-        override:{whatsapp:numero,key}
-      })
+      headers:{'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+KEY}
     });
     const d=await r.json();
     if(d.ok)toast('✅ Mensagem enviada! Verifique seu WhatsApp.','ok');
