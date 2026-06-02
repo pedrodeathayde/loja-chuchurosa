@@ -694,7 +694,7 @@ img{display:block;max-width:100%}
 
 
 <!-- BULK ACTION BAR -->
-<div class="bulk-bar" id="bulkBar">
+<div class="bulk-bar" id="bulkBar" style="display:none">
   <span class="bulk-count" id="bulkCount">0</span>
   <span style="color:rgba(255,255,255,.5);font-size:.8rem">selecionados</span>
   <div class="bulk-sep"></div>
@@ -726,7 +726,7 @@ img{display:block;max-width:100%}
 </div>
 
 <!-- UNDO BAR -->
-<div class="undo-bar" id="undoBar">
+<div class="undo-bar" id="undoBar" style="display:none">
   <span id="undoMsg">Ação aplicada</span>
   <button class="undo-btn" onclick="undoLastBulk()">↩ Desfazer</button>
 </div>
@@ -2878,7 +2878,8 @@ function updateBulkBar(){
   const bar=document.getElementById('bulkBar');
   const n=selectedIds.size;
   document.getElementById('bulkCount').textContent=n;
-  bar.classList.toggle('show',n>0);
+  if(n>0){bar.style.display='flex';setTimeout(()=>bar.classList.add('show'),10);}
+  else{bar.classList.remove('show');setTimeout(()=>bar.style.display='none',350);}
 }
 
 function updateSelectAllCb(){
@@ -3043,9 +3044,10 @@ document.getElementById('bulkModal').addEventListener('click',e=>{if(e.target===
 function showUndo(msg){
   const bar=document.getElementById('undoBar');
   document.getElementById('undoMsg').textContent=msg;
+  bar.style.display='flex';
   bar.classList.add('show');
   clearTimeout(undoTimer);
-  undoTimer=setTimeout(()=>{bar.classList.remove('show');undoStack=null;},5000);
+  undoTimer=setTimeout(()=>{bar.classList.remove('show');setTimeout(()=>bar.style.display='none',350);undoStack=null;},5000);
 }
 
 async function undoLastBulk(){
@@ -3163,13 +3165,27 @@ async function testWa(){
   const key=document.getElementById('cfgWaKey').value.trim();
   if(!numero||!key){toast('Preencha o número e a API key','err');return;}
   toast('Enviando mensagem de teste...','info');
-  const msg='🧪 Teste de alerta — Chuchu Rosa Admin funcionando!';
-  const url=`https://api.callmebot.com/whatsapp.php?phone=${numero}&text=${encodeURIComponent(msg)}&apikey=${key}`;
   try{
-    const r=await fetch(url);
-    if(r.ok)toast('✅ Mensagem enviada! Verifique seu WhatsApp.','ok');
-    else toast('Erro ao enviar — verifique o número e a key','err');
-  }catch{toast('Erro de conexão','err');}
+    // Route through Supabase Edge Function to avoid CORS
+    const r=await fetch(`${SB}/functions/v1/notify-pedido`,{
+      method:'POST',
+      headers:{...HDR,'Content-Type':'application/json'},
+      body:JSON.stringify({
+        test:true,
+        record:{
+          id:'TESTE',
+          visitante_nome:'Teste Admin',
+          visitante_telefone:numero,
+          total:'99.90',
+          status:'pendente'
+        },
+        override:{whatsapp:numero,key}
+      })
+    });
+    const d=await r.json();
+    if(d.ok)toast('✅ Mensagem enviada! Verifique seu WhatsApp.','ok');
+    else toast('Erro: '+(d.error||'verifique o número e a key'),'err');
+  }catch(e){toast('Erro de conexão com a Edge Function','err');}
 }
 // ── DASHBOARD ─────────────────────────────────────────────────────────
 function renderDash(){
