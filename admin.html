@@ -1923,7 +1923,18 @@ async function doLogout(){
   location.reload();
 }
 
-function showAdmin(){
+async function showAdmin(){
+  // Verify admin role before granting access
+  const {data:{user}}=await sb.auth.getUser();
+  if(!user||user.user_metadata?.role!=='admin'){
+    await sb.auth.signOut();
+    const lerr=document.getElementById('lerr');
+    lerr.textContent='Acesso não autorizado.';
+    lerr.style.display='block';
+    document.getElementById('le').value='';
+    document.getElementById('lp').value='';
+    return;
+  }
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('adminWrap').classList.remove('hidden');
   mkLogo(document.getElementById('asideLogo'),30);
