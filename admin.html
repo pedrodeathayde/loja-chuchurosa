@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin — Chuchu Rosa</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
@@ -252,6 +253,42 @@ img{display:block;max-width:100%}
   .page{padding:16px}
   .stats-row{grid-template-columns:1fr 1fr}
 }
+
+/* VARIATION ROWS */
+.var-row{display:grid;grid-template-columns:1fr 1fr 80px 90px 28px;gap:8px;align-items:center;margin-bottom:8px}
+.var-row input{padding:8px 10px;border:1.5px solid rgba(244,121,154,.18);border-radius:9px;font-family:var(--fb);font-size:.83rem;outline:none;transition:border-color .2s;width:100%}
+.var-row input:focus{border-color:var(--pink)}
+.var-row .del-var{width:28px;height:28px;border-radius:8px;border:none;background:rgba(239,68,68,.08);color:var(--red);cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.var-row .del-var:hover{background:rgba(239,68,68,.18)}
+.var-header{display:grid;grid-template-columns:1fr 1fr 80px 90px 28px;gap:8px;margin-bottom:4px}
+.var-header span{font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:rgba(13,9,13,.38)}
+.btn-add-var{background:rgba(244,121,154,.08);color:var(--rose);border:1.5px dashed rgba(244,121,154,.25);border-radius:10px;padding:8px;font-family:var(--fb);font-size:.8rem;font-weight:600;cursor:pointer;width:100%;margin-top:6px;transition:all .2s}
+.btn-add-var:hover{background:rgba(244,121,154,.14);border-color:var(--pink)}
+
+/* PHOTO DRAG */
+.photo-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:4px}
+.ph-card{aspect-ratio:1;border-radius:11px;overflow:hidden;position:relative;background:rgba(244,121,154,.05);border:1.5px solid rgba(244,121,154,.1);transition:all .2s}
+.ph-card.dragging{opacity:.4;border-color:var(--pink)}
+.ph-card.drag-over{border-color:var(--pink);transform:scale(1.04)}
+.ph-card img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.ph-ov{position:absolute;inset:0;background:rgba(12,9,13,.65);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.ph-card:hover .ph-ov{opacity:1}
+.ph-btn{background:rgba(255,255,255,.9);border:none;border-radius:7px;width:28px;height:28px;cursor:pointer;font-size:.8rem;display:flex;align-items:center;justify-content:center}
+.ph-btn:hover{background:#fff}
+.cover-badge{position:absolute;top:5px;left:5px;background:var(--pink);color:#fff;font-size:.58rem;font-weight:700;padding:2px 6px;border-radius:5px;pointer-events:none}
+.ph-order{position:absolute;bottom:5px;right:5px;background:rgba(12,9,13,.6);color:#fff;font-size:.6rem;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+/* CATEGORIES MANAGER */
+.cat-manager{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.cat-row{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#fff;border-radius:10px;border:1px solid rgba(244,121,154,.1)}
+.cat-row input{flex:1;border:none;font-family:var(--fb);font-size:.86rem;outline:none;background:transparent}
+.cat-row .ibtn{flex-shrink:0}
+.btn-add-cat{background:rgba(244,121,154,.08);color:var(--rose);border:1.5px dashed rgba(244,121,154,.25);border-radius:10px;padding:9px;font-family:var(--fb);font-size:.8rem;font-weight:600;cursor:pointer;width:100%;margin-top:6px;transition:all .2s}
+.btn-add-cat:hover{background:rgba(244,121,154,.14)}
+
+/* ORDER NOTES */
+.notes-area{width:100%;padding:10px 12px;border:1.5px solid rgba(244,121,154,.2);border-radius:10px;font-family:var(--fb);font-size:.85rem;resize:vertical;min-height:72px;outline:none;transition:border-color .2s;margin-top:6px}
+.notes-area:focus{border-color:var(--pink)}
 </style>
 </head>
 <body>
@@ -283,6 +320,7 @@ img{display:block;max-width:100%}
       <button class="ni" data-page="pedidos" onclick="goPage('pedidos')"><span class="ni-icon">📦</span>Pedidos<span class="ni-badge" id="nb-ped">0</span></button>
       <button class="ni" data-page="clientes" onclick="goPage('clientes')"><span class="ni-icon">👥</span>Clientes</button>
       <div class="ng-label" style="margin-top:8px">Configurações</div>
+      <button class="ni" data-page="categorias" onclick="goPage('categorias')"><span class="ni-icon">🏷️</span>Categorias</button>
       <button class="ni" data-page="cupons" onclick="goPage('cupons')"><span class="ni-icon">🎟️</span>Cupons</button>
       <button class="ni" data-page="frete" onclick="goPage('frete')"><span class="ni-icon">🚚</span>Frete</button>
       <button class="ni" data-page="banners" onclick="goPage('banners')"><span class="ni-icon">📢</span>Banners</button>
@@ -377,6 +415,23 @@ img{display:block;max-width:100%}
       <div class="tbl-wrap" id="clientTable"><div class="ld"><div class="spin"></div><span>Carregando...</span></div></div>
     </div>
 
+
+    <!-- CATEGORIAS -->
+    <div class="page" id="page-categorias">
+      <div class="page-header">
+        <div><h1>Categorias 🏷️</h1><p>Gerencie as coleções da loja</p></div>
+        <button class="btn-p" onclick="addCat()">+ Nova categoria</button>
+      </div>
+      <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(244,121,154,.08);padding:24px">
+        <p style="font-size:.82rem;color:rgba(13,9,13,.45);margin-bottom:16px">Clique no nome para editar. A ordem aqui reflete a ordem na loja e no admin.</p>
+        <div class="cat-manager" id="catManager"></div>
+        <button class="btn-add-cat" onclick="addCat()">+ Adicionar categoria</button>
+        <div style="margin-top:16px;display:flex;justify-content:flex-end">
+          <button class="btn-p" onclick="saveCats()">💾 Salvar categorias</button>
+        </div>
+      </div>
+    </div>
+
     <!-- CUPONS -->
     <div class="page" id="page-cupons">
       <div class="page-header">
@@ -419,12 +474,13 @@ img{display:block;max-width:100%}
           <div class="fg"><label>Preço promocional (R$)</label><input type="number" id="mPrecoPromo" placeholder="79.90" min="0" step="0.01"></div>
           <div class="fg"><label>Prazo produção (dias úteis)</label><input type="number" id="mPrazo" value="7" min="1"></div>
         </div>
-        <div class="frow"><div class="fg"><label>Nota interna</label><input type="text" id="mNota" placeholder="Observações internas (não aparece na loja)"></div></div>
+        <div class="frow"><div class="fg"><label>Nota interna</label><textarea id="mNota" placeholder="Observações internas (não aparece na loja)" style="min-height:56px"></textarea></div></div>
       </div>
       <div class="msec"><h3>Coleções</h3><div class="cols-grid" id="colsGrid"></div></div>
-      <div class="msec"><h3>Tamanhos disponíveis</h3>
-        <p style="font-size:.75rem;color:rgba(13,9,13,.38);margin-bottom:8px">Informe estoque 0 para desativar o tamanho</p>
-        <div class="sizes-grid" id="sizesGrid"></div>
+      <div class="msec"><h3>Variações</h3>
+        <div class="var-header"><span>Tamanho</span><span>Cor</span><span>Estoque</span><span>Preço extra</span><span></span></div>
+        <div id="varsGrid"></div>
+        <button class="btn-add-var" onclick="addVarRow()">+ Adicionar variação</button>
       </div>
       <div class="msec"><h3>Fotos</h3>
         <label class="ph-upload" style="margin-bottom:10px">
@@ -1813,6 +1869,7 @@ const FILES = [
 const SB  = 'https://oznpfqsgurztffwfyfec.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA';
 const HDR = {apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json',Accept:'application/json'};
+const sb = supabase.createClient(SB, KEY);
 
 // ── LOGO ─────────────────────────────────────────────────────────────
 function mkLogo(el,h){
@@ -1843,16 +1900,28 @@ let toastT;
 function toast(msg,type='info'){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show '+type;clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3200);}
 
 // ── LOGIN ─────────────────────────────────────────────────────────────
-const ADMIN_EMAIL='admin@chuchurosa.com.br', ADMIN_PASS='chuchu2025!';
-
-function doLogin(){
-  const e=document.getElementById('le').value.trim(), p=document.getElementById('lp').value;
-  if(e===ADMIN_EMAIL&&p===ADMIN_PASS){sessionStorage.setItem('cr_admin','1');showAdmin();}
-  else{document.getElementById('lerr').style.display='block';}
+// ── SUPABASE AUTH ────────────────────────────────────────────────────
+async function doLogin(){
+  const email=document.getElementById('le').value.trim();
+  const pass=document.getElementById('lp').value;
+  const lerr=document.getElementById('lerr');
+  lerr.style.display='none';
+  const {data,error}=await sb.auth.signInWithPassword({email,password:pass});
+  if(error||!data.session){
+    lerr.textContent=error?.message==='Invalid login credentials'?'E-mail ou senha incorretos':error?.message||'Erro ao entrar';
+    lerr.style.display='block';
+    return;
+  }
+  // Update HDR with real JWT
+  HDR.Authorization='Bearer '+data.session.access_token;
+  showAdmin();
 }
 document.getElementById('lp').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 
-function doLogout(){sessionStorage.removeItem('cr_admin');location.reload();}
+async function doLogout(){
+  await sb.auth.signOut();
+  location.reload();
+}
 
 function showAdmin(){
   document.getElementById('loginScreen').style.display='none';
@@ -1860,7 +1929,21 @@ function showAdmin(){
   mkLogo(document.getElementById('asideLogo'),30);
   init();
 }
-if(sessionStorage.getItem('cr_admin')==='1') showAdmin();
+
+// Check existing session on load
+(async()=>{
+  const {data:{session}}=await sb.auth.getSession();
+  if(session){
+    HDR.Authorization='Bearer '+session.access_token;
+    showAdmin();
+  }
+})();
+
+// Refresh token automatically
+sb.auth.onAuthStateChange((event,session)=>{
+  if(session) HDR.Authorization='Bearer '+session.access_token;
+  if(event==='SIGNED_OUT') location.reload();
+});
 
 // ── NAV ───────────────────────────────────────────────────────────────
 function goPage(name){
@@ -1877,7 +1960,7 @@ let editProdId=null, editOrderId=null, editCupomId=null;
 
 // ── INIT ──────────────────────────────────────────────────────────────
 async function init(){
-  await Promise.all([loadProds(),loadOrders(),loadClients(),loadCupons(),loadFrete(),loadBanners()]);
+  await Promise.all([loadProds(),loadOrders(),loadClients(),loadCupons(),loadFrete(),loadBanners(),loadCats()]);
   renderDash();
   renderBannerStrip();
 }
@@ -1976,8 +2059,8 @@ async function deleteProd(id,nome){
   renderProdTable();
 }
 
-const COLS=['Fantasias','Para bebês','Decoração','Almofadas','Tiaras & acessórios','Educativo','Plush & pelúcia','Lembrancinhas','Bolsas & mochilas'];
-const SIZES=['Único','PP','P','M','G','GG','0-3m','3-6m','6-12m','1-2 anos','2-4 anos','4-6 anos','6-8 anos','8-10 anos'];
+let COLS=['Fantasias','Para bebês','Decoração','Almofadas','Tiaras & acessórios','Educativo','Plush & pelúcia','Lembrancinhas','Bolsas & mochilas'];
+// COLS loaded dynamically from DB (table: categorias) or fallback above
 
 function openNewProd(){
   editProdId=null;
@@ -1994,7 +2077,8 @@ function openNewProd(){
   document.getElementById('togDestaque').classList.remove('on');
   document.getElementById('togEsgotado').classList.remove('on');
   document.getElementById('togOculto').classList.remove('on');
-  document.getElementById('photoGrid').innerHTML='<div style="grid-column:1/-1;font-size:.78rem;color:rgba(13,9,13,.35);padding:8px">Salve o produto para ver as fotos</div>';
+  currentVars=[];renderVarsGrid();
+  currentPhotos=[];document.getElementById('photoGrid').innerHTML='<div style="grid-column:1/-1;font-size:.78rem;color:rgba(13,9,13,.35);padding:8px">Salve o produto para adicionar fotos</div>';
   document.getElementById('prodModal').classList.add('open');
 }
 
@@ -2011,8 +2095,7 @@ function editProd(id){
   document.getElementById('mNota').value=p.nota_interna||'';
   const cols=Array.isArray(p.collections)?p.collections:(p.collections?[p.collections]:[]);
   document.getElementById('colsGrid').innerHTML=buildCols(cols);
-  document.getElementById('sizesGrid').innerHTML=buildSizes([]);
-  loadVars(id);
+  currentVars=[];renderVarsGrid();loadVars(id);
   document.getElementById('togAtivo').classList.toggle('on',!!p.ativo);
   document.getElementById('togDestaque').classList.toggle('on',!!p.destaque);
   document.getElementById('togEsgotado').classList.toggle('on',!!p.esgotado);
@@ -2048,6 +2131,7 @@ function setCover(el){
 function buildCols(sel=[]){
   return COLS.map(c=>`<div class="col-ch ${sel.includes(c)?'checked':''}" onclick="this.classList.toggle('checked')"><input type="checkbox" ${sel.includes(c)?'checked':''}>${c}</div>`).join('');
 }
+function buildSizes(v){return '';} // legacy stub
 
 function buildSizes(vars=[]){
   return SIZES.map(s=>{
@@ -2083,16 +2167,8 @@ async function saveProd(){
     let prodId=editProdId;
     if(editProdId){await sbPatch(`/rest/v1/produtos?id=eq.${editProdId}`,payload);}
     else{const r=await sbPost('/rest/v1/produtos',payload);prodId=r?.[0]?.id;}
-    // Save sizes
-    if(prodId){
-      const stocks=[...document.querySelectorAll('.size-stock')];
-      for(const inp of stocks){
-        const sz=inp.dataset.size, qty=+inp.value;
-        if(qty>0){
-          await sbPost('/rest/v1/produto_variacoes',{produto_id:prodId,tamanho:sz,estoque:qty,ativo:true});
-        }
-      }
-    }
+    // Save variations
+    if(prodId) await saveVars(prodId);
     toast('Produto salvo!','ok');
     closeProdModal();
     await loadProds();
@@ -2160,6 +2236,7 @@ async function openOrder(id){
   document.getElementById('mOrderTitle').textContent=`Pedido #${p.id}`;
   let itens=[];
   try{const d=await sbGet(`/rest/v1/itens_pedido?select=*&pedido_id=eq.${id}`);if(Array.isArray(d))itens=d;}catch{}
+  const clientOrders=allOrders.filter(o=>o.visitante_email&&o.visitante_email===p.visitante_email&&o.id!==p.id).slice(0,3);
   document.getElementById('orderModalBody').innerHTML=`
     <div class="msec"><h3>Cliente</h3>
       <div style="font-size:.88rem;line-height:2">
@@ -2167,6 +2244,7 @@ async function openOrder(id){
         📧 ${p.visitante_email||'—'} &nbsp; 📱 ${p.visitante_telefone||'—'}<br>
         📦 ${[p.endereco_logradouro,p.endereco_numero,p.endereco_bairro,p.endereco_cidade,p.endereco_estado].filter(Boolean).join(', ')||'—'}
       </div>
+      ${clientOrders.length?`<div style="margin-top:10px;font-size:.75rem;color:rgba(13,9,13,.45)">Outros pedidos: ${clientOrders.map(o=>`<span onclick="closeOrderModal();setTimeout(()=>openOrder(${o.id}),100)" style="cursor:pointer;color:var(--rose);text-decoration:underline">#${o.id}</span>`).join(', ')}</div>`:''}
     </div>
     <div class="msec"><h3>Itens</h3>
       ${itens.length?itens.map(i=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(244,121,154,.08);font-size:.86rem"><span>${i.nome_produto} <span style="color:rgba(13,9,13,.38)">×${i.quantidade}</span></span><b>${fmt(i.subtotal)}</b></div>`).join('')+'<div style="display:flex;justify-content:space-between;margin-top:10px;font-weight:700"><span>Total</span><span style="color:var(--rose)">${fmt(p.total)}</span></div>'
@@ -2180,6 +2258,9 @@ async function openOrder(id){
             <span class="pill ${s}">${{pendente:'⏳ Pendente',pago:'✅ Pago',producao:'🔨 Produção',enviado:'🚚 Enviado',entregue:'📬 Entregue',cancelado:'❌ Cancelado'}[s]}</span>
           </div>`).join('')}
       </div>
+    </div>
+    <div class="msec" style="margin-top:16px"><h3>Notas internas</h3>
+      <textarea class="notes-area" placeholder="Anotações sobre este pedido (não visível ao cliente)..." onblur="saveOrderNotes(${p.id},this.value)">${p.notas_internas||''}</textarea>
     </div>
     <div style="margin-top:12px">
       <button class="btn-s" style="width:100%;font-size:.82rem" onclick="contactWA(${p.id},'${encodeURIComponent(p.visitante_nome||'')}','${p.visitante_telefone?.replace(/\D/g,'')||''}')">💬 Contatar no WhatsApp</button>
@@ -2397,6 +2478,209 @@ async function toggleBanner(id,val){await sbPatch(`/rest/v1/banners?id=eq.${id}`
 async function deleteBanner(id){if(!confirm('Excluir banner?'))return;await sbDelete(`/rest/v1/banners?id=eq.${id}`);allBanners=allBanners.filter(x=>x.id!=id);renderBanners();renderBannerStrip();toast('Banner excluído','ok');}
 function closeBannerModal(){document.getElementById('bannerModal').classList.remove('open');}
 document.getElementById('bannerModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeBannerModal();});
+
+
+// ── CATEGORIES ───────────────────────────────────────────────────────
+let allCats=[...COLS];
+async function loadCats(){
+  try{
+    const d=await sbGet('/rest/v1/categorias?select=nome&order=ordem');
+    if(Array.isArray(d)&&d.length){
+      allCats=d.map(c=>c.nome);
+      COLS=[...allCats];
+    }
+  }catch{}
+  renderCatManager();
+}
+function renderCatManager(){
+  const el=document.getElementById('catManager');
+  if(!el)return;
+  el.innerHTML=allCats.map((c,i)=>`
+    <div class="cat-row" draggable="true" data-idx="${i}"
+      ondragstart="catDragStart(event,${i})"
+      ondragover="catDragOver(event,${i})"
+      ondrop="catDrop(event,${i})">
+      <span style="cursor:grab;color:rgba(13,9,13,.3);font-size:.9rem;flex-shrink:0">⠿</span>
+      <input type="text" value="${c}" onblur="allCats[${i}]=this.value;COLS=[...allCats]">
+      <button class="ibtn del" onclick="removeCat(${i})">🗑</button>
+    </div>`).join('');
+}
+function addCat(){allCats.push('Nova categoria');COLS=[...allCats];renderCatManager();
+  setTimeout(()=>{const inputs=document.querySelectorAll('#catManager input');inputs[inputs.length-1]?.focus();inputs[inputs.length-1]?.select();},50);}
+function removeCat(i){if(!confirm(`Remover "${allCats[i]}"?`))return;allCats.splice(i,1);COLS=[...allCats];renderCatManager();}
+async function saveCats(){
+  try{
+    // Delete all then reinsert
+    await sbDelete('/rest/v1/categorias?id=gte.0');
+    for(let i=0;i<allCats.length;i++){
+      if(allCats[i].trim()) await sbPost('/rest/v1/categorias',{nome:allCats[i].trim(),ordem:i});
+    }
+    toast('Categorias salvas!','ok');
+    COLS=[...allCats];
+    // refresh colsGrid if modal open
+    const cg=document.getElementById('colsGrid');
+    if(cg&&cg.children.length) cg.innerHTML=buildCols(getSelCols());
+  }catch(e){toast('Erro ao salvar — tabela categorias existe?','err');}
+}
+// Drag reorder for cats
+let catDragIdx=null;
+function catDragStart(e,i){catDragIdx=i;e.dataTransfer.effectAllowed='move';}
+function catDragOver(e,i){e.preventDefault();}
+function catDrop(e,i){
+  e.preventDefault();
+  if(catDragIdx===null||catDragIdx===i)return;
+  const tmp=allCats.splice(catDragIdx,1)[0];
+  allCats.splice(i,0,tmp);
+  COLS=[...allCats];
+  catDragIdx=null;
+  renderCatManager();
+}
+
+// ── PRODUCT PHOTOS ────────────────────────────────────────────────────
+let currentPhotos=[]; // [{url, name, isNew, file, order}]
+
+function loadPhotos(nome){
+  const slug=nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  const photos=FILES.filter(f=>{
+    const n=f.n.replace(/\.[^.]+$/,'');
+    return n.startsWith(slug)||n.includes(slug.split('-').slice(0,3).join('-'));
+  }).slice(0,15);
+  currentPhotos=photos.map((f,i)=>({url:f.u,name:f.n,isNew:false,order:i}));
+  renderPhotoGrid();
+}
+
+function renderPhotoGrid(){
+  const grid=document.getElementById('photoGrid');
+  if(!grid)return;
+  grid.innerHTML=currentPhotos.map((p,i)=>`
+    <div class="ph-card ${i===0?'cover':''}" data-idx="${i}"
+      draggable="true"
+      ondragstart="photoDragStart(event,${i})"
+      ondragover="event.preventDefault();this.classList.add('drag-over')"
+      ondragleave="this.classList.remove('drag-over')"
+      ondrop="photoDrop(event,${i})">
+      <img src="${p.url}" loading="lazy">
+      ${i===0?'<div class="cover-badge">Capa</div>':''}
+      <div class="ph-order">${i+1}</div>
+      <div class="ph-ov">
+        <button class="ph-btn" title="Mover para capa" onclick="makePhotoCover(${i})">⭐</button>
+        <button class="ph-btn" title="Excluir foto" onclick="deletePhoto(${i})" style="background:rgba(239,68,68,.9);color:#fff">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
+let photoDragIdx=null;
+function photoDragStart(e,i){photoDragIdx=i;e.dataTransfer.effectAllowed='move';}
+function photoDrop(e,i){
+  e.preventDefault();
+  document.querySelectorAll('.ph-card').forEach(c=>c.classList.remove('drag-over'));
+  if(photoDragIdx===null||photoDragIdx===i)return;
+  const tmp=currentPhotos.splice(photoDragIdx,1)[0];
+  currentPhotos.splice(i,0,tmp);
+  currentPhotos.forEach((p,idx)=>p.order=idx);
+  photoDragIdx=null;
+  renderPhotoGrid();
+}
+
+function makePhotoCover(i){
+  const tmp=currentPhotos.splice(i,1)[0];
+  currentPhotos.unshift(tmp);
+  currentPhotos.forEach((p,idx)=>p.order=idx);
+  renderPhotoGrid();
+  toast('Foto definida como capa','ok');
+}
+
+function deletePhoto(i){
+  if(!confirm('Remover esta foto?'))return;
+  currentPhotos.splice(i,1);
+  currentPhotos.forEach((p,idx)=>p.order=idx);
+  renderPhotoGrid();
+}
+
+async function uploadFoto(file,prodNome){
+  if(!file)return;
+  const slug=prodNome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  const ext=file.name.split('.').pop();
+  const path=`${slug}-${Date.now()}.${ext}`;
+  try{
+    const r=await fetch(`${SB}/storage/v1/object/Fotos/${path}`,{
+      method:'POST',
+      headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':file.type,'x-upsert':'true'},
+      body:file
+    });
+    if(r.ok){
+      const url=`${SB}/storage/v1/object/public/Fotos/${path}`;
+      currentPhotos.push({url,name:path,isNew:true,order:currentPhotos.length});
+      renderPhotoGrid();
+      toast('Foto enviada!','ok');
+    }else toast('Erro no upload','err');
+  }catch{toast('Erro no upload','err');}
+}
+
+// ── VARIATIONS ────────────────────────────────────────────────────────
+let currentVars=[];
+
+async function loadVars(prodId){
+  const d=await sbGet(`/rest/v1/produto_variacoes?produto_id=eq.${prodId}&order=id`);
+  currentVars=Array.isArray(d)?d.map(v=>({...v,_id:v.id})):[];
+  renderVarsGrid();
+}
+
+function renderVarsGrid(){
+  const el=document.getElementById('varsGrid');
+  if(!el)return;
+  el.innerHTML=currentVars.map((v,i)=>`
+    <div class="var-row" data-idx="${i}">
+      <input type="text" placeholder="Ex: P, M, G, 4-6 anos..." value="${v.tamanho||''}" oninput="currentVars[${i}].tamanho=this.value">
+      <input type="text" placeholder="Ex: Rosa, Azul..." value="${v.cor||''}" oninput="currentVars[${i}].cor=this.value">
+      <input type="number" placeholder="Qtd" min="0" value="${v.estoque||0}" oninput="currentVars[${i}].estoque=+this.value">
+      <input type="number" placeholder="R$ extra" min="0" step="0.01" value="${v.preco_extra||''}" oninput="currentVars[${i}].preco_extra=+this.value||0">
+      <button class="del-var" onclick="removeVar(${i})">×</button>
+    </div>`).join('');
+}
+
+function addVarRow(){
+  currentVars.push({tamanho:'',cor:'',estoque:0,preco_extra:0,ativo:true});
+  renderVarsGrid();
+  setTimeout(()=>{
+    const rows=document.querySelectorAll('.var-row');
+    rows[rows.length-1]?.querySelector('input')?.focus();
+  },50);
+}
+
+function removeVar(i){currentVars.splice(i,1);renderVarsGrid();}
+
+async function saveVars(prodId){
+  if(!prodId)return;
+  // Delete existing then reinsert
+  await sbDelete(`/rest/v1/produto_variacoes?produto_id=eq.${prodId}`);
+  for(const v of currentVars){
+    if(!v.tamanho&&!v.cor&&!v.estoque)continue;
+    await sbPost('/rest/v1/produto_variacoes',{
+      produto_id:prodId,
+      tamanho:v.tamanho||null,
+      cor:v.cor||null,
+      estoque:v.estoque||0,
+      preco_extra:v.preco_extra||0,
+      ativo:true
+    });
+  }
+  // Auto esgotado if all vars have 0 stock
+  if(currentVars.length>0&&currentVars.every(v=>!v.estoque)){
+    await sbPatch(`/rest/v1/produtos?id=eq.${prodId}`,{esgotado:true});
+    const p=allProds.find(x=>x.id==prodId);
+    if(p)p.esgotado=true;
+    toast('Produto marcado como esgotado automaticamente','info');
+  }
+}
+
+// ── ORDER NOTES ───────────────────────────────────────────────────────
+async function saveOrderNotes(id,notes){
+  await sbPatch(`/rest/v1/pedidos?id=eq.${id}`,{notas_internas:notes});
+  const p=allOrders.find(x=>x.id==id);
+  if(p)p.notas_internas=notes;
+  toast('Nota salva','ok');
+}
 
 // ── DASHBOARD ─────────────────────────────────────────────────────────
 function renderDash(){
