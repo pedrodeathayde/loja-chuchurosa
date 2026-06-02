@@ -3169,7 +3169,11 @@ async function testWa(){
     // Route through Supabase Edge Function to avoid CORS
     const r=await fetch(`${SB}/functions/v1/notify-pedido`,{
       method:'POST',
-      headers:{...HDR,'Content-Type':'application/json'},
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer '+KEY,
+        'apikey':KEY
+      },
       body:JSON.stringify({
         test:true,
         record:{
