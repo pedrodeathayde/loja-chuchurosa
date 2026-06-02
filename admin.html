@@ -3167,21 +3167,17 @@ async function testWa(){
   toast('Enviando mensagem de teste...','info');
   try{
     // Route through Supabase Edge Function to avoid CORS
-    // Call Edge Function directly — bypass via query params to avoid body override
-    const params=new URLSearchParams({
-      test:'1',
-      nome:'Teste Admin',
-      tel:numero,
-      wa:numero,
-      k:key
-    });
-    const r=await fetch(`${SB}/functions/v1/notify-pedido?${params}`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+KEY}
-    });
-    const d=await r.json();
-    if(d.ok)toast('✅ Mensagem enviada! Verifique seu WhatsApp.','ok');
-    else toast('Erro: '+(d.error||'verifique o número e a key'),'err');
+    // Call Callmebot directly via corsproxy to avoid CORS
+    const msg=encodeURIComponent('🧪 Teste Chuchu Rosa Admin — funcionando!');
+    const waUrl=`https://api.callmebot.com/whatsapp.php?phone=${numero}&text=${msg}&apikey=${key}`;
+    const proxyUrl=`https://corsproxy.io/?${encodeURIComponent(waUrl)}`;
+    const r=await fetch(proxyUrl);
+    const txt=await r.text();
+    console.log('Callmebot response:',r.status,txt);
+    if(r.ok&&!txt.toLowerCase().includes('error'))
+      toast('✅ Mensagem enviada! Verifique seu WhatsApp.','ok');
+    else
+      toast('Erro Callmebot: '+txt.slice(0,80),'err');
   }catch(e){toast('Erro de conexão com a Edge Function','err');}
 }
 // ── DASHBOARD ─────────────────────────────────────────────────────────
