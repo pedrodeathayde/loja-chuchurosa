@@ -47,8 +47,8 @@ nav.s{background:rgba(12,9,13,.9);backdrop-filter:blur(22px);border-bottom:1px s
 .dot{width:6px;height:6px;background:var(--pink);border-radius:50%;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.65)}}
 .hero-logo-wrap{position:relative;z-index:1;margin-bottom:32px;opacity:0;animation:fu .9s .3s forwards}
-.ht{font-family:var(--fd);font-size:clamp(3rem,8vw,6.8rem);font-weight:900;line-height:.95;letter-spacing:-.04em;position:relative;z-index:1;opacity:0;animation:fu .9s .45s forwards}
-.ht em{font-style:italic;background:linear-gradient(135deg,var(--pink2),var(--pink),var(--rose));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ht{font-family:var(--fd);font-size:clamp(3rem,8vw,6.8rem);font-weight:900;line-height:1.05;letter-spacing:-.04em;position:relative;z-index:1;opacity:0;animation:fu .9s .45s forwards}
+.ht em{font-style:italic;background:linear-gradient(135deg,var(--pink2),var(--pink),var(--rose));padding-bottom:.1em;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hsub{font-size:clamp(.95rem,1.8vw,1.15rem);color:var(--tm);font-weight:300;max-width:480px;line-height:1.8;margin:28px auto 0;position:relative;z-index:1;opacity:0;animation:fu .9s .65s forwards}
 .hact{display:flex;gap:14px;justify-content:center;margin-top:48px;position:relative;z-index:1;opacity:0;animation:fu .9s .85s forwards}
 .bp{background:var(--pink);color:#fff;padding:16px 38px;border-radius:100px;font-family:var(--fb);font-size:.95rem;font-weight:600;border:none;cursor:pointer;transition:all .25s;box-shadow:0 8px 28px rgba(244,121,154,.35);display:inline-block}
@@ -316,7 +316,7 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
   <div class="hbg"></div>
   <div class="orb o1"></div><div class="orb o2"></div>
   <div>
-    <div class="hbadge"><span class="dot"></span>Decoração de ❤️</div>
+    <div class="hbadge"><span class="dot"></span>Por um mundo mais divertido ✨</div>
     <div class="hero-logo-wrap" id="heroLogoWrap"></div>
     <h1 class="ht">Decoração<br>de <em>❤️</em></h1>
     <p class="hsub"><span data-prod-count></span> produtos únicos — fantasias, brinquedos e decoração para crianças de todas as idades.</p>
@@ -346,7 +346,7 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
     <div class="cf-ph" id="ph-fant" style="display:none">🎭</div>
     <div class="cf-grad"></div>
     <div class="cf-txt">
-      <div class="slabel" style="color:var(--pink2)">🎭 146 produtos</div>
+      <div class="slabel" style="color:var(--pink2)">🎭 <span id="cnt-fantasias">146</span> produtos</div>
       <h2 class="st">Fantasias que<br><em>transformam</em></h2>
       <p style="color:rgba(255,255,255,.72);font-size:1.05rem;line-height:1.8;margin-top:18px;max-width:460px">De flamingos a dinossauros, de sereias a astronautas. Cada fantasia feita à mão com materiais de qualidade.</p>
       <a href="loja.html?cat=Fantasias" class="bp" style="margin-top:36px;display:inline-block">Ver fantasias →</a>
@@ -358,7 +358,7 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
 <section id="bebes">
   <div class="cat-split reveal">
     <div class="cs-txt">
-      <div class="slabel">🍼 74 produtos</div>
+      <div class="slabel">🍼 <span id="cnt-bebes">74</span> produtos</div>
       <h2 class="st">Para os<br><em>pequeninos</em></h2>
       <p>Chocalhos, naninhas, brinquedos educativos, kits de berço e muito mais — tudo pensado para o desenvolvimento seguro e feliz do bebê.</p>
       <a href="loja.html?cat=Para+beb%C3%AAs" class="bp" style="margin-top:36px;display:inline-block;background:var(--rose)">Ver coleção →</a>
@@ -378,7 +378,7 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
       <div class="ct-ph" id="ph-pass0" style="display:none">🦜</div>
       <div class="ct-ov">
         <div>
-          <div class="slabel" style="color:var(--pink2)">🦜 48 produtos</div>
+          <div class="slabel" style="color:var(--pink2)">🦜 <span id="cnt-passaros">48</span> produtos</div>
           <h2 class="st" style="color:#fff">Flamingos,<br>Araras &<br><em>muito mais</em></h2>
           <a href="loja.html?q=passaro" class="bp" style="margin-top:22px;display:inline-block">Ver coleção →</a>
         </div>
@@ -403,7 +403,7 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
     <div style="max-width:1300px;margin:0 auto">
       <div class="strip-head">
         <div>
-          <div class="slabel" style="color:var(--pink)">🌿 75 produtos</div>
+          <div class="slabel" style="color:var(--pink)">🌿 <span id="cnt-decor">75</span> produtos</div>
           <h2 class="st" style="color:var(--white)">Decora, <em>encanta</em>,<br>não sai de moda</h2>
         </div>
         <a href="loja.html?cat=Decora%C3%A7%C3%A3o" class="bs">Ver tudo →</a>
@@ -417,7 +417,7 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
 <section id="almofadas">
   <div class="cat-split rev reveal">
     <div class="cs-txt">
-      <div class="slabel">💛 28 produtos</div>
+      <div class="slabel">💛 <span id="cnt-almofadas">28</span> produtos</div>
       <h2 class="st">Almofadas que<br><em>abraçam</em></h2>
       <p>Sorvetes, sushis, guitarras, cogumelos, conchas e muito mais. Decoração e conforto em formatos que você nunca viu.</p>
       <a href="loja.html?cat=Almofadas" class="bp" style="margin-top:36px;display:inline-block;background:var(--rose)">Ver almofadas →</a>
@@ -440,7 +440,7 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
     <div class="col">
       <img id="img-tia1" src="" alt="" onerror="this.style.display='none'">
       <div class="col-ph" id="ph-tia1" style="display:none">🎭</div>
-      <div class="col-ov"><div class="slabel" style="color:var(--pink2)">46 produtos</div><h3 style="font-family:var(--fd);font-size:1.4rem;color:#fff;font-style:italic">Máscaras</h3></div>
+      <div class="col-ov"><div class="slabel" style="color:var(--pink2)"><span id="cnt-mascaras">46</span> produtos</div><h3 style="font-family:var(--fd);font-size:1.4rem;color:#fff;font-style:italic">Máscaras</h3></div>
     </div>
     <div class="col">
       <img id="img-tia2" src="" alt="" onerror="this.style.display='none'">
@@ -456,7 +456,7 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
     <div class="cp-bg" id="paraBg"></div>
     <div class="cp-inner">
       <div class="rl reveal">
-        <div class="slabel" style="color:var(--pink)">🎓 29 produtos</div>
+        <div class="slabel" style="color:var(--pink)">🎓 <span id="cnt-educativo">29</span> produtos</div>
         <h2 class="st" style="color:#fff">Brincar é<br><em>aprender</em></h2>
         <p style="color:var(--tm);font-size:1.05rem;line-height:1.85;margin-top:20px">Brinquedos Montessori, cubos com letras e números, painéis educativos, tapetes sensoriais e muito mais.</p>
         <a href="loja.html?cat=Educativo" class="bp" style="margin-top:36px;display:inline-block">Ver brinquedos →</a>
@@ -476,7 +476,7 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
     <div style="max-width:1300px;margin:0 auto">
       <div class="strip-head">
         <div>
-          <div class="slabel" style="color:var(--pink)">🦊 19 produtos</div>
+          <div class="slabel" style="color:var(--pink)">🦊 <span id="cnt-raposas">19</span> produtos</div>
           <h2 class="st" style="color:var(--white)">O charme da<br><em>raposa</em></h2>
         </div>
         <a href="loja.html?q=raposa" class="bs">Ver tudo →</a>
@@ -493,7 +493,7 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
     <div class="cf-ph" id="ph-plush" style="display:none">🧸</div>
     <div class="cf-grad"></div>
     <div class="cf-txt">
-      <div class="slabel" style="color:var(--lav)">🧸 12 produtos</div>
+      <div class="slabel" style="color:var(--lav)">🧸 <span id="cnt-plush">12</span> produtos</div>
       <h2 class="st">Fofuras para<br><em>apertar</em></h2>
       <p style="color:rgba(255,255,255,.72);font-size:1.05rem;line-height:1.8;margin-top:18px;max-width:420px">Flamingos, raposas, ursos, golfinhos e polvos em pelúcia macia de alta qualidade.</p>
       <a href="loja.html?cat=Plush+%26+pel%C3%BAcia" class="bp" style="margin-top:36px;display:inline-block;background:var(--lav);color:var(--dark)">Ver pelúcias →</a>
@@ -511,7 +511,7 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
       <p>Cada item é produzido com carinho no nosso ateliê — do design à execução. Sob encomenda, com o tamanho e as cores que você quiser.</p>
       <div class="stats-g">
         <div class="sc"><div class="sc-n">15+</div><div class="sc-l">Anos de história</div></div>
-        <div class="sc"><div class="sc-n" data-prod-count>325</div><div class="sc-l">Produtos no acervo</div></div>
+        <div class="sc"><div class="sc-n" data-prod-count></div><div class="sc-l">Produtos no acervo</div></div>
         <div class="sc"><div class="sc-n">100%</div><div class="sc-l">Feito com carinho</div></div>
         <div class="sc"><div class="sc-n">🌸</div><div class="sc-l">Amor em cada peça</div></div>
       </div>
@@ -2175,7 +2175,7 @@ document.querySelectorAll('.prod-grid').forEach(g=>{
 
 <script>document.getElementById("yr").textContent=new Date().getFullYear();
 // Dynamic product count
-document.addEventListener('DOMContentLoaded', function(){
+(function(){
   fetch('https://oznpfqsgurztffwfyfec.supabase.co/rest/v1/produtos?select=id&ativo=eq.true&oculto=eq.false',{
     headers:{apikey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA',Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA',Accept:'application/json','Prefer':'count=exact'},
     method:'HEAD'
@@ -2184,9 +2184,38 @@ document.addEventListener('DOMContentLoaded', function(){
     if(!n)return;
     const count=n.split('/')[1];
     if(!count||count==='*')return;
-    document.querySelectorAll('[data-prod-count]').forEach(el=>el.textContent=count);
+    document.querySelectorAll('[data-prod-count]').forEach(el=>{
+      el.textContent=count;
+      el.dataset.loaded='1';
+    });
   }).catch(()=>{});
-});
+})();
+
+// Dynamic category counts
+(function(){
+  const cats=[
+    ['cnt-fantasias','Fantasias'],
+    ['cnt-bebes','Para bebês'],
+    ['cnt-passaros','Pássaros'],
+    ['cnt-decor','Decoração'],
+    ['cnt-almofadas','Almofadas'],
+    ['cnt-mascaras','Máscaras'],
+    ['cnt-educativo','Educativo'],
+    ['cnt-raposas','Raposas'],
+    ['cnt-plush','Plush & pelúcia'],
+  ];
+  const HDR={apikey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA',Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA',Accept:'application/json','Prefer':'count=exact'};
+  cats.forEach(([id,col])=>{
+    fetch(`https://oznpfqsgurztffwfyfec.supabase.co/rest/v1/produtos?select=id&collections=cs.["${col}"]&ativo=eq.true&oculto=eq.false`,{headers:HDR,method:'HEAD'})
+      .then(r=>{
+        const n=r.headers.get('content-range');
+        if(!n)return;
+        const count=n.split('/')[1];
+        const el=document.getElementById(id);
+        if(el&&count&&count!=='*')el.textContent=count;
+      }).catch(()=>{});
+  });
+})();
 </script>
 </body>
 </html>
