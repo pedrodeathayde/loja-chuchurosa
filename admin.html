@@ -101,7 +101,7 @@ img{display:block;max-width:100%}
 .tbl-row:last-child{border:none}
 .tbl-row:hover{background:rgba(244,121,154,.025)}
 /* Products cols: img nome cats preco prazo status acoes */
-.pc-grid{grid-template-columns:52px 1fr 130px 100px 80px 110px 90px}
+.pc-grid{grid-template-columns:32px 52px 1fr 130px 100px 80px 110px 90px}
 .tr-img{width:44px;height:44px;border-radius:10px;overflow:hidden;background:var(--cream);position:relative;flex-shrink:0}
 .tr-img img,.tr-img-ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .tr-img-ph{display:flex;align-items:center;justify-content:center;font-size:1.1rem}
@@ -244,7 +244,7 @@ img{display:block;max-width:100%}
 /* RESPONSIVE */
 @media(max-width:1100px){
   .stats-row{grid-template-columns:1fr 1fr}
-  .pc-grid{grid-template-columns:44px 1fr 90px 80px}
+  .pc-grid{grid-template-columns:28px 44px 1fr 90px 80px}
   .pc-grid span:nth-child(n+5),.pc-grid .tbl-row>*:nth-child(n+5){display:none}
 }
 @media(max-width:768px){
@@ -289,6 +289,71 @@ img{display:block;max-width:100%}
 /* ORDER NOTES */
 .notes-area{width:100%;padding:10px 12px;border:1.5px solid rgba(244,121,154,.2);border-radius:10px;font-family:var(--fb);font-size:.85rem;resize:vertical;min-height:72px;outline:none;transition:border-color .2s;margin-top:6px}
 .notes-area:focus{border-color:var(--pink)}
+
+/* BULK ACTION BAR */
+.bulk-bar{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--dark);color:#fff;border-radius:100px;padding:12px 20px;display:flex;align-items:center;gap:12px;z-index:500;box-shadow:0 16px 48px rgba(0,0,0,.3);transition:transform .35s cubic-bezier(.25,.46,.45,.94);white-space:nowrap;flex-wrap:wrap;justify-content:center;max-width:90vw}
+.bulk-bar.show{transform:translateX(-50%) translateY(0)}
+.bulk-count{background:var(--pink);color:#fff;border-radius:100px;padding:3px 12px;font-size:.78rem;font-weight:700;flex-shrink:0}
+.bulk-sep{width:1px;height:20px;background:rgba(255,255,255,.1);flex-shrink:0}
+.bulk-btn{background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);border:none;border-radius:100px;padding:7px 14px;font-family:var(--fb);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap}
+.bulk-btn:hover{background:rgba(244,121,154,.25);color:#fff}
+.bulk-btn.red{background:rgba(239,68,68,.15);color:#fca5a5}
+.bulk-btn.red:hover{background:rgba(239,68,68,.3)}
+.bulk-close{background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;font-size:1rem;padding:4px 8px}
+
+/* BULK MODAL */
+.bulk-modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:600;display:none;align-items:center;justify-content:center;padding:20px}
+.bulk-modal-ov.open{display:flex}
+.bulk-modal{background:#fff;border-radius:24px;width:100%;max-width:420px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.2)}
+.bulk-mhead{padding:20px 24px;border-bottom:1px solid rgba(244,121,154,.1);display:flex;align-items:center;justify-content:space-between}
+.bulk-mhead h3{font-family:var(--fd);font-size:1.05rem;font-weight:700}
+.bulk-mbody{padding:20px 24px 24px}
+.bulk-opts{display:flex;gap:8px;margin-bottom:14px}
+.bulk-opt{flex:1;padding:9px;border:1.5px solid rgba(244,121,154,.15);border-radius:10px;background:#fff;font-family:var(--fb);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s;text-align:center}
+.bulk-opt.active{border-color:var(--pink);background:rgba(244,121,154,.08);color:var(--rose)}
+.bulk-input-row{display:flex;gap:8px;align-items:center}
+.bulk-input-row input{flex:1;padding:10px 12px;border:1.5px solid rgba(244,121,154,.18);border-radius:10px;font-family:var(--fb);font-size:.9rem;outline:none}
+.bulk-input-row input:focus{border-color:var(--pink)}
+.bulk-preview{background:rgba(244,121,154,.06);border-radius:10px;padding:10px 12px;font-size:.8rem;color:rgba(13,9,13,.55);margin-top:10px;min-height:36px}
+.bulk-mfoot{padding:0 24px 20px;display:flex;gap:8px;justify-content:flex-end}
+
+/* CHECKBOX */
+.row-cb{width:18px;height:18px;border-radius:5px;border:1.5px solid rgba(244,121,154,.25);background:#fff;cursor:pointer;flex-shrink:0;appearance:none;-webkit-appearance:none;transition:all .2s;position:relative}
+.row-cb:checked{background:var(--pink);border-color:var(--pink)}
+.row-cb:checked::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.65rem;font-weight:700}
+.select-all-cb{width:18px;height:18px;border-radius:5px;border:1.5px solid rgba(244,121,154,.25);background:#fff;cursor:pointer;appearance:none;-webkit-appearance:none;transition:all .2s;position:relative;flex-shrink:0}
+.select-all-cb:checked{background:var(--pink);border-color:var(--pink)}
+.select-all-cb:checked::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.65rem;font-weight:700}
+.select-all-cb:indeterminate{background:rgba(244,121,154,.3);border-color:var(--pink)}
+
+/* UNDO TOAST */
+.undo-bar{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--dark2);color:#fff;border-radius:100px;padding:11px 20px;display:flex;align-items:center;gap:12px;z-index:600;transition:transform .3s;font-size:.84rem;white-space:nowrap}
+.undo-bar.show{transform:translateX(-50%) translateY(0)}
+.undo-btn{background:var(--pink);color:#fff;border:none;border-radius:100px;padding:5px 14px;font-family:var(--fb);font-size:.78rem;font-weight:700;cursor:pointer}
+
+/* TOP MINI STATS */
+.mini-stats{display:flex;gap:12px;padding:10px 28px;background:var(--dark2);border-bottom:1px solid rgba(244,121,154,.08);font-size:.75rem;color:rgba(255,255,255,.4)}
+.mini-stat{display:flex;align-items:center;gap:6px}
+.mini-stat b{color:var(--pink2);font-weight:700}
+.mini-stat-dot{width:6px;height:6px;border-radius:50%;background:var(--pink);animation:pulse2 2s infinite}
+@keyframes pulse2{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* GLOBAL SEARCH */
+.global-search{position:relative;flex:1;max-width:320px}
+.global-search input{width:100%;padding:9px 14px 9px 34px;border:1.5px solid rgba(255,255,255,.08);border-radius:10px;font-family:var(--fb);font-size:.84rem;background:rgba(255,255,255,.06);color:#fff;outline:none;transition:all .2s}
+.global-search input:focus{border-color:rgba(244,121,154,.4);background:rgba(255,255,255,.09)}
+.global-search input::placeholder{color:rgba(255,255,255,.2)}
+.global-search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.25);width:14px;height:14px}
+.gs-results{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--dark2);border:1px solid rgba(244,121,154,.15);border-radius:14px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.3);display:none;z-index:300;max-height:320px;overflow-y:auto}
+.gs-results.open{display:block}
+.gs-item{padding:10px 14px;cursor:pointer;font-size:.83rem;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.04);color:rgba(255,255,255,.75);transition:background .2s}
+.gs-item:hover{background:rgba(244,121,154,.1);color:#fff}
+.gs-item:last-child{border:none}
+.gs-tag{font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:5px;flex-shrink:0}
+.gs-tag.prod{background:rgba(244,121,154,.2);color:var(--pink2)}
+.gs-tag.ped{background:rgba(99,102,241,.2);color:#a5b4fc}
+.gs-tag.cli{background:rgba(34,197,94,.15);color:#86efac}
+.gs-empty{padding:20px;text-align:center;color:rgba(255,255,255,.25);font-size:.82rem}
 </style>
 </head>
 <body>
@@ -309,6 +374,13 @@ img{display:block;max-width:100%}
 <!-- ADMIN -->
 <div class="admin-wrap hidden" id="adminWrap">
   <aside class="aside">
+    <div style="padding:10px;border-bottom:1px solid rgba(244,121,154,.08)">
+      <div class="global-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="globalSearch" placeholder="Buscar produtos, pedidos..." oninput="globalSearchFn(this.value)" onblur="setTimeout(()=>document.getElementById('gsResults').classList.remove('open'),200)">
+        <div class="gs-results" id="gsResults"></div>
+      </div>
+    </div>
     <div class="aside-logo">
       <div id="asideLogo"></div>
       <span class="aside-badge">Admin</span>
@@ -324,6 +396,7 @@ img{display:block;max-width:100%}
       <button class="ni" data-page="cupons" onclick="goPage('cupons')"><span class="ni-icon">🎟️</span>Cupons</button>
       <button class="ni" data-page="frete" onclick="goPage('frete')"><span class="ni-icon">🚚</span>Frete</button>
       <button class="ni" data-page="banners" onclick="goPage('banners')"><span class="ni-icon">📢</span>Banners</button>
+      <button class="ni" data-page="notif" onclick="goPage('notif')"><span class="ni-icon">🔔</span>Notificações</button>
       <div class="ng-label" style="margin-top:8px">Loja</div>
       <button class="ni" onclick="window.open('loja.html','_blank')"><span class="ni-icon">🛍️</span>Ver loja ↗</button>
       <button class="ni" onclick="window.open('index.html','_blank')"><span class="ni-icon">🏠</span>Ver site ↗</button>
@@ -334,6 +407,12 @@ img{display:block;max-width:100%}
   </aside>
 
   <main class="main">
+    <div class="mini-stats" id="miniStats">
+      <div class="mini-stat"><span class="mini-stat-dot"></span><span>Hoje: <b id="ms-hoje">—</b></span></div>
+      <div class="mini-stat">Semana: <b id="ms-semana">—</b></div>
+      <div class="mini-stat">Em produção: <b id="ms-prod">—</b></div>
+      <div class="mini-stat" id="ms-novos-wrap" style="display:none">🔔 <b id="ms-novos" style="color:var(--pink)">0 novos</b></div>
+    </div>
     <!-- BANNER STRIP -->
     <div class="banner-strip" id="bannerStrip" style="display:none;margin:16px 32px 0;border-radius:12px"></div>
 
@@ -369,6 +448,7 @@ img{display:block;max-width:100%}
         </div>
       </div>
       <div class="toolbar">
+        <input type="checkbox" class="select-all-cb" id="selectAllCb" title="Selecionar todos" onchange="toggleSelectAll(this.checked)" style="margin-right:4px">
         <div class="tsearch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input type="text" id="ps" placeholder="Buscar..." oninput="filterProds()"></div>
         <select class="tfilter" id="pcat" onchange="filterProds()">
           <option value="">Todas as coleções</option>
@@ -448,6 +528,45 @@ img{display:block;max-width:100%}
         <button class="btn-p" onclick="addFrete()">+ Nova região</button>
       </div>
       <div class="tbl-wrap" id="freteList"></div>
+    </div>
+
+
+    <!-- NOTIFICAÇÕES -->
+    <div class="page" id="page-notif">
+      <div class="page-header">
+        <div><h1>Notificações 🔔</h1><p>Alertas de novos pedidos</p></div>
+        <button class="btn-p" onclick="saveNotifConfig()">💾 Salvar</button>
+      </div>
+      <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(244,121,154,.08);padding:28px;max-width:560px">
+
+        <div class="msec">
+          <h3>WhatsApp via Callmebot</h3>
+          <div class="tog-row" style="margin-bottom:16px">
+            <div><div class="tog-lbl">Alertas ativados</div><div class="tog-sub">Receber mensagem a cada novo pedido</div></div>
+            <button class="tog on" id="togWaAtivo" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="frow">
+            <div class="fg">
+              <label>Número WhatsApp (com DDI)</label>
+              <input type="text" id="cfgWaNumero" placeholder="Ex: 5519993041555">
+              <span class="hint">Formato: 55 + DDD + número, sem espaços ou traços</span>
+            </div>
+          </div>
+          <div class="frow">
+            <div class="fg">
+              <label>API Key do Callmebot</label>
+              <input type="text" id="cfgWaKey" placeholder="Ex: 7959018">
+              <span class="hint">Recebida pelo WhatsApp ao ativar o Callmebot</span>
+            </div>
+          </div>
+          <button class="btn-s" style="margin-top:8px;font-size:.8rem" onclick="testWa()">🧪 Testar agora</button>
+          <p style="font-size:.75rem;color:rgba(13,9,13,.38);margin-top:12px;line-height:1.6">
+            Para ativar o Callmebot: salve o número <b>+34 644 91 96 80</b> nos contatos e mande 
+            <i>"I allow callmebot to send me messages"</i> pelo WhatsApp.
+          </p>
+        </div>
+
+      </div>
     </div>
 
     <!-- BANNERS -->
@@ -571,6 +690,45 @@ img{display:block;max-width:100%}
       <button class="btn-p" onclick="saveBanner()">💾 Salvar</button>
     </div>
   </div>
+</div>
+
+
+<!-- BULK ACTION BAR -->
+<div class="bulk-bar" id="bulkBar">
+  <span class="bulk-count" id="bulkCount">0</span>
+  <span style="color:rgba(255,255,255,.5);font-size:.8rem">selecionados</span>
+  <div class="bulk-sep"></div>
+  <button class="bulk-btn" onclick="openBulkModal('preco')">💰 Preço</button>
+  <button class="bulk-btn" onclick="openBulkModal('prazo')">⏱ Prazo</button>
+  <button class="bulk-btn" onclick="openBulkModal('categoria')">🏷️ Categoria</button>
+  <button class="bulk-btn" onclick="bulkToggle('ativo')">✅ Ativar</button>
+  <button class="bulk-btn" onclick="bulkToggle('inativo')">○ Desativar</button>
+  <button class="bulk-btn" onclick="bulkToggle('esgotado')">⊘ Esgotado</button>
+  <button class="bulk-btn" onclick="bulkToggle('destaque')">⭐ Destaque</button>
+  <div class="bulk-sep"></div>
+  <button class="bulk-btn red" onclick="bulkDelete()">🗑 Excluir</button>
+  <button class="bulk-close" onclick="clearSelection()">✕</button>
+</div>
+
+<!-- BULK MODAL -->
+<div class="bulk-modal-ov" id="bulkModal">
+  <div class="bulk-modal">
+    <div class="bulk-mhead">
+      <h3 id="bulkModalTitle">Alterar preço</h3>
+      <button class="mclose" onclick="closeBulkModal()">✕</button>
+    </div>
+    <div class="bulk-mbody" id="bulkModalBody"></div>
+    <div class="bulk-mfoot">
+      <button class="btn-s" onclick="closeBulkModal()">Cancelar</button>
+      <button class="btn-p" onclick="applyBulk()">Aplicar</button>
+    </div>
+  </div>
+</div>
+
+<!-- UNDO BAR -->
+<div class="undo-bar" id="undoBar">
+  <span id="undoMsg">Ação aplicada</span>
+  <button class="undo-btn" onclick="undoLastBulk()">↩ Desfazer</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -1962,6 +2120,7 @@ function goPage(name){
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
   document.getElementById('page-'+name)?.classList.add('active');
   document.querySelector(`.ni[data-page="${name}"]`)?.classList.add('active');
+  if(name==='pedidos') dismissNovos();
 }
 
 // ── STATE ─────────────────────────────────────────────────────────────
@@ -1971,9 +2130,11 @@ let editProdId=null, editOrderId=null, editCupomId=null;
 
 // ── INIT ──────────────────────────────────────────────────────────────
 async function init(){
-  await Promise.all([loadProds(),loadOrders(),loadClients(),loadCupons(),loadFrete(),loadBanners(),loadCats()]);
+  await Promise.all([loadProds(),loadOrders(),loadClients(),loadCupons(),loadFrete(),loadBanners(),loadCats(),loadNotifConfig()]);
   renderDash();
   renderBannerStrip();
+  sessionStorage.removeItem('novos_visto');
+  updateMiniStats();
 }
 
 // ── FILES INDEX ───────────────────────────────────────────────────────
@@ -2693,6 +2854,323 @@ async function saveOrderNotes(id,notes){
   toast('Nota salva','ok');
 }
 
+
+// ── SELECTION ────────────────────────────────────────────────────────
+let selectedIds=new Set();
+let undoStack=null, undoTimer=null;
+
+function toggleSelect(id,checked){
+  if(checked)selectedIds.add(id);else selectedIds.delete(id);
+  updateBulkBar();
+  updateSelectAllCb();
+}
+
+function toggleSelectAll(checked){
+  if(checked)filtProds.forEach(p=>selectedIds.add(p.id));
+  else selectedIds.clear();
+  renderProdTable();
+  updateBulkBar();
+}
+
+function clearSelection(){selectedIds.clear();renderProdTable();updateBulkBar();}
+
+function updateBulkBar(){
+  const bar=document.getElementById('bulkBar');
+  const n=selectedIds.size;
+  document.getElementById('bulkCount').textContent=n;
+  bar.classList.toggle('show',n>0);
+}
+
+function updateSelectAllCb(){
+  const cb=document.getElementById('selectAllCb');
+  if(!cb)return;
+  if(selectedIds.size===0)cb.indeterminate=false,cb.checked=false;
+  else if(selectedIds.size===filtProds.length)cb.indeterminate=false,cb.checked=true;
+  else cb.indeterminate=true;
+}
+
+// ── BULK ACTIONS ──────────────────────────────────────────────────────
+let currentBulkAction=null, bulkPriceMode='pct';
+
+function openBulkModal(action){
+  currentBulkAction=action;
+  const modal=document.getElementById('bulkModal');
+  const title=document.getElementById('bulkModalTitle');
+  const body=document.getElementById('bulkModalBody');
+  const n=selectedIds.size;
+
+  if(action==='preco'){
+    title.textContent=`Alterar preço (${n} produtos)`;
+    body.innerHTML=`
+      <div class="bulk-opts">
+        <button class="bulk-opt active" id="bo-pct" onclick="setBulkPriceMode('pct',this)">% Porcentagem</button>
+        <button class="bulk-opt" id="bo-val" onclick="setBulkPriceMode('val',this)">R$ Valor fixo</button>
+      </div>
+      <div class="bulk-opts">
+        <button class="bulk-opt active" id="bo-inc" onclick="setBulkDir('inc',this)">▲ Aumentar</button>
+        <button class="bulk-opt" id="bo-dec" onclick="setBulkDir('dec',this)">▼ Diminuir</button>
+      </div>
+      <div class="bulk-input-row">
+        <input type="number" id="bulkVal" min="0" step="0.01" placeholder="Ex: 10" oninput="updateBulkPreview()">
+        <span id="bulkUnit" style="color:rgba(13,9,13,.45);font-size:.9rem">%</span>
+      </div>
+      <div class="bulk-preview" id="bulkPreview">Digite um valor para ver a prévia</div>`;
+    bulkPriceMode='pct';
+  }else if(action==='prazo'){
+    title.textContent=`Alterar prazo (${n} produtos)`;
+    body.innerHTML=`
+      <div class="fg"><label>Novo prazo de produção (dias úteis)</label>
+        <input type="number" id="bulkVal" min="1" max="90" placeholder="Ex: 7" style="padding:10px 12px;border:1.5px solid rgba(244,121,154,.18);border-radius:10px;font-family:var(--fb);font-size:.9rem;outline:none;width:100%">
+      </div>`;
+  }else if(action==='categoria'){
+    title.textContent=`Mover para categoria (${n} produtos)`;
+    body.innerHTML=`
+      <div class="fg"><label>Nova coleção principal</label>
+        <select id="bulkVal" style="padding:10px 12px;border:1.5px solid rgba(244,121,154,.18);border-radius:10px;font-family:var(--fb);font-size:.86rem;outline:none;width:100%">
+          <option value="">— Selecionar —</option>
+          ${COLS.map(c=>`<option value="${c}">${c}</option>`).join('')}
+        </select>
+      </div>
+      <div style="font-size:.78rem;color:rgba(13,9,13,.45);margin-top:8px">A categoria selecionada será adicionada às coleções existentes.</div>`;
+  }
+  modal.classList.add('open');
+}
+
+let bulkDir='inc';
+function setBulkPriceMode(mode,el){
+  bulkPriceMode=mode;
+  document.querySelectorAll('#bo-pct,#bo-val').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('bulkUnit').textContent=mode==='pct'?'%':'R$';
+  updateBulkPreview();
+}
+function setBulkDir(dir,el){
+  bulkDir=dir;
+  document.querySelectorAll('#bo-inc,#bo-dec').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  updateBulkPreview();
+}
+function updateBulkPreview(){
+  const val=parseFloat(document.getElementById('bulkVal')?.value)||0;
+  if(!val){document.getElementById('bulkPreview')&&(document.getElementById('bulkPreview').textContent='Digite um valor para ver a prévia');return;}
+  const prods=allProds.filter(p=>selectedIds.has(p.id)&&p.price).slice(0,3);
+  if(!prods.length){document.getElementById('bulkPreview').textContent='Nenhum produto com preço selecionado';return;}
+  const preview=prods.map(p=>{
+    let np=p.price;
+    if(bulkPriceMode==='pct') np=bulkDir==='inc'?p.price*(1+val/100):p.price*(1-val/100);
+    else np=bulkDir==='inc'?p.price+val:p.price-val;
+    np=Math.max(0,np);
+    return `${p.name.slice(0,25)}: R$ ${p.price.toFixed(2).replace('.',',')} → R$ ${np.toFixed(2).replace('.',',')}`;
+  }).join('\n');
+  document.getElementById('bulkPreview').textContent=preview+(selectedIds.size>3?`\n...e mais ${selectedIds.size-3} produtos`:'');
+}
+
+async function applyBulk(){
+  const val=document.getElementById('bulkVal')?.value;
+  if(!val){toast('Informe um valor','err');return;}
+  const ids=[...selectedIds];
+  // Save undo snapshot
+  undoStack={action:currentBulkAction,snapshot:ids.map(id=>{const p=allProds.find(x=>x.id===id);return p?{...p}:null;}).filter(Boolean)};
+
+  if(currentBulkAction==='preco'){
+    const n=parseFloat(val);
+    let updated=0;
+    for(const id of ids){
+      const p=allProds.find(x=>x.id===id);
+      if(!p||!p.price)continue;
+      let np=p.price;
+      if(bulkPriceMode==='pct') np=bulkDir==='inc'?p.price*(1+n/100):p.price*(1-n/100);
+      else np=bulkDir==='inc'?p.price+n:p.price-n;
+      np=Math.max(0,Math.round(np*100)/100);
+      await sbPatch(`/rest/v1/produtos?id=eq.${id}`,{price:np});
+      p.price=np;updated++;
+    }
+    toast(`Preço atualizado em ${updated} produtos`,'ok');
+  }else if(currentBulkAction==='prazo'){
+    const prazo=parseInt(val);
+    for(const id of ids){
+      await sbPatch(`/rest/v1/produtos?id=eq.${id}`,{prazo_producao_dias:prazo});
+      const p=allProds.find(x=>x.id===id);if(p)p.prazo_producao_dias=prazo;
+    }
+    toast(`Prazo atualizado em ${ids.length} produtos`,'ok');
+  }else if(currentBulkAction==='categoria'){
+    for(const id of ids){
+      const p=allProds.find(x=>x.id===id);if(!p)continue;
+      const cols=[...new Set([...(p.collections||[]),val])];
+      await sbPatch(`/rest/v1/produtos?id=eq.${id}`,{collections:cols});
+      p.collections=cols;
+    }
+    toast(`Categoria adicionada em ${ids.length} produtos`,'ok');
+  }
+
+  closeBulkModal();
+  renderProdTable();
+  showUndo(`${ids.length} produtos atualizados`);
+}
+
+async function bulkToggle(action){
+  const ids=[...selectedIds];
+  undoStack={action:'toggle_'+action,snapshot:ids.map(id=>{const p=allProds.find(x=>x.id===id);return p?{...p}:null;}).filter(Boolean)};
+  const payload=action==='ativo'?{ativo:true,oculto:false}:action==='inativo'?{ativo:false}:action==='esgotado'?{esgotado:true}:{destaque:true};
+  for(const id of ids){
+    await sbPatch(`/rest/v1/produtos?id=eq.${id}`,payload);
+    const p=allProds.find(x=>x.id===id);if(p)Object.assign(p,payload);
+  }
+  toast(`${ids.length} produtos atualizados`,'ok');
+  renderProdTable();
+  showUndo(`${ids.length} produtos atualizados`);
+}
+
+async function bulkDelete(){
+  const ids=[...selectedIds];
+  if(!confirm(`Excluir ${ids.length} produtos? Esta ação não pode ser desfeita.`))return;
+  for(const id of ids){
+    await sbDelete(`/rest/v1/produtos?id=eq.${id}`);
+    const idx=allProds.findIndex(x=>x.id===id);
+    if(idx>=0)allProds.splice(idx,1);
+  }
+  selectedIds.clear();
+  filtProds=filtProds.filter(p=>!ids.includes(p.id));
+  renderProdTable();
+  updateBulkBar();
+  toast(`${ids.length} produtos excluídos`,'ok');
+}
+
+function closeBulkModal(){document.getElementById('bulkModal').classList.remove('open');}
+document.getElementById('bulkModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeBulkModal();});
+
+// ── UNDO ─────────────────────────────────────────────────────────────
+function showUndo(msg){
+  const bar=document.getElementById('undoBar');
+  document.getElementById('undoMsg').textContent=msg;
+  bar.classList.add('show');
+  clearTimeout(undoTimer);
+  undoTimer=setTimeout(()=>{bar.classList.remove('show');undoStack=null;},5000);
+}
+
+async function undoLastBulk(){
+  if(!undoStack)return;
+  for(const snap of undoStack.snapshot){
+    const {id,...fields}=snap;
+    await sbPatch(`/rest/v1/produtos?id=eq.${id}`,{
+      price:fields.price,prazo_producao_dias:fields.prazo_producao_dias,
+      collections:fields.collections,ativo:fields.ativo,
+      esgotado:fields.esgotado,destaque:fields.destaque,oculto:fields.oculto
+    });
+    const p=allProds.find(x=>x.id===id);
+    if(p)Object.assign(p,fields);
+  }
+  undoStack=null;
+  clearTimeout(undoTimer);
+  document.getElementById('undoBar').classList.remove('show');
+  renderProdTable();
+  toast('Ação desfeita!','ok');
+}
+
+// ── GLOBAL SEARCH ─────────────────────────────────────────────────────
+let gsTimer;
+function globalSearchFn(q){
+  clearTimeout(gsTimer);
+  const el=document.getElementById('gsResults');
+  if(!q.trim()){el.classList.remove('open');return;}
+  gsTimer=setTimeout(()=>{
+    const ql=q.toLowerCase();
+    const results=[];
+    // Products
+    allProds.filter(p=>p.name.toLowerCase().includes(ql)).slice(0,4).forEach(p=>{
+      results.push({type:'prod',label:p.name,sub:fmt(p.price)||'Sem preço',action:`editProd(${p.id})`});
+    });
+    // Orders
+    allOrders.filter(o=>(o.visitante_nome||'').toLowerCase().includes(ql)||String(o.id).includes(ql)).slice(0,3).forEach(o=>{
+      results.push({type:'ped',label:`#${o.id} — ${o.visitante_nome||'—'}`,sub:fmt(o.total),action:`goPage('pedidos');setTimeout(()=>openOrder(${o.id}),300)`});
+    });
+    // Clients
+    allClients.filter(c=>(c.nome||'').toLowerCase().includes(ql)||(c.email||'').toLowerCase().includes(ql)).slice(0,2).forEach(c=>{
+      results.push({type:'cli',label:c.nome||c.email,sub:c.email,action:`goPage('clientes')`});
+    });
+    if(!results.length){
+      el.innerHTML='<div class="gs-empty">Nenhum resultado</div>';
+    }else{
+      el.innerHTML=results.map(r=>`
+        <div class="gs-item" onclick="${r.action};document.getElementById('globalSearch').value='';document.getElementById('gsResults').classList.remove('open')">
+          <span class="gs-tag ${r.type}">${r.type==='prod'?'Produto':r.type==='ped'?'Pedido':'Cliente'}</span>
+          <div><div>${r.label}</div><div style="font-size:.7rem;color:rgba(255,255,255,.3)">${r.sub}</div></div>
+        </div>`).join('');
+    }
+    el.classList.add('open');
+  },250);
+}
+
+// ── MINI STATS ────────────────────────────────────────────────────────
+function updateMiniStats(){
+  const hoje=new Date().toDateString();
+  const agora=Date.now();
+  const semana=agora-7*24*60*60*1000;
+  const recentes=allOrders.filter(o=>new Date(o.created_at).toDateString()===hoje);
+  const novos=allOrders.filter(o=>new Date(o.created_at).getTime()>agora-2*60*60*1000&&o.status==='pendente');
+  const receitaHoje=recentes.filter(o=>o.status!=='cancelado').reduce((s,o)=>s+(o.total||0),0);
+  const receitaSemana=allOrders.filter(o=>new Date(o.created_at).getTime()>semana&&o.status!=='cancelado').reduce((s,o)=>s+(o.total||0),0);
+  const emProd=allOrders.filter(o=>o.status==='producao').length;
+  document.getElementById('ms-hoje').textContent=receitaHoje?fmt(receitaHoje):`${recentes.length} pedidos`;
+  document.getElementById('ms-semana').textContent=fmt(receitaSemana);
+  document.getElementById('ms-prod').textContent=emProd;
+  if(novos.length){
+    document.getElementById('ms-novos-wrap').style.display='flex';
+    document.getElementById('ms-novos').textContent=`${novos.length} novo${novos.length>1?'s':''}`;
+    document.getElementById('nb-ped').className='ni-badge red';
+    // Persist until user clicks pedidos
+    if(!sessionStorage.getItem('novos_visto')){
+      document.getElementById('ms-novos-wrap').onclick=()=>dismissNovos();
+    }
+  }
+}
+function dismissNovos(){
+  sessionStorage.setItem('novos_visto','1');
+  document.getElementById('ms-novos-wrap').style.display='none';
+  document.getElementById('nb-ped').className='ni-badge';
+}
+
+
+// ── NOTIFICAÇÕES ──────────────────────────────────────────────────────
+async function loadNotifConfig(){
+  try{
+    const d=await sbGet('/rest/v1/configuracoes?select=chave,valor');
+    if(!Array.isArray(d))return;
+    const map=Object.fromEntries(d.map(c=>[c.chave,c.valor]));
+    if(map.whatsapp_alertas) document.getElementById('cfgWaNumero').value=map.whatsapp_alertas;
+    if(map.callmebot_key) document.getElementById('cfgWaKey').value=map.callmebot_key;
+    if(map.whatsapp_alertas_ativo==='false') document.getElementById('togWaAtivo').classList.remove('on');
+  }catch{}
+}
+
+async function saveNotifConfig(){
+  const numero=document.getElementById('cfgWaNumero').value.trim().replace(/\D/g,'');
+  const key=document.getElementById('cfgWaKey').value.trim();
+  const ativo=document.getElementById('togWaAtivo').classList.contains('on');
+  const updates=[
+    {chave:'whatsapp_alertas',valor:numero},
+    {chave:'callmebot_key',valor:key},
+    {chave:'whatsapp_alertas_ativo',valor:String(ativo)},
+  ];
+  for(const u of updates){
+    await sbPatch(`/rest/v1/configuracoes?chave=eq.${u.chave}`,{valor:u.valor,updated_at:new Date().toISOString()});
+  }
+  toast('Configurações salvas!','ok');
+}
+
+async function testWa(){
+  const numero=document.getElementById('cfgWaNumero').value.trim().replace(/\D/g,'');
+  const key=document.getElementById('cfgWaKey').value.trim();
+  if(!numero||!key){toast('Preencha o número e a API key','err');return;}
+  toast('Enviando mensagem de teste...','info');
+  const msg='🧪 Teste de alerta — Chuchu Rosa Admin funcionando!';
+  const url=`https://api.callmebot.com/whatsapp.php?phone=${numero}&text=${encodeURIComponent(msg)}&apikey=${key}`;
+  try{
+    const r=await fetch(url);
+    if(r.ok)toast('✅ Mensagem enviada! Verifique seu WhatsApp.','ok');
+    else toast('Erro ao enviar — verifique o número e a key','err');
+  }catch{toast('Erro de conexão','err');}
+}
 // ── DASHBOARD ─────────────────────────────────────────────────────────
 function renderDash(){
   const hoje=new Date().toDateString();
