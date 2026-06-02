@@ -2175,7 +2175,7 @@ document.querySelectorAll('.prod-grid').forEach(g=>{
 
 <script>document.getElementById("yr").textContent=new Date().getFullYear();
 // Dynamic product count
-(function(){
+document.addEventListener('DOMContentLoaded', function(){
   fetch('https://oznpfqsgurztffwfyfec.supabase.co/rest/v1/produtos?select=id&ativo=eq.true&oculto=eq.false',{
     headers:{apikey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA',Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA',Accept:'application/json','Prefer':'count=exact'},
     method:'HEAD'
@@ -2184,12 +2184,9 @@ document.querySelectorAll('.prod-grid').forEach(g=>{
     if(!n)return;
     const count=n.split('/')[1];
     if(!count||count==='*')return;
-    document.querySelectorAll('[data-prod-count]').forEach(el=>{
-      el.textContent=count;
-      el.dataset.loaded='1';
-    });
+    document.querySelectorAll('[data-prod-count]').forEach(el=>el.textContent=count);
   }).catch(()=>{});
-})();
+});
 </script>
 </body>
 </html>
