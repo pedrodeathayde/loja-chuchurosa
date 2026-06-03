@@ -548,7 +548,7 @@ img{display:block;max-width:100%}
           <div class="frow">
             <div class="fg">
               <label>Número WhatsApp (com DDI)</label>
-              <input type="text" id="cfgWaNumero" placeholder="Ex: 5519991190000">
+              <input type="text" id="cfgWaNumero" placeholder="Ex: 5519993041555">
               <span class="hint">Formato: 55 + DDD + número, sem espaços ou traços</span>
             </div>
           </div>
@@ -2182,12 +2182,13 @@ function filterProds(){
 function renderProdTable(){
   const el=document.getElementById('prodTable');
   if(!filtProds.length){el.innerHTML='<div class="empty"><div class="empty-icon">🌸</div><p>Nenhum produto</p></div>';return;}
-  el.innerHTML=`<div class="tbl-head pc-grid"><span>Foto</span><span>Produto</span><span>Coleções</span><span>Preço</span><span>Prazo</span><span>Status</span><span>Ações</span></div>`
+  el.innerHTML=`<div class="tbl-head pc-grid"><span></span><span>Foto</span><span>Produto</span><span>Coleções</span><span>Preço</span><span>Prazo</span><span>Status</span><span>Ações</span></div>`
     +filtProds.map(p=>{
       const url=getUrl(p.name);
       const cats=(p.collections||[]).slice(0,2).join(', ');
       const pill=p.esgotado?'<span class="pill esgotado">⊘ Esgotado</span>':p.oculto?'<span class="pill oculto">○ Oculto</span>':p.destaque?'<span class="pill destaque">⭐ Destaque</span>':p.ativo?'<span class="pill active">● Ativo</span>':'<span class="pill inactive">○ Inativo</span>';
-      return `<div class="tbl-row pc-grid">
+      return `<div class="tbl-row pc-grid${sel?' selected':''}">
+        <input type="checkbox" class="row-cb" data-id="${p.id}" ${sel?'checked':''} onclick="event.stopPropagation();toggleSelect(${p.id},this.checked)">
         <div class="tr-img">${url?`<img src="${url}" loading="lazy">`:'<div class="tr-img-ph">🌸</div>'}</div>
         <div><div class="tr-name">${p.name}</div><div class="tr-cat">${cats||'—'}</div></div>
         <div style="font-size:.72rem;color:rgba(13,9,13,.45)">${cats||'—'}</div>
