@@ -43,10 +43,10 @@ img{display:block;max-width:100%}
 .admin-wrap.hidden{display:none}
 
 /* SIDEBAR */
-.aside{background:var(--dark);color:#fff;display:flex;flex-direction:column}
+.aside{background:var(--dark);color:#fff;display:flex;flex-direction:column;position:relative;z-index:10}
 .aside-logo{padding:20px;border-bottom:1px solid rgba(244,121,154,.1);display:flex;align-items:center;gap:10px}
 .aside-badge{background:rgba(244,121,154,.15);color:var(--pink2);font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:6px}
-.aside-nav{flex:1;padding:16px 10px}
+.aside-nav{flex:1;padding:16px 10px;overflow-y:auto}
 .ng-label{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.2);padding:10px 10px 6px}
 .ni{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:10px;cursor:pointer;transition:all .2s;font-size:.86rem;font-weight:500;color:rgba(255,255,255,.5);margin-bottom:2px;border:none;background:none;width:100%;text-align:left}
 .ni:hover{background:rgba(244,121,154,.08);color:#fff}
@@ -339,13 +339,13 @@ img{display:block;max-width:100%}
 @keyframes pulse2{0%,100%{opacity:1}50%{opacity:.3}}
 
 /* GLOBAL SEARCH */
-.global-search{position:relative;flex:1;max-width:320px}
+.global-search{position:relative;flex:1;max-width:320px;z-index:5}
 .global-search input{width:100%;padding:9px 14px 9px 34px;border:1.5px solid rgba(255,255,255,.08);border-radius:10px;font-family:var(--fb);font-size:.84rem;background:rgba(255,255,255,.06);color:#fff;outline:none;transition:all .2s}
 .global-search input:focus{border-color:rgba(244,121,154,.4);background:rgba(255,255,255,.09)}
 .global-search input::placeholder{color:rgba(255,255,255,.2)}
 .global-search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.25);width:14px;height:14px}
-.gs-results{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--dark2);border:1px solid rgba(244,121,154,.15);border-radius:14px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.3);display:none;z-index:300;max-height:320px;overflow-y:auto}
-.gs-results.open{display:block}
+.gs-results{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--dark2);border:1px solid rgba(244,121,154,.15);border-radius:14px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.3);display:none;z-index:400;max-height:320px;overflow-y:auto;pointer-events:none}
+.gs-results.open{display:block;pointer-events:auto}
 .gs-item{padding:10px 14px;cursor:pointer;font-size:.83rem;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.04);color:rgba(255,255,255,.75);transition:background .2s}
 .gs-item:hover{background:rgba(244,121,154,.1);color:#fff}
 .gs-item:last-child{border:none}
@@ -2977,7 +2977,7 @@ function updateBulkPreview(){
 }
 
 async function applyBulk(){
-  const val=document.getElementById('bulkVal')?.value;
+  const val=(document.getElementById('bulkVal')?.value||'').trim();
   if(!val){toast('Informe um valor','err');return;}
   const ids=[...selectedIds];
   // Save undo snapshot
@@ -2999,6 +2999,7 @@ async function applyBulk(){
     toast(`Preço atualizado em ${updated} produtos`,'ok');
   }else if(currentBulkAction==='prazo'){
     const prazo=parseInt(val);
+    if(!prazo||prazo<1){toast('Informe um prazo válido','err');return;}
     for(const id of ids){
       await sbPatch(`/rest/v1/produtos?id=eq.${id}`,{prazo_producao_dias:prazo});
       const p=allProds.find(x=>x.id===id);if(p)p.prazo_producao_dias=prazo;
