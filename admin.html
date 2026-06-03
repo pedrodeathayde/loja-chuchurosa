@@ -2983,6 +2983,8 @@ async function applyBulk(){
   // Save undo snapshot
   undoStack={action:currentBulkAction,snapshot:ids.map(id=>{const p=allProds.find(x=>x.id===id);return p?{...p}:null;}).filter(Boolean)};
 
+  closeBulkModal();
+
   if(currentBulkAction==='preco'){
     const n=parseFloat(val);
     let updated=0;
@@ -3015,7 +3017,6 @@ async function applyBulk(){
     toast(`Categoria adicionada em ${ids.length} produtos`,'ok');
   }
 
-  closeBulkModal();
   renderProdTable();
   showUndo(`${ids.length} produtos atualizados`);
 }
