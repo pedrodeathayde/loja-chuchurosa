@@ -2186,6 +2186,7 @@ function renderProdTable(){
     +filtProds.map(p=>{
       const url=getUrl(p.name);
       const cats=(p.collections||[]).slice(0,2).join(', ');
+      const sel=selectedIds.has(p.id);
       const pill=p.esgotado?'<span class="pill esgotado">⊘ Esgotado</span>':p.oculto?'<span class="pill oculto">○ Oculto</span>':p.destaque?'<span class="pill destaque">⭐ Destaque</span>':p.ativo?'<span class="pill active">● Ativo</span>':'<span class="pill inactive">○ Inativo</span>';
       return `<div class="tbl-row pc-grid${sel?' selected':''}">
         <input type="checkbox" class="row-cb" data-id="${p.id}" ${sel?'checked':''} onclick="event.stopPropagation();toggleSelect(${p.id},this.checked)">
