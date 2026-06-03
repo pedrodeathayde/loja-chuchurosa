@@ -393,6 +393,7 @@ img{display:block;max-width:100%}
       <button class="ni" data-page="clientes" onclick="goPage('clientes')"><span class="ni-icon">👥</span>Clientes</button>
       <div class="ng-label" style="margin-top:8px">Configurações</div>
       <button class="ni" data-page="categorias" onclick="goPage('categorias')"><span class="ni-icon">🏷️</span>Categorias</button>
+      <button class="ni" data-page="designs" onclick="goPage('designs')"><span class="ni-icon">🎨</span>Designs</button>
       <button class="ni" data-page="cupons" onclick="goPage('cupons')"><span class="ni-icon">🎟️</span>Cupons</button>
       <button class="ni" data-page="frete" onclick="goPage('frete')"><span class="ni-icon">🚚</span>Frete</button>
       <button class="ni" data-page="banners" onclick="goPage('banners')"><span class="ni-icon">📢</span>Banners</button>
@@ -443,7 +444,6 @@ img{display:block;max-width:100%}
       <div class="page-header">
         <div><h1>Produtos 🌸</h1><p><span id="prodCount">0</span> produtos encontrados</p></div>
         <div style="display:flex;gap:8px">
-          <button class="btn-s" onclick="syncCatalog()">🔄 Sync</button>
           <button class="btn-p" onclick="openNewProd()">+ Novo produto</button>
         </div>
       </div>
@@ -495,6 +495,23 @@ img{display:block;max-width:100%}
       <div class="tbl-wrap" id="clientTable"><div class="ld"><div class="spin"></div><span>Carregando...</span></div></div>
     </div>
 
+
+
+    <!-- DESIGNS -->
+    <div class="page" id="page-designs">
+      <div class="page-header">
+        <div><h1>Designs 🎨</h1><p>Temas e estilos dos produtos</p></div>
+        <button class="btn-p" onclick="addDesign()">+ Novo design</button>
+      </div>
+      <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(244,121,154,.08);padding:24px">
+        <p style="font-size:.82rem;color:rgba(13,9,13,.45);margin-bottom:16px">Clique no nome ou emoji para editar. Arraste para reordenar.</p>
+        <div class="cat-manager" id="designManager"></div>
+        <button class="btn-add-cat" onclick="addDesign()">+ Adicionar design</button>
+        <div style="margin-top:16px;display:flex;justify-content:flex-end">
+          <button class="btn-p" onclick="saveDesigns()">💾 Salvar designs</button>
+        </div>
+      </div>
+    </div>
 
     <!-- CATEGORIAS -->
     <div class="page" id="page-categorias">
@@ -596,6 +613,7 @@ img{display:block;max-width:100%}
         <div class="frow"><div class="fg"><label>Nota interna</label><textarea id="mNota" placeholder="Observações internas (não aparece na loja)" style="min-height:56px"></textarea></div></div>
       </div>
       <div class="msec"><h3>Coleções</h3><div class="cols-grid" id="colsGrid"></div></div>
+      <div class="msec"><h3>Design / Tema</h3><select id="mDesign" style="width:100%;padding:10px 12px;border:1.5px solid rgba(244,121,154,.18);border-radius:10px;font-family:var(--fb);font-size:.86rem;outline:none"><option value="">— Sem tema —</option></select></div>
       <div class="msec"><h3>Variações</h3>
         <div class="var-header"><span>Tamanho</span><span>Cor</span><span>Estoque</span><span>Preço extra</span><span></span></div>
         <div id="varsGrid"></div>
@@ -2130,7 +2148,7 @@ let editProdId=null, editOrderId=null, editCupomId=null;
 
 // ── INIT ──────────────────────────────────────────────────────────────
 async function init(){
-  await Promise.all([loadProds(),loadOrders(),loadClients(),loadCupons(),loadFrete(),loadBanners(),loadCats(),loadNotifConfig()]);
+  await Promise.all([loadProds(),loadOrders(),loadClients(),loadCupons(),loadFrete(),loadBanners(),loadCats(),loadNotifConfig(),loadDesigns()]);
   renderDash();
   renderBannerStrip();
   sessionStorage.removeItem('novos_visto');
@@ -2182,7 +2200,7 @@ function filterProds(){
 function renderProdTable(){
   const el=document.getElementById('prodTable');
   if(!filtProds.length){el.innerHTML='<div class="empty"><div class="empty-icon">🌸</div><p>Nenhum produto</p></div>';return;}
-  el.innerHTML=`<div class="tbl-head pc-grid"><span></span><span>Foto</span><span>Produto</span><span>Coleções</span><span>Preço</span><span>Prazo</span><span>Status</span><span>Ações</span></div>`
+  el.innerHTML=`<div class="tbl-head pc-grid"><span></span><span>Foto</span><span>Produto</span><span>Design</span><span>Preço</span><span>Prazo</span><span>Status</span><span>Ações</span></div>`
     +filtProds.map(p=>{
       const url=getUrl(p.name);
       const cats=(p.collections||[]).slice(0,2).join(', ');
@@ -2192,7 +2210,7 @@ function renderProdTable(){
         <input type="checkbox" class="row-cb" data-id="${p.id}" ${sel?'checked':''} onclick="event.stopPropagation();toggleSelect(${p.id},this.checked)">
         <div class="tr-img">${url?`<img src="${url}" loading="lazy">`:'<div class="tr-img-ph">🌸</div>'}</div>
         <div><div class="tr-name">${p.name}</div><div class="tr-cat">${cats||'—'}</div></div>
-        <div style="font-size:.72rem;color:rgba(13,9,13,.45)">${cats||'—'}</div>
+        <div style="font-size:.72rem;color:rgba(13,9,13,.45)">${p.design||'—'}</div>
         <div><input class="inline-price" value="${p.price||''}" placeholder="Sem preço" data-id="${p.id}" onblur="saveInlinePrice(this)" onkeydown="if(event.key==='Enter')this.blur()"></div>
         <div style="font-size:.82rem">${p.prazo_producao_dias||7}d</div>
         <div>${pill}</div>
@@ -2245,6 +2263,7 @@ function openNewProd(){
   document.getElementById('mPrecoPromo').value='';
   document.getElementById('mPrazo').value='7';
   document.getElementById('mNota').value='';
+  document.getElementById('mDesign').value='';
   document.getElementById('colsGrid').innerHTML=buildCols([]);
   document.getElementById('sizesGrid').innerHTML=buildSizes([]);
   document.getElementById('togAtivo').classList.add('on');
@@ -2267,6 +2286,7 @@ function editProd(id){
   document.getElementById('mPrecoPromo').value=p.preco_promocional||'';
   document.getElementById('mPrazo').value=p.prazo_producao_dias||7;
   document.getElementById('mNota').value=p.nota_interna||'';
+  document.getElementById('mDesign').value=p.design||'';
   const cols=Array.isArray(p.collections)?p.collections:(p.collections?[p.collections]:[]);
   document.getElementById('colsGrid').innerHTML=buildCols(cols);
   currentVars=[];renderVarsGrid();loadVars(id);
@@ -2331,6 +2351,7 @@ async function saveProd(){
     preco_promocional:document.getElementById('mPrecoPromo').value?+document.getElementById('mPrecoPromo').value:null,
     prazo_producao_dias:+document.getElementById('mPrazo').value||7,
     nota_interna:document.getElementById('mNota').value.trim()||null,
+      design:document.getElementById('mDesign').value||null,
     collections:getSelCols(),
     ativo:document.getElementById('togAtivo').classList.contains('on'),
     destaque:document.getElementById('togDestaque').classList.contains('on'),
@@ -2352,20 +2373,7 @@ async function saveProd(){
 function closeProdModal(){document.getElementById('prodModal').classList.remove('open');}
 document.getElementById('prodModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeProdModal();});
 
-async function syncCatalog(){
-  if(!confirm('Sincronizar bucket → banco? Novos produtos serão criados.'))return;
-  toast('Sincronizando...','info');
-  const existing=new Set(allProds.map(p=>slugify(p.name)));
-  const seen=new Map();
-  for(const f of FILES){const base=f.n.replace(/\.[^.]+$/,'');const pre=base.includes('-')?base.substring(0,base.lastIndexOf('-')):base;if(!seen.has(pre))seen.set(pre,f);}
-  let n=0;
-  for(const [pre] of seen){
-    const nome=pre.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
-    if(!existing.has(slugify(nome))){await sbPost('/rest/v1/produtos',{nome,ativo:true,prazo_producao_dias:7});n++;}
-  }
-  toast(`Sync OK — ${n} novos criados`,'ok');
-  await loadProds();
-}
+
 
 // ── ORDERS ────────────────────────────────────────────────────────────
 async function loadOrders(){
@@ -3181,6 +3189,104 @@ async function testWa(){
     else
       toast('Erro Callmebot: '+txt.slice(0,80),'err');
   }catch(e){toast('Erro de conexão com a Edge Function','err');}
+}
+
+// ── DESIGNS ───────────────────────────────────────────────────────────
+let allDesigns=[];
+
+async function loadDesigns(){
+  try{
+    const d=await sbGet('/rest/v1/designs?select=id,nome,emoji,ordem&order=ordem');
+    if(Array.isArray(d)&&d.length) allDesigns=d;
+    else allDesigns=[
+      {nome:'Flamingos',emoji:'🦩'},{nome:'Raposas',emoji:'🦊'},
+      {nome:'Unicórnios',emoji:'🦄'},{nome:'Pássaros',emoji:'🦜'},
+      {nome:'Dragões',emoji:'🐉'},{nome:'Dinossauros',emoji:'🦕'},
+      {nome:'Sereias',emoji:'🧜'},{nome:'Coelhos',emoji:'🐰'},
+      {nome:'Borboletas',emoji:'🦋'},{nome:'Pandas',emoji:'🐼'},
+      {nome:'Leões',emoji:'🦁'},{nome:'Sapos',emoji:'🐸'},
+      {nome:'Peixes',emoji:'🐠'},{nome:'Flores',emoji:'🌸'},
+      {nome:'Cogumelos',emoji:'🍄'},{nome:'Arco-íris',emoji:'🌈'},
+      {nome:'Halloween',emoji:'🎃'}
+    ];
+  }catch{}
+  renderDesignManager();
+  populateDesignSelect();
+}
+
+function renderDesignManager(){
+  const el=document.getElementById('designManager');
+  if(!el)return;
+  el.innerHTML=allDesigns.map((d,i)=>`
+    <div class="cat-row" draggable="true" data-idx="${i}"
+      ondragstart="desDragStart(event,${i})"
+      ondragover="desDragOver(event,${i})"
+      ondrop="desDrop(event,${i})">
+      <span style="cursor:grab;color:rgba(13,9,13,.3);flex-shrink:0">⠿</span>
+      <input type="text" value="${d.emoji||'🌸'}" style="width:40px;text-align:center" oninput="allDesigns[${i}].emoji=this.value">
+      <input type="text" value="${d.nome}" style="flex:1" oninput="allDesigns[${i}].nome=this.value;populateDesignSelect()">
+      <button class="ibtn del" onclick="removeDesign(${i})">🗑</button>
+    </div>`).join('');
+}
+
+function addDesign(){
+  allDesigns.push({nome:'Novo design',emoji:'🌸'});
+  renderDesignManager();
+  populateDesignSelect();
+  setTimeout(()=>{
+    const inputs=document.querySelectorAll('#designManager input[type=text]:not([style*="width:40"])');
+    inputs[inputs.length-1]?.focus();
+    inputs[inputs.length-1]?.select();
+  },50);
+}
+
+function removeDesign(i){
+  if(!confirm(`Remover "${allDesigns[i].nome}"?`))return;
+  allDesigns.splice(i,1);
+  renderDesignManager();
+  populateDesignSelect();
+}
+
+async function saveDesigns(){
+  try{
+    // Upsert each design
+    for(let i=0;i<allDesigns.length;i++){
+      const d=allDesigns[i];
+      if(!d.nome.trim())continue;
+      if(d.id){
+        await sbPatch(`/rest/v1/designs?id=eq.${d.id}`,{nome:d.nome.trim(),emoji:d.emoji||'🌸',ordem:i});
+      }else{
+        const res=await sbPost('/rest/v1/designs',{nome:d.nome.trim(),emoji:d.emoji||'🌸',ordem:i});
+        if(res&&res[0]) allDesigns[i].id=res[0].id;
+      }
+    }
+    toast('Designs salvos!','ok');
+    renderDesignManager();
+    populateDesignSelect();
+  }catch(e){toast('Erro ao salvar — rode o schema_designs.sql no Supabase','err');}
+}
+
+function populateDesignSelect(){
+  const sel=document.getElementById('mDesign');
+  if(!sel)return;
+  const cur=sel.value;
+  sel.innerHTML='<option value="">— Sem tema —</option>'+
+    allDesigns.map(d=>`<option value="${d.nome}">${d.emoji||''} ${d.nome}</option>`).join('');
+  sel.value=cur;
+}
+
+// Drag reorder
+let desDragIdx=null;
+function desDragStart(e,i){desDragIdx=i;e.dataTransfer.effectAllowed='move';}
+function desDragOver(e,i){e.preventDefault();}
+function desDrop(e,i){
+  e.preventDefault();
+  if(desDragIdx===null||desDragIdx===i)return;
+  const tmp=allDesigns.splice(desDragIdx,1)[0];
+  allDesigns.splice(i,0,tmp);
+  desDragIdx=null;
+  renderDesignManager();
+  populateDesignSelect();
 }
 // ── DASHBOARD ─────────────────────────────────────────────────────────
 function renderDash(){
