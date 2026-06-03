@@ -613,7 +613,7 @@ img{display:block;max-width:100%}
         <div class="frow"><div class="fg"><label>Nota interna</label><textarea id="mNota" placeholder="Observações internas (não aparece na loja)" style="min-height:56px"></textarea></div></div>
       </div>
       <div class="msec"><h3>Coleções</h3><div class="cols-grid" id="colsGrid"></div></div>
-      <div class="msec"><h3>Design / Tema</h3><select id="mDesign" style="width:100%;padding:10px 12px;border:1.5px solid rgba(244,121,154,.18);border-radius:10px;font-family:var(--fb);font-size:.86rem;outline:none"><option value="">— Sem tema —</option></select></div>
+      <div class="msec"><h3>Design / Tema</h3><div class="cols-grid" id="designsGrid"></div></div>
       <div class="msec"><h3>Variações</h3>
         <div class="var-header"><span>Tamanho</span><span>Cor</span><span>Estoque</span><span>Preço extra</span><span></span></div>
         <div id="varsGrid"></div>
@@ -2210,7 +2210,7 @@ function renderProdTable(){
         <input type="checkbox" class="row-cb" data-id="${p.id}" ${sel?'checked':''} onclick="event.stopPropagation();toggleSelect(${p.id},this.checked)">
         <div class="tr-img">${url?`<img src="${url}" loading="lazy">`:'<div class="tr-img-ph">🌸</div>'}</div>
         <div><div class="tr-name">${p.name}</div><div class="tr-cat">${cats||'—'}</div></div>
-        <div style="font-size:.72rem;color:rgba(13,9,13,.45)">${p.design||'—'}</div>
+        <div style="font-size:.72rem;color:rgba(13,9,13,.45)">${Array.isArray(p.design)?p.design.slice(0,2).join(', '):(p.design||'—')}</div>
         <div><input class="inline-price" value="${p.price||''}" placeholder="Sem preço" data-id="${p.id}" onblur="saveInlinePrice(this)" onkeydown="if(event.key==='Enter')this.blur()"></div>
         <div style="font-size:.82rem">${p.prazo_producao_dias||7}d</div>
         <div>${pill}</div>
@@ -2263,7 +2263,7 @@ function openNewProd(){
   document.getElementById('mPrecoPromo').value='';
   document.getElementById('mPrazo').value='7';
   document.getElementById('mNota').value='';
-  document.getElementById('mDesign').value='';
+  document.getElementById('designsGrid').innerHTML=buildDesignsGrid([]);
   document.getElementById('colsGrid').innerHTML=buildCols([]);
   document.getElementById('sizesGrid').innerHTML=buildSizes([]);
   document.getElementById('togAtivo').classList.add('on');
@@ -2286,7 +2286,7 @@ function editProd(id){
   document.getElementById('mPrecoPromo').value=p.preco_promocional||'';
   document.getElementById('mPrazo').value=p.prazo_producao_dias||7;
   document.getElementById('mNota').value=p.nota_interna||'';
-  document.getElementById('mDesign').value=p.design||'';
+  document.getElementById('designsGrid').innerHTML=buildDesignsGrid(Array.isArray(p.design)?p.design:(p.design?[p.design]:[]));
   const cols=Array.isArray(p.collections)?p.collections:(p.collections?[p.collections]:[]);
   document.getElementById('colsGrid').innerHTML=buildCols(cols);
   currentVars=[];renderVarsGrid();loadVars(id);
@@ -2351,7 +2351,7 @@ async function saveProd(){
     preco_promocional:document.getElementById('mPrecoPromo').value?+document.getElementById('mPrecoPromo').value:null,
     prazo_producao_dias:+document.getElementById('mPrazo').value||7,
     nota_interna:document.getElementById('mNota').value.trim()||null,
-      design:document.getElementById('mDesign').value||null,
+      design:getSelDesigns().length?getSelDesigns():null,
     collections:getSelCols(),
     ativo:document.getElementById('togAtivo').classList.contains('on'),
     destaque:document.getElementById('togDestaque').classList.contains('on'),
@@ -3267,12 +3267,17 @@ async function saveDesigns(){
 }
 
 function populateDesignSelect(){
-  const sel=document.getElementById('mDesign');
-  if(!sel)return;
-  const cur=sel.value;
-  sel.innerHTML='<option value="">— Sem tema —</option>'+
-    allDesigns.map(d=>`<option value="${d.nome}">${d.emoji||''} ${d.nome}</option>`).join('');
-  sel.value=cur;
+  // rebuild grid if modal open
+  const g=document.getElementById('designsGrid');
+  if(g&&g.children.length) g.innerHTML=buildDesignsGrid(getSelDesigns());
+}
+
+function buildDesignsGrid(sel=[]){
+  return allDesigns.map(d=>`<div class="col-ch ${sel.includes(d.nome)?'checked':''}" onclick="this.classList.toggle('checked')">${d.emoji||''} ${d.nome}</div>`).join('');
+}
+
+function getSelDesigns(){
+  return [...document.querySelectorAll('#designsGrid .col-ch.checked')].map(e=>e.textContent.trim().replace(/^\S+\s/,''));
 }
 
 // Drag reorder
