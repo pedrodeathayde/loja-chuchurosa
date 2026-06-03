@@ -180,17 +180,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(12,9,13,.95);backdrop-filt
   <div>
     <h1>Tudo feito<br>com <em>muito amor</em> 🌸</h1>
     <p><span data-prod-count>325</span> produtos</p>
-    <div class="hero-badge-row" id="heroBadges">
-      <span class="hbadge active" data-filter="flamingo" data-type="search">🦩 Flamingos</span>
-      <span class="hbadge" data-filter="raposa" data-type="search">🦊 Raposas</span>
-      <span class="hbadge" data-filter="unicornio" data-type="search">🦄 Unicórnios</span>
-      <span class="hbadge" data-filter="passaro" data-type="search">🦜 Pássaros</span>
-      <span class="hbadge" data-filter="dragao" data-type="search">🐉 Dragões</span>
-      <span class="hbadge" data-filter="dinossauro" data-type="search">🦕 Dinossauros</span>
-      <span class="hbadge" data-filter="sereia" data-type="search">🧜 Sereias</span>
-      <span class="hbadge" data-filter="coelho" data-type="search">🐰 Coelhos</span>
-      <span class="hbadge" data-filter="borboleta" data-type="search">🦋 Borboletas</span>
-    </div>
+    <div class="hero-badge-row" id="heroBadges"></div>
   </div>
 </div>
 
@@ -1860,6 +1850,48 @@ function closeSidebar(){
 }
 
 // Hero badges
+
+// ── DESIGN BADGES from DB ─────────────────────────────────────────────
+async function loadDesignBadges(){
+  const badgeRow=document.getElementById('heroBadges');
+  if(!badgeRow)return;
+  // Fallback designs if DB not available
+  const fallback=[
+    {nome:'Flamingos',emoji:'🦩'},{nome:'Raposas',emoji:'🦊'},
+    {nome:'Unicórnios',emoji:'🦄'},{nome:'Pássaros',emoji:'🦜'},
+    {nome:'Dragões',emoji:'🐉'},{nome:'Dinossauros',emoji:'🦕'},
+    {nome:'Sereias',emoji:'🧜'},{nome:'Coelhos',emoji:'🐰'},
+    {nome:'Borboletas',emoji:'🦋'},
+  ];
+  let designs=fallback;
+  try{
+    const r=await fetch('https://oznpfqsgurztffwfyfec.supabase.co/rest/v1/designs?select=nome,emoji&visivel_loja=eq.true&order=ordem',{
+      headers:{apikey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA',Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA',Accept:'application/json'}
+    });
+    if(r.ok){const d=await r.json();if(Array.isArray(d)&&d.length)designs=d;}
+  }catch{}
+
+  // Build slug from name for search
+  function toSlug(nome){
+    return nome.normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .toLowerCase().replace(/[^a-z]/g,' ').trim().split(/\s+/)[0];
+  }
+
+  badgeRow.innerHTML=designs.map((d,i)=>
+    `<span class="hbadge${i===0?' active':''}" data-filter="${toSlug(d.nome)}" data-type="search">${d.emoji||''} ${d.nome}</span>`
+  ).join('');
+
+  // Re-attach click listener (heroBadges listener uses event delegation)
+  // The existing listener on #heroBadges still works since it's the same element
+  // But set first badge as active filter
+  if(designs.length){
+    searchQ=toSlug(designs[0].nome);
+    currentCat='Todas';
+    applyFilters();
+  }
+}
+loadDesignBadges();
+
 document.getElementById('heroBadges').addEventListener('click',e=>{
   const badge=e.target.closest('.hbadge');
   if(!badge)return;
