@@ -2118,7 +2118,6 @@ const cntObs=new IntersectionObserver(entries=>{
   });
 },{threshold:.5});
 document.querySelectorAll('.stat-n,.sc-n').forEach(el=>{
-  // skip if contains dynamic span
   if(el.querySelector('[data-prod-count]'))return;
   const t=el.textContent.trim();
   el.dataset.target=t;
@@ -2181,7 +2180,20 @@ document.getElementById("yr").textContent=new Date().getFullYear();
     if(!n)return;
     const count=n.split('/')[1];
     if(!count||count==='*')return;
-    document.querySelectorAll('[data-prod-count]').forEach(el=>el.textContent=count);
+    document.querySelectorAll('[data-prod-count]').forEach(el=>{
+      el.textContent=count;
+      // animate if inside a stat
+      const n=parseInt(count);
+      if(!isNaN(n)&&n>0){
+        const s=performance.now();
+        (function step(now){
+          const p=Math.min((now-s)/1800,1);
+          const ease=1-Math.pow(1-p,3);
+          el.textContent=Math.floor(ease*n)+(p>=1?'':'');
+          if(p<1)requestAnimationFrame(step);
+        })(performance.now());
+      }
+    });
   }).catch(()=>{});
 
   // Dynamic category counts
@@ -2207,7 +2219,7 @@ document.getElementById("yr").textContent=new Date().getFullYear();
         if(el&&count&&count!=='*')el.textContent=count;
       }).catch(()=>{});
   });
-});
+})();
 </script>
 </body>
 </html>
