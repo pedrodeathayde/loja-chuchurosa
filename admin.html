@@ -3225,12 +3225,14 @@ function renderDesignManager(){
       <span style="cursor:grab;color:rgba(13,9,13,.3);flex-shrink:0">⠿</span>
       <input type="text" value="${d.emoji||'🌸'}" style="width:40px;text-align:center" oninput="allDesigns[${i}].emoji=this.value">
       <input type="text" value="${d.nome}" style="flex:1" oninput="allDesigns[${i}].nome=this.value;populateDesignSelect()">
+      <span style="font-size:.72rem;color:rgba(13,9,13,.4);white-space:nowrap;flex-shrink:0">Na loja</span>
+      <button class="tog ${d.visivel_loja!==false?'on':''}" style="transform:scale(.75);flex-shrink:0" onclick="allDesigns[${i}].visivel_loja=!allDesigns[${i}].visivel_loja;this.classList.toggle('on')"></button>
       <button class="ibtn del" onclick="removeDesign(${i})">🗑</button>
     </div>`).join('');
 }
 
 function addDesign(){
-  allDesigns.push({nome:'Novo design',emoji:'🌸'});
+  allDesigns.push({nome:'Novo design',emoji:'🌸',visivel_loja:true});
   renderDesignManager();
   populateDesignSelect();
   setTimeout(()=>{
@@ -3254,9 +3256,9 @@ async function saveDesigns(){
       const d=allDesigns[i];
       if(!d.nome.trim())continue;
       if(d.id){
-        await sbPatch(`/rest/v1/designs?id=eq.${d.id}`,{nome:d.nome.trim(),emoji:d.emoji||'🌸',ordem:i});
+        await sbPatch(`/rest/v1/designs?id=eq.${d.id}`,{nome:d.nome.trim(),emoji:d.emoji||'🌸',ordem:i,visivel_loja:d.visivel_loja!==false});
       }else{
-        const res=await sbPost('/rest/v1/designs',{nome:d.nome.trim(),emoji:d.emoji||'🌸',ordem:i});
+        const res=await sbPost('/rest/v1/designs',{nome:d.nome.trim(),emoji:d.emoji||'🌸',ordem:i,visivel_loja:d.visivel_loja!==false});
         if(res&&res[0]) allDesigns[i].id=res[0].id;
       }
     }
