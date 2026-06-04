@@ -373,9 +373,9 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
 
 <div class="stats reveal">
   <div class="stat"><div class="stat-n"><span data-prod-count>—</span></div><div class="stat-l">Produtos no acervo</div></div>
-  <div class="stat"><div class="stat-n" id="cnt-colecoes" data-no-anim>15</div><div class="stat-l">Coleções</div></div>
-  <div class="stat"><div class="stat-n">15+</div><div class="stat-l">Anos de história</div></div>
-  <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Feito com carinho</div></div>
+  <div class="stat"><div class="stat-n" id="cnt-colecoes" data-no-anim>18</div><div class="stat-l">Coleções</div></div>
+  <div class="stat"><div class="stat-n" data-no-anim>15+</div><div class="stat-l">Anos de história</div></div>
+  <div class="stat"><div class="stat-n" data-no-anim>100%</div><div class="stat-l">Feito com carinho</div></div>
 </div>
 
 <!-- FANTASIAS — full bleed -->
@@ -549,10 +549,10 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
       <p>Fundada em 2009, a Chuchu Rosa nasceu com um objetivo simples e poderoso: criar produtos que proporcionem experiências diferentes e divertidas.</p>
       <p>Cada item é produzido com carinho no nosso ateliê — do design à execução, tudo feito especialmente para você.</p>
       <div class="stats-g">
-        <div class="sc"><div class="sc-n">15+</div><div class="sc-l">Anos de história</div></div>
+        <div class="sc"><div class="sc-n" data-no-anim>15+</div><div class="sc-l">Anos de história</div></div>
         <div class="sc"><div class="sc-n"><span data-prod-count>—</span></div><div class="sc-l">Produtos no acervo</div></div>
-        <div class="sc"><div class="sc-n">100%</div><div class="sc-l">Feito com carinho</div></div>
-        <div class="sc"><div class="sc-n">🌸</div><div class="sc-l">Amor em cada peça</div></div>
+        <div class="sc"><div class="sc-n" data-no-anim>100%</div><div class="sc-l">Feito com carinho</div></div>
+        <div class="sc"><div class="sc-n" data-no-anim>🌸</div><div class="sc-l">Amor em cada peça</div></div>
       </div>
     </div>
     <div class="ai rr reveal" id="aboutImg"><div class="ai-ph">🌸</div></div>
@@ -2271,7 +2271,19 @@ document.getElementById("yr").textContent=new Date().getFullYear();
     if(!n)return;
     const count=n.split('/')[1];
     const el=document.getElementById('cnt-colecoes');
-    if(el&&count&&count!=='*')el.textContent=count;
+    if(el&&count&&count!=='*'){
+      const n=parseInt(count);
+      if(!isNaN(n)){
+        const s=performance.now();
+        (function step(now){
+          const p=Math.min((now-s)/1800,1);
+          const ease=1-Math.pow(1-p,3);
+          el.textContent=Math.floor(ease*n);
+          if(p<1)requestAnimationFrame(step);
+          else el.textContent=n;
+        })(performance.now());
+      }else{el.textContent=count;}
+    }
   }).catch(()=>{});
 })();
 
