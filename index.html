@@ -176,7 +176,7 @@ h2.st em{font-style:italic}
 .cp-imgs .ci-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem}
 
 /* ABOUT */
-.about{background:var(--cream);color:var(--dark);border-radius:0;padding:0 80px 100px;margin-top:0;position:relative;z-index:2}
+.about{background:var(--cream);color:var(--dark);border-radius:0;padding:80px 80px 100px;margin-top:0;position:relative;z-index:2}
 .about-in{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
 .at .slabel{color:var(--rose)}
 .at h2.st em{color:var(--rose)}
@@ -247,7 +247,7 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
   .cat-three .col{height:55vw}
   .cat-strip{padding:56px 28px}.prod-grid{grid-template-columns:1fr 1fr}
   .cat-para{padding:60px 28px}.cp-inner{grid-template-columns:1fr;gap:40px}
-  .about{background:var(--cream);color:var(--dark);border-radius:0;padding:0 80px 100px;margin-top:0;position:relative;z-index:2}.about-in{grid-template-columns:1fr;gap:40px}
+  .about{background:var(--cream);color:var(--dark);border-radius:0;padding:80px 80px 100px;margin-top:0;position:relative;z-index:2}.about-in{grid-template-columns:1fr;gap:40px}
   .principles{padding:40px 28px 60px}.pr-grid{grid-template-columns:1fr 1fr}
   .stats{grid-template-columns:1fr 1fr}
   .cf-txt{padding:36px 32px}.cs-txt{padding:48px 36px}
@@ -270,7 +270,7 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
   .cp-inner{grid-template-columns:1fr;gap:32px}
   .cp-imgs{grid-template-columns:1fr 1fr}
   .cp-imgs .ci:first-child{grid-row:auto}
-  .about{background:var(--cream);color:var(--dark);border-radius:0;padding:0 80px 100px;margin-top:0;position:relative;z-index:2}
+  .about{background:var(--cream);color:var(--dark);border-radius:0;padding:80px 80px 100px;margin-top:0;position:relative;z-index:2}
   .about-in{grid-template-columns:1fr;gap:28px}
   .ai-float{display:none}
   .principles{padding:36px 20px 56px}
@@ -327,6 +327,14 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
 }
 
 .ht-heart{display:inline-block;width:.85em;height:.85em;vertical-align:-.15em;margin-left:.12em;filter:drop-shadow(0 4px 16px rgba(244,121,154,.5))}
+
+/* SKELETON */
+.skel{background:linear-gradient(90deg,rgba(244,121,154,.06) 25%,rgba(244,121,154,.13) 50%,rgba(244,121,154,.06) 75%);background-size:200% 100%;animation:sk 1.4s infinite;border-radius:8px}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skel-card{background:var(--dark3);border-radius:var(--r);overflow:hidden;border:1px solid rgba(255,255,255,.05)}
+.skel-img{aspect-ratio:1;background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.09) 50%,rgba(255,255,255,.04) 75%);background-size:200% 100%;animation:sk 1.4s infinite}
+.skel-line{height:11px;border-radius:6px;margin:14px 16px 8px;background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.09) 50%,rgba(255,255,255,.04) 75%);background-size:200% 100%;animation:sk 1.4s infinite}
+.skel-line.short{width:45%;height:9px;margin-top:0}
 </style>
 </head>
 <body>
@@ -439,7 +447,7 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
         </div>
         <a href="loja.html?cat=Decora%C3%A7%C3%A3o" class="bs">Ver tudo →</a>
       </div>
-      <div class="prod-grid" id="grid-decor"><div class="ld"><div class="spin"></div><span>Carregando...</span></div></div>
+      <div class="prod-grid" id="grid-decor"><div class="skel-card"><div class="skel-img"></div><div class="skel-line"></div><div class="skel-line short"></div></div><div class="skel-card"><div class="skel-img"></div><div class="skel-line"></div><div class="skel-line short"></div></div><div class="skel-card"><div class="skel-img"></div><div class="skel-line"></div><div class="skel-line short"></div></div><div class="skel-card"><div class="skel-img"></div><div class="skel-line"></div><div class="skel-line short"></div></div></div>
     </div>
   </div>
 </section>
@@ -512,7 +520,7 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
         </div>
         <a href="loja.html?q=raposa" class="bs">Ver tudo →</a>
       </div>
-      <div class="prod-grid" id="grid-rap"><div class="ld"><div class="spin"></div><span>Carregando...</span></div></div>
+      <div class="prod-grid" id="grid-rap"><div class="skel-card"><div class="skel-img"></div><div class="skel-line"></div><div class="skel-line short"></div></div><div class="skel-card"><div class="skel-img"></div><div class="skel-line"></div><div class="skel-line short"></div></div><div class="skel-card"><div class="skel-img"></div><div class="skel-line"></div><div class="skel-line short"></div></div><div class="skel-card"><div class="skel-img"></div><div class="skel-line"></div><div class="skel-line short"></div></div></div>
     </div>
   </div>
 </section>
@@ -2266,6 +2274,7 @@ document.getElementById("yr").textContent=new Date().getFullYear();
     if(el&&count&&count!=='*')el.textContent=count;
   }).catch(()=>{});
 })();
+
 </script>
 </body>
 </html>
