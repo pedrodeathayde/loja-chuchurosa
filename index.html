@@ -2221,23 +2221,11 @@ document.getElementById("yr").textContent=new Date().getFullYear();
     const count=n.split('/')[1];
     if(!count||count==='*')return;
     document.querySelectorAll('[data-prod-count]').forEach(el=>{
-      const n=parseInt(count);
-      el.dataset.target=count; // store for observer
-      // Only animate if element is already visible, else just set value
-      const rect=el.getBoundingClientRect();
-      const visible=rect.top<window.innerHeight&&rect.bottom>0;
-      if(!isNaN(n)&&n>0&&visible){
-        const s=performance.now();
-        (function step(now){
-          const p=Math.min((now-s)/1800,1);
-          const ease=1-Math.pow(1-p,3);
-          el.textContent=Math.floor(ease*n);
-          if(p<1)requestAnimationFrame(step);
-          else el.textContent=n;
-        })(performance.now());
-      }else{
-        el.textContent=count; // just set, will animate when scrolled into view via cntObs
-      }
+      el.textContent=count;
+      // Store for observer so it animates when scrolled into view
+      el.dataset.target=count;
+      el.dataset.loaded='1';
+      cntObs.observe(el);
     });
   }).catch(()=>{});
 
