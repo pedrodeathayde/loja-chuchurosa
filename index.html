@@ -350,7 +350,7 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
     <div class="hbadge"><span class="dot"></span>Por um mundo mais divertido ✨</div>
     <div class="hero-logo-wrap" id="heroLogoWrap"></div>
     <h1 class="ht">Decoração<br><em>de <svg viewBox="0 0 24 24" class="ht-heart" fill="url(#hg)" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#fbaec3"/><stop offset="50%" stop-color="#f4799a"/><stop offset="100%" stop-color="#e8527c"/></linearGradient></defs><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></em></h1>
-    <p class="hsub"><span data-prod-count>318</span> produtos únicos — fantasias, brinquedos e decoração para crianças de todas as idades.</p>
+    <p class="hsub">Fantasias, brinquedos e decoração artesanal para crianças de todas as idades.</p>
     <div class="hact">
       <a href="loja.html" class="bp">Explorar a loja</a>
       <a href="#sobre" class="bs">Conhecer a marca</a>
@@ -365,7 +365,7 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
 
 <div class="stats reveal">
   <div class="stat"><div class="stat-n"><span data-prod-count>—</span></div><div class="stat-l">Produtos no acervo</div></div>
-  <div class="stat"><div class="stat-n">15</div><div class="stat-l">Coleções</div></div>
+  <div class="stat"><div class="stat-n" id="cnt-colecoes">15</div><div class="stat-l">Coleções</div></div>
   <div class="stat"><div class="stat-n">15+</div><div class="stat-l">Anos de história</div></div>
   <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Feito com carinho</div></div>
 </div>
@@ -2220,11 +2220,13 @@ document.getElementById("yr").textContent=new Date().getFullYear();
     if(!n)return;
     const count=n.split('/')[1];
     if(!count||count==='*')return;
-document.querySelectorAll('[data-prod-count]').forEach(el=>{
-  el.dataset.target=count;
-  if(el.textContent==='—'||el.textContent==='')el.textContent='0';
-  cntObs.observe(el);
-});
+    document.querySelectorAll('[data-prod-count]').forEach(el=>{
+      el.textContent=count;
+      // Store for observer so it animates when scrolled into view
+      el.dataset.target=count;
+      el.dataset.loaded='1';
+      cntObs.observe(el);
+    });
   }).catch(()=>{});
 
   // Dynamic category counts
@@ -2241,7 +2243,7 @@ document.querySelectorAll('[data-prod-count]').forEach(el=>{
   ];
   const H={apikey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA',Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA',Accept:'application/json','Prefer':'count=exact'};
   cats.forEach(([id,col])=>{
-    fetch(`https://oznpfqsgurztffwfyfec.supabase.co/rest/v1/produtos?select=id&collections=cs.["${col}"]&ativo=eq.true&oculto=eq.false`,{headers:H,method:'HEAD'})
+    fetch(`https://oznpfqsgurztffwfyfec.supabase.co/rest/v1/produtos?select=id&collections=cs.${encodeURIComponent('["'+col+'"]')}&ativo=eq.true&oculto=eq.false`,{headers:H,method:'HEAD'})
       .then(r=>{
         const n=r.headers.get('content-range');
         if(!n)return;
@@ -2250,6 +2252,18 @@ document.querySelectorAll('[data-prod-count]').forEach(el=>{
         if(el&&count&&count!=='*')el.textContent=count;
       }).catch(()=>{});
   });
+
+  // Count active categories
+  fetch('https://oznpfqsgurztffwfyfec.supabase.co/rest/v1/categorias?select=id',{
+    headers:{apikey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA',Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA',Accept:'application/json','Prefer':'count=exact'},
+    method:'HEAD'
+  }).then(r=>{
+    const n=r.headers.get('content-range');
+    if(!n)return;
+    const count=n.split('/')[1];
+    const el=document.getElementById('cnt-colecoes');
+    if(el&&count&&count!=='*')el.textContent=count;
+  }).catch(()=>{});
 })();
 </script>
 </body>
