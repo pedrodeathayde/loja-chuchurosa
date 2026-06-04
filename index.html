@@ -365,7 +365,7 @@ footer{background:var(--dark);padding:56px 80px 36px;border-top:1px solid rgba(2
 
 <div class="stats reveal">
   <div class="stat"><div class="stat-n"><span data-prod-count>—</span></div><div class="stat-l">Produtos no acervo</div></div>
-  <div class="stat"><div class="stat-n" id="cnt-colecoes">15</div><div class="stat-l">Coleções</div></div>
+  <div class="stat"><div class="stat-n" id="cnt-colecoes" data-no-anim>15</div><div class="stat-l">Coleções</div></div>
   <div class="stat"><div class="stat-n">15+</div><div class="stat-l">Anos de história</div></div>
   <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Feito com carinho</div></div>
 </div>
@@ -2159,6 +2159,7 @@ function observeProdCountSpans(){
 
 document.querySelectorAll('.stat-n,.sc-n').forEach(el=>{
   if(el.querySelector('[data-prod-count]'))return;
+  if(el.hasAttribute('data-no-anim'))return;
   const t=el.textContent.trim();
   el.dataset.target=t;
   if(!isNaN(parseFloat(t.replace(/[^0-9.]/g,''))))el.textContent='0';
