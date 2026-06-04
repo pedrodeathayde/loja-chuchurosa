@@ -2220,7 +2220,11 @@ document.getElementById("yr").textContent=new Date().getFullYear();
     if(!n)return;
     const count=n.split('/')[1];
     if(!count||count==='*')return;
-document.querySelectorAll('[data-prod-count]').forEach(el=>el.textContent=count);
+document.querySelectorAll('[data-prod-count]').forEach(el=>{
+  el.dataset.target=count;
+  if(el.textContent==='—'||el.textContent==='')el.textContent='0';
+  cntObs.observe(el);
+});
   }).catch(()=>{});
 
   // Dynamic category counts
