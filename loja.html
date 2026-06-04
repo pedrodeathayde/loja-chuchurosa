@@ -1717,6 +1717,17 @@ function applyFilters(){
   let res=[...allProducts];
   if(currentCat!=='Todas') res=res.filter(p=>(p.collections||[]).some(c=>c.toLowerCase()===currentCat.toLowerCase()));
   if(searchQ){ const q=searchQ.toLowerCase(); res=res.filter(p=>p.name.toLowerCase().includes(q)); }
+  if(activeDesigns.length){
+    res=res.filter(p=>{
+      const designs=Array.isArray(p.design)?p.design:(p.design?[p.design]:[]);
+      return activeDesigns.some(slug=>{
+        // Match design field
+        if(designs.some(d=>d.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z]/g,' ').trim().split(' ')[0]===slug))return true;
+        // Fallback: keyword in product name
+        return p.name.toLowerCase().includes(slug);
+      });
+    });
+  }
   if(priceMin!==null) res=res.filter(p=>p.price===null||p.price>=priceMin);
   if(priceMax!==null) res=res.filter(p=>p.price===null||p.price<=priceMax);
   res.sort((a,b)=>{
@@ -1906,44 +1917,36 @@ async function loadDesignBadges(){
       .toLowerCase().replace(/[^a-z]/g,' ').trim().split(/\s+/)[0];
   }
 
-  badgeRow.innerHTML=designs.map((d,i)=>
-    `<span class="hbadge${i===0?' active':''}" data-filter="${toSlug(d.nome)}" data-type="search">${d.emoji||''} ${d.nome}</span>`
-  ).join('');
+  // ✨ Todos primeiro, depois os designs
+  badgeRow.innerHTML=
+    `<span class="hbadge active" data-filter="" data-type="search">✨ Todos</span>`+
+    designs.map(d=>
+      `<span class="hbadge" data-filter="${toSlug(d.nome)}" data-type="search">${d.emoji||''} ${d.nome}</span>`
+    ).join('');
 
-  // Re-attach click listener (heroBadges listener uses event delegation)
-  // The existing listener on #heroBadges still works since it's the same element
-  // But set first badge as active filter
-  if(designs.length){
-    searchQ=toSlug(designs[0].nome);
-    currentCat='Todas';
-    applyFilters();
-  }
+  // Não filtra ao carregar — mostra todos
+  searchQ='';
+  currentCat='Todas';
+  applyFilters();
 }
 loadDesignBadges();
 
 document.getElementById('heroBadges').addEventListener('click',e=>{
   const badge=e.target.closest('.hbadge');
   if(!badge)return;
-  document.querySelectorAll('.hbadge').forEach(b=>b.classList.remove('active'));
-  badge.classList.add('active');
-  const type=badge.dataset.type;
-  const filter=badge.dataset.filter||'';
-  if(type==='cat'){
-    currentCat=filter||'Todas';
-    searchQ='';
-    document.getElementById('searchInput').value='';
-    // sync sidebar
-    document.querySelectorAll('#catList .cat-item').forEach(li=>{
-      li.classList.toggle('active',li.dataset.cat===(filter||'Todas'));
-    });
-  } else {
-    // search filter
-    searchQ=filter;
-    currentCat='Todas';
-    document.getElementById('searchInput').value=filter;
-    document.querySelectorAll('#catList .cat-item').forEach(li=>li.classList.remove('active'));
-    document.querySelector('#catList .cat-item[data-cat="Todas"]')?.classList.add('active');
-  }
+
+  // Toggle this badge
+  badge.classList.toggle('active');
+  // Collect all active designs
+  activeDesigns=[...document.querySelectorAll('#heroBadges .hbadge.active')]
+    .map(b=>b.dataset.filter).filter(Boolean);
+
+  // Clear text search when using badges
+  searchQ='';
+  currentCat='Todas';
+  document.getElementById('searchInput').value='';
+  document.querySelectorAll('#catList .cat-item').forEach(li=>li.classList.remove('active'));
+  document.querySelector('#catList .cat-item[data-cat="Todas"]')?.classList.add('active');
   applyFilters();
 });
 
