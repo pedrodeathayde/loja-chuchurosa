@@ -2146,6 +2146,17 @@ const cntObs=new IntersectionObserver(entries=>{
     cntObs.unobserve(el);
   });
 },{threshold:.5});
+// Also observe data-prod-count spans (set up after fetch)
+function observeProdCountSpans(){
+  document.querySelectorAll('[data-prod-count]').forEach(el=>{
+    const raw=el.dataset.target||el.textContent;
+    if(!raw||raw==='—')return;
+    el.dataset.target=raw;
+    const num=parseFloat(raw.replace(/[^0-9.]/g,''));
+    if(!isNaN(num)&&num>0) cntObs.observe(el);
+  });
+}
+
 document.querySelectorAll('.stat-n,.sc-n').forEach(el=>{
   if(el.querySelector('[data-prod-count]'))return;
   const t=el.textContent.trim();
@@ -2210,17 +2221,22 @@ document.getElementById("yr").textContent=new Date().getFullYear();
     const count=n.split('/')[1];
     if(!count||count==='*')return;
     document.querySelectorAll('[data-prod-count]').forEach(el=>{
-      el.textContent=count;
-      // animate if inside a stat
       const n=parseInt(count);
-      if(!isNaN(n)&&n>0){
+      el.dataset.target=count; // store for observer
+      // Only animate if element is already visible, else just set value
+      const rect=el.getBoundingClientRect();
+      const visible=rect.top<window.innerHeight&&rect.bottom>0;
+      if(!isNaN(n)&&n>0&&visible){
         const s=performance.now();
         (function step(now){
           const p=Math.min((now-s)/1800,1);
           const ease=1-Math.pow(1-p,3);
-          el.textContent=Math.floor(ease*n)+(p>=1?'':'');
+          el.textContent=Math.floor(ease*n);
           if(p<1)requestAnimationFrame(step);
+          else el.textContent=n;
         })(performance.now());
+      }else{
+        el.textContent=count; // just set, will animate when scrolled into view via cntObs
       }
     });
   }).catch(()=>{});
