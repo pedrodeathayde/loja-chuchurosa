@@ -2220,13 +2220,7 @@ document.getElementById("yr").textContent=new Date().getFullYear();
     if(!n)return;
     const count=n.split('/')[1];
     if(!count||count==='*')return;
-    document.querySelectorAll('[data-prod-count]').forEach(el=>{
-      el.textContent=count;
-      // Store for observer so it animates when scrolled into view
-      el.dataset.target=count;
-      el.dataset.loaded='1';
-      cntObs.observe(el);
-    });
+document.querySelectorAll('[data-prod-count]').forEach(el=>el.textContent=count);
   }).catch(()=>{});
 
   // Dynamic category counts
