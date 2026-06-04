@@ -1658,6 +1658,7 @@ let currentSort='az';
 let priceMin=null;
 let priceMax=null;
 let searchQ='';
+let activeDesigns=[];
 let viewMode='grid';
 let page=1;
 const PER_PAGE=24;
@@ -1717,7 +1718,7 @@ function applyFilters(){
   let res=[...allProducts];
   if(currentCat!=='Todas') res=res.filter(p=>(p.collections||[]).some(c=>c.toLowerCase()===currentCat.toLowerCase()));
   if(searchQ){ const q=searchQ.toLowerCase(); res=res.filter(p=>p.name.toLowerCase().includes(q)); }
-  if(activeDesigns.length){
+  if(typeof activeDesigns!=='undefined'&&activeDesigns.length){
     res=res.filter(p=>{
       const designs=Array.isArray(p.design)?p.design:(p.design?[p.design]:[]);
       return activeDesigns.some(slug=>{
