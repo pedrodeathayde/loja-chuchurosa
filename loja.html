@@ -1918,16 +1918,9 @@ async function loadDesignBadges(){
   }
 
   // ✨ Todos primeiro, depois os designs
-  badgeRow.innerHTML=
-    `<span class="hbadge active" data-filter="" data-type="search">✨ Todos</span>`+
-    designs.map(d=>
-      `<span class="hbadge" data-filter="${toSlug(d.nome)}" data-type="search">${d.emoji||''} ${d.nome}</span>`
-    ).join('');
-
-  // Não filtra ao carregar — mostra todos
-  searchQ='';
-  currentCat='Todas';
-  applyFilters();
+  badgeRow.innerHTML=designs.map(d=>
+    `<span class="hbadge" data-filter="${toSlug(d.nome)}" data-type="search">${d.emoji||''} ${d.nome}</span>`
+  ).join('');
 }
 loadDesignBadges();
 
