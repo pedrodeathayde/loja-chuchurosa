@@ -52,6 +52,8 @@ img{display:block;max-width:100%}
 .ng-label{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.2);padding:10px 10px 6px}
 .ni{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:10px;cursor:pointer;transition:all .2s;font-size:.86rem;font-weight:500;color:rgba(255,255,255,.5);margin-bottom:2px;border:none;background:none;width:100%;text-align:left}
 .ni:hover{background:rgba(244,121,154,.08);color:#fff}
+.ni.no-hover{pointer-events:none}
+.ni.no-hover:hover{background:none;color:rgba(255,255,255,.5)}
 .ni.active:hover{background:rgba(244,121,154,.14);color:var(--pink2)}
 .ni.active{background:rgba(244,121,154,.14);color:var(--pink2)}
 .ni-icon{font-size:.95rem;width:18px;text-align:center;flex-shrink:0}
@@ -2398,7 +2400,12 @@ history.replaceState({page:'dashboard'},'',location.pathname);
 
 function goPage(name){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.ni').forEach(n=>{n.classList.remove('active');n.blur();});
+  document.querySelectorAll('.ni').forEach(n=>{
+    n.classList.remove('active');
+    n.blur();
+    n.classList.add('no-hover');
+  });
+  setTimeout(()=>document.querySelectorAll('.ni').forEach(n=>n.classList.remove('no-hover')),300);
   document.getElementById('page-'+name)?.classList.add('active');
   document.querySelector(`.ni[data-page="${name}"]`)?.classList.add('active');
   if(name==='pedidos') dismissNovos();
