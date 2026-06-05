@@ -443,6 +443,10 @@ img{display:block;max-width:100%}
   .tr-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;font-size:.9rem}
   .tr-cat{font-size:.72rem}
 }
+
+@media(max-width:768px){
+  .frete-top-grid{grid-template-columns:1fr!important}
+}
 </style>
 </head>
 <body>
@@ -675,42 +679,47 @@ img{display:block;max-width:100%}
         <button class="btn-p" onclick="saveFreteCfg()">💾 Salvar</button>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:10px;height:10px;border-radius:50%;background:#10b981;flex-shrink:0" id="meStatusDot"></div>
+          <div id="meStatusText" style="font-size:.84rem;color:rgba(13,9,13,.55)">Clique em configurar para verificar a conta</div>
+        </div>
+        <button class="btn-s" onclick="openMeConfig()">⚙️ Configurar conta ME</button>
+      </div>
 
-        <!-- Conta ME -->
-        <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:24px">
-          <h3 style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(13,9,13,.38);margin-bottom:16px">Conta Melhor Envio</h3>
-          <div id="meUserInfo" style="font-size:.84rem;line-height:2;color:rgba(13,9,13,.55)">
-            <div style="color:rgba(13,9,13,.3)">Carregando...</div>
-          </div>
-          <div style="margin-top:16px">
-            <div class="fg"><label>Token de acesso</label>
-              <textarea id="meToken" rows="3" style="width:100%;padding:10px;border:1.5px solid rgba(229,37,100,.18);border-radius:10px;font-family:monospace;font-size:.72rem;resize:none">eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZDNiNjU4ZjhiYjY2ZTRiMmIyZjE3ZTJhZjkyYmYyYjRmMGE1ZDYxYmU2ZmVjNGNlYmI1NzNlYTQ2N2Y0MDJjNGY1NTljNmJlODdmYjVlZGYiLCJpYXQiOjE3ODA2ODQ5NjQuNzc4MTc3LCJuYmYiOjE3ODA2ODQ5NjQuNzc4MTc5LCJleHAiOjE4MTIyMjA5NjQuNzY2OTE1LCJzdWIiOiIyYjVhMTc0My1hMjMwLTQyNzctYWJiNC1mZGI4OTE4MjlkZDIiLCJzY29wZXMiOlsiY2FydC1yZWFkIiwiY2FydC13cml0ZSIsImNvbXBhbmllcy1yZWFkIiwiY29tcGFuaWVzLXdyaXRlIiwiY291cG9ucy1yZWFkIiwiY291cG9ucy13cml0ZSIsIm5vdGlmaWNhdGlvbnMtcmVhZCIsIm9yZGVycy1yZWFkIiwicHJvZHVjdHMtcmVhZCIsInByb2R1Y3RzLWRlc3Ryb3kiLCJwcm9kdWN0cy13cml0ZSIsInB1cmNoYXNlcy1yZWFkIiwic2hpcHBpbmctY2FsY3VsYXRlIiwic2hpcHBpbmctY2FuY2VsIiwic2hpcHBpbmctY2hlY2tvdXQiLCJzaGlwcGluZy1jb21wYW5pZXMiLCJzaGlwcGluZy1nZW5lcmF0ZSIsInNoaXBwaW5nLXByZXZpZXciLCJzaGlwcGluZy1wcmludCIsInNoaXBwaW5nLXNoYXJlIiwic2hpcHBpbmctdHJhY2tpbmciLCJlY29tbWVyY2Utc2hpcHBpbmciLCJ0cmFuc2FjdGlvbnMtcmVhZCIsInVzZXJzLXJlYWQiLCJ1c2Vycy13cml0ZSIsIndlYmhvb2tzLXJlYWQiLCJ3ZWJob29rcy13cml0ZSIsIndlYmhvb2tzLWRlbGV0ZSIsInRkZWFsZXItd2ViaG9vayJdfQ.b_Bsv4Ee2BbS02NQuH8VKytnxYlgkUw5uLpF2JcRqjCJnQD05xmN_wfF6xw1Q4HND7qPp7IY6iGiFWFGq5bEu_gxoCUsN4yFKx0nlcQeF9oeyhi_5-14UQ76rjVvf5ocPtFVa44iUbkG81Ij_Gdqi65fW7M7tg246Ex_qnOXbfePd3K-9Yyig0TIEQt4ecp0BFgVkoayuX2Ds67NvdC---TDkJd-jBNLaujGLkcPpnApVt509ykluyV2TuaMJx8-YQ6Gtij2ioVwrb7tS3rMepFtK6pG_2JEaWckpm9UzP5xPhkeZ0xYHPLvCxjIUGYoVcH4E1VcSqCMBzGkJINqc-1pBTv5MK5AmnQL1K9QNTUP2gDsxz9cHDVfFMtGt2uYb_NzVK6wjswU1DmuA7KFPoGJ4p0RPC-Z26ES_x73gv1zaxUl8ZGGWxhwEX1-_MepLPqxI9TRXnR4a6pWgzoVyzAFFM1oCdLZ9TC1jGwLG3qgBNCHQJY2Yl_5UwYTlXwiDfKjBzLddSeK2sCSyNSZr03t33WjmoGlz0RoGqSfvmcVviiz2O9mW0X7huphQrkAVCJrn3ogNZMaZ-X7F3tGKXgFAeBDGBTiaB2XXxmqs14d-QHnACKZTDyaUdc6mjlT6keoyP0DuxaxDixN9zX4YQZd_gqYYJiGKbDlPDOZsRg</textarea>
+      <!-- ME Config Modal (hidden) -->
+      <div class="modal-ov" id="meConfigModal">
+        <div class="modal" style="max-width:500px">
+          <div class="mhead"><h2>⚙️ Melhor Envio</h2><button class="mclose" onclick="document.getElementById('meConfigModal').classList.remove('open')">✕</button></div>
+          <div class="mbody">
+            <div class="msec"><h3>Token de acesso</h3>
+              <textarea id="meToken" rows="4" style="width:100%;padding:10px;border:1.5px solid rgba(229,37,100,.18);border-radius:10px;font-family:monospace;font-size:.7rem;resize:none"></textarea>
+              <button class="btn-s" style="margin-top:8px" onclick="loadMeUser()">🔄 Verificar conta</button>
             </div>
-            <button class="btn-s" style="margin-top:8px" onclick="loadMeUser()">🔄 Verificar conta</button>
+            <div class="msec"><h3>Dados da conta</h3>
+              <div id="meUserInfo" style="font-size:.84rem;line-height:2;color:rgba(13,9,13,.55)">—</div>
+            </div>
+            <div class="msec"><h3>Endereço de origem</h3>
+              <div id="meOrigemInfo" style="font-size:.84rem;line-height:2;color:rgba(13,9,13,.55)">—</div>
+            </div>
+          </div>
+          <div class="mfoot">
+            <button class="btn-s" onclick="document.getElementById('meConfigModal').classList.remove('open')">Fechar</button>
+            <button class="btn-p" onclick="saveFreteCfg();document.getElementById('meConfigModal').classList.remove('open')">💾 Salvar token</button>
           </div>
         </div>
-
-        <!-- Endereço de origem -->
-        <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:24px">
-          <h3 style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(13,9,13,.38);margin-bottom:16px">Endereço de Origem</h3>
-          <div id="meOrigemInfo" style="font-size:.84rem;line-height:2;color:rgba(13,9,13,.55)">
-            <div style="color:rgba(13,9,13,.3)">Carregando da conta ME...</div>
-          </div>
-        </div>
-
       </div>
 
       <!-- Dimensões padrão -->
       <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:24px;margin-top:20px">
         <h3 style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(13,9,13,.38);margin-bottom:4px">Dimensões de Pacote Padrão</h3>
         <p style="font-size:.78rem;color:rgba(13,9,13,.38);margin-bottom:20px">Usadas no cálculo de frete quando o produto não tem dimensões próprias</p>
-        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:12px">
-          <div style="font-size:.7rem;font-weight:700;color:rgba(13,9,13,.38);text-transform:uppercase">Categoria</div>
-          <div style="font-size:.7rem;font-weight:700;color:rgba(13,9,13,.38);text-transform:uppercase">Peso (kg)</div>
-          <div style="font-size:.7rem;font-weight:700;color:rgba(13,9,13,.38);text-transform:uppercase">Altura (cm)</div>
-          <div style="font-size:.7rem;font-weight:700;color:rgba(13,9,13,.38);text-transform:uppercase">Largura (cm)</div>
-          <div style="font-size:.7rem;font-weight:700;color:rgba(13,9,13,.38);text-transform:uppercase">Comprimento (cm)</div>
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:8px;margin-bottom:8px">
+          <div style="font-size:.65rem;font-weight:700;color:rgba(13,9,13,.38);text-transform:uppercase">Categoria</div>
+          <div style="font-size:.65rem;font-weight:700;color:rgba(13,9,13,.38);text-transform:uppercase">Peso</div>
+          <div style="font-size:.65rem;font-weight:700;color:rgba(13,9,13,.38);text-transform:uppercase">Alt.</div>
+          <div style="font-size:.65rem;font-weight:700;color:rgba(13,9,13,.38);text-transform:uppercase">Larg.</div>
+          <div style="font-size:.65rem;font-weight:700;color:rgba(13,9,13,.38);text-transform:uppercase">Comp.</div>
         </div>
         <div id="freteDimensoes"></div>
         <button class="btn-add-cat" style="margin-top:8px" onclick="addFreteCat()">+ Adicionar categoria</button>
@@ -4188,6 +4197,13 @@ async function mePost(path,body){
   return r.json();
 }
 
+function openMeConfig(){
+  const modal=document.getElementById('meConfigModal');
+  if(!modal)return;
+  document.getElementById('meToken').value=meToken;
+  modal.classList.add('open');
+}
+
 async function loadMeUser(){
   const el=document.getElementById('meUserInfo');
   const elO=document.getElementById('meOrigemInfo');
@@ -4208,17 +4224,27 @@ async function loadMeUser(){
       <b>CEP:</b> ${addr.postal_code}<br>
       <b>Endereço:</b> ${addr.address}, ${addr.number}<br>
       <b>Bairro:</b> ${addr.district}<br>
-      <b>Cidade:</b> ${addr.city?.city||addr.city} - ${addr.city?.state?.state_abbr||addr.state_abbr||'SP'}
+      <b>Cidade:</b> <span style="white-space:nowrap">${addr.city?.city||addr.city} — ${addr.city?.state?.state_abbr||addr.state_abbr||'SP'}</span>
     `;
     else if(elO) elO.innerHTML='<span style="color:rgba(13,9,13,.35)">Endereço não cadastrado no ME</span>';
     toast('Conta ME verificada!','ok');
+    const dot=document.getElementById('meStatusDot');
+    const txt=document.getElementById('meStatusText');
+    if(dot)dot.style.background='#10b981';
+    if(txt)txt.textContent=`✅ ${meUser.firstname} ${meUser.lastname} — ${meUser.address?.city?.city||''} / ${meUser.address?.postal_code||''}`;
   }catch(e){
     if(el) el.innerHTML=`<span style="color:#ef4444">Erro: ${e.message.slice(0,100)}</span>`;
     toast('Erro ao conectar com Melhor Envio','err');
+    const dot2=document.getElementById('meStatusDot');
+    const txt2=document.getElementById('meStatusText');
+    if(dot2)dot2.style.background='#ef4444';
+    if(txt2)txt2.textContent='❌ Erro ao conectar com Melhor Envio';
   }
 }
 
 function loadFreteConfig(){
+  const ta=document.getElementById('meToken');
+  if(ta)ta.value=meToken;
   loadMeUser();
   renderFreteDims();
 }
@@ -4227,12 +4253,12 @@ function renderFreteDims(){
   const el=document.getElementById('freteDimensoes');
   if(!el)return;
   el.innerHTML=freteDims.map((d,i)=>`
-    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:8px;align-items:center">
-      <input type="text" value="${d.cat}" style="padding:8px 10px;border:1.5px solid rgba(229,37,100,.15);border-radius:9px;font-family:var(--fb);font-size:.82rem;outline:none" oninput="freteDims[${i}].cat=this.value">
-      <input type="number" value="${d.peso}" min="0.1" step="0.1" style="padding:8px 10px;border:1.5px solid rgba(229,37,100,.15);border-radius:9px;font-family:var(--fb);font-size:.82rem;outline:none" oninput="freteDims[${i}].peso=+this.value">
-      <input type="number" value="${d.altura}" min="1" style="padding:8px 10px;border:1.5px solid rgba(229,37,100,.15);border-radius:9px;font-family:var(--fb);font-size:.82rem;outline:none" oninput="freteDims[${i}].altura=+this.value">
-      <input type="number" value="${d.largura}" min="1" style="padding:8px 10px;border:1.5px solid rgba(229,37,100,.15);border-radius:9px;font-family:var(--fb);font-size:.82rem;outline:none" oninput="freteDims[${i}].largura=+this.value">
-      <input type="number" value="${d.comprimento}" min="1" style="padding:8px 10px;border:1.5px solid rgba(229,37,100,.15);border-radius:9px;font-family:var(--fb);font-size:.82rem;outline:none" oninput="freteDims[${i}].comprimento=+this.value">
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:6px;margin-bottom:6px;align-items:center">
+      <input type="text" value="${d.cat}" style="padding:5px 7px;border:1.5px solid rgba(229,37,100,.15);border-radius:8px;font-family:var(--fb);font-size:.76rem;outline:none;min-width:0;width:100%" oninput="freteDims[${i}].cat=this.value">
+      <input type="number" value="${d.peso}" min="0.1" step="0.1" style="padding:5px 7px;border:1.5px solid rgba(229,37,100,.15);border-radius:8px;font-family:var(--fb);font-size:.76rem;outline:none;min-width:0;width:100%" oninput="freteDims[${i}].peso=+this.value">
+      <input type="number" value="${d.altura}" min="1" style="padding:5px 7px;border:1.5px solid rgba(229,37,100,.15);border-radius:8px;font-family:var(--fb);font-size:.76rem;outline:none;min-width:0;width:100%" oninput="freteDims[${i}].altura=+this.value">
+      <input type="number" value="${d.largura}" min="1" style="padding:5px 7px;border:1.5px solid rgba(229,37,100,.15);border-radius:8px;font-family:var(--fb);font-size:.76rem;outline:none;min-width:0;width:100%" oninput="freteDims[${i}].largura=+this.value">
+      <input type="number" value="${d.comprimento}" min="1" style="padding:5px 7px;border:1.5px solid rgba(229,37,100,.15);border-radius:8px;font-family:var(--fb);font-size:.76rem;outline:none;min-width:0;width:100%" oninput="freteDims[${i}].comprimento=+this.value">
     </div>`).join('');
 }
 
