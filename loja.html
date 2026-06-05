@@ -225,15 +225,6 @@ nav{position:sticky;top:0;z-index:100;background:rgba(12,9,13,.95);backdrop-filt
     <h3>Coleções</h3>
     <ul class="cat-list" id="catList">
       <li class="cat-item active" data-cat="Todas"><span class="cat-icon">✨</span> Todos os produtos</li>
-      <li class="cat-item" data-cat="Fantasias"><span class="cat-icon">🎭</span> Fantasias</li>
-      <li class="cat-item" data-cat="Para bebês"><span class="cat-icon">👶</span> Para Bebês</li>
-      <li class="cat-item" data-cat="Decoração"><span class="cat-icon">🖼️</span> Decoração</li>
-      <li class="cat-item" data-cat="Almofadas"><span class="cat-icon">💛</span> Almofadas</li>
-      <li class="cat-item" data-cat="Tiaras & acessórios"><span class="cat-icon">👑</span> Acessórios</li>
-      <li class="cat-item" data-cat="Educativo"><span class="cat-icon">🎓</span> Educativo</li>
-      <li class="cat-item" data-cat="Plush & pelúcia"><span class="cat-icon">🧸</span> Pelúcia & Plush</li>
-      <li class="cat-item" data-cat="Lembrancinhas"><span class="cat-icon">🎁</span> Lembrancinhas</li>
-      <li class="cat-item" data-cat="Bolsas & mochilas"><span class="cat-icon">👜</span> Bolsas</li>
     </ul>
 
     <div class="sidebar-section">
@@ -1969,9 +1960,43 @@ function showSkeletons(n=8){
     </div>`).join('');
 }
 
+
+async function loadCats(){
+  try{
+    const r=await fetch('https://oznpfqsgurztffwfyfec.supabase.co/rest/v1/categorias?select=nome,emoji&order=ordem',{
+      headers:{apikey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA',Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA',Accept:'application/json'}
+    });
+    const cats=await r.json();
+    if(!Array.isArray(cats)||!cats.length)return;
+    const ul=document.getElementById('catList');
+    if(!ul)return;
+    // Keep "Todas" item, add rest
+    const existing=ul.querySelector('[data-cat="Todas"]');
+    ul.innerHTML='';
+    if(existing)ul.appendChild(existing);
+    cats.forEach(c=>{
+      const li=document.createElement('li');
+      li.className='cat-item';
+      li.dataset.cat=c.nome;
+      li.innerHTML=`<span class="cat-icon">${c.emoji||'🏷️'}</span> ${c.nome}`;
+      li.onclick=()=>{
+        document.querySelectorAll('.cat-item').forEach(x=>x.classList.remove('active'));
+        li.classList.add('active');
+        currentCat=c.nome;
+        searchQ='';
+        activeDesigns=[];
+        document.getElementById('searchInput').value='';
+        document.querySelectorAll('#heroBadges .hbadge').forEach(b=>b.classList.remove('active'));
+        applyFilters();
+      };
+      ul.appendChild(li);
+    });
+  }catch(e){console.warn('loadCats failed',e);}
+}
+
 async function init(){
   showSkeletons();
-  await loadFromDB();
+  await Promise.all([loadFromDB(), loadCats()]);
   mergeProducts();
   applyFilters();
   updateCartUI();
