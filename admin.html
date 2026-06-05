@@ -491,7 +491,7 @@ img{display:block;max-width:100%}
       <button class="ni" data-page="agenda" onclick="goPage('agenda');loadAgenda()"><span class="ni-icon">📋</span>Agenda</button>
       <button class="ni" data-page="designs" onclick="goPage('designs')"><span class="ni-icon">🎨</span>Designs</button>
       <button class="ni" data-page="cupons" onclick="goPage('cupons')"><span class="ni-icon">🎟️</span>Cupons</button>
-      <button class="ni" data-page="frete" onclick="goPage('frete')"><span class="ni-icon">🚚</span>Frete</button>
+      <button class="ni" data-page="frete" onclick="goPage('frete');loadFreteConfig()"><span class="ni-icon">🚚</span>Frete</button>
       <button class="ni" data-page="banners" onclick="goPage('banners')"><span class="ni-icon">📢</span>Banners</button>
       <button class="ni" data-page="notif" onclick="goPage('notif')"><span class="ni-icon">🔔</span>Notificações</button>
       <div class="ng-label" style="margin-top:8px">Loja</div>
@@ -664,6 +664,56 @@ img{display:block;max-width:100%}
           <span class="filter-chip" data-ef="inativos" onclick="setEmailFilter(this,'inativos')">Inativos 30d+</span>
         </div>
         <div id="emailList"></div>
+      </div>
+    </div>
+
+
+    <!-- FRETE -->
+    <div class="page" id="page-frete">
+      <div class="page-header">
+        <div><h1>Frete & Envio 📦</h1><p>Melhor Envio + dimensões de pacotes</p></div>
+        <button class="btn-p" onclick="saveFreteCfg()">💾 Salvar</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+
+        <!-- Conta ME -->
+        <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:24px">
+          <h3 style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(13,9,13,.38);margin-bottom:16px">Conta Melhor Envio</h3>
+          <div id="meUserInfo" style="font-size:.84rem;line-height:2;color:rgba(13,9,13,.55)">
+            <div style="color:rgba(13,9,13,.3)">Carregando...</div>
+          </div>
+          <div style="margin-top:16px">
+            <div class="fg"><label>Token de acesso</label>
+              <textarea id="meToken" rows="3" style="width:100%;padding:10px;border:1.5px solid rgba(229,37,100,.18);border-radius:10px;font-family:monospace;font-size:.72rem;resize:none">eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZDNiNjU4ZjhiYjY2ZTRiMmIyZjE3ZTJhZjkyYmYyYjRmMGE1ZDYxYmU2ZmVjNGNlYmI1NzNlYTQ2N2Y0MDJjNGY1NTljNmJlODdmYjVlZGYiLCJpYXQiOjE3ODA2ODQ5NjQuNzc4MTc3LCJuYmYiOjE3ODA2ODQ5NjQuNzc4MTc5LCJleHAiOjE4MTIyMjA5NjQuNzY2OTE1LCJzdWIiOiIyYjVhMTc0My1hMjMwLTQyNzctYWJiNC1mZGI4OTE4MjlkZDIiLCJzY29wZXMiOlsiY2FydC1yZWFkIiwiY2FydC13cml0ZSIsImNvbXBhbmllcy1yZWFkIiwiY29tcGFuaWVzLXdyaXRlIiwiY291cG9ucy1yZWFkIiwiY291cG9ucy13cml0ZSIsIm5vdGlmaWNhdGlvbnMtcmVhZCIsIm9yZGVycy1yZWFkIiwicHJvZHVjdHMtcmVhZCIsInByb2R1Y3RzLWRlc3Ryb3kiLCJwcm9kdWN0cy13cml0ZSIsInB1cmNoYXNlcy1yZWFkIiwic2hpcHBpbmctY2FsY3VsYXRlIiwic2hpcHBpbmctY2FuY2VsIiwic2hpcHBpbmctY2hlY2tvdXQiLCJzaGlwcGluZy1jb21wYW5pZXMiLCJzaGlwcGluZy1nZW5lcmF0ZSIsInNoaXBwaW5nLXByZXZpZXciLCJzaGlwcGluZy1wcmludCIsInNoaXBwaW5nLXNoYXJlIiwic2hpcHBpbmctdHJhY2tpbmciLCJlY29tbWVyY2Utc2hpcHBpbmciLCJ0cmFuc2FjdGlvbnMtcmVhZCIsInVzZXJzLXJlYWQiLCJ1c2Vycy13cml0ZSIsIndlYmhvb2tzLXJlYWQiLCJ3ZWJob29rcy13cml0ZSIsIndlYmhvb2tzLWRlbGV0ZSIsInRkZWFsZXItd2ViaG9vayJdfQ.b_Bsv4Ee2BbS02NQuH8VKytnxYlgkUw5uLpF2JcRqjCJnQD05xmN_wfF6xw1Q4HND7qPp7IY6iGiFWFGq5bEu_gxoCUsN4yFKx0nlcQeF9oeyhi_5-14UQ76rjVvf5ocPtFVa44iUbkG81Ij_Gdqi65fW7M7tg246Ex_qnOXbfePd3K-9Yyig0TIEQt4ecp0BFgVkoayuX2Ds67NvdC---TDkJd-jBNLaujGLkcPpnApVt509ykluyV2TuaMJx8-YQ6Gtij2ioVwrb7tS3rMepFtK6pG_2JEaWckpm9UzP5xPhkeZ0xYHPLvCxjIUGYoVcH4E1VcSqCMBzGkJINqc-1pBTv5MK5AmnQL1K9QNTUP2gDsxz9cHDVfFMtGt2uYb_NzVK6wjswU1DmuA7KFPoGJ4p0RPC-Z26ES_x73gv1zaxUl8ZGGWxhwEX1-_MepLPqxI9TRXnR4a6pWgzoVyzAFFM1oCdLZ9TC1jGwLG3qgBNCHQJY2Yl_5UwYTlXwiDfKjBzLddSeK2sCSyNSZr03t33WjmoGlz0RoGqSfvmcVviiz2O9mW0X7huphQrkAVCJrn3ogNZMaZ-X7F3tGKXgFAeBDGBTiaB2XXxmqs14d-QHnACKZTDyaUdc6mjlT6keoyP0DuxaxDixN9zX4YQZd_gqYYJiGKbDlPDOZsRg</textarea>
+            </div>
+            <button class="btn-s" style="margin-top:8px" onclick="loadMeUser()">🔄 Verificar conta</button>
+          </div>
+        </div>
+
+        <!-- Endereço de origem -->
+        <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:24px">
+          <h3 style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(13,9,13,.38);margin-bottom:16px">Endereço de Origem</h3>
+          <div id="meOrigemInfo" style="font-size:.84rem;line-height:2;color:rgba(13,9,13,.55)">
+            <div style="color:rgba(13,9,13,.3)">Carregando da conta ME...</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Dimensões padrão -->
+      <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:24px;margin-top:20px">
+        <h3 style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(13,9,13,.38);margin-bottom:4px">Dimensões de Pacote Padrão</h3>
+        <p style="font-size:.78rem;color:rgba(13,9,13,.38);margin-bottom:20px">Usadas no cálculo de frete quando o produto não tem dimensões próprias</p>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:12px">
+          <div style="font-size:.7rem;font-weight:700;color:rgba(13,9,13,.38);text-transform:uppercase">Categoria</div>
+          <div style="font-size:.7rem;font-weight:700;color:rgba(13,9,13,.38);text-transform:uppercase">Peso (kg)</div>
+          <div style="font-size:.7rem;font-weight:700;color:rgba(13,9,13,.38);text-transform:uppercase">Altura (cm)</div>
+          <div style="font-size:.7rem;font-weight:700;color:rgba(13,9,13,.38);text-transform:uppercase">Largura (cm)</div>
+          <div style="font-size:.7rem;font-weight:700;color:rgba(13,9,13,.38);text-transform:uppercase">Comprimento (cm)</div>
+        </div>
+        <div id="freteDimensoes"></div>
+        <button class="btn-add-cat" style="margin-top:8px" onclick="addFreteCat()">+ Adicionar categoria</button>
       </div>
     </div>
 
@@ -2663,6 +2713,7 @@ async function openOrder(id){
         <button class="btn-s" onclick="waTemplate(${p.id},'enviado')">🚚 Pedido enviado</button>
       </div>
       <button class="btn-p" style="width:100%;margin-top:8px" onclick="contactWA(${p.id})">💬 WhatsApp livre</button>
+      <button class="btn-s" style="width:100%;margin-top:8px" onclick="gerarEtiqueta(${p.id})">📦 Gerar etiqueta ME</button>
     </div>`;
   document.getElementById('orderModal').classList.add('open');
 }
@@ -4092,6 +4143,278 @@ async function isClientBlocked(email){
 
 function getToken(){
   try{return JSON.parse(localStorage.getItem('sb-oznpfqsgurztffwfyfec-auth-token'))?.access_token||'';}catch{return '';}
+}
+
+
+// ── MELHOR ENVIO ──────────────────────────────────────────────────────
+const ME_BASE='https://www.melhorenvio.com.br/api/v2';
+let meToken=localStorage.getItem('me_token')||'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZDNiNjU4ZjhiYjY2ZTRiMmIyZjE3ZTJhZjkyYmYyYjRmMGE1ZDYxYmU2ZmVjNGNlYmI1NzNlYTQ2N2Y0MDJjNGY1NTljNmJlODdmYjVlZGYiLCJpYXQiOjE3ODA2ODQ5NjQuNzc4MTc3LCJuYmYiOjE3ODA2ODQ5NjQuNzc4MTc5LCJleHAiOjE4MTIyMjA5NjQuNzY2OTE1LCJzdWIiOiIyYjVhMTc0My1hMjMwLTQyNzctYWJiNC1mZGI4OTE4MjlkZDIiLCJzY29wZXMiOlsiY2FydC1yZWFkIiwiY2FydC13cml0ZSIsImNvbXBhbmllcy1yZWFkIiwiY29tcGFuaWVzLXdyaXRlIiwiY291cG9ucy1yZWFkIiwiY291cG9ucy13cml0ZSIsIm5vdGlmaWNhdGlvbnMtcmVhZCIsIm9yZGVycy1yZWFkIiwicHJvZHVjdHMtcmVhZCIsInByb2R1Y3RzLWRlc3Ryb3kiLCJwcm9kdWN0cy13cml0ZSIsInB1cmNoYXNlcy1yZWFkIiwic2hpcHBpbmctY2FsY3VsYXRlIiwic2hpcHBpbmctY2FuY2VsIiwic2hpcHBpbmctY2hlY2tvdXQiLCJzaGlwcGluZy1jb21wYW5pZXMiLCJzaGlwcGluZy1nZW5lcmF0ZSIsInNoaXBwaW5nLXByZXZpZXciLCJzaGlwcGluZy1wcmludCIsInNoaXBwaW5nLXNoYXJlIiwic2hpcHBpbmctdHJhY2tpbmciLCJlY29tbWVyY2Utc2hpcHBpbmciLCJ0cmFuc2FjdGlvbnMtcmVhZCIsInVzZXJzLXJlYWQiLCJ1c2Vycy13cml0ZSIsIndlYmhvb2tzLXJlYWQiLCJ3ZWJob29rcy13cml0ZSIsIndlYmhvb2tzLWRlbGV0ZSIsInRkZWFsZXItd2ViaG9vayJdfQ.b_Bsv4Ee2BbS02NQuH8VKytnxYlgkUw5uLpF2JcRqjCJnQD05xmN_wfF6xw1Q4HND7qPp7IY6iGiFWFGq5bEu_gxoCUsN4yFKx0nlcQeF9oeyhi_5-14UQ76rjVvf5ocPtFVa44iUbkG81Ij_Gdqi65fW7M7tg246Ex_qnOXbfePd3K-9Yyig0TIEQt4ecp0BFgVkoayuX2Ds67NvdC---TDkJd-jBNLaujGLkcPpnApVt509ykluyV2TuaMJx8-YQ6Gtij2ioVwrb7tS3rMepFtK6pG_2JEaWckpm9UzP5xPhkeZ0xYHPLvCxjIUGYoVcH4E1VcSqCMBzGkJINqc-1pBTv5MK5AmnQL1K9QNTUP2gDsxz9cHDVfFMtGt2uYb_NzVK6wjswU1DmuA7KFPoGJ4p0RPC-Z26ES_x73gv1zaxUl8ZGGWxhwEX1-_MepLPqxI9TRXnR4a6pWgzoVyzAFFM1oCdLZ9TC1jGwLG3qgBNCHQJY2Yl_5UwYTlXwiDfKjBzLddSeK2sCSyNSZr03t33WjmoGlz0RoGqSfvmcVviiz2O9mW0X7huphQrkAVCJrn3ogNZMaZ-X7F3tGKXgFAeBDGBTiaB2XXxmqs14d-QHnACKZTDyaUdc6mjlT6keoyP0DuxaxDixN9zX4YQZd_gqYYJiGKbDlPDOZsRg';
+let meUser=null;
+let freteDims=JSON.parse(localStorage.getItem('frete_dims')||'[]');
+if(!freteDims.length) freteDims=[
+  {cat:'Fantasias',peso:.5,altura:30,largura:30,comprimento:30},
+  {cat:'Almofadas',peso:.6,altura:40,largura:40,comprimento:15},
+  {cat:'Decoração',peso:.4,altura:25,largura:25,comprimento:20},
+  {cat:'Para bebês',peso:.3,altura:20,largura:20,comprimento:15},
+  {cat:'Educativo',peso:.4,altura:25,largura:25,comprimento:20},
+  {cat:'Bolsas & mochilas',peso:.5,altura:35,largura:30,comprimento:15},
+  {cat:'Padrão',peso:.5,altura:30,largura:30,comprimento:20},
+];
+
+const ME_HDR={
+  'Authorization':'Bearer '+meToken,
+  'Accept':'application/json',
+  'Content-Type':'application/json',
+  'User-Agent':'Chuchu Rosa (contato@chuchurosa.com.br)'
+};
+
+async function meGet(path){
+  const r=await fetch(ME_BASE+path,{headers:ME_HDR});
+  if(!r.ok)throw new Error(await r.text());
+  return r.json();
+}
+
+async function mePost(path,body){
+  const r=await fetch(ME_BASE+path,{method:'POST',headers:ME_HDR,body:JSON.stringify(body)});
+  if(!r.ok)throw new Error(await r.text());
+  return r.json();
+}
+
+async function loadMeUser(){
+  const el=document.getElementById('meUserInfo');
+  const elO=document.getElementById('meOrigemInfo');
+  try{
+    meToken=document.getElementById('meToken')?.value||meToken;
+    ME_HDR['Authorization']='Bearer '+meToken;
+    localStorage.setItem('me_token',meToken);
+    meUser=await meGet('/me');
+    if(el) el.innerHTML=`
+      <b>${meUser.firstname} ${meUser.lastname}</b><br>
+      📧 ${meUser.email}<br>
+      📄 CPF/CNPJ: ${meUser.document||'—'}<br>
+      ✅ Conta verificada
+    `;
+    // Show address
+    const addr=meUser.address;
+    if(elO&&addr) elO.innerHTML=`
+      <b>CEP:</b> ${addr.postal_code}<br>
+      <b>Endereço:</b> ${addr.address}, ${addr.number}<br>
+      <b>Bairro:</b> ${addr.district}<br>
+      <b>Cidade:</b> ${addr.city} - ${addr.state_abbr}
+    `;
+    else if(elO) elO.innerHTML='<span style="color:rgba(13,9,13,.35)">Endereço não cadastrado no ME</span>';
+    toast('Conta ME verificada!','ok');
+  }catch(e){
+    if(el) el.innerHTML=`<span style="color:#ef4444">Erro: ${e.message.slice(0,100)}</span>`;
+    toast('Erro ao conectar com Melhor Envio','err');
+  }
+}
+
+function loadFreteConfig(){
+  loadMeUser();
+  renderFreteDims();
+}
+
+function renderFreteDims(){
+  const el=document.getElementById('freteDimensoes');
+  if(!el)return;
+  el.innerHTML=freteDims.map((d,i)=>`
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:8px;align-items:center">
+      <input type="text" value="${d.cat}" style="padding:8px 10px;border:1.5px solid rgba(229,37,100,.15);border-radius:9px;font-family:var(--fb);font-size:.82rem;outline:none" oninput="freteDims[${i}].cat=this.value">
+      <input type="number" value="${d.peso}" min="0.1" step="0.1" style="padding:8px 10px;border:1.5px solid rgba(229,37,100,.15);border-radius:9px;font-family:var(--fb);font-size:.82rem;outline:none" oninput="freteDims[${i}].peso=+this.value">
+      <input type="number" value="${d.altura}" min="1" style="padding:8px 10px;border:1.5px solid rgba(229,37,100,.15);border-radius:9px;font-family:var(--fb);font-size:.82rem;outline:none" oninput="freteDims[${i}].altura=+this.value">
+      <input type="number" value="${d.largura}" min="1" style="padding:8px 10px;border:1.5px solid rgba(229,37,100,.15);border-radius:9px;font-family:var(--fb);font-size:.82rem;outline:none" oninput="freteDims[${i}].largura=+this.value">
+      <input type="number" value="${d.comprimento}" min="1" style="padding:8px 10px;border:1.5px solid rgba(229,37,100,.15);border-radius:9px;font-family:var(--fb);font-size:.82rem;outline:none" oninput="freteDims[${i}].comprimento=+this.value">
+    </div>`).join('');
+}
+
+function addFreteCat(){
+  freteDims.push({cat:'Nova categoria',peso:.5,altura:30,largura:30,comprimento:20});
+  renderFreteDims();
+}
+
+function saveFreteCfg(){
+  meToken=document.getElementById('meToken')?.value||meToken;
+  localStorage.setItem('me_token',meToken);
+  localStorage.setItem('frete_dims',JSON.stringify(freteDims));
+  ME_HDR['Authorization']='Bearer '+meToken;
+  toast('Configurações salvas!','ok');
+  addHist('Configurações de frete salvas','','');
+}
+
+function getDims(collections){
+  const cats=collections||[];
+  for(const cat of cats){
+    const d=freteDims.find(x=>x.cat===cat);
+    if(d)return d;
+  }
+  return freteDims.find(x=>x.cat==='Padrão')||freteDims[freteDims.length-1]||{peso:.5,altura:30,largura:30,comprimento:20};
+}
+
+// ── CALCULAR FRETE ────────────────────────────────────────────────────
+async function calcularFrete(cepDestino, itens){
+  if(!meUser)await loadMeUser();
+  const origem=meUser?.address?.postal_code?.replace(/\D/g,'');
+  if(!origem){toast('Configure o endereço no Melhor Envio','err');return null;}
+
+  // Build products list
+  const products=itens.map(item=>{
+    const prod=allProds.find(p=>p.id===item.produto_id);
+    const dims=getDims(prod?.collections);
+    return {
+      id:String(item.produto_id||1),
+      width:dims.largura,
+      height:dims.altura,
+      length:dims.comprimento,
+      weight:dims.peso,
+      insurance_value:prod?.price||50,
+      quantity:item.quantidade||1
+    };
+  });
+
+  try{
+    const res=await mePost('/me/shipment/calculate',{
+      from:{postal_code:origem},
+      to:{postal_code:cepDestino.replace(/\D/g,'')},
+      products,
+      services:'1,2,3,4,17,18', // PAC, SEDEX + privados
+      options:{receipt:false,own_hand:false}
+    });
+    return res;
+  }catch(e){
+    console.error('Frete error',e);
+    toast('Erro ao calcular frete: '+e.message.slice(0,60),'err');
+    return null;
+  }
+}
+
+// ── GERAR ETIQUETA ────────────────────────────────────────────────────
+async function gerarEtiqueta(pedidoId){
+  const pedido=allOrders.find(o=>o.id==pedidoId);
+  if(!pedido)return;
+  if(!meUser)await loadMeUser();
+
+  const cepDest=(pedido.endereco_cep||'').replace(/\D/g,'');
+  if(!cepDest){toast('Pedido sem CEP de entrega','err');return;}
+
+  // Get order items
+  let itens=[];
+  try{const d=await sbGet(`/rest/v1/itens_pedido?pedido_id=eq.${pedidoId}`);if(Array.isArray(d))itens=d;}catch{}
+
+  toast('Calculando frete...','info');
+  const opcoes=await calcularFrete(cepDest,itens.length?itens:[{produto_id:null,quantidade:1}]);
+  if(!opcoes)return;
+
+  // Show shipping options modal
+  const validas=opcoes.filter(s=>!s.error&&s.price);
+  if(!validas.length){toast('Nenhuma opção de frete disponível','err');return;}
+
+  const modal=document.createElement('div');
+  modal.className='modal-ov open';
+  modal.style.zIndex=900;
+  modal.innerHTML=`<div class="modal" style="max-width:560px">
+    <div class="mhead"><h2>📦 Escolher frete — Pedido #${pedidoId}</h2>
+      <button class="mclose" onclick="this.closest('.modal-ov').remove()">✕</button></div>
+    <div class="mbody">
+      <p style="font-size:.82rem;color:rgba(13,9,13,.45);margin-bottom:16px">
+        Destino: ${pedido.endereco_cidade||''} - CEP ${cepDest}
+      </p>
+      ${validas.map(s=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;border:1.5px solid rgba(229,37,100,.1);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:all .2s"
+          onmouseover="this.style.borderColor='var(--pink)'" onmouseout="this.style.borderColor='rgba(229,37,100,.1)'"
+          onclick="confirmarEtiqueta(${pedidoId},${s.id},this.closest('.modal-ov'))">
+          <div>
+            <div style="font-weight:700;font-size:.88rem">${s.name} — ${s.company?.name||''}</div>
+            <div style="font-size:.75rem;color:rgba(13,9,13,.45)">Prazo: ${s.delivery_time} dias úteis</div>
+          </div>
+          <div style="font-weight:900;color:var(--rose);font-size:1rem">R$ ${parseFloat(s.price).toFixed(2).replace('.',',')}</div>
+        </div>`).join('')}
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
+}
+
+async function confirmarEtiqueta(pedidoId,serviceId,modalEl){
+  const pedido=allOrders.find(o=>o.id==pedidoId);
+  if(!pedido)return;
+  modalEl?.remove();
+  toast('Gerando etiqueta...','info');
+
+  let itens=[];
+  try{const d=await sbGet(`/rest/v1/itens_pedido?pedido_id=eq.${pedidoId}`);if(Array.isArray(d))itens=d;}catch{}
+
+  const origem=meUser?.address;
+  const products=itens.map(item=>{
+    const prod=allProds.find(p=>p.id===item.produto_id);
+    const dims=getDims(prod?.collections);
+    return {
+      name:item.nome_produto||'Produto',
+      quantity:item.quantidade||1,
+      unitary_value:prod?.price||50,
+      weight:dims.peso
+    };
+  });
+
+  try{
+    // Add to cart
+    const cart=await mePost('/me/cart',{
+      service:serviceId,
+      agency:null,
+      from:{
+        name:meUser.firstname+' '+meUser.lastname,
+        phone:meUser.phone?.replace(/\D/g,'')||'',
+        email:meUser.email,
+        document:meUser.document?.replace(/\D/g,'')||'',
+        company_document:'',
+        address:origem?.address||'',
+        complement:origem?.complement||'',
+        number:origem?.number||'',
+        district:origem?.district||'',
+        city:origem?.city||'',
+        country_id:'BR',
+        postal_code:origem?.postal_code?.replace(/\D/g,'')||'',
+        state_abbr:origem?.state_abbr||'SP',
+        note:''
+      },
+      to:{
+        name:pedido.visitante_nome||'Cliente',
+        phone:(pedido.visitante_telefone||'').replace(/\D/g,''),
+        email:pedido.visitante_email||'',
+        document:'',
+        address:pedido.endereco_logradouro||'',
+        complement:pedido.endereco_complemento||'',
+        number:pedido.endereco_numero||'',
+        district:pedido.endereco_bairro||'',
+        city:pedido.endereco_cidade||'',
+        country_id:'BR',
+        postal_code:(pedido.endereco_cep||'').replace(/\D/g,''),
+        state_abbr:pedido.endereco_estado||'',
+        note:''
+      },
+      products:products.length?products:[{name:'Produto Chuchu Rosa',quantity:1,unitary_value:50,weight:.5}],
+      volumes:[{weight:.5,width:30,height:30,length:30}],
+      tag:{tag:`Pedido #${pedidoId}`,url:null},
+      options:{insurance_value:50,receipt:false,own_hand:false,reverse:false,non_commercial:false}
+    });
+
+    if(cart&&cart.id){
+      toast('Etiqueta adicionada ao carrinho ME! Acesse o Melhor Envio para imprimir.','ok');
+      // Save tracking info
+      await sbPatch(`/rest/v1/pedidos?id=eq.${pedidoId}`,{
+        status:'enviado',
+        notas_internas:(pedido.notas_internas||'')+`\nEtiqueta ME gerada: ${cart.id} (${new Date().toLocaleDateString('pt-BR')})`
+      });
+      const o=allOrders.find(x=>x.id==pedidoId);
+      if(o){o.status='enviado';}
+      addHist('Etiqueta gerada',`Serviço ${serviceId} · Cart ID ${cart.id}`,`Pedido #${pedidoId}`);
+      renderOrderTable();
+      window.open('https://www.melhorenvio.com.br/carrinho','_blank');
+    }
+  }catch(e){
+    toast('Erro ao gerar etiqueta: '+e.message.slice(0,80),'err');
+    console.error(e);
+  }
 }
 
 // ── DASHBOARD ─────────────────────────────────────────────────────────
