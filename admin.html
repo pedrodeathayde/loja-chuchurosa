@@ -4169,18 +4169,20 @@ const ME_HDR={
 };
 
 async function meGet(path){
-  const r=await fetch(ME_BASE+'?path='+encodeURIComponent(path),{
-    headers:{apikey:KEY,Authorization:'Bearer '+KEY}
+  const r=await fetch(ME_BASE,{
+    method:'POST',
+    headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json'},
+    body:JSON.stringify({path,method:'GET'})
   });
   if(!r.ok)throw new Error(await r.text());
   return r.json();
 }
 
 async function mePost(path,body){
-  const r=await fetch(ME_BASE+'?path='+encodeURIComponent(path),{
+  const r=await fetch(ME_BASE,{
     method:'POST',
     headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json'},
-    body:JSON.stringify(body)
+    body:JSON.stringify({path,method:'POST',body})
   });
   if(!r.ok)throw new Error(await r.text());
   return r.json();
