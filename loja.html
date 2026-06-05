@@ -1963,7 +1963,7 @@ function showSkeletons(n=8){
 
 async function loadCats(){
   try{
-    const r=await fetch('https://oznpfqsgurztffwfyfec.supabase.co/rest/v1/categorias?select=nome&order=ordem&nome=not.is.null',{
+    const r=await fetch('https://oznpfqsgurztffwfyfec.supabase.co/rest/v1/categorias?select=nome,emoji&order=ordem&nome=not.is.null',{
       headers:{apikey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA',Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA',Accept:'application/json'}
     });
     const cats=await r.json();
