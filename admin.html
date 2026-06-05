@@ -479,9 +479,10 @@ img{display:block;max-width:100%}
       <button class="btn-logout" onclick="doLogout()">Sair da conta</button>
     </div>
   </aside>
+  <div class="aside-overlay" id="asideOverlay" onclick="toggleAside()"></div>
 
   <main class="main">
-    <div class="mini-stats" id="miniStats">
+    <div class="mini-stats" id="miniStats"><button class="ham-btn" onclick="toggleAside()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
       <div class="mini-stat"><span class="mini-stat-dot"></span><span>Hoje: <b id="ms-hoje">—</b></span></div>
       <div class="mini-stat">Semana: <b id="ms-semana">—</b></div>
       <div class="mini-stat">Em produção: <b id="ms-prod">—</b></div>
@@ -2862,7 +2863,7 @@ async function loadCats(){
   try{
     const d=await sbGet('/rest/v1/categorias?select=nome&order=ordem');
     if(Array.isArray(d)&&d.length){
-      allCats=d.map(c=>c.nome);
+      allCats=[...new Set(d.map(c=>c.nome).filter(Boolean))];
       COLS=[...allCats];
     }
   }catch{}
@@ -2886,10 +2887,13 @@ function addCat(){allCats.push('Nova categoria');COLS=[...allCats];renderCatMana
 function removeCat(i){if(!confirm(`Remover "${allCats[i]}"?`))return;allCats.splice(i,1);COLS=[...allCats];renderCatManager();}
 async function saveCats(){
   try{
+    // Deduplicate first
+    allCats=[...new Set(allCats.map(c=>c.trim()).filter(Boolean))];
+    renderCatManager();
     // Delete all then reinsert
     await sbDelete('/rest/v1/categorias?id=gte.0');
     for(let i=0;i<allCats.length;i++){
-      if(allCats[i].trim()) await sbPost('/rest/v1/categorias',{nome:allCats[i].trim(),ordem:i});
+      await sbPost('/rest/v1/categorias',{nome:allCats[i],ordem:i});
     }
     toast('Categorias salvas!','ok');
     COLS=[...allCats];
