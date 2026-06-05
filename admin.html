@@ -2884,9 +2884,11 @@ document.getElementById('bannerModal').addEventListener('click',e=>{if(e.target=
 let allCats=[...COLS];
 async function loadCats(){
   try{
-    const d=await sbGet('/rest/v1/categorias?select=nome&order=ordem');
+    const d=await sbGet('/rest/v1/categorias?select=nome,emoji&order=ordem');
     if(Array.isArray(d)&&d.length){
-      allCats=[...new Set(d.map(c=>c.nome).filter(Boolean))];
+      const unique=[...new Map(d.map(c=>[c.nome,c])).values()];
+      allCats=unique.map(c=>c.nome).filter(Boolean);
+      catEmojis=unique.map(c=>c.emoji||'🏷️');
       COLS=[...allCats];
     }
   }catch{}
@@ -2901,11 +2903,13 @@ function renderCatManager(){
       ondragover="catDragOver(event,${i})"
       ondrop="catDrop(event,${i})">
       <span style="cursor:grab;color:rgba(13,9,13,.3);font-size:.9rem;flex-shrink:0">⠿</span>
-      <input type="text" value="${c}" onblur="allCats[${i}]=this.value;COLS=[...allCats]">
+      <input type="text" value="${typeof c==='object'?c.emoji||'🏷️':catEmojis[i]||'🏷️'}" style="width:40px;text-align:center" oninput="catEmojis[${i}]=this.value">
+      <input type="text" value="${typeof c==='object'?c.nome||c:c}" style="flex:1" onblur="allCats[${i}]=this.value;COLS=[...allCats]">
       <button class="ibtn del" onclick="removeCat(${i})">🗑</button>
     </div>`).join('');
 }
-function addCat(){allCats.push('Nova categoria');COLS=[...allCats];renderCatManager();
+function addCat(){allCats.push('Nova categoria');
+  catEmojis.push('🏷️');COLS=[...allCats];renderCatManager();
   setTimeout(()=>{const inputs=document.querySelectorAll('#catManager input');inputs[inputs.length-1]?.focus();inputs[inputs.length-1]?.select();},50);}
 function removeCat(i){if(!confirm(`Remover "${allCats[i]}"?`))return;allCats.splice(i,1);COLS=[...allCats];renderCatManager();}
 async function saveCats(){
@@ -2916,7 +2920,7 @@ async function saveCats(){
     // Delete all then reinsert
     await sbDelete('/rest/v1/categorias?id=gte.0');
     for(let i=0;i<allCats.length;i++){
-      await sbPost('/rest/v1/categorias',{nome:allCats[i],ordem:i});
+      await sbPost('/rest/v1/categorias',{nome:allCats[i],emoji:catEmojis[i]||'🏷️',ordem:i});
     }
     toast('Categorias salvas!','ok');
     COLS=[...allCats];
