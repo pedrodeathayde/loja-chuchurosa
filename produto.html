@@ -170,6 +170,14 @@ nav{background:var(--dark);padding:0 48px;height:66px;display:flex;align-items:c
 .frete-option-info{font-size:.72rem;color:rgba(13,9,13,.4);margin-top:2px}
 .frete-option-price{font-weight:800;color:var(--rose)}
 .frete-loading{text-align:center;padding:16px;color:rgba(13,9,13,.35);font-size:.82rem}
+
+/* Sticky CTA bar */
+.sticky-cta{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid rgba(229,37,100,.12);padding:12px 20px;display:none;align-items:center;justify-content:space-between;gap:12px;z-index:200;box-shadow:0 -4px 20px rgba(0,0,0,.08)}
+.sticky-cta-name{font-weight:700;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+.sticky-cta-price{font-family:var(--fd);font-weight:900;color:var(--rose);font-size:1.1rem;white-space:nowrap}
+.sticky-cta-btn{background:var(--pink);color:#fff;border:none;border-radius:100px;padding:10px 20px;font-family:var(--fb);font-size:.85rem;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .2s}
+.sticky-cta-btn:hover{background:var(--rose)}
+@media(min-width:901px){.sticky-cta{display:none!important}}
 </style>
 </head>
 <body>
@@ -265,6 +273,7 @@ nav{background:var(--dark);padding:0 48px;height:66px;display:flex;align-items:c
 </div>
 
 <div class="toast" id="toast"></div>
+<div class="sticky-cta" id="stickyCta"><div><div class="sticky-cta-name" id="stickyName">—</div><div class="sticky-cta-price" id="stickyPrice"></div></div><button class="sticky-cta-btn" onclick="doAddToCart()">🛒 Adicionar</button></div>
 
 <script>
 const FILES = [
@@ -1731,11 +1740,12 @@ function renderProduct(){
   document.getElementById('pPrazo').textContent=`Prazo de produção: ${prazo} dia${prazo>1?'s':''} úteis`;
 
   // Description
-  document.getElementById('pDesc').textContent=prod.descricao||'Produto artesanal feito com carinho. Entre em contato para mais informações sobre tamanhos e personalização.';
+  document.getElementById('pDesc').innerHTML=renderDesc(prod.descricao);
 
   // Tags
   const tags=[...(prod.collections||[]),...(Array.isArray(prod.design)?prod.design:[prod.design].filter(Boolean))];
   document.getElementById('pTags').innerHTML=tags.map(t=>`<span class="ptag">${t}</span>`).join('');
+  setTimeout(initStickyCta,100);
 
   // Gallery
   const urls=getUrls(prod.name,10);
@@ -1787,7 +1797,8 @@ function renderVars(){
     sizes.forEach(s=>{
       const v=variacoes.find(x=>x.tamanho===s);
       const esg=v&&v.estoque===0;
-      html+=`<button class="var-opt${esg?' esgotado':''}" onclick="selSize('${s}',this)" ${esg?'disabled':''}>${s}</button>`;
+      const vExtra=v&&v.preco_extra?`<span class="var-extra">+${fmt(v.preco_extra)}</span>`:'';
+      html+=`<button class="var-opt${esg?' esgotado':''}" onclick="selSize('${s}',this)" ${esg?'disabled':''}>${s}${vExtra}</button>`;
     });
     html+='</div></div>';
   }
@@ -1982,6 +1993,34 @@ function getDimsProd(collections){
     if(map[cat])return map[cat];
   }
   return {peso:.5,altura:30,largura:30,comprimento:20};
+}
+
+
+// ── STICKY CTA ────────────────────────────────────────────────────────
+function initStickyCta(){
+  if(!prod)return;
+  document.getElementById('stickyName').textContent=prod.name;
+  document.getElementById('stickyPrice').textContent=prod.price?fmt(prod.preco_promocional||prod.price):'';
+  const cta=document.getElementById('stickyCta');
+  const actionRow=document.querySelector('.action-row');
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(cta) cta.style.display=e.isIntersecting?'none':'flex';
+    });
+  },{threshold:.1});
+  if(actionRow)observer.observe(actionRow);
+}
+
+
+function renderDesc(text){
+  if(!text) return 'Produto artesanal feito com carinho sob encomenda.';
+  // If multiline or has periods mid-text, convert to bullets
+  const lines=text.split(/\n|(?<=\. )/).map(l=>l.trim()).filter(l=>l.length>10);
+  if(lines.length>1){
+    return '<ul style="padding-left:18px;line-height:2;color:rgba(13,9,13,.6);font-size:.95rem">'+
+      lines.map(l=>`<li>${l}</li>`).join('')+'</ul>';
+  }
+  return `<p style="font-size:.95rem;line-height:1.85;color:rgba(13,9,13,.6)">${text}</p>`;
 }
 
 loadProduct();
