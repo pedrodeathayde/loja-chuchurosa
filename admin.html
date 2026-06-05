@@ -383,10 +383,10 @@ img{display:block;max-width:100%}
 .pgto-btn[data-p="pendente"]{border-color:#f59e0b;color:#f59e0b}.pgto-btn[data-p="pendente"].active{background:#f59e0b;color:#fff}
 .pgto-btn[data-p="pago"]{border-color:#10b981;color:#10b981}.pgto-btn[data-p="pago"].active{background:#10b981;color:#fff}
 
-.order-filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
-.filter-chip{padding:6px 14px;border-radius:100px;border:1.5px solid rgba(13,9,13,.1);font-family:var(--fb);font-size:.76rem;font-weight:600;cursor:pointer;background:#fff;transition:all .2s;color:rgba(13,9,13,.5)}
+.order-filters{display:flex;gap:8px;margin-bottom:16px;align-items:center;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}.order-filters::-webkit-scrollbar{display:none}
+.filter-chip{padding:6px 14px;border-radius:100px;border:1.5px solid rgba(13,9,13,.1);font-family:var(--fb);font-size:.76rem;font-weight:600;cursor:pointer;background:#fff;transition:all .2s;color:rgba(13,9,13,.5);white-space:nowrap;flex-shrink:0}
 .filter-chip.active{border-color:var(--pink);color:var(--pink);background:rgba(229,37,100,.06)}
-.filter-search{flex:1;min-width:180px;padding:8px 14px;border:1.5px solid rgba(13,9,13,.1);border-radius:100px;font-family:var(--fb);font-size:.82rem;outline:none}
+.filter-search{flex-shrink:0;width:100%;padding:8px 14px;border:1.5px solid rgba(13,9,13,.1);border-radius:100px;font-family:var(--fb);font-size:.82rem;outline:none;margin-bottom:8px}
 .filter-search:focus{border-color:var(--pink)}
 
 .agenda-section{margin-bottom:32px}
@@ -578,8 +578,8 @@ img{display:block;max-width:100%}
     <!-- PEDIDOS -->
     <div class="page" id="page-pedidos">
       <div class="page-header"><div><h1>Pedidos 📦</h1><p>Gerencie todos os pedidos</p></div><button class="btn-s" onclick="exportOrdersCSV()">⬇️ Exportar CSV</button></div>
+      <input type="text" class="filter-search" id="orderSearch" placeholder="🔍 Nome, email, #pedido..." oninput="filterOrders()" style="width:100%;margin-bottom:10px">
       <div class="order-filters">
-        <input type="text" class="filter-search" id="orderSearch" placeholder="🔍 Nome, email, #pedido..." oninput="filterOrders()">
         <span class="filter-chip active" data-status="" onclick="setOrderFilter(this,'')">Todos</span>
         <span class="filter-chip" data-status="pendente" onclick="setOrderFilter(this,'pendente')">⏳ Pendentes</span>
         <span class="filter-chip" data-status="confirmado" onclick="setOrderFilter(this,'confirmado')">✅ Confirmados</span>
