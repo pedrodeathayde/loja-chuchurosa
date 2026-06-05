@@ -52,6 +52,7 @@ img{display:block;max-width:100%}
 .ng-label{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.2);padding:10px 10px 6px}
 .ni{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:10px;cursor:pointer;transition:all .2s;font-size:.86rem;font-weight:500;color:rgba(255,255,255,.5);margin-bottom:2px;border:none;background:none;width:100%;text-align:left}
 .ni:hover{background:rgba(244,121,154,.08);color:#fff}
+.ni.active:hover{background:rgba(244,121,154,.14);color:var(--pink2)}
 .ni.active{background:rgba(244,121,154,.14);color:var(--pink2)}
 .ni-icon{font-size:.95rem;width:18px;text-align:center;flex-shrink:0}
 .ni-badge{margin-left:auto;background:rgba(244,121,154,.2);color:var(--pink2);border-radius:6px;font-size:.68rem;font-weight:700;padding:2px 6px}
@@ -2397,7 +2398,7 @@ history.replaceState({page:'dashboard'},'',location.pathname);
 
 function goPage(name){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>{n.classList.remove('active');n.blur();});
   document.getElementById('page-'+name)?.classList.add('active');
   document.querySelector(`.ni[data-page="${name}"]`)?.classList.add('active');
   if(name==='pedidos') dismissNovos();
@@ -2481,6 +2482,7 @@ function renderProdTable(){
           <button class="ibtn eye" onclick="toggleField(${p.id},'oculto',${!p.oculto})" title="${p.oculto?'Mostrar':'Ocultar'}">${p.oculto?'👁':'🙈'}</button>
           <button class="ibtn ${p.esgotado?'edit':'del'}" onclick="toggleField(${p.id},'esgotado',${!p.esgotado})" title="${p.esgotado?'Disponível':'Esgotado'}">${p.esgotado?'✅':'⊘'}</button>
           <button class="ibtn del" onclick="deleteProd(${p.id},'${p.name.replace(/'/g,"\\'")}')" title="Excluir">🗑</button>
+          <button class="ibtn ${p.destaque?'edit':''}" onclick="toggleField(${p.id},'destaque',${!p.destaque})" title="${p.destaque?'Remover destaque':'Destacar'}">⭐</button>
         </div>
       </div>`;
     }).join('');
@@ -3309,7 +3311,8 @@ async function applyBulk(){
 async function bulkToggle(action){
   const ids=[...selectedIds];
   undoStack={action:'toggle_'+action,snapshot:ids.map(id=>{const p=allProds.find(x=>x.id===id);return p?{...p}:null;}).filter(Boolean)};
-  const payload=action==='ativo'?{ativo:true,oculto:false}:action==='inativo'?{ativo:false}:action==='esgotado'?{esgotado:true}:{destaque:true};
+  const allDestaque=ids.every(id=>allProds.find(p=>p.id===id)?.destaque);
+  const payload=action==='ativo'?{ativo:true,oculto:false}:action==='inativo'?{ativo:false}:action==='esgotado'?{esgotado:true}:{destaque:!allDestaque};
   for(const id of ids){
     await sbPatch(`/rest/v1/produtos?id=eq.${id}`,payload);
     const p=allProds.find(x=>x.id===id);if(p)Object.assign(p,payload);
