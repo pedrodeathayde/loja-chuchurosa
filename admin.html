@@ -103,7 +103,7 @@ img{display:block;max-width:100%}
 .tbl-row:last-child{border:none}
 .tbl-row:hover{background:rgba(244,121,154,.025)}
 /* Products cols: img nome cats preco prazo status acoes */
-.pc-grid{grid-template-columns:32px 52px 1fr 130px 100px 80px 110px 90px}
+.pc-grid{grid-template-columns:32px 52px 1fr 130px 100px 80px 120px 100px}
 .tr-img{width:44px;height:44px;border-radius:10px;overflow:hidden;background:var(--cream);position:relative;flex-shrink:0}
 .tr-img img,.tr-img-ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .tr-img-ph{display:flex;align-items:center;justify-content:center;font-size:1.1rem}
@@ -356,6 +356,73 @@ img{display:block;max-width:100%}
 .gs-tag.ped{background:rgba(99,102,241,.2);color:#a5b4fc}
 .gs-tag.cli{background:rgba(34,197,94,.15);color:#86efac}
 .gs-empty{padding:20px;text-align:center;color:rgba(255,255,255,.25);font-size:.82rem}
+
+.ham-btn{display:none;background:none;border:none;cursor:pointer;padding:8px;color:rgba(255,255,255,.7)}
+.aside-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:49}
+@media(max-width:768px){
+  .ham-btn{display:flex;align-items:center;justify-content:center}
+  .aside{display:flex;position:fixed;left:-260px;top:0;bottom:0;width:260px;z-index:50;transition:left .25s}
+  .aside.open{left:0}
+  .aside-overlay.open{display:block}
+}
+
+@media(max-width:768px){
+  .pc-grid{grid-template-columns:32px 44px 1fr 90px 80px}
+  .pc-grid>*:nth-child(4),.pc-grid>*:nth-child(5),.pc-grid>*:nth-child(6){display:none}
+  .tbl-head.pc-grid>*:nth-child(4),.tbl-head.pc-grid>*:nth-child(5),.tbl-head.pc-grid>*:nth-child(6){display:none}
+}
+
+.status-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.status-btn{padding:7px 14px;border-radius:100px;border:1.5px solid transparent;font-family:var(--fb);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;background:#fff}
+.status-btn.active{color:#fff}
+.status-btn[data-s="pendente"]{border-color:#f59e0b;color:#f59e0b}.status-btn[data-s="pendente"].active{background:#f59e0b}
+.status-btn[data-s="confirmado"]{border-color:#3b82f6;color:#3b82f6}.status-btn[data-s="confirmado"].active{background:#3b82f6}
+.status-btn[data-s="em_producao"]{border-color:#8b5cf6;color:#8b5cf6}.status-btn[data-s="em_producao"].active{background:#8b5cf6}
+.status-btn[data-s="pronto"]{border-color:#f97316;color:#f97316}.status-btn[data-s="pronto"].active{background:#f97316}
+.status-btn[data-s="enviado"]{border-color:#06b6d4;color:#06b6d4}.status-btn[data-s="enviado"].active{background:#06b6d4}
+.status-btn[data-s="entregue"]{border-color:#10b981;color:#10b981}.status-btn[data-s="entregue"].active{background:#10b981}
+.status-btn[data-s="cancelado"]{border-color:#ef4444;color:#ef4444}.status-btn[data-s="cancelado"].active{background:#ef4444}
+.pgto-btn{padding:7px 14px;border-radius:100px;border:1.5px solid transparent;font-family:var(--fb);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;background:#fff}
+.pgto-btn[data-p="pendente"]{border-color:#f59e0b;color:#f59e0b}.pgto-btn[data-p="pendente"].active{background:#f59e0b;color:#fff}
+.pgto-btn[data-p="pago"]{border-color:#10b981;color:#10b981}.pgto-btn[data-p="pago"].active{background:#10b981;color:#fff}
+
+.order-filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.filter-chip{padding:6px 14px;border-radius:100px;border:1.5px solid rgba(13,9,13,.1);font-family:var(--fb);font-size:.76rem;font-weight:600;cursor:pointer;background:#fff;transition:all .2s;color:rgba(13,9,13,.5)}
+.filter-chip.active{border-color:var(--pink);color:var(--pink);background:rgba(229,37,100,.06)}
+.filter-search{flex:1;min-width:180px;padding:8px 14px;border:1.5px solid rgba(13,9,13,.1);border-radius:100px;font-family:var(--fb);font-size:.82rem;outline:none}
+.filter-search:focus{border-color:var(--pink)}
+
+.agenda-section{margin-bottom:32px}
+.agenda-section h2{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(13,9,13,.38);margin-bottom:12px;padding-bottom:7px;border-bottom:1px solid rgba(229,37,100,.08)}
+.agenda-item{background:#fff;border-radius:14px;border:1px solid rgba(229,37,100,.08);padding:16px 20px;margin-bottom:10px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+.agenda-item-name{font-weight:700;font-size:.9rem;margin-bottom:3px}
+.agenda-item-meta{font-size:.75rem;color:rgba(13,9,13,.4)}
+.agenda-item-qty{background:var(--pink);color:#fff;border-radius:100px;padding:4px 12px;font-size:.8rem;font-weight:700;white-space:nowrap}
+.agenda-item-prazo{font-size:.72rem;margin-top:4px}
+.prazo-ok{color:#10b981}.prazo-warn{color:#f59e0b}.prazo-late{color:#ef4444}
+.agenda-empty{text-align:center;padding:40px;color:rgba(13,9,13,.3);font-size:.88rem}
+
+.hist-list{max-height:300px;overflow-y:auto}
+.hist-item{padding:10px 0;border-bottom:1px solid rgba(229,37,100,.06);font-size:.78rem}
+.hist-item:last-child{border:none}
+.hist-time{color:rgba(13,9,13,.35);font-size:.7rem;margin-bottom:2px}
+.hist-action{color:var(--dark);font-weight:500}
+.hist-detail{color:rgba(13,9,13,.45);margin-top:2px}
+
+.client-detail{font-size:.85rem;line-height:2}
+.client-orders{margin-top:12px}
+.client-order-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(229,37,100,.06);font-size:.82rem}
+.badge-blocked{background:#fee2e2;color:#ef4444;border-radius:100px;padding:2px 10px;font-size:.7rem;font-weight:700}
+
+.rel-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.rel-kpi{background:#fff;border-radius:14px;border:1px solid rgba(229,37,100,.08);padding:20px}
+.rel-kpi-val{font-family:var(--fd);font-size:1.8rem;font-weight:900;color:var(--rose);line-height:1}
+.rel-kpi-lbl{font-size:.72rem;color:rgba(13,9,13,.38);margin-top:4px;text-transform:uppercase;letter-spacing:.08em}
+.rel-section{background:#fff;border-radius:14px;border:1px solid rgba(229,37,100,.08);padding:20px;margin-bottom:16px}
+.rel-section h3{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(13,9,13,.38);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid rgba(229,37,100,.06)}
+.top-prod-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(229,37,100,.05);font-size:.84rem}
+.top-prod-bar{height:4px;background:var(--pink);border-radius:2px;margin-top:4px;transition:width .6s}
+@media(max-width:768px){.rel-kpi-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -395,6 +462,10 @@ img{display:block;max-width:100%}
       <button class="ni" data-page="clientes" onclick="goPage('clientes')"><span class="ni-icon">👥</span>Clientes</button>
       <div class="ng-label" style="margin-top:8px">Configurações</div>
       <button class="ni" data-page="categorias" onclick="goPage('categorias')"><span class="ni-icon">🏷️</span>Categorias</button>
+      <button class="ni" data-page="email" onclick="goPage('email');renderEmailList()"><span class="ni-icon">📧</span>E-mail</button>
+      <button class="ni" data-page="relatorio" onclick="goPage('relatorio');renderRelatorio()"><span class="ni-icon">📊</span>Relatórios</button>
+      <button class="ni" data-page="historico" onclick="goPage('historico');renderHist();renderAccessLog()"><span class="ni-icon">📋</span>Histórico</button>
+      <button class="ni" data-page="agenda" onclick="goPage('agenda');loadAgenda()"><span class="ni-icon">📋</span>Agenda</button>
       <button class="ni" data-page="designs" onclick="goPage('designs')"><span class="ni-icon">🎨</span>Designs</button>
       <button class="ni" data-page="cupons" onclick="goPage('cupons')"><span class="ni-icon">🎟️</span>Cupons</button>
       <button class="ni" data-page="frete" onclick="goPage('frete')"><span class="ni-icon">🚚</span>Frete</button>
@@ -478,7 +549,19 @@ img{display:block;max-width:100%}
 
     <!-- PEDIDOS -->
     <div class="page" id="page-pedidos">
-      <div class="page-header"><div><h1>Pedidos 📦</h1><p>Gerencie todos os pedidos</p></div></div>
+      <div class="page-header"><div><h1>Pedidos 📦</h1><p>Gerencie todos os pedidos</p></div><button class="btn-s" onclick="exportOrdersCSV()">⬇️ Exportar CSV</button></div>
+      <div class="order-filters">
+        <input type="text" class="filter-search" id="orderSearch" placeholder="🔍 Nome, email, #pedido..." oninput="filterOrders()">
+        <span class="filter-chip active" data-status="" onclick="setOrderFilter(this,'')">Todos</span>
+        <span class="filter-chip" data-status="pendente" onclick="setOrderFilter(this,'pendente')">⏳ Pendentes</span>
+        <span class="filter-chip" data-status="confirmado" onclick="setOrderFilter(this,'confirmado')">✅ Confirmados</span>
+        <span class="filter-chip" data-status="em_producao" onclick="setOrderFilter(this,'em_producao')">🔨 Em produção</span>
+        <span class="filter-chip" data-status="pronto" onclick="setOrderFilter(this,'pronto')">📦 Prontos</span>
+        <span class="filter-chip" data-status="enviado" onclick="setOrderFilter(this,'enviado')">🚚 Enviados</span>
+        <span class="filter-chip" data-status="entregue" onclick="setOrderFilter(this,'entregue')">🎉 Entregues</span>
+        <span class="filter-chip" data-pgto="pendente" onclick="setOrderFilter(this,'','pendente')">💳 Pagto pendente</span>
+        <span class="filter-chip" data-pgto="pago" onclick="setOrderFilter(this,'','pago')">💚 Pagos</span>
+      </div>
       <div class="toolbar">
         <div class="tsearch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input type="text" id="os" placeholder="Buscar..." oninput="filterOrders()"></div>
         <select class="tfilter" id="ost" onchange="filterOrders()">
@@ -498,6 +581,67 @@ img{display:block;max-width:100%}
     </div>
 
 
+
+
+    <!-- AGENDA -->
+    <div class="page" id="page-agenda">
+      <div class="page-header">
+        <div><h1>Agenda de Produção 📋</h1><p>O que precisa ser produzido</p></div>
+        <button class="btn-s" onclick="loadAgenda()">🔄 Atualizar</button>
+      </div>
+      <div id="agendaContent">
+        <div class="empty"><div class="empty-icon">📋</div><p>Carregando...</p></div>
+      </div>
+    </div>
+
+
+    <!-- HISTÓRICO -->
+    <div class="page" id="page-historico">
+      <div class="page-header">
+        <div><h1>Histórico 📋</h1><p>Alterações recentes</p></div>
+        <button class="btn-s" onclick="clearHist()">🗑 Limpar</button>
+      </div>
+      <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:24px">
+        <div id="histList"></div>
+      </div>
+      <h2 style="margin:24px 0 16px;font-family:var(--fd);font-size:1.1rem">Acessos ao admin</h2>
+      <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:24px"><div id="accessLog"></div></div>
+    </div>
+
+
+    <!-- RELATÓRIO -->
+    <div class="page" id="page-relatorio">
+      <div class="page-header">
+        <div><h1>Relatórios 📊</h1><p>Receitas e desempenho</p></div>
+        <div style="display:flex;gap:8px">
+          <select id="relPeriod" onchange="renderRelatorio()" style="padding:8px 14px;border:1.5px solid rgba(229,37,100,.18);border-radius:10px;font-family:var(--fb);font-size:.82rem;outline:none">
+            <option value="7">Últimos 7 dias</option>
+            <option value="30" selected>Últimos 30 dias</option>
+            <option value="90">Últimos 90 dias</option>
+            <option value="365">Este ano</option>
+          </select>
+          <button class="btn-s" onclick="exportReportCSV()">⬇️ CSV</button>
+        </div>
+      </div>
+      <div id="relatorioContent"></div>
+    </div>
+
+
+    <!-- EMAIL -->
+    <div class="page" id="page-email">
+      <div class="page-header">
+        <div><h1>Lista de E-mail 📧</h1><p>Clientes para contato</p></div>
+        <button class="btn-s" onclick="exportEmailCSV()">⬇️ Exportar CSV</button>
+      </div>
+      <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:24px">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+          <span class="filter-chip active" data-ef="todos" onclick="setEmailFilter(this,'todos')">Todos</span>
+          <span class="filter-chip" data-ef="pagos" onclick="setEmailFilter(this,'pagos')">Só pagos</span>
+          <span class="filter-chip" data-ef="inativos" onclick="setEmailFilter(this,'inativos')">Inativos 30d+</span>
+        </div>
+        <div id="emailList"></div>
+      </div>
+    </div>
 
     <!-- DESIGNS -->
     <div class="page" id="page-designs">
@@ -602,7 +746,7 @@ img{display:block;max-width:100%}
 <!-- MODAL PRODUTO -->
 <div class="modal-ov" id="prodModal">
   <div class="modal">
-    <div class="mhead"><h2 id="mProdTitle">Produto</h2><button class="mclose" onclick="closeProdModal()">✕</button></div>
+    <div class="mhead"><h2 id="mProdTitle">Produto</h2><button class="btn-s" id="btnProdHist" style="display:none" onclick="openHistory(editProdId)">📋 Histórico</button><button class="mclose" onclick="closeProdModal()">✕</button></div>
     <div class="mbody">
       <div class="msec"><h3>Informações básicas</h3>
         <div class="frow"><div class="fg"><label>Nome *</label><input type="text" id="mNome" placeholder="Ex: Fantasia de Flamingo"></div></div>
@@ -681,6 +825,9 @@ img{display:block;max-width:100%}
       </div>
       <div class="frow"><div class="fg"><label>Descrição</label><input type="text" id="cDesc" placeholder="Ex: Desconto de lançamento"></div></div>
       <div class="tog-row"><div><div class="tog-lbl">Cupom ativo</div></div><button class="tog on" id="togCupomAtivo" onclick="this.classList.toggle('on')"></button></div>
+      <div class="tog-row"><div><div class="tog-lbl">Frete grátis</div></div><button class="tog" id="togFreteGratis" onclick="this.classList.toggle('on')"></button></div>
+      <div class="tog-row"><div><div class="tog-lbl">Uso único por cliente</div></div><button class="tog" id="togUnicoCliente" onclick="this.classList.toggle('on')"></button></div>
+      <div class="tog-row"><div><div class="tog-lbl">Apenas primeiro pedido</div></div><button class="tog" id="togPrimeiroPedido" onclick="this.classList.toggle('on')"></button></div>
     </div>
     <div class="mfoot">
       <button class="btn-s" onclick="closeCupomModal()">Cancelar</button>
@@ -2135,6 +2282,36 @@ sb.auth.onAuthStateChange((event,session)=>{
 });
 
 // ── NAV ───────────────────────────────────────────────────────────────
+
+function toggleAside(){
+  document.querySelector('.aside').classList.toggle('open');
+  document.getElementById('asideOverlay').classList.toggle('open');
+}
+// Close aside when nav item clicked on mobile
+document.querySelectorAll('.ni').forEach(btn=>btn.addEventListener('click',()=>{
+  if(window.innerWidth<=768){
+    document.querySelector('.aside').classList.remove('open');
+    document.getElementById('asideOverlay').classList.remove('open');
+  }
+}));
+
+
+// Mobile back button → dashboard
+let currentPage='dashboard';
+const _goPage=goPage;
+window.goPage=function(name){
+  currentPage=name;
+  history.pushState({page:name},'',location.pathname+'?p='+name);
+  _goPage(name);
+};
+window.addEventListener('popstate',e=>{
+  const page=e.state?.page||'dashboard';
+  currentPage=page;
+  _goPage(page);
+});
+// Push initial state
+history.replaceState({page:'dashboard'},'',location.pathname);
+
 function goPage(name){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
@@ -2260,6 +2437,7 @@ function openNewProd(){
   editProdId=null;
   document.getElementById('mProdTitle').textContent='Novo produto';
   document.getElementById('mNome').value='';
+  document.getElementById('btnProdHist').style.display='none';
   document.getElementById('mDesc').value='';
   document.getElementById('mPreco').value='';
   document.getElementById('mPrecoPromo').value='';
@@ -2362,11 +2540,12 @@ async function saveProd(){
   };
   try{
     let prodId=editProdId;
-    if(editProdId){await sbPatch(`/rest/v1/produtos?id=eq.${editProdId}`,payload);}
+    if(editProdId){await saveSnapshot(editProdId);await sbPatch(`/rest/v1/produtos?id=eq.${editProdId}`,payload);}
     else{const r=await sbPost('/rest/v1/produtos',payload);prodId=r?.[0]?.id;}
     // Save variations
     if(prodId) await saveVars(prodId);
     toast('Produto salvo!','ok');
+  addHist('Produto salvo', `Preço: ${fmt(body.price||0)} · Prazo: ${body.prazo_producao_dias}d`, body.name||document.getElementById('mName')?.value||'');
     closeProdModal();
     await loadProds();
   }catch(e){toast('Erro ao salvar','err');}
@@ -2436,18 +2615,30 @@ async function openOrder(id){
       ${p.observacoes?`<div style="margin-top:10px;background:rgba(244,121,154,.06);border-radius:8px;padding:10px;font-size:.82rem;color:rgba(13,9,13,.55)"><b>Obs:</b> ${p.observacoes}</div>`:''}
     </div>
     <div class="msec"><h3>Status do pedido</h3>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
-        ${['pendente','pago','producao','enviado','entregue','cancelado'].map(s=>`
-          <div style="padding:9px;border:1.5px solid rgba(244,121,154,${p.status===s?'.4':'.1'});border-radius:10px;text-align:center;cursor:pointer;background:${p.status===s?'rgba(244,121,154,.07)':'transparent'};transition:all .2s" onclick="selOrderStatus(this,'${s}')">
-            <span class="pill ${s}">${{pendente:'⏳ Pendente',pago:'✅ Pago',producao:'🔨 Produção',enviado:'🚚 Enviado',entregue:'📬 Entregue',cancelado:'❌ Cancelado'}[s]}</span>
-          </div>`).join('')}
+      <div class="status-btns">
+        ${['pendente','confirmado','em_producao','pronto','enviado','entregue','cancelado'].map(s=>
+          `<button class="status-btn${p.status===s?' active':''}" data-s="${s}" onclick="setOrderStatus(${p.id},'${s}')">${{pendente:'⏳ Pendente',confirmado:'✅ Confirmado',em_producao:'🔨 Em produção',pronto:'📦 Pronto',enviado:'🚚 Enviado',entregue:'🎉 Entregue',cancelado:'❌ Cancelado'}[s]}</button>`
+        ).join('')}
+      </div>
+    </div>
+    <div class="msec"><h3>Pagamento</h3>
+      <div class="status-btns">
+        ${['pendente','pago'].map(s=>
+          `<button class="pgto-btn${(p.pagamento_status||'pendente')===s?' active':''}" data-p="${s}" onclick="setOrderPgto(${p.id},'${s}')">${{pendente:'💳 Pendente',pago:'💚 Pago'}[s]}</button>`
+        ).join('')}
       </div>
     </div>
     <div class="msec" style="margin-top:16px"><h3>Notas internas</h3>
       <textarea class="notes-area" placeholder="Anotações sobre este pedido (não visível ao cliente)..." onblur="saveOrderNotes(${p.id},this.value)">${p.notas_internas||''}</textarea>
     </div>
     <div style="margin-top:12px">
-      <button class="btn-s" style="width:100%;font-size:.82rem" onclick="contactWA(${p.id},'${encodeURIComponent(p.visitante_nome||'')}','${p.visitante_telefone?.replace(/\D/g,'')||''}')">💬 Contatar no WhatsApp</button>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button class="btn-s" onclick="waTemplate(${p.id},'confirmado')">✅ Confirmar pedido</button>
+        <button class="btn-s" onclick="waTemplate(${p.id},'producao')">🔨 Em produção</button>
+        <button class="btn-s" onclick="waTemplate(${p.id},'pronto')">📦 Pronto p/ envio</button>
+        <button class="btn-s" onclick="waTemplate(${p.id},'enviado')">🚚 Pedido enviado</button>
+      </div>
+      <button class="btn-p" style="width:100%;margin-top:8px" onclick="contactWA(${p.id})">💬 WhatsApp livre</button>
     </div>`;
   document.getElementById('orderModal').classList.add('open');
 }
@@ -2484,7 +2675,7 @@ function renderClients(){
   const el=document.getElementById('clientTable');
   if(!allClients.length){el.innerHTML='<div class="empty"><div class="empty-icon">👥</div><p>Nenhum cliente</p></div>';return;}
   el.innerHTML=`<div class="tbl-head" style="display:grid;grid-template-columns:1fr 1fr 1fr 120px"><span>Nome</span><span>E-mail</span><span>Telefone</span><span>Cadastro</span></div>`
-    +allClients.map(c=>`<div class="tbl-row" style="display:grid;grid-template-columns:1fr 1fr 1fr 120px">
+    +allClients.map(c=>`<div class="tbl-row" style="display:grid;grid-template-columns:1fr 1fr 1fr 120px 80px;cursor:pointer" onclick="openClient(${c.id||JSON.stringify(c.email)})">
       <span style="font-weight:600">${c.name}</span>
       <span style="font-size:.82rem;color:rgba(13,9,13,.5)">${c.email}</span>
       <span style="font-size:.82rem;color:rgba(13,9,13,.5)">${c.telefone||'—'}</span>
@@ -2527,6 +2718,7 @@ function openNewCupom(){
   ['cCod','cDesc','cVal','cMin','cLimite','cValidade'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('cTipo').value='percentual';
   document.getElementById('togCupomAtivo').classList.add('on');
+  ['togFreteGratis','togUnicoCliente','togPrimeiroPedido'].forEach(id=>document.getElementById(id)?.classList.remove('on'));
   document.getElementById('cupomModal').classList.add('open');
 }
 function editCupom(id){
@@ -2621,7 +2813,7 @@ function renderBanners(){
       <div class="banner-preview" style="background:${b.cor_fundo};color:${b.cor_texto}">${b.texto}</div>
       <div class="banner-actions">
         <button class="tog ${b.ativo?'on':''}" onclick="this.classList.toggle('on');toggleBanner(${b.id},this.classList.contains('on'))"></button>
-        <button class="ibtn edit" onclick="editBanner(${b.id})">✏️</button>
+        <button class="ibtn edit" onclick="editBanner(${b.id})">&#9999;</button>
         <button class="ibtn del" onclick="deleteBanner(${b.id})">🗑</button>
       </div>
     </div>`).join('');
@@ -3299,6 +3491,578 @@ function desDrop(e,i){
   renderDesignManager();
   populateDesignSelect();
 }
+
+// ── AGENDA ────────────────────────────────────────────────────────────
+async function loadAgenda(){
+  const el=document.getElementById('agendaContent');
+  if(!el)return;
+  el.innerHTML='<div class="empty"><div class="empty-icon">⏳</div><p>Carregando...</p></div>';
+
+  // Get active orders (in production or confirmed)
+  const orders=allOrders.filter(o=>['confirmado','em_producao','pronto'].includes(o.status));
+  if(!orders.length){
+    el.innerHTML='<div class="agenda-empty">✅ Nenhum pedido em produção no momento</div>';
+    return;
+  }
+
+  // Get all items for these orders
+  const ids=orders.map(o=>o.id).join(',');
+  let items=[];
+  try{
+    const d=await sbGet(`/rest/v1/itens_pedido?select=*&pedido_id=in.(${ids})`);
+    if(Array.isArray(d))items=d;
+  }catch{}
+
+  // Group by product
+  const byProduct=new Map();
+  for(const item of items){
+    const key=item.produto_id||item.nome_produto||'?';
+    const name=item.nome_produto||`Produto #${item.produto_id}`;
+    const prazo=allProds.find(p=>p.id===item.produto_id)?.prazo_producao_dias||7;
+    if(!byProduct.has(key)) byProduct.set(key,{name,qty:0,prazo,orders:[]});
+    const g=byProduct.get(key);
+    g.qty+=(item.quantidade||1);
+    const order=orders.find(o=>o.id===item.pedido_id);
+    if(order&&!g.orders.includes(order.id)) g.orders.push(order.id);
+  }
+
+  // Sort by prazo (urgent first)
+  const sorted=[...byProduct.values()].sort((a,b)=>a.prazo-b.prazo);
+
+  // Group by status
+  const emProd=orders.filter(o=>o.status==='em_producao');
+  const confirmados=orders.filter(o=>o.status==='confirmado');
+  const prontos=orders.filter(o=>o.status==='pronto');
+
+  const today=new Date();
+  function prazoClass(dias){
+    if(dias<=2)return'prazo-late';
+    if(dias<=5)return'prazo-warn';
+    return'prazo-ok';
+  }
+  function prazoLabel(dias){
+    if(dias<=0)return'⚠️ Atrasado';
+    if(dias===1)return'⚠️ Vence amanhã';
+    return`${dias} dias úteis`;
+  }
+
+  let out='';
+
+  if(prontos.length){
+    out+=`<div class="agenda-section"><h2>📦 Prontos para envio (${prontos.length})</h2>`;
+    prontos.forEach(o=>{
+      out+=`<div class="agenda-item">
+        <div><div class="agenda-item-name">#${o.id} — ${o.visitante_nome||'Cliente'}</div>
+        <div class="agenda-item-meta">${fmt(o.total)} · ${o.visitante_whatsapp||o.visitante_email||''}</div></div>
+        <button class="btn-s" onclick="openOrder(${o.id})">Ver pedido</button>
+      </div>`;
+    });
+    out+='</div>';
+  }
+
+  if(emProd.length){
+    out+=`<div class="agenda-section"><h2>🔨 Em produção (${emProd.length} pedidos)</h2>`;
+    sorted.filter(p=>p.qty>0).forEach(p=>{
+      out+=`<div class="agenda-item">
+        <div><div class="agenda-item-name">${p.name}</div>
+        <div class="agenda-item-meta">${p.orders.length} pedido${p.orders.length>1?'s':''}</div>
+        <div class="agenda-item-prazo ${prazoClass(p.prazo)}">${prazoLabel(p.prazo)}</div></div>
+        <div class="agenda-item-qty">${p.qty}×</div>
+      </div>`;
+    });
+    out+='</div>';
+  }
+
+  if(confirmados.length){
+    out+=`<div class="agenda-section"><h2>✅ Confirmados — aguardando produção (${confirmados.length})</h2>`;
+    confirmados.forEach(o=>{
+      out+=`<div class="agenda-item">
+        <div><div class="agenda-item-name">#${o.id} — ${o.visitante_nome||'Cliente'}</div>
+        <div class="agenda-item-meta">${fmt(o.total)} · ${new Date(o.created_at).toLocaleDateString('pt-BR')}</div></div>
+        <button class="btn-s" onclick="openOrder(${o.id})">Ver pedido</button>
+      </div>`;
+    });
+    out+='</div>';
+  }
+
+  el.innerHTML=out||'<div class="agenda-empty">✅ Tudo em dia!</div>';
+}
+
+// ── ORDER FILTERS ─────────────────────────────────────────────────────
+let orderStatusFilter='', orderPgtoFilter='';
+
+function setOrderFilter(el,status,pgto=''){
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  orderStatusFilter=status;
+  orderPgtoFilter=pgto;
+  filterOrders();
+}
+
+function filterOrders(){
+  const q=(document.getElementById('orderSearch')?.value||'').toLowerCase().trim();
+  filtOrders=allOrders.filter(o=>{
+    if(orderStatusFilter&&o.status!==orderStatusFilter)return false;
+    if(orderPgtoFilter&&o.pagamento_status!==orderPgtoFilter)return false;
+    if(q){
+      const hay=`#${o.id} ${o.visitante_nome||''} ${o.visitante_email||''} ${o.visitante_whatsapp||''}`.toLowerCase();
+      if(!hay.includes(q))return false;
+    }
+    return true;
+  });
+  renderOrderTable();
+}
+
+// ── STATUS BUTTONS IN ORDER MODAL ────────────────────────────────────
+async function setOrderStatus(id,status){
+  await sbPatch(`/rest/v1/pedidos?id=eq.${id}`,{status});
+  const o=allOrders.find(x=>x.id==id);
+  if(o)o.status=status;
+  // Update buttons
+  document.querySelectorAll('.status-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.s===status);
+  });
+  filterOrders();
+  toast('Status atualizado','ok');
+  const _o=allOrders.find(x=>x.id==id);addHist('Status do pedido alterado',`${status}`,`#${id} ${_o?.visitante_nome||''}`);
+}
+
+async function setOrderPgto(id,pgto){
+  await sbPatch(`/rest/v1/pedidos?id=eq.${id}`,{pagamento_status:pgto});
+  const o=allOrders.find(x=>x.id==id);
+  if(o)o.pagamento_status=pgto;
+  document.querySelectorAll('.pgto-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.p===pgto);
+  });
+  filterOrders();
+  toast('Pagamento atualizado','ok');
+  const _op=allOrders.find(x=>x.id==id);addHist('Pagamento atualizado',pgto,`#${id} ${_op?.visitante_nome||''}`);
+}
+
+
+const WA_NUM='5519993041555';
+function contactWA(id){
+  const p=allOrders.find(o=>o.id==id);
+  if(!p)return;
+  const tel=(p.visitante_telefone||'').replace(/\D/g,'');
+  if(!tel){toast('Sem telefone cadastrado','err');return;}
+  const msg=`Olá ${p.visitante_nome||''}! 😊 Tudo bem?`;
+  window.open(`https://wa.me/55${tel}?text=${encodeURIComponent(msg)}`,'_blank');
+}
+function waTemplate(id,tipo){
+  const p=allOrders.find(o=>o.id==id);
+  if(!p)return;
+  const tel=(p.visitante_telefone||'').replace(/\D/g,'');
+  if(!tel){toast('Sem telefone cadastrado','err');return;}
+  const nome=p.visitante_nome?.split(' ')[0]||'';
+  const msgs={
+    confirmado:`Olá ${nome}! 🌸 Seu pedido #${p.id} foi confirmado! Em breve iniciaremos a produção. Qualquer dúvida estou aqui. 💕`,
+    producao:`Olá ${nome}! 🔨 Boa notícia! Seu pedido #${p.id} já está sendo produzido com muito carinho. Te avisamos quando ficar pronto! 🌸`,
+    pronto:`Olá ${nome}! 📦 Seu pedido #${p.id} está pronto! Estamos preparando o envio. Em breve você receberá o código de rastreio. 🌸`,
+    enviado:`Olá ${nome}! 🚚 Seu pedido #${p.id} foi enviado! Em breve você receberá mais informações sobre a entrega. Qualquer dúvida estou aqui. 💕`
+  };
+  const msg=msgs[tipo]||msgs.confirmado;
+  window.open(`https://wa.me/55${tel}?text=${encodeURIComponent(msg)}`,'_blank');
+}
+
+
+function exportOrdersCSV(){
+  const rows=[['#','Nome','Email','Telefone','Total','Status','Pagamento','Data']];
+  filtOrders.forEach(o=>rows.push([
+    o.id, o.visitante_nome||'', o.visitante_email||'', o.visitante_telefone||'',
+    o.total||0, o.status||'', o.pagamento_status||'',
+    new Date(o.created_at).toLocaleDateString('pt-BR')
+  ]));
+  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download=`pedidos_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  toast('CSV exportado!','ok');
+}
+
+
+function previewProduct(id){
+  window.open(`produto.html?id=${id}`,'_blank');
+}
+
+
+// ── HISTÓRICO DE ALTERAÇÕES ───────────────────────────────────────────
+const MAX_HIST=200;
+function getHist(){try{return JSON.parse(localStorage.getItem('cr_hist')||'[]');}catch{return[];}}
+function addHist(action,detail,entity=''){
+  const hist=getHist();
+  hist.unshift({ts:new Date().toISOString(),action,detail,entity});
+  if(hist.length>MAX_HIST)hist.pop();
+  localStorage.setItem('cr_hist',JSON.stringify(hist));
+}
+function renderHist(){
+  const el=document.getElementById('histList');
+  if(!el)return;
+  const hist=getHist();
+  if(!hist.length){el.innerHTML='<div class="empty"><div class="empty-icon">📋</div><p>Nenhuma alteração registrada</p></div>';return;}
+  el.innerHTML='<div class="hist-list">'+hist.map(h=>`
+    <div class="hist-item">
+      <div class="hist-time">${new Date(h.ts).toLocaleString('pt-BR')}</div>
+      <div class="hist-action">${h.action}${h.entity?' — '+h.entity:''}</div>
+      ${h.detail?`<div class="hist-detail">${h.detail}</div>`:''}
+    </div>`).join('')+'</div>';
+}
+function clearHist(){
+  if(!confirm('Limpar todo o histórico?'))return;
+  localStorage.removeItem('cr_hist');
+  renderHist();
+}
+
+
+async function openClient(idOrEmail){
+  const c=allClients.find(x=>x.id===idOrEmail||x.email===idOrEmail);
+  if(!c)return;
+  const clientOrders=allOrders.filter(o=>o.visitante_email===c.email);
+  const total=clientOrders.reduce((s,o)=>s+(o.total||0),0);
+  const blocked=await isClientBlocked(c.email);
+
+  const modal=document.createElement('div');
+  modal.className='modal-ov open';
+  modal.style.zIndex=800;
+  modal.innerHTML=`<div class="modal" style="max-width:560px">
+    <div class="mhead">
+      <h2>${c.nome||c.email} ${blocked?'<span class="badge-blocked">Bloqueado</span>':''}</h2>
+      <button class="mclose" onclick="this.closest('.modal-ov').remove()">✕</button>
+    </div>
+    <div class="mbody">
+      <div class="msec"><h3>Dados</h3>
+        <div class="client-detail">
+          📧 ${c.email||'—'}<br>
+          📱 ${c.phone||c.telefone||'—'}<br>
+          📅 Cadastro: ${c.created_at?new Date(c.created_at).toLocaleDateString('pt-BR'):'—'}<br>
+          💰 Total gasto: <b style="color:var(--rose)">${fmt(total)}</b><br>
+          📦 Pedidos: <b>${clientOrders.length}</b>
+        </div>
+      </div>
+      <div class="msec"><h3>Pedidos</h3>
+        <div class="client-orders">
+          ${clientOrders.length?clientOrders.slice(0,10).map(o=>`
+            <div class="client-order-row">
+              <span><b>#${o.id}</b> · ${new Date(o.created_at).toLocaleDateString('pt-BR')}</span>
+              <span style="display:flex;align-items:center;gap:8px">
+                <span>${fmt(o.total)}</span>
+                <span class="pill ${o.status||'pendente'}">${o.status||'pendente'}</span>
+                <button class="btn-s" style="padding:3px 10px;font-size:.7rem" onclick="this.closest('.modal-ov').remove();setTimeout(()=>openOrder(${o.id}),100)">Ver</button>
+              </span>
+            </div>`).join('')
+          :'<p style="font-size:.82rem;color:rgba(13,9,13,.38)">Nenhum pedido</p>'}
+        </div>
+      </div>
+      <div class="msec"><h3>Ações</h3>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          ${c.phone||c.telefone?`<button class="btn-s" onclick="window.open('https://wa.me/55${(c.phone||c.telefone||'').replace(/\D/g,'')}','_blank')">💬 WhatsApp</button>`:''}
+          <button class="btn-s ${blocked?'':'btn-danger'}" onclick="toggleBlockClient('${c.email}',this)">
+            ${blocked?'✅ Desbloquear':'🚫 Bloquear cliente'}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
+}
+
+// toggleBlockClient moved to block_js above
+
+
+// ── LOG DE ACESSOS ────────────────────────────────────────────────────
+(function(){
+  const key='cr_access_log';
+  const logs=JSON.parse(localStorage.getItem(key)||'[]');
+  logs.unshift({ts:new Date().toISOString(),ua:navigator.userAgent.slice(0,80),ref:document.referrer||'direto'});
+  if(logs.length>100)logs.pop();
+  localStorage.setItem(key,JSON.stringify(logs));
+})();
+
+function renderAccessLog(){
+  const el=document.getElementById('accessLog');
+  if(!el)return;
+  const logs=JSON.parse(localStorage.getItem('cr_access_log')||'[]');
+  if(!logs.length){el.innerHTML='<div class="empty"><div class="empty-icon">🔒</div><p>Nenhum acesso registrado</p></div>';return;}
+  const isMobile=ua=>(/Android|iPhone|iPad/i.test(ua)?'📱':'💻');
+  el.innerHTML=logs.map(l=>`
+    <div class="hist-item">
+      <div class="hist-time">${new Date(l.ts).toLocaleString('pt-BR')} ${isMobile(l.ua)}</div>
+      <div class="hist-action">${l.ref!=='direto'?`Via: ${l.ref.slice(0,60)}`:'Acesso direto'}</div>
+    </div>`).join('');
+}
+
+
+// ── RELATÓRIOS ────────────────────────────────────────────────────────
+function renderRelatorio(){
+  const el=document.getElementById('relatorioContent');
+  if(!el)return;
+  const days=parseInt(document.getElementById('relPeriod')?.value||30);
+  const since=new Date(Date.now()-days*86400000);
+
+  const orders=allOrders.filter(o=>new Date(o.created_at)>=since&&o.status!=='cancelado');
+  const pagos=orders.filter(o=>o.pagamento_status==='pago');
+  const receita=pagos.reduce((s,o)=>s+(o.total||0),0);
+  const ticket=pagos.length?receita/pagos.length:0;
+  const pendentes=orders.filter(o=>o.pagamento_status!=='pago').length;
+
+  // Products sold
+  const prodCount=new Map();
+  orders.forEach(o=>{
+    (o._itens||[]).forEach(i=>{
+      const k=i.nome_produto||`#${i.produto_id}`;
+      prodCount.set(k,(prodCount.get(k)||0)+(i.quantidade||1));
+    });
+  });
+
+  // Revenue by day
+  const byDay=new Map();
+  pagos.forEach(o=>{
+    const d=o.created_at?.slice(0,10);
+    if(d)byDay.set(d,(byDay.get(d)||0)+(o.total||0));
+  });
+
+  const topProds=[...prodCount.entries()].sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const maxQty=topProds[0]?.[1]||1;
+
+  // Revenue by category
+  const byCat=new Map();
+  allOrders.filter(o=>o.pagamento_status==='pago'&&new Date(o.created_at)>=since).forEach(o=>{
+    (o._itens||[]).forEach(i=>{
+      const prod=allProds.find(p=>p.id===i.produto_id);
+      const cat=(prod?.collections||[])[0]||'Outros';
+      byCat.set(cat,(byCat.get(cat)||0)+(i.subtotal||0));
+    });
+  });
+  const topCats=[...byCat.entries()].sort((a,b)=>b[1]-a[1]).slice(0,6);
+
+  el.innerHTML=`
+    <div class="rel-kpi-grid">
+      <div class="rel-kpi"><div class="rel-kpi-val">${fmt(receita)}</div><div class="rel-kpi-lbl">Receita (pagos)</div></div>
+      <div class="rel-kpi"><div class="rel-kpi-val">${pagos.length}</div><div class="rel-kpi-lbl">Pedidos pagos</div></div>
+      <div class="rel-kpi"><div class="rel-kpi-val">${fmt(ticket)}</div><div class="rel-kpi-lbl">Ticket médio</div></div>
+      <div class="rel-kpi"><div class="rel-kpi-val">${pendentes}</div><div class="rel-kpi-lbl">Aguardando pgto</div></div>
+    </div>
+
+    <div class="rel-section">
+      <h3>Produtos mais vendidos</h3>
+      ${topProds.length?topProds.map(([nome,qty])=>`
+        <div class="top-prod-row">
+          <span>${nome}</span>
+          <span style="font-weight:700;color:var(--rose)">${qty}×</span>
+        </div>
+        <div class="top-prod-bar" style="width:${Math.round(qty/maxQty*100)}%"></div>
+      `).join(''):'<p style="color:rgba(13,9,13,.35);font-size:.82rem">Nenhum dado disponível — os itens dos pedidos precisam estar registrados</p>'}
+    </div>
+
+    ${topCats.length?`<div class="rel-section">
+      <h3>Receita por categoria</h3>
+      ${topCats.map(([cat,val])=>`
+        <div class="top-prod-row">
+          <span>${cat}</span>
+          <span style="font-weight:700;color:var(--rose)">${fmt(val)}</span>
+        </div>`).join('')}
+    </div>`:''}
+
+    <div class="rel-section">
+      <h3>Resumo do período</h3>
+      <div style="font-size:.84rem;line-height:2.2;color:rgba(13,9,13,.6)">
+        📅 Período: últimos ${days} dias<br>
+        📦 Total de pedidos: ${orders.length}<br>
+        ✅ Pagos: ${pagos.length}<br>
+        ⏳ Pendentes: ${pendentes}<br>
+        ❌ Cancelados: ${allOrders.filter(o=>o.status==='cancelado'&&new Date(o.created_at)>=since).length}<br>
+        💰 Receita total: ${fmt(receita)}
+      </div>
+    </div>`;
+}
+
+function exportReportCSV(){
+  const days=parseInt(document.getElementById('relPeriod')?.value||30);
+  const since=new Date(Date.now()-days*86400000);
+  const orders=allOrders.filter(o=>new Date(o.created_at)>=since);
+  const rows=[['#','Nome','Email','Total','Status','Pagamento','Data']];
+  orders.forEach(o=>rows.push([o.id,o.visitante_nome||'',o.visitante_email||'',o.total||0,o.status||'',o.pagamento_status||'',new Date(o.created_at).toLocaleDateString('pt-BR')]));
+  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download=`relatorio_${days}d_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+
+// ── LISTA DE E-MAIL ───────────────────────────────────────────────────
+let emailFilter='todos';
+function setEmailFilter(el,f){
+  document.querySelectorAll('[data-ef]').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  emailFilter=f;
+  renderEmailList();
+}
+
+function getEmailList(){
+  const seen=new Map();
+  allOrders.forEach(o=>{
+    if(!o.visitante_email)return;
+    const existing=seen.get(o.visitante_email);
+    if(!existing||new Date(o.created_at)>new Date(existing.last)){
+      seen.set(o.visitante_email,{
+        nome:o.visitante_nome||'',
+        email:o.visitante_email,
+        tel:o.visitante_telefone||'',
+        total:((existing?.total)||0)+(o.total||0),
+        pedidos:((existing?.pedidos)||0)+1,
+        pago:existing?.pago||o.pagamento_status==='pago',
+        last:o.created_at
+      });
+    }else{
+      existing.total+=(o.total||0);
+      existing.pedidos+=1;
+      if(o.pagamento_status==='pago')existing.pago=true;
+    }
+  });
+  let list=[...seen.values()];
+  const now=new Date();
+  if(emailFilter==='pagos') list=list.filter(c=>c.pago);
+  if(emailFilter==='inativos') list=list.filter(c=>(now-new Date(c.last))>30*86400000);
+  return list.sort((a,b)=>b.total-a.total);
+}
+
+function renderEmailList(){
+  const el=document.getElementById('emailList');
+  if(!el)return;
+  const list=getEmailList();
+  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">📧</div><p>Nenhum e-mail</p></div>';return;}
+  el.innerHTML=`<div class="tbl-head" style="display:grid;grid-template-columns:1fr 1fr 80px 100px 80px"><span>Nome</span><span>E-mail</span><span>Pedidos</span><span>Total gasto</span><span></span></div>`
+    +list.map(c=>`<div class="tbl-row" style="display:grid;grid-template-columns:1fr 1fr 80px 100px 80px;align-items:center">
+      <span style="font-weight:600;font-size:.84rem">${c.nome||'—'}</span>
+      <span style="font-size:.8rem;color:rgba(13,9,13,.55)">${c.email}</span>
+      <span style="text-align:center">${c.pedidos}</span>
+      <span style="font-weight:700;color:var(--rose)">${fmt(c.total)}</span>
+      <button class="btn-s" style="padding:4px 10px;font-size:.72rem" onclick="navigator.clipboard.writeText('${c.email}').then(()=>toast('Copiado!','ok'))">Copiar</button>
+    </div>`).join('');
+}
+
+function exportEmailCSV(){
+  const list=getEmailList();
+  const rows=[['Nome','E-mail','Telefone','Pedidos','Total','Último pedido']];
+  list.forEach(c=>rows.push([c.nome,c.email,c.tel,c.pedidos,c.total,new Date(c.last).toLocaleDateString('pt-BR')]));
+  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download=`emails_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  toast('Lista exportada!','ok');
+}
+
+
+// ── DESFAZER PRODUTO ──────────────────────────────────────────────────
+async function saveSnapshot(prodId){
+  try{
+    const prod=allProds.find(p=>p.id===prodId);
+    if(!prod)return;
+    await sbPost('/rest/v1/produto_historico',{
+      produto_id:prodId,
+      snapshot:prod
+    });
+  }catch(e){console.warn('Snapshot failed',e);}
+}
+
+async function openHistory(prodId){
+  let hist=[];
+  try{
+    const d=await sbGet(`/rest/v1/produto_historico?produto_id=eq.${prodId}&order=alterado_em.desc&limit=10`);
+    if(Array.isArray(d))hist=d;
+  }catch{}
+
+  const modal=document.createElement('div');
+  modal.className='modal-ov open';
+  modal.style.zIndex=900;
+  modal.innerHTML=`<div class="modal" style="max-width:500px">
+    <div class="mhead"><h2>Histórico do produto</h2><button class="mclose" onclick="this.closest('.modal-ov').remove()">✕</button></div>
+    <div class="mbody">
+      ${hist.length?hist.map(h=>`
+        <div class="hist-item" style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div class="hist-time">${new Date(h.alterado_em).toLocaleString('pt-BR')}</div>
+            <div class="hist-action" style="font-size:.82rem">
+              Preço: ${fmt(h.snapshot?.price)} · Prazo: ${h.snapshot?.prazo_producao_dias}d
+            </div>
+          </div>
+          <button class="btn-s" onclick="restoreSnapshot(${prodId},${JSON.stringify(h.snapshot).replace(/"/g,'&quot;')},this.closest('.modal-ov'))">
+            ↩ Restaurar
+          </button>
+        </div>`).join('')
+      :'<p style="color:rgba(13,9,13,.38);font-size:.82rem">Nenhum histórico salvo</p>'}
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
+}
+
+async function restoreSnapshot(prodId,snapshot,modalEl){
+  if(!confirm('Restaurar esta versão do produto?'))return;
+  try{
+    const {id,...data}=snapshot;
+    await sbPatch(`/rest/v1/produtos?id=eq.${prodId}`,data);
+    const idx=allProds.findIndex(p=>p.id===prodId);
+    if(idx>=0)allProds[idx]={...allProds[idx],...data};
+    toast('Produto restaurado!','ok');
+    addHist('Produto restaurado',`Versão de ${new Date(snapshot.alterado_em||Date.now()).toLocaleDateString('pt-BR')}`,snapshot.name||snapshot.nome||'');
+    modalEl?.remove();
+    renderProdTable();
+  }catch(e){toast('Erro ao restaurar','err');}
+}
+
+
+// ── BLOQUEAR CLIENTE (banco) ──────────────────────────────────────────
+async function toggleBlockClient(email, btn){
+  try{
+    // Check if already blocked
+    const check=await sbGet(`/rest/v1/clientes_bloqueados?email=eq.${encodeURIComponent(email)}`);
+    const isBlocked=Array.isArray(check)&&check.length>0;
+    if(isBlocked){
+      await fetch(`${SB}/rest/v1/clientes_bloqueados?email=eq.${encodeURIComponent(email)}`,{
+        method:'DELETE',headers:{...HDR,Authorization:'Bearer '+getToken()}
+      });
+      toast('Cliente desbloqueado','ok');
+      if(btn){btn.textContent='🚫 Bloquear cliente';btn.classList.remove('btn-danger');}
+      addHist('Cliente desbloqueado','',email);
+    }else{
+      await sbPost('/rest/v1/clientes_bloqueados',{email,motivo:'Bloqueado pelo admin'});
+      toast('Cliente bloqueado','err');
+      if(btn){btn.textContent='✅ Desbloquear';btn.classList.add('btn-danger');}
+      addHist('Cliente bloqueado','',email);
+    }
+  }catch(e){
+    // Fallback to localStorage if table doesn't exist yet
+    const key='blocked_'+email;
+    if(localStorage.getItem(key)){
+      localStorage.removeItem(key);
+      toast('Cliente desbloqueado (local)','ok');
+      if(btn)btn.textContent='🚫 Bloquear cliente';
+    }else{
+      localStorage.setItem(key,'1');
+      toast('Cliente bloqueado (local — rode o SQL para persistir no banco)','info');
+      if(btn)btn.textContent='✅ Desbloquear';
+    }
+  }
+}
+
+async function isClientBlocked(email){
+  try{
+    const d=await sbGet(`/rest/v1/clientes_bloqueados?email=eq.${encodeURIComponent(email)}`);
+    return Array.isArray(d)&&d.length>0;
+  }catch{
+    return !!localStorage.getItem('blocked_'+email);
+  }
+}
+
+function getToken(){
+  try{return JSON.parse(localStorage.getItem('sb-oznpfqsgurztffwfyfec-auth-token'))?.access_token||'';}catch{return '';}
+}
+
 // ── DASHBOARD ─────────────────────────────────────────────────────────
 function renderDash(){
   const hoje=new Date().toDateString();
