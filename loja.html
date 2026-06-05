@@ -1963,11 +1963,12 @@ function showSkeletons(n=8){
 
 async function loadCats(){
   try{
-    const r=await fetch('https://oznpfqsgurztffwfyfec.supabase.co/rest/v1/categorias?select=nome&order=ordem',{
+    const r=await fetch('https://oznpfqsgurztffwfyfec.supabase.co/rest/v1/categorias?select=nome&order=ordem&nome=not.is.null',{
       headers:{apikey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA',Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA',Accept:'application/json'}
     });
     const cats=await r.json();
     if(!Array.isArray(cats)||!cats.length)return;
+    const seen=new Set();const unique=cats.filter(c=>{if(seen.has(c.nome))return false;seen.add(c.nome);return true;});cats.splice(0,cats.length,...unique);
     const ul=document.getElementById('catList');
     if(!ul)return;
     // Keep "Todas" item, add rest
