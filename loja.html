@@ -1798,7 +1798,7 @@ function goPage(p){ page=p; renderGrid(); renderPagination(); window.scrollTo({t
 // ── CART ──────────────────────────────────────────────────────────────
 let cart=JSON.parse(localStorage.getItem('cr_cart')||'[]');
 function saveCart(){ localStorage.setItem('cr_cart',JSON.stringify(cart)); updateCartUI(); }
-function updateCartUI(){ document.getElementById('cartCount').textContent=cart.reduce((s,i)=>s+i.qty,0); }
+function updateCartUI(){ const el=document.getElementById('cartCount'); if(el) el.textContent=cart.reduce((s,i)=>s+i.qty,0); }
 
 function addToCart(e,id){
   e.stopPropagation();
@@ -1963,7 +1963,7 @@ function showSkeletons(n=8){
 
 async function loadCats(){
   try{
-    const r=await fetch('https://oznpfqsgurztffwfyfec.supabase.co/rest/v1/categorias?select=nome,emoji&order=ordem',{
+    const r=await fetch('https://oznpfqsgurztffwfyfec.supabase.co/rest/v1/categorias?select=nome&order=ordem',{
       headers:{apikey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA',Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA',Accept:'application/json'}
     });
     const cats=await r.json();
@@ -1996,7 +1996,8 @@ async function loadCats(){
 
 async function init(){
   showSkeletons();
-  await Promise.all([loadFromDB(), loadCats()]);
+  await loadFromDB();
+  await loadCats();
   mergeProducts();
   applyFilters();
   updateCartUI();
