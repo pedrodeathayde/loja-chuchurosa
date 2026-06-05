@@ -4208,7 +4208,7 @@ async function loadMeUser(){
       <b>CEP:</b> ${addr.postal_code}<br>
       <b>Endereço:</b> ${addr.address}, ${addr.number}<br>
       <b>Bairro:</b> ${addr.district}<br>
-      <b>Cidade:</b> ${addr.city} - ${addr.state_abbr}
+      <b>Cidade:</b> ${addr.city?.city||addr.city} - ${addr.city?.state?.state_abbr||addr.state_abbr||'SP'}
     `;
     else if(elO) elO.innerHTML='<span style="color:rgba(13,9,13,.35)">Endereço não cadastrado no ME</span>';
     toast('Conta ME verificada!','ok');
@@ -4262,7 +4262,7 @@ function getDims(collections){
 // ── CALCULAR FRETE ────────────────────────────────────────────────────
 async function calcularFrete(cepDestino, itens){
   if(!meUser)await loadMeUser();
-  const origem=meUser?.address?.postal_code?.replace(/\D/g,'');
+  const origem=(meUser?.address?.postal_code||'13385024').replace(/\D/g,'');
   if(!origem){toast('Configure o endereço no Melhor Envio','err');return null;}
 
   // Build products list
@@ -4379,10 +4379,10 @@ async function confirmarEtiqueta(pedidoId,serviceId,modalEl){
         complement:origem?.complement||'',
         number:origem?.number||'',
         district:origem?.district||'',
-        city:origem?.city||'',
+        city:meUser?.address?.city?.city||'',
         country_id:'BR',
         postal_code:origem?.postal_code?.replace(/\D/g,'')||'',
-        state_abbr:origem?.state_abbr||'SP',
+        state_abbr:meUser?.address?.city?.state?.state_abbr||'SP',
         note:''
       },
       to:{
