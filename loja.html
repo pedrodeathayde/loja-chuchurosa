@@ -161,7 +161,6 @@ nav{position:sticky;top:0;z-index:100;background:rgba(12,9,13,.95);backdrop-filt
   .shop-hero{padding:32px 24px;flex-direction:column;align-items:flex-start}
   .shop-body{grid-template-columns:1fr}
   .sidebar{display:none}
-  .sidebar.mobile-open{display:block;position:fixed;inset:0;z-index:200;overflow-y:auto;height:100vh}
   .shop-main{padding:20px 16px}
   .prod-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
   .cart-drawer{width:100%}
@@ -223,29 +222,11 @@ nav{position:sticky;top:0;z-index:100;background:rgba(12,9,13,.95);backdrop-filt
 .swatch:hover{transform:scale(1.2)}
 .swatch.active{border-color:var(--pink);box-shadow:0 0 0 2px rgba(229,37,100,.3)}
 
-/* Better btn-add */
-.btn-add{
-  background:var(--pink);color:#fff;border:none;border-radius:100px;
-  padding:10px 16px;font-family:var(--fb);font-size:.78rem;font-weight:600;
-  cursor:pointer;transition:all .2s;white-space:nowrap;width:100%;margin-top:8px;
-  display:flex;align-items:center;justify-content:center;gap:6px;
-}
-.btn-add:hover{background:var(--rose);transform:translateY(-1px)}
-
-/* Promo badge */
-.pcard-discount{
-  display:inline-block;background:var(--rose);color:#fff;
-  border-radius:6px;padding:2px 7px;font-size:.65rem;font-weight:700;
-  margin-left:6px;vertical-align:middle;
-}
-
-/* Parcelamento */
+/* Promo / parcelamento (inline, não quebram layout) */
+.pcard-discount{display:inline-block;background:var(--rose);color:#fff;border-radius:6px;padding:2px 7px;font-size:.65rem;font-weight:700;margin-left:6px;vertical-align:middle;}
 .pcard-parcel{font-size:.68rem;color:rgba(13,9,13,.38);margin-top:2px}
-
-/* Better pcard-bottom */
-.pcard-bottom{padding-top:4px}
 .pcard-price-old{font-size:.72rem;color:rgba(13,9,13,.35);text-decoration:line-through;line-height:1.2}
-.pcard-price-main{font-size:1rem;font-weight:800;color:var(--dark);line-height:1.3}
+.pcard-price-main{font-size:.95rem;font-weight:700;color:var(--dark);line-height:1.3}
 .pcard-price-main.promo{color:var(--rose)}
 </style>
 </head>
