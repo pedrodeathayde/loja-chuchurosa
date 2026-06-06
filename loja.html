@@ -198,12 +198,13 @@ nav{position:sticky;top:0;z-index:100;background:rgba(12,9,13,.95);backdrop-filt
 .skel-line.short{width:50%;height:10px;margin-top:0}
 @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
-/* Asymmetric grid — destaque card 2x */
+@media(min-width:901px){
 .prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .prod-grid .pcard.featured-card{grid-column:span 2;grid-row:span 2}
 .prod-grid .pcard.featured-card .pcard-img{aspect-ratio:16/9}
 .prod-grid .pcard.featured-card .pcard-name{font-size:1.1rem}
 .prod-grid .pcard.featured-card .pcard-price{font-size:1rem}
+}
 @media(max-width:900px){
   .prod-grid{grid-template-columns:1fr 1fr}
   .prod-grid .pcard.featured-card{grid-column:span 2;grid-row:span 1}
