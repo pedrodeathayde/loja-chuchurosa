@@ -64,12 +64,15 @@ nav{position:sticky;top:0;z-index:100;background:rgba(12,9,13,.95);backdrop-filt
 .cart-count{background:#fff;color:var(--rose);border-radius:100px;font-size:.72rem;font-weight:700;padding:1px 7px;min-width:20px;text-align:center}
 .nav-home{display:none}
 .nav-home:hover{opacity:1}
-.shop-hero{position:relative;overflow:hidden;color:#fff;padding:72px 48px 60px;display:flex;align-items:center;justify-content:space-between;gap:32px}
-.shop-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 90% 80% at 50% 0%,rgba(244,121,154,.18),transparent 70%),radial-gradient(ellipse 60% 60% at 85% 80%,rgba(212,187,255,.1),transparent 60%),var(--dark);z-index:0}
-.shop-hero>*{position:relative;z-index:1}
-.shop-hero h1{font-family:var(--fd);font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.05;letter-spacing:-.03em}
-.shop-hero h1 em{font-style:italic;background:linear-gradient(135deg,var(--pink2),var(--pink),var(--rose));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.shop-hero p{color:rgba(255,255,255,.5);font-size:.95rem;margin-top:10px;line-height:1.7}
+.shop-hero{position:relative;overflow:hidden;color:#fff;padding:56px 48px 52px;display:flex;align-items:center;justify-content:space-between;gap:32px}
+.shop-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 100% at 20% 50%,rgba(229,37,100,.15),transparent 60%),radial-gradient(ellipse 50% 80% at 80% 20%,rgba(201,169,110,.08),transparent 60%),radial-gradient(ellipse 40% 60% at 90% 90%,rgba(240,77,127,.08),transparent 50%),var(--dark);z-index:0}
+.hero-inner{position:relative;z-index:1;max-width:680px}
+.hero-eyebrow{font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#c9a96e;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:'';display:block;width:24px;height:1px;background:#c9a96e}
+.shop-hero h1{font-family:var(--fd);font-size:clamp(2rem,4.5vw,3.2rem);font-weight:900;line-height:1.05;letter-spacing:-.03em;margin-bottom:14px}
+.shop-hero h1 em{font-style:italic;background:linear-gradient(135deg,#f8a5c0,var(--pink2),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-meta{color:rgba(255,255,255,.45);font-size:.9rem;margin-bottom:28px;display:flex;align-items:center;gap:6px}
+.hero-meta span{color:rgba(255,255,255,.7);font-weight:600}
 .hero-badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}
 .hbadge{background:rgba(244,121,154,.1);border:1px solid rgba(244,121,154,.2);border-radius:100px;padding:7px 18px;font-size:.78rem;font-weight:600;color:var(--pink2);letter-spacing:.04em;cursor:pointer;transition:all .25s;user-select:none}
 .hbadge:hover{background:rgba(244,121,154,.2);border-color:rgba(244,121,154,.4);transform:translateY(-2px)}
@@ -158,10 +161,10 @@ nav{position:sticky;top:0;z-index:100;background:rgba(12,9,13,.95);backdrop-filt
 @media(max-width:900px){
   nav{padding:0 20px;gap:12px}
   .nav-search{max-width:none;flex:1}
-  .shop-hero{padding:32px 24px;flex-direction:column;align-items:flex-start}
+  .shop-hero{padding:36px 20px 32px;flex-direction:column;align-items:flex-start}
   .shop-body{grid-template-columns:1fr}
   .sidebar{display:none}
-  .sidebar.mobile-open{display:block;position:fixed;inset:0;z-index:200;overflow-y:auto;height:100vh}
+  .sidebar{display:none}
   .shop-main{padding:20px 16px}
   .prod-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
   .cart-drawer{width:100%}
@@ -223,138 +226,33 @@ nav{position:sticky;top:0;z-index:100;background:rgba(12,9,13,.95);backdrop-filt
 .swatch:hover{transform:scale(1.2)}
 .swatch.active{border-color:var(--pink);box-shadow:0 0 0 2px rgba(229,37,100,.3)}
 
-/* Better btn-add */
-.btn-add{
-  background:var(--pink);color:#fff;border:none;border-radius:100px;
-  padding:10px 16px;font-family:var(--fb);font-size:.78rem;font-weight:600;
-  cursor:pointer;transition:all .2s;white-space:nowrap;width:100%;margin-top:8px;
-  display:flex;align-items:center;justify-content:center;gap:6px;
-}
-.btn-add:hover{background:var(--rose);transform:translateY(-1px)}
-
-/* Promo badge */
-.pcard-discount{
-  display:inline-block;background:var(--rose);color:#fff;
-  border-radius:6px;padding:2px 7px;font-size:.65rem;font-weight:700;
-  margin-left:6px;vertical-align:middle;
-}
-
-/* Parcelamento */
+.pcard-discount{display:inline-block;background:var(--rose);color:#fff;border-radius:4px;padding:1px 6px;font-size:.62rem;font-weight:700;margin-left:5px;vertical-align:middle}
 .pcard-parcel{font-size:.68rem;color:rgba(13,9,13,.38);margin-top:2px}
-
-/* Better pcard-bottom */
-.pcard-bottom{padding-top:4px}
-.pcard-price-old{font-size:.72rem;color:rgba(13,9,13,.35);text-decoration:line-through;line-height:1.2}
-.pcard-price-main{font-size:1rem;font-weight:800;color:var(--dark);line-height:1.3}
+.pcard-price-old{font-size:.7rem;color:rgba(13,9,13,.35);text-decoration:line-through;line-height:1.2}
+.pcard-price-main{font-size:.92rem;font-weight:700;color:var(--dark);line-height:1.3}
 .pcard-price-main.promo{color:var(--rose)}
 
-/* ── FEATURED STRIP ──────────────────────────────────────────────────── */
-.featured-strip{
-  background:var(--white);
-  border-bottom:1px solid rgba(229,37,100,.07);
-  padding:32px 0 36px;
-  overflow:hidden;
-}
-.featured-strip-inner{
-  padding:0 36px;
-}
-.strip-header{
-  display:flex;align-items:baseline;justify-content:space-between;
-  margin-bottom:20px;
-}
-.strip-title{
-  font-family:var(--fd);font-size:1.1rem;font-weight:700;color:var(--dark);
-  display:flex;align-items:center;gap:10px;
-}
-.strip-title::before{
-  content:'';display:block;width:3px;height:1.1em;
-  background:var(--pink);border-radius:2px;
-}
-.strip-link{
-  font-size:.78rem;font-weight:600;color:var(--pink);
-  letter-spacing:.04em;cursor:pointer;transition:opacity .2s;
-  background:none;border:none;padding:0;
-}
-.strip-link:hover{opacity:.7}
-.strip-scroll{
-  display:flex;gap:14px;overflow-x:auto;
-  padding-bottom:6px;-webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
-}
+/* ── FEATURED STRIP ── */
+.featured-strip{background:var(--white);border-bottom:1px solid rgba(229,37,100,.07);padding:28px 0 32px;overflow:hidden}
+.featured-strip-inner{padding:0 36px}
+.strip-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px}
+.strip-title{font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--dark);display:flex;align-items:center;gap:8px}
+.strip-title::before{content:'';display:block;width:3px;height:1em;background:var(--pink);border-radius:2px}
+.strip-link{font-size:.76rem;font-weight:600;color:var(--pink);cursor:pointer;background:none;border:none;padding:0}
+.strip-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .strip-scroll::-webkit-scrollbar{display:none}
-.scard{
-  flex:0 0 180px;background:var(--cream);
-  border-radius:var(--r);overflow:hidden;
-  border:1px solid rgba(229,37,100,.08);
-  cursor:pointer;transition:all .28s cubic-bezier(.25,.46,.45,.94);
-  position:relative;
-}
-.scard:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(229,37,100,.12);border-color:rgba(229,37,100,.2)}
-.scard-img{
-  aspect-ratio:1;overflow:hidden;position:relative;background:var(--cream2);
-}
-.scard-img img{
-  width:100%;height:100%;object-fit:cover;
-  transition:transform .45s cubic-bezier(.25,.46,.45,.94);
-  position:absolute;inset:0;
-}
+.scard{flex:0 0 160px;background:var(--cream);border-radius:var(--r);overflow:hidden;border:1px solid rgba(229,37,100,.08);cursor:pointer;transition:all .28s;position:relative}
+.scard:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(229,37,100,.12);border-color:rgba(229,37,100,.2)}
+.scard-img{aspect-ratio:1;overflow:hidden;position:relative;background:var(--cream2)}
+.scard-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s;position:absolute;inset:0}
 .scard:hover .scard-img img{transform:scale(1.06)}
-.scard-img-ph{
-  position:absolute;inset:0;display:flex;align-items:center;
-  justify-content:center;font-size:2rem;
-}
-.scard-info{padding:10px 12px 12px}
-.scard-name{
-  font-family:var(--fd);font-size:.82rem;font-weight:700;
-  color:var(--dark);line-height:1.3;margin-bottom:6px;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-}
-.scard-price{font-size:.88rem;font-weight:700;color:var(--dark)}
+.scard-img-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.8rem}
+.scard-info{padding:9px 11px 11px}
+.scard-name{font-family:var(--fd);font-size:.78rem;font-weight:700;color:var(--dark);line-height:1.3;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.scard-price{font-size:.84rem;font-weight:700;color:var(--dark)}
 .scard-price.promo{color:var(--rose)}
-.scard-badge-dest{
-  position:absolute;top:8px;left:8px;
-  background:var(--pink);color:#fff;
-  font-size:.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
-  padding:2px 8px;border-radius:100px;
-}
-
-/* ── CAT MOSAIC ───────────────────────────────────────────────────────── */
-.cat-mosaic{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:2px;
-  height:220px;
-  overflow:hidden;
-}
-.cat-tile{
-  position:relative;overflow:hidden;cursor:pointer;
-  background:var(--dark2);
-}
-.cat-tile:first-child{grid-column:span 2;grid-row:span 2}
-.cat-tile img{
-  width:100%;height:100%;object-fit:cover;
-  transition:transform .5s cubic-bezier(.25,.46,.45,.94);
-  opacity:.75;
-}
-.cat-tile:hover img{transform:scale(1.07);opacity:.9}
-.cat-tile-label{
-  position:absolute;bottom:10px;left:12px;
-  font-family:var(--fd);font-size:.85rem;font-weight:700;
-  color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.5);
-  pointer-events:none;
-}
-.cat-tile:first-child .cat-tile-label{font-size:1.1rem;bottom:14px;left:16px}
-
-@media(max-width:900px){
-  .featured-strip-inner{padding:0 16px}
-  .scard{flex:0 0 150px}
-  .cat-mosaic{grid-template-columns:repeat(3,1fr);height:180px}
-  .cat-tile:first-child{grid-column:span 2}
-}
-@media(max-width:500px){
-  .cat-mosaic{display:none}
-  .scard{flex:0 0 140px}
-}
+.scard-badge-dest{position:absolute;top:7px;left:7px;background:var(--pink);color:#fff;font-size:.58rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:100px}
+@media(max-width:900px){.featured-strip-inner{padding:0 16px}.scard{flex:0 0 140px}}
 
 </style>
 </head>
@@ -376,28 +274,24 @@ nav{position:sticky;top:0;z-index:100;background:rgba(12,9,13,.95);backdrop-filt
 </nav>
 
 <div class="shop-hero">
-  <div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">criado com amor, entregue com cuidado</div>
     <h1>Tudo feito<br>com <em>muito amor</em> 🌸</h1>
-    <p><span data-prod-count>325</span> produtos</p>
+    <div class="hero-meta"><span data-prod-count>319</span> produtos disponíveis</div>
     <div class="hero-badge-row" id="heroBadges"></div>
   </div>
 </div>
 
 
-<!-- ── FEATURED STRIP ─────────────────────────────────────────────── -->
 <div class="featured-strip" id="featuredStrip" style="display:none">
   <div class="featured-strip-inner">
     <div class="strip-header">
       <div class="strip-title">Em destaque</div>
-      <button class="strip-link" onclick="currentCat='Todas';applyFilters();window.scrollTo({top:document.querySelector('.shop-body').offsetTop-80,behavior:'smooth'})">Ver todos →</button>
+      <button class="strip-link" onclick="currentCat='Todas';applyFilters();setTimeout(()=>window.scrollTo({top:document.querySelector('.shop-body').offsetTop-80,behavior:'smooth'}),50)">Ver todos →</button>
     </div>
     <div class="strip-scroll" id="featuredScroll"></div>
   </div>
 </div>
-
-<!-- ── CAT MOSAIC ─────────────────────────────────────────────────── -->
-<div class="cat-mosaic" id="catMosaic"></div>
-
 
 <div class="shop-body">
   <aside class="sidebar" id="sidebar">
@@ -1986,7 +1880,7 @@ function renderGrid(){
       ?`<div>
           ${p.preco_promocional?`<div class="pcard-price-old">${fmt(p.price)}<span class="pcard-discount">-${Math.round((1-p.preco_promocional/p.price)*100)}%</span></div>`:''}
           <div class="pcard-price-main${p.preco_promocional?' promo':''}">${fmt(p.preco_promocional||p.price)}</div>
-          ${p.price>=100?`<div class="pcard-parcel">em até 12x sem juros</div>`:''}
+
         </div>
         <button class="btn-add" onclick="event.stopPropagation();addToCart(event,'${p.id}')">🛒 Adicionar</button>`
       :`<div class="pcard-price" style="color:rgba(13,9,13,.4);font-size:.82rem">Sob consulta</div>
@@ -2266,66 +2160,30 @@ init();
   }).catch(()=>{});
 })();
 
-
-// ── FEATURED STRIP ────────────────────────────────────────────────────
+// ── FEATURED STRIP ──────────────────────────────────────────────────
 function renderFeaturedStrip(){
-  const destaque = allProducts.filter(p => p.destaque);
-  if(!destaque.length) return;
-  const strip = document.getElementById('featuredStrip');
-  const scroll = document.getElementById('featuredScroll');
-  if(!strip||!scroll) return;
-  strip.style.display = 'block';
-  scroll.innerHTML = destaque.slice(0,12).map(p => {
-    const priceHtml = p.price
-      ? `<div class="scard-price${p.preco_promocional?' promo':''}">${fmt(p.preco_promocional||p.price)}</div>`
-      : `<div class="scard-price" style="color:rgba(12,9,13,.4);font-size:.75rem">Sob consulta</div>`;
-    const img = p.url ? `<img src="${p.url}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">` : '';
+  const dest=allProducts.filter(p=>p.destaque);
+  if(!dest.length)return;
+  const strip=document.getElementById('featuredStrip');
+  const scroll=document.getElementById('featuredScroll');
+  if(!strip||!scroll)return;
+  strip.style.display='block';
+  scroll.innerHTML=dest.slice(0,14).map(p=>{
+    const priceHtml=p.price
+      ?`<div class="scard-price${p.preco_promocional?' promo':''}">${fmt(p.preco_promocional||p.price)}</div>`
+      :`<div class="scard-price" style="color:rgba(12,9,13,.4);font-size:.72rem">Sob consulta</div>`;
+    const img=p.url?`<img src="${p.url}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`:'';
     return `<div class="scard" onclick="goProduct('${p.id}')">
-      <div class="scard-img">
-        ${img}
-        <div class="scard-img-ph" ${p.url?'style="display:none"':''}>🌸</div>
-        <span class="scard-badge-dest">Destaque</span>
-      </div>
-      <div class="scard-info">
-        <div class="scard-name">${p.name}</div>
-        ${priceHtml}
-      </div>
+      <div class="scard-img">${img}<div class="scard-img-ph" ${p.url?'style="display:none"':''}>🌸</div><span class="scard-badge-dest">Destaque</span></div>
+      <div class="scard-info"><div class="scard-name">${p.name}</div>${priceHtml}</div>
     </div>`;
   }).join('');
 }
-
-// ── CAT MOSAIC ────────────────────────────────────────────────────────
-function renderCatMosaic(){
-  const mosaic = document.getElementById('catMosaic');
-  if(!mosaic) return;
-  // Pick categories with a representative image
-  const catImages = {};
-  for(const p of allProducts){
-    if(!p.url) continue;
-    for(const c of (p.collections||[])){
-      if(!catImages[c]) catImages[c] = p.url;
-    }
-  }
-  const cats = Object.entries(catImages).slice(0,7);
-  if(cats.length < 3){ mosaic.style.display='none'; return; }
-  mosaic.innerHTML = cats.map(([nome,url],i) =>
-    `<div class="cat-tile" onclick="currentCat='${nome}';document.querySelectorAll('.cat-item').forEach(x=>x.classList.toggle('active',x.dataset.cat==='${nome}'));applyFilters();window.scrollTo({top:document.querySelector('.shop-body').offsetTop-80,behavior:'smooth'})">
-      <img src="${url}" alt="${nome}" loading="lazy">
-      <div class="cat-tile-label">${nome}</div>
-    </div>`
-  ).join('');
-}
-
-// Hook into init — render after products are ready
-const _origApplyFilters = applyFilters;
-let _stripRendered = false;
-applyFilters = function(){
-  _origApplyFilters();
-  if(!_stripRendered && allProducts.length){
-    renderFeaturedStrip();
-    renderCatMosaic();
-    _stripRendered = true;
-  }
+let _stripDone=false;
+const _origApply=applyFilters;
+applyFilters=function(){
+  _origApply();
+  if(!_stripDone&&allProducts.length){renderFeaturedStrip();_stripDone=true;}
 };
 
 </script>
