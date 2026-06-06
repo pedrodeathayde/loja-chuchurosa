@@ -1842,7 +1842,7 @@ function renderGrid(){
       ?`<div>
           ${p.preco_promocional?`<div class="pcard-price-old">${fmt(p.price)}<span class="pcard-discount">-${Math.round((1-p.preco_promocional/p.price)*100)}%</span></div>`:''}
           <div class="pcard-price-main${p.preco_promocional?' promo':''}">${fmt(p.preco_promocional||p.price)}</div>
-          ${p.price>=100?`<div class="pcard-parcel">em até 12x sem juros</div>`:''}
+
         </div>
         <button class="btn-add" onclick="event.stopPropagation();addToCart(event,'${p.id}')">🛒 Adicionar</button>`
       :`<div class="pcard-price" style="color:rgba(13,9,13,.4);font-size:.82rem">Sob consulta</div>
