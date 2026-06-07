@@ -58,7 +58,34 @@ nav.s{
 }
 .nc a:hover{background:var(--rose);box-shadow:0 0 28px rgba(229,37,100,.5)}
 .nh{display:none;flex-direction:column;gap:4px;cursor:pointer;border:none;background:transparent;padding:6px}
-.nh span{display:block;width:20px;height:2px;background:rgba(255,255,255,.7);border-radius:2px}
+.nh span{display:block;width:20px;height:2px;background:rgba(255,255,255,.7);border-radius:2px;transition:.3s}
+.nh.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.nh.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.nh.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+/* Mobile menu drawer */
+.mob-menu{
+  display:none;position:fixed;top:58px;left:0;right:0;z-index:299;
+  background:rgba(15,10,15,.97);backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(244,121,154,.1);
+  padding:24px 20px 28px;
+  transform:translateY(-12px);opacity:0;pointer-events:none;
+  transition:transform .3s,opacity .3s;
+}
+.mob-menu.open{transform:translateY(0);opacity:1;pointer-events:all}
+.mob-menu ul{list-style:none;display:flex;flex-direction:column;gap:4px;margin-bottom:20px}
+.mob-menu ul a{
+  display:block;padding:11px 12px;border-radius:10px;
+  font-size:.9rem;font-weight:500;letter-spacing:.04em;
+  color:rgba(255,255,255,.6);transition:all .15s;
+}
+.mob-menu ul a:hover{background:rgba(229,37,100,.08);color:#fff}
+.mob-menu .mob-cta{
+  display:block;width:100%;text-align:center;
+  background:var(--pink);color:#fff;
+  padding:13px;border-radius:100px;
+  font-size:.88rem;font-weight:600;
+  box-shadow:0 4px 18px rgba(229,37,100,.3);
+}
 
 /* ── HERO ── */
 .hero{
@@ -306,6 +333,7 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
   nav{padding:0 16px;height:58px}
   .nl,.nc{display:none}
   .nh{display:flex}
+  .mob-menu{display:block}
   .hero-content{padding:0 20px 56px}
   .hero-h1{font-size:clamp(2.2rem,8.5vw,3rem)}
   .hero-bg{grid-template-columns:1fr}
@@ -348,6 +376,17 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
   <div class="nc"><a href="loja.html">Ver loja →</a></div>
   <button class="nh" id="nh" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
+
+<div class="mob-menu" id="mobMenu">
+  <ul>
+    <li><a href="#sobre" onclick="closeMob()">Sobre</a></li>
+    <li><a href="#colecoes" onclick="closeMob()">Coleções</a></li>
+    <li><a href="#como-funciona" onclick="closeMob()">Como funciona</a></li>
+    <li><a href="#produtos" onclick="closeMob()">Destaques</a></li>
+    <li><a href="#contato" onclick="closeMob()">Contato</a></li>
+  </ul>
+  <a href="loja.html" class="mob-cta">Ver loja →</a>
+</div>
 
 <!-- HERO — foto ocupando tela toda -->
 <section class="hero">
@@ -568,7 +607,12 @@ mkLogo(document.getElementById('navLogo'),34);
 mkLogo(document.getElementById('heroLogoWrap'),44);
 mkLogo(document.getElementById('footerLogo'),28);
 
-// ── NAV ──
+// ── HAMBURGER ──
+const nh=document.getElementById('nh');
+const mob=document.getElementById('mobMenu');
+function closeMob(){nh.classList.remove('open');mob.classList.remove('open')}
+nh.addEventListener('click',()=>{nh.classList.toggle('open');mob.classList.toggle('open')});
+window.addEventListener('scroll',closeMob,{passive:true});
 const nav=document.getElementById('nav');
 window.addEventListener('scroll',()=>{
   nav.classList.toggle('s',window.scrollY>60);
