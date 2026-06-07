@@ -236,7 +236,7 @@ nav.s{
 .ch{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:40px;flex-wrap:wrap;gap:16px}
 .more{font-size:.76rem;font-weight:600;color:var(--pink);display:flex;align-items:center;gap:5px;transition:gap .2s;margin-bottom:4px}
 .more:hover{gap:9px}
-.cgrid{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;height:560px}
+.cgrid{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;height:560px;border-radius:20px;overflow:hidden}
 .cc{position:relative;overflow:hidden;cursor:pointer;background:var(--ink)}
 .cc:nth-child(1){grid-row:span 2}
 .cc img{width:100%;height:100%;object-fit:cover;transition:transform .65s;opacity:.7;filter:saturate(1.1)}
@@ -302,7 +302,62 @@ nav.s{
 .tc-meta{font-size:.63rem;color:rgba(255,255,255,.28);margin-top:1px}
 .tc-q{position:absolute;top:16px;right:18px;font-family:var(--fd);font-size:2.5rem;font-weight:900;color:rgba(229,37,100,.08);line-height:1}
 
-/* ── CTA — LIGHT ── */
+/* ── COLLECTION SHOWCASE ── */
+.showcase{padding:0}
+.showcase-item{
+  display:grid;grid-template-columns:1fr 1fr;
+  min-height:540px;
+}
+.showcase-item.reverse{direction:rtl}
+.showcase-item.reverse > *{direction:ltr}
+.showcase-photos{
+  display:grid;grid-template-columns:1fr 1fr;
+  grid-template-rows:1fr 1fr;
+  gap:3px;overflow:hidden;
+}
+.showcase-photos .sp{overflow:hidden;position:relative;background:var(--ink)}
+.showcase-photos .sp img{width:100%;height:100%;object-fit:cover;transition:transform .65s;opacity:.88;filter:saturate(1.1)}
+.showcase-photos .sp:hover img{transform:scale(1.05);opacity:1}
+.showcase-photos .sp:nth-child(1){grid-row:span 2}
+/* accent line */
+.showcase-photos .sp::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--pink),var(--gold));transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.showcase-photos .sp:hover::after{transform:scaleX(1)}
+.showcase-text{
+  display:flex;flex-direction:column;justify-content:center;
+  padding:64px 60px;
+}
+/* Light variant */
+.showcase-item.light .showcase-text{background:var(--cream)}
+.showcase-item.light .sc-title{color:var(--ink)}
+.showcase-item.light .sc-body{color:rgba(15,10,15,.5)}
+/* Dark variant */
+.showcase-item.dark .showcase-text{background:var(--ink)}
+.showcase-item.dark .sc-title{color:#fff}
+.showcase-item.dark .sc-body{color:rgba(255,255,255,.4)}
+.sc-eyebrow{font-size:.58rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.sc-eyebrow::before{content:'';width:18px;height:1px;display:block}
+.light .sc-eyebrow{color:var(--pink)}.light .sc-eyebrow::before{background:var(--pink)}
+.dark .sc-eyebrow{color:var(--gold)}.dark .sc-eyebrow::before{background:var(--gold)}
+.sc-title{font-family:var(--fd);font-size:clamp(1.8rem,3vw,2.8rem);font-weight:900;line-height:1.05;letter-spacing:-.03em;margin-bottom:14px}
+.sc-title em{font-style:italic;color:var(--pink)}
+.dark .sc-title em{background:linear-gradient(135deg,#ffd89b,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sc-body{font-size:.88rem;line-height:1.8;max-width:380px;margin-bottom:28px}
+.sc-link{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.8rem;font-weight:600;letter-spacing:.04em;
+  transition:gap .2s;
+}
+.light .sc-link{color:var(--pink)}
+.dark .sc-link{color:rgba(255,255,255,.6)}
+.dark .sc-link:hover{color:#fff}
+.sc-link:hover{gap:12px}
+.sc-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px}
+.sc-tag{
+  padding:4px 12px;border-radius:100px;
+  font-size:.68rem;font-weight:600;letter-spacing:.04em;
+}
+.light .sc-tag{background:rgba(229,37,100,.08);color:var(--rose)}
+.dark .sc-tag{background:rgba(255,255,255,.06);color:rgba(255,255,255,.5)}
 .cta-final{background:var(--cream2);padding:120px 0;text-align:center;position:relative;overflow:hidden}
 .cta-final::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(229,37,100,.08),transparent 60%);pointer-events:none}
 .cta-final .c{position:relative;z-index:2}
@@ -352,6 +407,10 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
   .fbot{flex-direction:column;gap:10px;text-align:center}
   .c{padding:0 16px}
   .about,.cats,.how,.prods,.testi,.cta-final{padding:76px 0}
+  .showcase-item{grid-template-columns:1fr;min-height:auto}
+  .showcase-item.reverse{direction:ltr}
+  .showcase-photos{height:72vw;grid-template-rows:1fr 1fr}
+  .showcase-text{padding:40px 20px}
 }
 @media(max-width:480px){
   .cgrid{grid-template-columns:1fr}
@@ -522,6 +581,95 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
     </div>
   </div>
 </section>
+
+<!-- SHOWCASE SECTIONS -->
+<div class="showcase">
+
+  <!-- RAPOSAS — CLARO -->
+  <div class="showcase-item light rv">
+    <div class="showcase-photos">
+      <div class="sp"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/fantasia-de-raposa-com-tiara-e-saia-menina.jpg" alt="Raposa" loading="lazy"></div>
+      <div class="sp"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/fantasia-de-raposa-com-tiara-e-saia-chuchu.jpg" alt="Raposa" loading="lazy"></div>
+      <div class="sp"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/almofada-raposa-almofada.jpg" alt="Almofada Raposa" loading="lazy"></div>
+    </div>
+    <div class="showcase-text">
+      <div class="sc-eyebrow">Coleção</div>
+      <h2 class="sc-title">O charme<br>das <em>raposas</em></h2>
+      <div class="sc-tags">
+        <span class="sc-tag">Fantasia</span>
+        <span class="sc-tag">Tiara</span>
+        <span class="sc-tag">Almofada</span>
+        <span class="sc-tag">Saia</span>
+      </div>
+      <p class="sc-body">Laranja vibrante, detalhes delicados e aquele jeitinho esperto que só a raposa tem. Uma das coleções mais amadas da Chuchu Rosa — e a favorita de quem ama o estilo woodland.</p>
+      <a href="loja.html?q=raposa" class="sc-link">Ver coleção raposa →</a>
+    </div>
+  </div>
+
+  <!-- UNICÓRNIOS — ESCURO / INVERTIDO -->
+  <div class="showcase-item dark reverse rv">
+    <div class="showcase-photos">
+      <div class="sp"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/fantasia-de-unicornio-fantasia.jpg" alt="Unicórnio" loading="lazy"></div>
+      <div class="sp"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/asa-de-unicornio-colorida-com-tiara-carnaval.jpg" alt="Unicórnio" loading="lazy"></div>
+      <div class="sp"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/almofada-unicornio-bordado.jpg" alt="Unicórnio" loading="lazy"></div>
+    </div>
+    <div class="showcase-text">
+      <div class="sc-eyebrow">Coleção</div>
+      <h2 class="sc-title">O encanto dos<br><em>unicórnios</em></h2>
+      <div class="sc-tags">
+        <span class="sc-tag">Fantasia</span>
+        <span class="sc-tag">Asas</span>
+        <span class="sc-tag">Tiara</span>
+        <span class="sc-tag">Almofada</span>
+      </div>
+      <p class="sc-body">Magia, cor e brilho em cada detalhe. A coleção unicórnio transforma qualquer criança numa princesa de conto de fadas — com asas, chifre e tudo que a imaginação pede.</p>
+      <a href="loja.html?q=unicornio" class="sc-link">Ver coleção unicórnio →</a>
+    </div>
+  </div>
+
+  <!-- FLAMINGO — CLARO -->
+  <div class="showcase-item light rv">
+    <div class="showcase-photos">
+      <div class="sp"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/fantasia-de-flamingo-com-asas-carnaval.jpg" alt="Flamingo" loading="lazy"></div>
+      <div class="sp"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/fantasia-de-flamingo-cor-de-rosa.jpg" alt="Flamingo" loading="lazy"></div>
+      <div class="sp"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/touca-de-flamingo-fantasia.jpg" alt="Flamingo" loading="lazy"></div>
+    </div>
+    <div class="showcase-text">
+      <div class="sc-eyebrow">Coleção</div>
+      <h2 class="sc-title">A elegância<br>do <em>flamingo</em></h2>
+      <div class="sc-tags">
+        <span class="sc-tag">Fantasia</span>
+        <span class="sc-tag">Capa</span>
+        <span class="sc-tag">Touca</span>
+        <span class="sc-tag">Naninha</span>
+      </div>
+      <p class="sc-body">Rosa intenso, asas abertas e aquela pose inconfundível. O flamingo é o símbolo da Chuchu Rosa — aparece em fantasias, naniñas, almofadas e muito mais.</p>
+      <a href="loja.html?q=flamingo" class="sc-link">Ver coleção flamingo →</a>
+    </div>
+  </div>
+
+  <!-- ALMOFADAS — ESCURO / INVERTIDO -->
+  <div class="showcase-item dark reverse rv">
+    <div class="showcase-photos">
+      <div class="sp"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/almofada-nuvem-feliz.jpg" alt="Almofada" loading="lazy"></div>
+      <div class="sp"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/almofada-cogumelo-vermelho.jpg" alt="Almofada" loading="lazy"></div>
+      <div class="sp"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/almofada-concha-quarto-infantil.jpg" alt="Almofada" loading="lazy"></div>
+    </div>
+    <div class="showcase-text">
+      <div class="sc-eyebrow">Coleção</div>
+      <h2 class="sc-title">Almofadas que<br><em>abraçam</em></h2>
+      <div class="sc-tags">
+        <span class="sc-tag">Decoração</span>
+        <span class="sc-tag">Quarto</span>
+        <span class="sc-tag">Presente</span>
+        <span class="sc-tag">Plush</span>
+      </div>
+      <p class="sc-body">Cogumelos, conchas, nuvens, cactos e muito mais. Nossas almofadas são esculturas de tecido que decoram, aconchegam e viram os brinquedos preferidos de toda criança.</p>
+      <a href="loja.html?cat=Almofadas" class="sc-link">Ver todas as almofadas →</a>
+    </div>
+  </div>
+
+</div>
 
 <!-- CTA — CLARO -->
 <section class="cta-final" id="contato">
