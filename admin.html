@@ -3283,7 +3283,7 @@ function updateBulkPreview(){
 
 async function applyBulk(){
   const val=(document.getElementById('bulkVal')?.value||'').trim();
-  if(!val){toast('Informe um valor','err');return;}
+  if(currentBulkAction!=='design'&&!val){toast('Informe um valor','err');return;}
   const ids=[...selectedIds];
   // Save undo snapshot
   undoStack={action:currentBulkAction,snapshot:ids.map(id=>{const p=allProds.find(x=>x.id===id);return p?{...p}:null;}).filter(Boolean)};
