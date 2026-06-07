@@ -78,40 +78,32 @@ nav.elevated{
 
 /* ── HERO ── */
 .shop-hero{
-  background:var(--dark);color:#fff;
-  padding:32px 28px 28px;
-  position:relative;overflow:hidden;
+  position:relative;overflow:hidden;color:#fff;
+  min-height:380px;display:flex;align-items:flex-end;
 }
-.shop-hero::before{
-  content:'';position:absolute;inset:0;
+@media(max-width:768px){.shop-hero{min-height:280px}}
+.hero-slides{position:absolute;inset:0;z-index:0}
+.hero-slide{position:absolute;inset:0;opacity:0;transition:opacity 1s ease-in-out;will-change:opacity}
+.hero-slide.active{opacity:1}
+.hero-slide img{width:100%;height:100%;object-fit:cover;object-position:center 20%;transform:scale(1.05);transition:transform 6s ease-out}
+.hero-slide.active img{transform:scale(1)}
+.hero-overlay{
+  position:absolute;inset:0;z-index:1;
   background:
-    radial-gradient(ellipse 70% 100% at 5% 50%,rgba(229,37,100,.14) 0%,transparent 65%),
-    radial-gradient(ellipse 50% 80% at 90% 10%,rgba(201,169,110,.08) 0%,transparent 60%);
-  pointer-events:none;
+    linear-gradient(to top,rgba(12,9,13,.92) 0%,rgba(12,9,13,.55) 35%,rgba(12,9,13,.15) 75%,transparent 100%),
+    linear-gradient(to right,rgba(12,9,13,.5) 0%,rgba(12,9,13,.1) 55%,transparent 100%);
 }
-.shop-hero::after{
-  content:'';position:absolute;
-  bottom:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--pink),var(--gold),var(--pink),transparent);
-  opacity:.5;
-}
+.hero-scan{position:absolute;bottom:0;left:0;right:0;height:2px;z-index:3;background:linear-gradient(90deg,transparent,var(--pink),var(--gold),var(--pink),transparent);opacity:.6}
+.hero-dots{position:absolute;bottom:16px;right:20px;z-index:4;display:flex;gap:6px;align-items:center}
+.hero-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.35);cursor:pointer;transition:all .3s;border:none;padding:0}
+.hero-dot.active{background:#fff;transform:scale(1.3)}
+.hero-inner{position:relative;z-index:2;padding:28px 28px 32px;width:100%}
 .hero-eyebrow{
   font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
   color:var(--gold);display:flex;align-items:center;gap:10px;margin-bottom:14px;
 }
 .hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--gold);display:block}
-.shop-hero h1{
-  font-family:var(--fd);
-  font-size:clamp(1.6rem,5vw,3rem);
-  font-weight:900;line-height:1.0;letter-spacing:-.03em;
-  margin-bottom:10px;position:relative;z-index:1;
-  text-shadow:0 2px 20px rgba(12,9,13,.4);
-}
-.shop-hero h1 em{
-  font-style:italic;font-weight:400;
-  background:linear-gradient(135deg,#ffd89b,var(--gold));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
+
 .hero-count{
   font-size:.82rem;color:rgba(255,255,255,.65);
   margin-bottom:18px;position:relative;z-index:1;
@@ -463,6 +455,200 @@ nav.elevated{
   .hamburger{display:none}
   .cat-tabs{display:none}
 }
+
+/* ── FEATURED CARD ── */
+@media(min-width:640px){
+  .prod-grid .pcard.featured-card{
+    grid-column:span 2;
+    display:grid;grid-template-columns:1fr 1fr;
+    border:1px solid rgba(229,37,100,.18);
+    box-shadow:0 8px 32px rgba(229,37,100,.08);
+  }
+  .prod-grid .pcard.featured-card .pcard-img{
+    aspect-ratio:auto;min-height:260px;
+  }
+  .prod-grid .pcard.featured-card .pcard-body{
+    display:flex;flex-direction:column;justify-content:center;
+    padding:24px 28px;
+  }
+  .prod-grid .pcard.featured-card .pcard-name{
+    font-size:1.1rem;line-height:1.2;margin-bottom:8px;
+  }
+  .prod-grid .pcard.featured-card .pcard-price{
+    font-size:1.05rem;
+  }
+  .prod-grid .pcard.featured-card .pcard-cat{
+    font-size:.62rem;margin-bottom:7px;
+  }
+  .prod-grid .pcard.featured-card::before{
+    content:'';position:absolute;inset:0;border-radius:16px;
+    background:linear-gradient(135deg,rgba(229,37,100,.03),transparent);
+    pointer-events:none;z-index:0;
+  }
+  .prod-grid .pcard.featured-card .pcard-img img{
+    object-position:center 20%;
+  }
+}
+
+/* ── PCARD BADGE ── */
+.pcard-badge{
+  position:absolute;top:10px;left:10px;
+  background:var(--ink);color:#fff;
+  font-size:.56rem;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;padding:3px 10px;border-radius:100px;
+  z-index:2;
+}
+.pcard.featured-card .pcard-badge{
+  background:var(--pink);
+  box-shadow:0 3px 12px rgba(229,37,100,.35);
+}
+
+/* ── ZERO RESULTS ── */
+.empty-state{
+  grid-column:1/-1;
+  text-align:center;padding:64px 20px;
+}
+.empty-icon{font-size:2.8rem;margin-bottom:12px;opacity:.5}
+.empty-title{font-family:var(--fd);font-size:1.2rem;font-weight:700;color:var(--dark);margin-bottom:8px}
+.empty-sub{font-size:.82rem;color:rgba(12,9,13,.45);margin-bottom:24px;line-height:1.6}
+.empty-cats{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.empty-cat{
+  padding:6px 16px;border-radius:100px;
+  background:rgba(229,37,100,.07);color:var(--rose);
+  font-size:.76rem;font-weight:600;cursor:pointer;
+  border:1px solid rgba(229,37,100,.15);transition:all .2s;
+}
+.empty-cat:hover{background:var(--pink);color:#fff;border-color:var(--pink)}
+
+/* ── CART BOUNCE ── */
+@keyframes cartbounce{
+  0%{transform:scale(1)}
+  30%{transform:scale(1.25)}
+  50%{transform:scale(.9)}
+  70%{transform:scale(1.1)}
+  100%{transform:scale(1)}
+}
+.nav-cart.bounce{animation:cartbounce .5s cubic-bezier(.36,.07,.19,.97)}
+
+
+/* ── TICKER ── */
+.shop-ticker{background:var(--pink);padding:9px 0;overflow:hidden}
+.shop-ticker-t{display:flex;white-space:nowrap;animation:stk 28s linear infinite}
+.shop-ticker-i{display:inline-flex;align-items:center;gap:14px;padding:0 24px;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff}
+.shop-ticker-i::after{content:'◆';opacity:.35;margin-left:14px;font-size:.4rem}
+@keyframes stk{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── ACTIVE FILTERS ── */
+.active-filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;min-height:0}
+.af-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(229,37,100,.1);color:var(--rose);
+  border:1px solid rgba(229,37,100,.2);border-radius:100px;
+  padding:4px 12px;font-size:.72rem;font-weight:600;cursor:pointer;
+  transition:all .18s;
+}
+.af-chip:hover{background:var(--pink);color:#fff;border-color:var(--pink)}
+.af-chip span{font-size:.65rem;opacity:.7}
+
+/* ── SEARCH HISTORY ── */
+.search-history{
+  position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:100;
+  background:var(--ink);border:1px solid rgba(244,121,154,.15);
+  border-radius:12px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.3);
+  display:none;
+}
+.search-history.open{display:block}
+.sh-label{font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.3);padding:10px 14px 4px}
+.sh-item{display:flex;align-items:center;gap:8px;padding:8px 14px;cursor:pointer;transition:background .15s;font-size:.82rem;color:rgba(255,255,255,.7)}
+.sh-item:hover{background:rgba(255,255,255,.05);color:#fff}
+.sh-item-icon{font-size:.75rem;opacity:.4}
+.sh-clear{display:block;width:100%;text-align:center;padding:8px;font-size:.72rem;color:rgba(255,255,255,.3);cursor:pointer;border:none;background:none;border-top:1px solid rgba(255,255,255,.06);transition:color .15s}
+.sh-clear:hover{color:var(--pink)}
+
+/* ── PRAZO FILTER ── */
+.prazo-btns{display:flex;flex-direction:column;gap:4px;margin-top:8px}
+.prazo-btn{
+  padding:7px 10px;border-radius:8px;border:1.5px solid rgba(229,37,100,.12);
+  background:transparent;font-family:var(--fb);font-size:.78rem;
+  color:rgba(12,9,13,.6);cursor:pointer;text-align:left;transition:all .15s;
+}
+.prazo-btn:hover{background:rgba(229,37,100,.06);color:var(--dark)}
+.prazo-btn.active{background:rgba(229,37,100,.1);color:var(--rose);border-color:rgba(229,37,100,.25);font-weight:600}
+
+/* ── BETTER SKELETON ── */
+.skel{background:var(--white);border-radius:16px;overflow:hidden;border:1px solid rgba(229,37,100,.05)}
+.skel-img{aspect-ratio:1;background:linear-gradient(90deg,var(--cream2) 25%,#f8f0ec 50%,var(--cream2) 75%);background-size:200%;animation:sk 1.4s infinite}
+.skel-body{padding:12px 14px 14px}
+.skel-tag{height:8px;width:40%;border-radius:4px;margin-bottom:8px;background:linear-gradient(90deg,var(--cream2) 25%,#f8f0ec 50%,var(--cream2) 75%);background-size:200%;animation:sk 1.4s infinite}
+.skel-title{height:12px;width:90%;border-radius:4px;margin-bottom:6px;background:linear-gradient(90deg,var(--cream2) 25%,#f8f0ec 50%,var(--cream2) 75%);background-size:200%;animation:sk 1.4s .1s infinite}
+.skel-title2{height:12px;width:65%;border-radius:4px;margin-bottom:14px;background:linear-gradient(90deg,var(--cream2) 25%,#f8f0ec 50%,var(--cream2) 75%);background-size:200%;animation:sk 1.4s .2s infinite}
+.skel-price{height:14px;width:45%;border-radius:4px;background:linear-gradient(90deg,var(--cream2) 25%,#f8f0ec 50%,var(--cream2) 75%);background-size:200%;animation:sk 1.4s .15s infinite}
+
+/* ── LIGHTBOX ── */
+.lightbox{
+  position:fixed;inset:0;z-index:600;
+  background:rgba(12,9,13,.92);backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .28s;
+}
+.lightbox.open{opacity:1;pointer-events:all}
+.lb-img{
+  max-width:min(90vw,680px);max-height:85vh;
+  border-radius:16px;object-fit:contain;
+  transform:scale(.94);transition:transform .3s;
+  box-shadow:0 32px 80px rgba(0,0,0,.5);
+}
+.lightbox.open .lb-img{transform:scale(1)}
+.lb-close{
+  position:absolute;top:20px;right:20px;
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(255,255,255,.1);border:none;
+  color:#fff;font-size:1.1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s;
+}
+.lb-close:hover{background:rgba(229,37,100,.5)}
+.lb-name{
+  position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
+  font-family:var(--fd);font-size:.88rem;font-weight:700;color:#fff;
+  background:rgba(12,9,13,.5);padding:6px 18px;border-radius:100px;
+  white-space:nowrap;
+}
+/* Lightbox trigger on card */
+.pcard-img .lb-trigger{
+  position:absolute;top:8px;right:8px;z-index:3;
+  width:28px;height:28px;border-radius:50%;
+  background:rgba(12,9,13,.45);border:none;color:#fff;
+  font-size:.7rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .2s,background .2s;
+}
+.pcard:hover .lb-trigger{opacity:1}
+.lb-trigger:hover{background:rgba(229,37,100,.7)!important}
+
+/* ── BACK TO TOP ── */
+.btt{
+  position:fixed;bottom:90px;right:22px;z-index:400;
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(12,9,13,.8);color:#fff;border:1px solid rgba(255,255,255,.1);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;cursor:pointer;
+  opacity:0;transform:translateY(12px);
+  transition:opacity .28s,transform .28s,background .2s;
+  pointer-events:none;backdrop-filter:blur(8px);
+}
+.btt.visible{opacity:1;transform:translateY(0);pointer-events:all}
+.btt:hover{background:var(--pink);border-color:var(--pink)}
+
+/* ── NEW BADGE ── */
+.pcard-badge-new{
+  position:absolute;top:10px;right:10px;
+  background:var(--gold);color:var(--ink);
+  font-size:.52rem;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;padding:2px 8px;border-radius:100px;
+  z-index:2;
+}
+
 </style>
 </head>
 <body>
@@ -474,9 +660,10 @@ nav.elevated{
     <span></span><span></span><span></span>
   </button>
   <a class="nav-logo" href="index.html" id="navLogoLink"></a>
-  <div class="nav-search">
+  <div class="nav-search" style="position:relative">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input type="text" id="searchInput" placeholder="Buscar produtos…">
+    <input type="text" id="searchInput" placeholder="Buscar produtos…" autocomplete="off">
+    <div class="search-history" id="searchHistory"></div>
   </div>
   <button class="nav-cart" id="cartBtn">
     🛍 Carrinho <span class="cart-count" id="cartCount">0</span>
@@ -484,10 +671,40 @@ nav.elevated{
 </nav>
 
 <div class="shop-hero">
-  <div class="hero-eyebrow">criado com amor, entregue com cuidado</div>
-  <h1>Tudo feito<br>com <em>muito amor</em> 🌸</h1>
-  <div class="hero-count"><b data-prod-count>319</b> produtos disponíveis</div>
-  <div class="hero-badges" id="heroBadges"></div>
+  <div class="hero-slides" id="heroSlides">
+  <div class="hero-slide active">
+    <img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/fantasia-de-raposa-com-tiara-e-saia-menina.jpg" alt="Fantasia de Raposa" loading="eager">
+  </div>
+  <div class="hero-slide">
+    <img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/fantasia-de-flamingo-com-asas-carnaval.jpg" alt="Fantasia de Flamingo" loading="eager">
+  </div>
+  <div class="hero-slide">
+    <img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/fantasia-de-linguado-pequena-sereia-infantil.jpg" alt="Fantasia Linguado" loading="lazy">
+  </div>
+  <div class="hero-slide">
+    <img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/fantasia-de-borboleta-crianca.jpg" alt="Fantasia de Borboleta" loading="lazy">
+  </div>
+  <div class="hero-slide">
+    <img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/fantasia-de-arara-azul-infantil.webp" alt="Fantasia Arara Azul" loading="lazy">
+  </div>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-scan"></div>
+  <div class="hero-dots" id="heroDots">
+  <button class="hero-dot active" data-idx="0" aria-label="Slide 1"></button>
+  <button class="hero-dot" data-idx="1" aria-label="Slide 2"></button>
+  <button class="hero-dot" data-idx="2" aria-label="Slide 3"></button>
+  <button class="hero-dot" data-idx="3" aria-label="Slide 4"></button>
+  <button class="hero-dot" data-idx="4" aria-label="Slide 5"></button>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">criado com amor, entregue com cuidado</div>
+    <h1 style="font-family:var(--fd);font-size:clamp(1.6rem,5vw,3rem);font-weight:900;line-height:1.0;letter-spacing:-.03em;margin-bottom:10px;text-shadow:0 2px 20px rgba(12,9,13,.4);color:#fff">
+      Tudo feito<br>com <em style="font-style:italic;font-weight:400;background:linear-gradient(135deg,#ffd89b,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">muito amor</em> 🌸
+    </h1>
+    <div class="hero-count"><b data-prod-count>319</b> produtos disponíveis</div>
+    <div class="hero-badges" id="heroBadges"></div>
+  </div>
 </div>
 
 <div class="featured-strip" id="featuredStrip" style="display:none">
@@ -516,6 +733,13 @@ nav.elevated{
       <input class="price-input" type="number" id="priceMin" placeholder="Mín" min="0" onchange="priceMin=this.value?+this.value:null;applyFilters()">
       <input class="price-input" type="number" id="priceMax" placeholder="Máx" min="0" onchange="priceMax=this.value?+this.value:null;applyFilters()">
     </div>
+
+    <div class="sidebar-label">Prazo de entrega</div>
+    <div class="prazo-btns" id="prazoBtns">
+      <button class="prazo-btn" data-prazo="5">Até 5 dias úteis</button>
+      <button class="prazo-btn" data-prazo="7">Até 7 dias úteis</button>
+      <button class="prazo-btn" data-prazo="14">Até 14 dias úteis</button>
+    </div>
   </aside>
 
   <main class="shop-main">
@@ -526,6 +750,7 @@ nav.elevated{
         <button class="vbtn" id="listViewBtn" title="Lista">≡</button>
       </div>
     </div>
+    <div class="active-filters" id="activeFilters"></div>
     <div class="cat-tabs" id="catTabs"></div>
     <div class="prod-grid" id="prodGrid"></div>
     <div class="pagination" id="pagination"></div>
@@ -1926,9 +2151,10 @@ function guessCategories(n){
 let allProducts=[];
 let filtered=[];
 let currentCat='Todas';
-let currentSort='az';
+let currentSort=localStorage.getItem('cr_sort')||'az';
 let priceMin=null;
 let priceMax=null;
+let prazoMax=null;
 let searchQ='';
 let activeDesigns=[];
 let viewMode='grid';
@@ -2019,6 +2245,7 @@ function applyFilters(){
   }
   if(priceMin!==null) res=res.filter(p=>p.price===null||p.price>=priceMin);
   if(priceMax!==null) res=res.filter(p=>p.price===null||p.price<=priceMax);
+  if(prazoMax!==null) res=res.filter(p=>(p.prazo_producao_dias||7)<=prazoMax);
   res.sort((a,b)=>{
     if(currentSort==='az') return a.name.localeCompare(b.name,'pt');
     if(currentSort==='za') return b.name.localeCompare(a.name,'pt');
@@ -2043,7 +2270,9 @@ function renderGrid(){
   const grid=document.getElementById('prodGrid');
   const slice=filtered.slice((page-1)*PER_PAGE, page*PER_PAGE);
   if(!slice.length){
-    grid.innerHTML='<div class="empty"><div class="empty-icon">🌸</div><h3>Nenhum produto encontrado</h3></div>';
+    const suggestedCats=['Fantasias','Almofadas','Para bebês','Decoração','Educativo'];
+    const catBtns=suggestedCats.map(c=>'<span class="empty-cat" onclick="currentCat=this.dataset.cat;document.getElementById("searchInput").value="";applyFilters()" data-cat="'+c+'">'+c+'</span>').join('');
+    grid.innerHTML='<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-title">Nenhum produto encontrado</div><p class="empty-sub">Tente outro termo ou explore uma coleção:</p><div class="empty-cats">'+catBtns+'</div></div>';
     return;
   }
   grid.className='prod-grid'+(viewMode==='list'?' list-view':'');
@@ -2054,6 +2283,9 @@ function renderGrid(){
     const cats=(p.collections||[]).slice(0,2).join(' · ');
     const prazo=p.prazo_producao_dias||7;
     const badge=p.destaque?'<span class="pcard-badge">Destaque</span>':'';
+    const isNew=p.created_at&&(Date.now()-new Date(p.created_at).getTime())<30*24*60*60*1000;
+    const newBadge=isNew&&!p.destaque?'<span class="pcard-badge-new">Novo</span>':'';
+
     const img=p.url?`<img src="${p.url}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`:'';
     // Swatches from variacoes (colors) — use design tags as fallback
     const colors=(p._cores||[]).slice(0,5);
@@ -2078,7 +2310,8 @@ function renderGrid(){
       <div class="pcard-img">
         ${img}
         <div class="pcard-ph" ${p.url?'style="display:none"':''}>🌸</div>
-        ${badge}
+        ${badge}${newBadge}
+        ${p.url?`<button class="lb-trigger" onclick="event.stopPropagation();openLightbox('${p.url}','${p.name.replace(/'/g,"\\'")}')" title="Ver foto">⤢</button>`:''}
       </div>
       <div class="pcard-body">
         <div class="pcard-cat">${cats}</div>
@@ -2182,7 +2415,7 @@ document.getElementById('searchInput').addEventListener('input',e=>{
   clearTimeout(searchTimer);
   searchTimer=setTimeout(()=>{ searchQ=e.target.value.trim(); applyFilters(); },300);
 });
-document.getElementById('sortSelect').addEventListener('change',e=>{ currentSort=e.target.value; applyFilters(); });
+document.getElementById('sortSelect').addEventListener('change',e=>{ currentSort=e.target.value; localStorage.setItem('cr_sort',currentSort); applyFilters(); });
 document.getElementById('priceMin').addEventListener('change',e=>{ priceMin=e.target.value?+e.target.value:null; applyFilters(); });
 document.getElementById('priceMax').addEventListener('change',e=>{ priceMax=e.target.value?+e.target.value:null; applyFilters(); });
 document.getElementById('gridViewBtn').addEventListener('click',()=>{ viewMode='grid'; document.getElementById('gridViewBtn').classList.add('active'); document.getElementById('listViewBtn').classList.remove('active'); renderGrid(); });
@@ -2266,7 +2499,7 @@ if(urlParams.get('q')){ searchQ=urlParams.get('q'); document.getElementById('sea
 function showSkeletons(n=8){
   const grid=document.getElementById('prodGrid');
   if(!grid)return;
-  grid.innerHTML=Array(n).fill(0).map(()=>`<div class="skel"><div class="skel-img"></div><div class="skel-line"></div><div class="skel-line sm"></div></div>`).join('');
+  grid.innerHTML=Array(n).fill(0).map(()=>`<div class="skel"><div class="skel-img"></div><div class="skel-body"><div class="skel-tag"></div><div class="skel-title"></div><div class="skel-title2"></div><div class="skel-price"></div></div></div>`).join('');
 }
 
 
@@ -2389,6 +2622,36 @@ document.getElementById('listViewBtn').addEventListener('click',()=>{
   renderGrid();
 });
 
+
+// ── HERO SLIDESHOW ──────────────────────────────────────────────
+(function(){
+  const slides=document.querySelectorAll('.hero-slide');
+  const dots=document.querySelectorAll('.hero-dot');
+  if(!slides.length)return;
+  let cur=0,timer;
+  function goTo(n){
+    slides[cur].classList.remove('active');
+    dots[cur].classList.remove('active');
+    cur=(n+slides.length)%slides.length;
+    slides[cur].classList.add('active');
+    dots[cur].classList.add('active');
+  }
+  function next(){goTo(cur+1)}
+  function start(){timer=setInterval(next,4500)}
+  function stop(){clearInterval(timer)}
+  start();
+  dots.forEach(d=>d.addEventListener('click',()=>{stop();goTo(+d.dataset.idx);start()}));
+  const hero=document.querySelector('.shop-hero');
+  if(hero){hero.addEventListener('mouseenter',stop);hero.addEventListener('mouseleave',start)}
+})();
+
 </script>
+
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" id="lbClose">✕</button>
+  <img class="lb-img" id="lbImg" src="" alt="">
+  <div class="lb-name" id="lbName"></div>
+</div>
+<button class="btt" id="btt" title="Voltar ao topo" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 </body>
 </html>
