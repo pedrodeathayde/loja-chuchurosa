@@ -855,7 +855,7 @@ img{display:block;max-width:100%}
         <label class="ph-upload" style="margin-bottom:10px">
           <span class="ph-upload-icon">📷</span>
           <span>Clique para enviar nova foto</span>
-          <input type="file" accept="image/*" style="display:none" onchange="uploadFoto(this.files[0],document.getElementById('mNome').value)">
+          <input type="file" accept="image/*" multiple style="display:none" onchange="uploadFotos(this.files,document.getElementById('mNome').value)">
         </label>
         <div class="photo-grid" id="photoGrid"></div>
       </div>
@@ -2638,10 +2638,12 @@ async function saveProd(){
     // Save variations
     if(prodId) await saveVars(prodId);
     toast('Produto salvo!','ok');
-  addHist('Produto salvo', `Preço: ${fmt(body.price||0)} · Prazo: ${body.prazo_producao_dias}d`, body.name||document.getElementById('mName')?.value||'');
     closeProdModal();
     await loadProds();
-  }catch(e){toast('Erro ao salvar','err');}
+  }catch(e){
+    console.error('saveProd error:',e);
+    toast('Erro ao salvar produto','err');
+  }
 }
 
 function closeProdModal(){document.getElementById('prodModal').classList.remove('open');}
@@ -3074,25 +3076,16 @@ function deletePhoto(i){
   renderPhotoGrid();
 }
 
-async function uploadFoto(file,prodNome){
-  if(!file)return;
-  const slug=prodNome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-  const ext=file.name.split('.').pop();
-  const path=`${slug}-${Date.now()}.${ext}`;
-  try{
-    const r=await fetch(`${SB}/storage/v1/object/Fotos/${path}`,{
-      method:'POST',
-      headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':file.type,'x-upsert':'true'},
-      body:file
-    });
-    if(r.ok){
-      const url=`${SB}/storage/v1/object/public/Fotos/${path}`;
-      currentPhotos.push({url,name:path,isNew:true,order:currentPhotos.length});
-      renderPhotoGrid();
-      toast('Foto enviada!','ok');
-    }else toast('Erro no upload','err');
-  }catch{toast('Erro no upload','err');}
+// uploadFoto moved below
+
+// ── UPLOAD MÚLTIPLO ────────────────────────────────────────────
+async function uploadFotos(files, prodNome){
+  if(!files||!files.length)return;
+  for(const file of Array.from(files)){
+    await uploadFoto(file, prodNome);
+  }
 }
+
 
 // ── VARIATIONS ────────────────────────────────────────────────────────
 let currentVars=[];
@@ -4548,18 +4541,35 @@ function renderRecentOrders(){
 // ── UPLOAD FOTO ───────────────────────────────────────────────────────
 async function uploadFoto(file, prodNome){
   if(!file)return;
+  const maxMB=8;
+  if(file.size>maxMB*1024*1024){toast(`Foto muito grande (máx ${maxMB}MB)`,'err');return;}
   const slug=slugify(prodNome);
-  const ext=file.name.split('.').pop();
+  const ext=file.name.split('.').pop().toLowerCase();
+  const allowed=['jpg','jpeg','png','webp','gif'];
+  if(!allowed.includes(ext)){toast('Formato inválido. Use JPG, PNG ou WebP','err');return;}
   const path=`${slug}-${Date.now()}.${ext}`;
+  toast('Enviando foto...','info');
   try{
     const r=await fetch(`${SB}/storage/v1/object/Fotos/${path}`,{
       method:'POST',
       headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':file.type,'x-upsert':'true'},
       body:file
     });
-    if(r.ok){toast('Foto enviada!','ok');loadPhotos(prodNome);}
-    else toast('Erro no upload','err');
-  }catch{toast('Erro no upload','err');}
+    if(r.ok){
+      const url=`${SB}/storage/v1/object/public/Fotos/${path}`;
+      // Add to FILES so it shows immediately without page reload
+      FILES.push({n:path,u:url});
+      // Add to currentPhotos grid
+      if(!currentPhotos) currentPhotos=[];
+      currentPhotos.push({url,name:path,isNew:true,order:currentPhotos.length});
+      renderPhotoGrid();
+      toast('Foto enviada com sucesso!','ok');
+    }else{
+      let msg='Erro no upload';
+      try{const err=await r.json();msg=err.message||err.error||msg;}catch{}
+      toast(`${msg} (${r.status})`,'err');
+    }
+  }catch(e){toast('Erro de conexão ao enviar foto','err');console.error('uploadFoto:',e);}
 }
 
 mkLogo(document.getElementById('loginLogo'),52);
