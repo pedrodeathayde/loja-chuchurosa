@@ -254,43 +254,44 @@ nav{
 }
 .pcard-body{padding:10px 12px 12px}
 .pcard-cat{
-  font-size:.6rem;font-weight:700;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--pink);margin-bottom:4px;
+  font-size:.6rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--pink);margin-bottom:5px;
 }
 .pcard-name{
-  font-family:var(--fd);font-size:.85rem;font-weight:700;
-  color:var(--dark);line-height:1.25;margin-bottom:4px;
+  font-family:var(--fd);font-size:.92rem;font-weight:700;
+  color:var(--dark);line-height:1.25;margin-bottom:5px;
 }
 .pcard-prazo{
-  font-size:.65rem;color:rgba(12,9,13,.35);margin-bottom:8px;
+  font-size:.65rem;color:rgba(12,9,13,.38);margin-bottom:10px;
 }
 .pcard-footer{
   display:flex;align-items:center;
-  justify-content:space-between;gap:6px;
+  justify-content:space-between;gap:8px;flex-wrap:nowrap;
 }
 .pcard-price{
-  font-size:.85rem;font-weight:700;color:var(--dark);
-  flex-shrink:0;
+  font-size:.92rem;font-weight:700;color:var(--dark);
+  white-space:nowrap;flex-shrink:0;line-height:1.2;
 }
 .pcard-price.promo{color:var(--rose)}
 .pcard-price-old{
   font-size:.65rem;color:rgba(12,9,13,.32);
-  text-decoration:line-through;display:block;line-height:1.2;
+  text-decoration:line-through;display:block;line-height:1.3;
 }
 .btn-add{
   flex-shrink:0;
   background:var(--pink);color:#fff;border:none;
-  border-radius:100px;padding:6px 12px;
-  font-family:var(--fb);font-size:.68rem;font-weight:600;
+  border-radius:100px;padding:7px 14px;
+  font-family:var(--fb);font-size:.72rem;font-weight:600;
   cursor:pointer;transition:background .2s;white-space:nowrap;
+  display:flex;align-items:center;gap:5px;
 }
 .btn-add:hover{background:var(--rose)}
 .btn-consult{
   flex-shrink:0;
   background:rgba(229,37,100,.08);color:var(--rose);border:none;
-  border-radius:100px;padding:6px 12px;
-  font-family:var(--fb);font-size:.68rem;font-weight:600;
-  cursor:pointer;transition:background .2s;white-space:nowrap;
+  border-radius:100px;padding:7px 14px;
+  font-family:var(--fb);font-size:.72rem;font-weight:600;
+  cursor:pointer;white-space:nowrap;
 }
 .pcard-swatches{display:flex;gap:4px;margin-bottom:6px;flex-wrap:wrap}
 .swatch{
@@ -2054,26 +2055,22 @@ function renderGrid(){
     }).join('')}</div>`:'';
 
     const priceHtml=p.price
-      ?`<div>
-          ${p.preco_promocional?`<div class="pcard-price-old">${fmt(p.price)}<span class="pcard-discount">-${Math.round((1-p.preco_promocional/p.price)*100)}%</span></div>`:''}
-          <div class="pcard-price-main${p.preco_promocional?' promo':''}">${fmt(p.preco_promocional||p.price)}</div>
-
-        </div>
-        <button class="btn-add" onclick="event.stopPropagation();addToCart(event,'${p.id}')">🛒 Adicionar</button>`
-      :`<div class="pcard-price" style="color:rgba(13,9,13,.4);font-size:.82rem">Sob consulta</div>
-        <button class="btn-no-price" onclick="openWA('${p.name.replace(/'/g,"\\'")}')">Consultar</button>`;
+      ?`<div class="pcard-price${p.preco_promocional?' promo':''}">${p.preco_promocional?`<span class="pcard-price-old">${fmt(p.price)}</span>`:''}${fmt(p.preco_promocional||p.price)}</div>
+        <button class="btn-add" onclick="event.stopPropagation();addToCart(event,'${p.id}')">+ Adicionar</button>`
+      :`<div class="pcard-price" style="font-size:.72rem;color:rgba(12,9,13,.35)">Sob consulta</div>
+        <button class="btn-consult" onclick="event.stopPropagation();openWA('${p.name.replace(/'/g,"\\'")}')">Consultar</button>`;
     return `<div class="pcard${isFeatured?' featured-card':''}" onclick="goProduct('${p.id}')">
       <div class="pcard-img">
         ${img}
-        <div class="pcard-img-ph" ${p.url?'style="display:none"':''}>🌸</div>
+        <div class="pcard-ph" ${p.url?'style="display:none"':''}>🌸</div>
         ${badge}
       </div>
-      <div class="pcard-info">
-        <div class="pcard-cats">${cats}</div>
+      <div class="pcard-body">
+        <div class="pcard-cat">${cats}</div>
         <div class="pcard-name">${p.name}</div>
         ${swatchHtml}
         <div class="pcard-prazo">⏱ ${prazo} dias úteis</div>
-        <div class="pcard-bottom">${priceHtml}</div>
+        <div class="pcard-footer">${priceHtml}</div>
       </div>
     </div>`;
   }).join('');
