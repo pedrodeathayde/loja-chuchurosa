@@ -2760,19 +2760,30 @@ function contactWA(id,nome,tel){window.open(`https://wa.me/55${tel}?text=${encod
 
 // ── CLIENTS ───────────────────────────────────────────────────────────
 async function loadClients(){
-  const d=await sbGet('/rest/v1/clientes?select=*&order=created_at.desc');
-  allClients=Array.isArray(d)?d:[];
+  const [cd, od] = await Promise.all([
+    sbGet('/rest/v1/clientes?select=*&order=created_at.desc'),
+    sbGet('/rest/v1/pedidos?select=cliente_id,total,status')
+  ]);
+  allClients=Array.isArray(cd)?cd:[];
+  // Enrich each client with order stats
+  const orders=Array.isArray(od)?od:[];
+  allClients.forEach(c=>{
+    const cOrders=orders.filter(o=>o.cliente_id===c.id);
+    c._pedidos=cOrders.length;
+    c._total=cOrders.reduce((s,o)=>s+(o.total||0),0);
+  });
   renderClients();
 }
 function renderClients(){
   const el=document.getElementById('clientTable');
   if(!allClients.length){el.innerHTML='<div class="empty"><div class="empty-icon">👥</div><p>Nenhum cliente</p></div>';return;}
-  el.innerHTML=`<div class="tbl-head" style="display:grid;grid-template-columns:1fr 1fr 1fr 120px"><span>Nome</span><span>E-mail</span><span>Telefone</span><span>Cadastro</span></div>`
-    +allClients.map(c=>`<div class="tbl-row" style="display:grid;grid-template-columns:1fr 1fr 1fr 120px 80px;cursor:pointer" onclick="openClient(${c.id||JSON.stringify(c.email)})">
+  el.innerHTML=`<div class="tbl-head" style="display:grid;grid-template-columns:1.5fr 1.5fr 1fr 1fr 80px"><span>Nome</span><span>E-mail</span><span>Cidade</span><span>Telefone</span><span>Pedidos</span></div>`
+    +allClients.map(c=>`<div class="tbl-row" style="display:grid;grid-template-columns:1.5fr 1.5fr 1fr 1fr 80px;cursor:pointer;align-items:center" onclick="openClient(${c.id||JSON.stringify(c.email)})">
       <span style="font-weight:600">${c.nome||c.name||'—'}</span>
       <span style="font-size:.82rem;color:rgba(13,9,13,.5)">${c.email}</span>
+      <span style="font-size:.82rem;color:rgba(13,9,13,.5)">${c.cidade||'—'}</span>
       <span style="font-size:.82rem;color:rgba(13,9,13,.5)">${c.telefone||'—'}</span>
-      <span style="font-size:.72rem;color:rgba(13,9,13,.35)">${fmtDate(c.created_at)}</span>
+      <span style="font-size:.82rem;text-align:center">${c._pedidos||0}</span>
     </div>`).join('');
 }
 
