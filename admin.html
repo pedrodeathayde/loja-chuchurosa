@@ -2446,7 +2446,7 @@ function getUrl(nome){
 
 // ── PRODUCTS ──────────────────────────────────────────────────────────
 async function loadProds(){
-  const d=await sbGet('/rest/v1/produtos?select=*&order=name');
+  const d=await sbGet('/rest/v1/produtos?select=*&order=name,nome');
   allProds=Array.isArray(d)?d:[];
   document.getElementById('nb-prods').textContent=allProds.length||0;
   filtProds=[...allProds];
@@ -2458,7 +2458,7 @@ function filterProds(){
   const cat=document.getElementById('pcat').value;
   const st=document.getElementById('pst').value;
   filtProds=allProds.filter(p=>{
-    const mq=!q||p.name.toLowerCase().includes(q);
+    const mq=!q||(p.name||p.nome||'').toLowerCase().includes(q);
     const mc=!cat||(p.collections||[]).includes(cat);
     const ms=!st||(st==='ativo'&&p.ativo&&!p.esgotado&&!p.oculto)||(st==='esgotado'&&p.esgotado)||(st==='oculto'&&p.oculto)||(st==='destaque'&&p.destaque)||(st==='sempreco'&&!p.price);
     return mq&&mc&&ms;
@@ -2472,14 +2472,14 @@ function renderProdTable(){
   if(!filtProds.length){el.innerHTML='<div class="empty"><div class="empty-icon">🌸</div><p>Nenhum produto</p></div>';return;}
   el.innerHTML=`<div class="tbl-head pc-grid"><span></span><span>Foto</span><span>Produto</span><span>Design</span><span>Preço</span><span>Prazo</span><span>Status</span><span>Ações</span></div>`
     +filtProds.map(p=>{
-      const url=getUrl(p.name);
+      const url=getUrl(p.name||p.nome||"");
       const cats=(p.collections||[]).slice(0,2).join(', ');
       const sel=selectedIds.has(p.id);
       const pill=p.esgotado?'<span class="pill esgotado">⊘ Esgotado</span>':p.oculto?'<span class="pill oculto">○ Oculto</span>':p.destaque?'<span class="pill destaque">⭐ Destaque</span>':p.ativo?'<span class="pill active">● Ativo</span>':'<span class="pill inactive">○ Inativo</span>';
       return `<div class="tbl-row pc-grid${sel?' selected':''}">
         <input type="checkbox" class="row-cb" data-id="${p.id}" ${sel?'checked':''} onclick="event.stopPropagation();toggleSelect(${p.id},this.checked)">
         <div class="tr-img">${url?`<img src="${url}" loading="lazy">`:'<div class="tr-img-ph">🌸</div>'}</div>
-        <div><div class="tr-name">${p.name}</div><div class="tr-cat">${cats||'—'}</div></div>
+        <div><div class="tr-name">${p.name||p.nome||"(sem nome)"}</div><div class="tr-cat">${cats||'—'}</div></div>
         <div style="font-size:.72rem;color:rgba(13,9,13,.45)">${Array.isArray(p.design)?p.design.slice(0,2).join(', '):(p.design||'—')}</div>
         <div><input class="inline-price" value="${p.price||''}" placeholder="Sem preço" data-id="${p.id}" onblur="saveInlinePrice(this)" onkeydown="if(event.key==='Enter')this.blur()"></div>
         <div style="font-size:.82rem">${p.prazo_producao_dias||7}d</div>
@@ -2488,7 +2488,7 @@ function renderProdTable(){
           <button class="ibtn edit" onclick="editProd(${p.id})" title="Editar">✏️</button>
           <button class="ibtn eye" onclick="toggleField(${p.id},'oculto',${!p.oculto})" title="${p.oculto?'Mostrar':'Ocultar'}">${p.oculto?'👁':'🙈'}</button>
           <button class="ibtn ${p.esgotado?'edit':'del'}" onclick="toggleField(${p.id},'esgotado',${!p.esgotado})" title="${p.esgotado?'Disponível':'Esgotado'}">${p.esgotado?'✅':'⊘'}</button>
-          <button class="ibtn del" onclick="deleteProd(${p.id},'${p.name.replace(/'/g,"\\'")}')" title="Excluir">🗑</button>
+          <button class="ibtn del" onclick="deleteProd(${p.id},'${(p.name||p.nome||'').replace(/'/g,"\\'")}')" title="Excluir">🗑</button>
           <button class="ibtn ${p.destaque?'edit':''}" onclick="toggleField(${p.id},'destaque',${!p.destaque})" title="${p.destaque?'Remover destaque':'Destacar'}">⭐</button>
         </div>
       </div>`;
@@ -2552,7 +2552,7 @@ function editProd(id){
   if(!p)return;
   editProdId=id;
   document.getElementById('mProdTitle').textContent='Editar produto';
-  document.getElementById('mNome').value=p.name||'';
+  document.getElementById('mNome').value=p.name||p.nome||'';
   document.getElementById('mDesc').value=p.descricao||'';
   document.getElementById('mPreco').value=p.price||'';
   document.getElementById('mPrecoPromo').value=p.preco_promocional||'';
@@ -2566,7 +2566,7 @@ function editProd(id){
   document.getElementById('togDestaque').classList.toggle('on',!!p.destaque);
   document.getElementById('togEsgotado').classList.toggle('on',!!p.esgotado);
   document.getElementById('togOculto').classList.toggle('on',!!p.oculto);
-  loadPhotos(p.name);
+  loadPhotos(p.name||p.nome||"");
   document.getElementById('prodModal').classList.add('open');
 }
 
@@ -2618,6 +2618,7 @@ async function saveProd(){
   if(!nome){toast('Informe o nome','err');return;}
   const payload={
     name:nome,
+    nome:nome,
     descricao:document.getElementById('mDesc').value.trim()||null,
     price:document.getElementById('mPreco').value?+document.getElementById('mPreco').value:null,
     preco_promocional:document.getElementById('mPrecoPromo').value?+document.getElementById('mPrecoPromo').value:null,
@@ -2662,7 +2663,7 @@ function filterOrders(){
   const q=document.getElementById('os').value.toLowerCase();
   const st=document.getElementById('ost').value;
   filtOrders=allOrders.filter(p=>{
-    const mq=!q||(p.visitante_nome||'').toLowerCase().includes(q)||(p.visitante_email||'').toLowerCase().includes(q)||String(p.id).includes(q);
+    const mq=!q||(p.name||p.nome||'').toLowerCase().includes(q)||(p.visitante_email||'').toLowerCase().includes(q)||String(p.id).includes(q);
     const ms=!st||p.status===st;
     return mq&&ms;
   });
@@ -2768,7 +2769,7 @@ function renderClients(){
   if(!allClients.length){el.innerHTML='<div class="empty"><div class="empty-icon">👥</div><p>Nenhum cliente</p></div>';return;}
   el.innerHTML=`<div class="tbl-head" style="display:grid;grid-template-columns:1fr 1fr 1fr 120px"><span>Nome</span><span>E-mail</span><span>Telefone</span><span>Cadastro</span></div>`
     +allClients.map(c=>`<div class="tbl-row" style="display:grid;grid-template-columns:1fr 1fr 1fr 120px 80px;cursor:pointer" onclick="openClient(${c.id||JSON.stringify(c.email)})">
-      <span style="font-weight:600">${c.name}</span>
+      <span style="font-weight:600">${c.nome||c.name||'—'}</span>
       <span style="font-size:.82rem;color:rgba(13,9,13,.5)">${c.email}</span>
       <span style="font-size:.82rem;color:rgba(13,9,13,.5)">${c.telefone||'—'}</span>
       <span style="font-size:.72rem;color:rgba(13,9,13,.35)">${fmtDate(c.created_at)}</span>
@@ -3664,7 +3665,7 @@ async function loadAgenda(){
     out+=`<div class="agenda-section"><h2>🔨 Em produção (${emProd.length} pedidos)</h2>`;
     sorted.filter(p=>p.qty>0).forEach(p=>{
       out+=`<div class="agenda-item">
-        <div><div class="agenda-item-name">${p.name}</div>
+        <div><div class="agenda-item-name">${p.name||p.nome||"(sem nome)"}</div>
         <div class="agenda-item-meta">${p.orders.length} pedido${p.orders.length>1?'s':''}</div>
         <div class="agenda-item-prazo ${prazoClass(p.prazo)}">${prazoLabel(p.prazo)}</div></div>
         <div class="agenda-item-qty">${p.qty}×</div>
