@@ -855,7 +855,7 @@ img{display:block;max-width:100%}
         <label class="ph-upload" style="margin-bottom:10px">
           <span class="ph-upload-icon">📷</span>
           <span>Clique para enviar nova foto</span>
-          <input type="file" accept="image/*" multiple style="display:none" onchange="uploadFotos(this.files,document.getElementById('mNome').value)">
+          <input type="file" accept="image/*" style="display:none" onchange="uploadFoto(this.files[0],document.getElementById('mNome').value)">
         </label>
         <div class="photo-grid" id="photoGrid"></div>
       </div>
@@ -954,7 +954,6 @@ img{display:block;max-width:100%}
   <button class="bulk-btn" onclick="openBulkModal('preco')">💰 Preço</button>
   <button class="bulk-btn" onclick="openBulkModal('prazo')">⏱ Prazo</button>
   <button class="bulk-btn" onclick="openBulkModal('categoria')">🏷️ Categoria</button>
-  <button class="bulk-btn" onclick="openBulkModal('design')">🎨 Design</button>
   <button class="bulk-btn" onclick="bulkToggle('ativo')">✅ Ativar</button>
   <button class="bulk-btn" onclick="bulkToggle('inativo')">○ Desativar</button>
   <button class="bulk-btn" onclick="bulkToggle('esgotado')">⊘ Esgotado</button>
@@ -2618,7 +2617,7 @@ async function saveProd(){
   const nome=document.getElementById('mNome').value.trim();
   if(!nome){toast('Informe o nome','err');return;}
   const payload={
-    nome,
+    name:nome,
     descricao:document.getElementById('mDesc').value.trim()||null,
     price:document.getElementById('mPreco').value?+document.getElementById('mPreco').value:null,
     preco_promocional:document.getElementById('mPrecoPromo').value?+document.getElementById('mPrecoPromo').value:null,
@@ -2640,10 +2639,7 @@ async function saveProd(){
     toast('Produto salvo!','ok');
     closeProdModal();
     await loadProds();
-  }catch(e){
-    console.error('saveProd error:',e);
-    toast('Erro ao salvar produto','err');
-  }
+  }catch(e){toast('Erro ao salvar','err');}
 }
 
 function closeProdModal(){document.getElementById('prodModal').classList.remove('open');}
@@ -3076,16 +3072,25 @@ function deletePhoto(i){
   renderPhotoGrid();
 }
 
-// uploadFoto moved below
-
-// ── UPLOAD MÚLTIPLO ────────────────────────────────────────────
-async function uploadFotos(files, prodNome){
-  if(!files||!files.length)return;
-  for(const file of Array.from(files)){
-    await uploadFoto(file, prodNome);
-  }
+async function uploadFoto(file,prodNome){
+  if(!file)return;
+  const slug=prodNome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  const ext=file.name.split('.').pop();
+  const path=`${slug}-${Date.now()}.${ext}`;
+  try{
+    const r=await fetch(`${SB}/storage/v1/object/Fotos/${path}`,{
+      method:'POST',
+      headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':file.type,'x-upsert':'true'},
+      body:file
+    });
+    if(r.ok){
+      const url=`${SB}/storage/v1/object/public/Fotos/${path}`;
+      currentPhotos.push({url,name:path,isNew:true,order:currentPhotos.length});
+      renderPhotoGrid();
+      toast('Foto enviada!','ok');
+    }else toast('Erro no upload','err');
+  }catch{toast('Erro no upload','err');}
 }
-
 
 // ── VARIATIONS ────────────────────────────────────────────────────────
 let currentVars=[];
@@ -3189,7 +3194,7 @@ function updateSelectAllCb(){
 }
 
 // ── BULK ACTIONS ──────────────────────────────────────────────────────
-let currentBulkAction=null, bulkPriceMode='pct', bulkDesignMode='add';
+let currentBulkAction=null, bulkPriceMode='pct';
 
 function openBulkModal(action){
   currentBulkAction=action;
@@ -3231,23 +3236,6 @@ function openBulkModal(action){
         </select>
       </div>
       <div style="font-size:.78rem;color:rgba(13,9,13,.45);margin-top:8px">A categoria selecionada será adicionada às coleções existentes.</div>`;
-  }else if(action==='design'){
-    title.textContent=`Alterar design (${n} produtos)`;
-    const grid=allDesigns.map(d=>`<div class="col-ch" onclick="this.classList.toggle('checked')" style="cursor:pointer">${d.emoji||''} ${d.nome}</div>`).join('');
-    body.innerHTML=`
-      <div class="fg"><label style="margin-bottom:8px;display:block">Selecione os designs a aplicar</label>
-        <div class="cols-grid" id="bulkDesignGrid">${grid}</div>
-      </div>
-      <div class="bulk-opts" style="margin-top:12px">
-        <button class="bulk-opt active" id="bd-add" onclick="this.classList.add('active');document.getElementById('bd-rep').classList.remove('active');bulkDesignMode='add'">➕ Adicionar</button>
-        <button class="bulk-opt" id="bd-rep" onclick="this.classList.add('active');document.getElementById('bd-add').classList.remove('active');bulkDesignMode='replace'">🔄 Substituir</button>
-        <button class="bulk-opt" id="bd-rem" onclick="this.classList.add('active');document.getElementById('bd-add').classList.remove('active');document.getElementById('bd-rep').classList.remove('active');bulkDesignMode='remove'">✕ Remover</button>
-      </div>
-      <div style="font-size:.76rem;color:rgba(13,9,13,.45);margin-top:8px" id="bulkDesignHint">Os designs selecionados serão adicionados aos existentes.</div>`;
-    bulkDesignMode='add';
-    document.getElementById('bd-add')?.addEventListener('click',()=>{document.getElementById('bulkDesignHint').textContent='Os designs selecionados serão adicionados aos existentes.';});
-    document.getElementById('bd-rep')?.addEventListener('click',()=>{document.getElementById('bulkDesignHint').textContent='Os designs dos produtos serão substituídos pelos selecionados.';});
-    document.getElementById('bd-rem')?.addEventListener('click',()=>{document.getElementById('bulkDesignHint').textContent='Os designs selecionados serão removidos dos produtos.';});
   }
   modal.classList.add('open');
 }
@@ -3283,7 +3271,7 @@ function updateBulkPreview(){
 
 async function applyBulk(){
   const val=(document.getElementById('bulkVal')?.value||'').trim();
-  if(currentBulkAction!=='design'&&!val){toast('Informe um valor','err');return;}
+  if(!val){toast('Informe um valor','err');return;}
   const ids=[...selectedIds];
   // Save undo snapshot
   undoStack={action:currentBulkAction,snapshot:ids.map(id=>{const p=allProds.find(x=>x.id===id);return p?{...p}:null;}).filter(Boolean)};
@@ -3320,24 +3308,8 @@ async function applyBulk(){
       p.collections=cols;
     }
     toast(`Categoria adicionada em ${ids.length} produtos`,'ok');
-  }else if(currentBulkAction==='design'){
-    const selDesigns=[...document.querySelectorAll('#bulkDesignGrid .col-ch.checked')]
-      .map(e=>e.textContent.trim().replace(/^\S+\s/,''));
-    if(!selDesigns.length){toast('Selecione ao menos um design','err');return;}
-    undoStack={action:'design',snapshot:ids.map(id=>{const p=allProds.find(x=>x.id===id);return p?{...p}:null;}).filter(Boolean)};
-    closeBulkModal();
-    for(const id of ids){
-      const p=allProds.find(x=>x.id===id);if(!p)continue;
-      let cur=Array.isArray(p.design)?[...p.design]:(p.design?[p.design]:[]);
-      let next;
-      if(bulkDesignMode==='add') next=[...new Set([...cur,...selDesigns])];
-      else if(bulkDesignMode==='replace') next=selDesigns;
-      else next=cur.filter(d=>!selDesigns.includes(d));
-      await sbPatch(`/rest/v1/produtos?id=eq.${id}`,{design:next.length?next:null});
-      p.design=next.length?next:null;
-    }
-    toast(`Design atualizado em ${ids.length} produtos`,'ok');
   }
+
   renderProdTable();
   showUndo(`${ids.length} produtos atualizados`);
 }
@@ -4541,35 +4513,18 @@ function renderRecentOrders(){
 // ── UPLOAD FOTO ───────────────────────────────────────────────────────
 async function uploadFoto(file, prodNome){
   if(!file)return;
-  const maxMB=8;
-  if(file.size>maxMB*1024*1024){toast(`Foto muito grande (máx ${maxMB}MB)`,'err');return;}
   const slug=slugify(prodNome);
-  const ext=file.name.split('.').pop().toLowerCase();
-  const allowed=['jpg','jpeg','png','webp','gif'];
-  if(!allowed.includes(ext)){toast('Formato inválido. Use JPG, PNG ou WebP','err');return;}
+  const ext=file.name.split('.').pop();
   const path=`${slug}-${Date.now()}.${ext}`;
-  toast('Enviando foto...','info');
   try{
     const r=await fetch(`${SB}/storage/v1/object/Fotos/${path}`,{
       method:'POST',
       headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':file.type,'x-upsert':'true'},
       body:file
     });
-    if(r.ok){
-      const url=`${SB}/storage/v1/object/public/Fotos/${path}`;
-      // Add to FILES so it shows immediately without page reload
-      FILES.push({n:path,u:url});
-      // Add to currentPhotos grid
-      if(!currentPhotos) currentPhotos=[];
-      currentPhotos.push({url,name:path,isNew:true,order:currentPhotos.length});
-      renderPhotoGrid();
-      toast('Foto enviada com sucesso!','ok');
-    }else{
-      let msg='Erro no upload';
-      try{const err=await r.json();msg=err.message||err.error||msg;}catch{}
-      toast(`${msg} (${r.status})`,'err');
-    }
-  }catch(e){toast('Erro de conexão ao enviar foto','err');console.error('uploadFoto:',e);}
+    if(r.ok){toast('Foto enviada!','ok');loadPhotos(prodNome);}
+    else toast('Erro no upload','err');
+  }catch{toast('Erro no upload','err');}
 }
 
 mkLogo(document.getElementById('loginLogo'),52);
