@@ -3248,7 +3248,6 @@ function openBulkModal(action){
         </select>
       </div>
       <div style="font-size:.78rem;color:rgba(13,9,13,.45);margin-top:8px">A categoria selecionada será adicionada às coleções existentes.</div>`;
-  }
   }else if(action==='design'){
     title.textContent=`Alterar design (${n} produtos)`;
     const grid=allDesigns.map(d=>`<div class="col-ch" onclick="this.classList.toggle('checked')" style="cursor:pointer">${d.emoji||''} ${d.nome}</div>`).join('');
@@ -3263,6 +3262,7 @@ function openBulkModal(action){
       </div>
       <div style="font-size:.76rem;color:rgba(13,9,13,.45);margin-top:8px" id="bulkDesignHint">Os designs selecionados serão adicionados aos existentes.</div>`;
     bulkDesignMode='add';
+  }
   modal.classList.add('open');
 }
 
@@ -3297,7 +3297,7 @@ function updateBulkPreview(){
 
 async function applyBulk(){
   const val=(document.getElementById('bulkVal')?.value||'').trim();
-  if(!val){toast('Informe um valor','err');return;}
+  if(currentBulkAction!=='design'&&!val){toast('Informe um valor','err');return;}
   const ids=[...selectedIds];
   // Save undo snapshot
   undoStack={action:currentBulkAction,snapshot:ids.map(id=>{const p=allProds.find(x=>x.id===id);return p?{...p}:null;}).filter(Boolean)};
@@ -3335,22 +3335,7 @@ async function applyBulk(){
     }
     toast(`Categoria adicionada em ${ids.length} produtos`,'ok');
   }
-}else if(currentBulkAction==='design'){
-    const selDesigns=[...document.querySelectorAll('#bulkDesignGrid .col-ch.checked')]
-      .map(e=>e.textContent.trim());
-    if(!selDesigns.length){toast('Selecione ao menos um design','err');return;}
-    closeBulkModal();
-    for(const id of ids){
-      const p=allProds.find(x=>x.id===id);if(!p)continue;
-      let cur=Array.isArray(p.design)?[...p.design]:(p.design?[p.design]:[]);
-      let next;
-      if(bulkDesignMode==='add') next=[...new Set([...cur,...selDesigns])];
-      else if(bulkDesignMode==='replace') next=selDesigns;
-      else next=cur.filter(d=>!selDesigns.includes(d));
-      await sbPatch(`/rest/v1/produtos?id=eq.${id}`,{design:next.length?next:null});
-      p.design=next.length?next:null;
-    }
-    toast(`Design atualizado em ${ids.length} produtos`,'ok');
+
   renderProdTable();
   showUndo(`${ids.length} produtos atualizados`);
 }
@@ -4572,4 +4557,3 @@ mkLogo(document.getElementById('loginLogo'),52);
 </script>
 </body>
 </html>
-  
