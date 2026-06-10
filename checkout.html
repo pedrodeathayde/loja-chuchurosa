@@ -793,6 +793,7 @@ async function placeOrder(){
 }
 
 function showSuccess({nome,email,total,prazo,orderId,payMethod}){
+  offerAccountCreation(email, nome);
   document.getElementById('checkoutWrap').style.display='none';
   const ss=document.getElementById('successScreen');
   ss.classList.add('show');
@@ -967,6 +968,88 @@ function updateFreteTotal(freteVal){
     const subtotal=getCart().reduce((s,i)=>s+(i.price||0)*(i.qty||1),0);
     totalEl.textContent='R$ '+(subtotal+freteVal).toFixed(2).replace('.',',');
   }
+}
+
+
+// ── AUTO-FILL FROM SAVED ADDRESS ─────────────────────────────────
+(async function(){
+  try{
+    // Check if user is logged in via Supabase
+    const SB_URL = 'https://oznpfqsgurztffwfyfec.supabase.co';
+    const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA';
+
+    // Get session from localStorage (Supabase stores it there)
+    const sessionKey = Object.keys(localStorage).find(k=>k.includes('supabase')&&k.includes('session'));
+    if(!sessionKey) return;
+    const session = JSON.parse(localStorage.getItem(sessionKey)||'{}');
+    const token = session?.access_token || session?.currentSession?.access_token;
+    if(!token) return;
+
+    // Fetch saved address
+    const r = await fetch(SB_URL+'/rest/v1/enderecos_salvos?select=*&limit=1',{
+      headers:{
+        apikey: ANON_KEY,
+        Authorization: 'Bearer '+token,
+        Accept: 'application/json'
+      }
+    });
+    if(!r.ok) return;
+    const data = await r.json();
+    if(!data||!data.length) return;
+
+    const addr = data[0];
+    const fields = {
+      fNome: addr.nome,
+      fEmail: addr.email,
+      fTelefone: addr.telefone,
+      fCep: addr.cep,
+      fLogradouro: addr.logradouro,
+      fNumero: addr.numero,
+      fComplemento: addr.complemento,
+      fBairro: addr.bairro,
+      fCidade: addr.cidade,
+      fEstado: addr.estado,
+    };
+    let filled = 0;
+    Object.entries(fields).forEach(([id,val])=>{
+      const el = document.getElementById(id);
+      if(el && val && !el.value) { el.value=val; filled++; }
+    });
+    if(filled > 0){
+      // Show subtle banner
+      const banner = document.createElement('div');
+      banner.style.cssText = 'background:rgba(37,211,102,.1);color:#166534;border:1px solid rgba(37,211,102,.2);border-radius:10px;padding:10px 16px;font-size:.78rem;margin-bottom:16px;display:flex;align-items:center;gap:8px;';
+      banner.innerHTML = '✅ Dados preenchidos automaticamente da sua conta.';
+      const firstSection = document.querySelector('.checkout-section');
+      if(firstSection) firstSection.prepend(banner);
+    }
+  }catch(e){
+    // Silent fail — never block checkout
+    console.log('autofill:', e.message);
+  }
+})();
+
+// ── OFFER ACCOUNT CREATION AFTER ORDER ───────────────────────────
+function offerAccountCreation(email, nome){
+  // Check if already logged in
+  const sessionKey = Object.keys(localStorage).find(k=>k.includes('supabase')&&k.includes('session'));
+  if(sessionKey) return; // already has account
+
+  setTimeout(()=>{
+    const banner = document.getElementById('successSection');
+    if(!banner) return;
+    const div = document.createElement('div');
+    div.style.cssText = 'margin-top:16px;padding:16px;background:rgba(229,37,100,.06);border-radius:12px;text-align:center';
+    div.innerHTML = `
+      <p style="font-size:.82rem;color:rgba(13,9,13,.6);margin-bottom:10px">
+        💾 Salve seus dados para a próxima compra
+      </p>
+      <a href="minha-conta.html?email=${encodeURIComponent(email)}" 
+         style="background:var(--pink);color:#fff;text-decoration:none;border-radius:100px;padding:8px 20px;font-size:.78rem;font-weight:600;display:inline-block">
+        Criar conta grátis →
+      </a>`;
+    banner.appendChild(div);
+  }, 1000);
 }
 
 </script>
