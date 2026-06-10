@@ -439,13 +439,16 @@ nav.elevated{
   .hamburger{display:flex}
   .sidebar{
     display:none;position:fixed;top:0;left:0;bottom:0;
-    z-index:200;width:260px;background:var(--white);
+    z-index:200;width:280px;background:var(--white);
     transform:translateX(-100%);
     transition:transform .32s cubic-bezier(.25,.46,.45,.94);
-    overflow-y:auto;
+    overflow-y:auto;overflow-x:hidden;
     box-shadow:4px 0 20px rgba(0,0,0,.08);
+    padding-top:72px;
+    height:100%;height:100dvh;
   }
   .sidebar.mobile-open{display:block;transform:translateX(0)}
+  body.sidebar-open{overflow:hidden;position:fixed;width:100%}
   .shop-wrap{display:block}
   .shop-main{padding:12px}
   .cat-tabs{display:flex}
@@ -2916,12 +2919,14 @@ applyFilters=function(){
 
 // ── SIDEBAR TOGGLE ──────────────────────────────────────────────────
 function toggleSidebar(){
-  document.getElementById('sidebar').classList.toggle('mobile-open');
+  const open=document.getElementById('sidebar').classList.toggle('mobile-open');
   document.getElementById('sidebarOverlay').classList.toggle('open');
+  document.body.classList.toggle('sidebar-open', open);
 }
 function closeSidebar(){
   document.getElementById('sidebar').classList.remove('mobile-open');
   document.getElementById('sidebarOverlay').classList.remove('open');
+  document.body.classList.remove('sidebar-open');
 }
 
 // ── VIEW TOGGLE ──────────────────────────────────────────────────
