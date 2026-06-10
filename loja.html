@@ -2672,6 +2672,7 @@ function goPage(p){ page=p; renderGrid(); renderPagination(); window.scrollTo({t
 
 // ── CART ──────────────────────────────────────────────────────────────
 let cart=loadCart();
+document.addEventListener('DOMContentLoaded', ()=>updateCartUI());
 function saveCart(){
   const payload={data:cart,exp:Date.now()+7*24*60*60*1000};
   localStorage.setItem('cr_cart',JSON.stringify(payload));
