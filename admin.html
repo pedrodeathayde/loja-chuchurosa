@@ -3150,10 +3150,11 @@ let currentPhotos=[]; // [{url, name, isNew, file, order}]
 
 function loadPhotos(nome){
   const slug=nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  const slugParts=slug.split('-').slice(0,4).join('-');
   const photos=FILES.filter(f=>{
-    const n=f.n.replace(/\.[^.]+$/,'');
-    return n.startsWith(slug)||n.includes(slug.split('-').slice(0,3).join('-'));
-  }).slice(0,15);
+    const n=f.n.replace(/\.[^.]+$/,'').toLowerCase();
+    return n.startsWith(slug)||n.startsWith(slugParts)||n.includes(slug);
+  });
   currentPhotos=photos.map((f,i)=>({url:f.u,name:f.n,isNew:false,order:i}));
   renderPhotoGrid();
 }
