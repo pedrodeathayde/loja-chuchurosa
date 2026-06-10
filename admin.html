@@ -675,7 +675,7 @@ img{display:block;max-width:100%}
       <div class="client-header">
         <div class="client-search-wrap">
           <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          <input type="text" id="clientSearch" placeholder="Buscar por nome, email ou cidade…" oninput="clientPage=1;renderClients()">
+          <input type="text" id="clientSearch" placeholder="Buscar por nome, email ou cidade…" oninput="clientsShown=50;renderClients()">
         </div>
         <span id="clientCount" style="font-size:.78rem;color:rgba(13,9,13,.4);white-space:nowrap"></span>
         <button class="btn-p" onclick="openNewClient()" style="white-space:nowrap">+ Novo cliente</button>
@@ -2832,30 +2832,38 @@ document.getElementById('orderModal').addEventListener('click',e=>{if(e.target==
 function contactWA(id,nome,tel){window.open(`https://wa.me/55${tel}?text=${encodeURIComponent(`Olá ${decodeURIComponent(nome)}! Atualização sobre seu pedido #${id} 🌸`)}`,'_blank');}
 
 // ── CLIENTS ───────────────────────────────────────────────────────────
-const CLIENTS_PER_PAGE = 50;
-let clientPage = 1;
+const CLIENTS_BATCH = 50;
+let clientsShown = 50;
 
 async function loadClients(){
-  const [cd, od] = await Promise.all([
-    sbGet('/rest/v1/clientes?select=*&order=created_at.desc&limit=10000'),
-    sbGet('/rest/v1/pedidos?select=cliente_id,total,status')
-  ]);
-  allClients=Array.isArray(cd)?cd:[];
-  const orders=Array.isArray(od)?od:[];
+  let all = [];
+  let offset = 0;
+  const batch = 1000;
+  while(true){
+    const chunk = await sbGet(`/rest/v1/clientes?select=*&order=created_at.desc&limit=${batch}&offset=${offset}`);
+    if(!Array.isArray(chunk)||chunk.length===0) break;
+    all = all.concat(chunk);
+    if(chunk.length < batch) break;
+    offset += batch;
+  }
+  const od = await sbGet('/rest/v1/pedidos?select=cliente_id,total,status');
+  allClients = all;
+  const orders = Array.isArray(od)?od:[];
   allClients.forEach(c=>{
     const cOrders=orders.filter(o=>o.cliente_id===c.id);
     c._pedidos=cOrders.length;
   });
-  clientPage=1;
+  clientsShown = CLIENTS_BATCH;
   renderClients();
+  initClientScroll();
 }
 
 function renderClients(){
   const el=document.getElementById('clientTable');
   const pag=document.getElementById('clientPag');
+  if(pag) pag.innerHTML='';
   if(!allClients.length){
     el.innerHTML='<div class="empty"><div class="empty-icon">👥</div><p>Nenhum cliente</p></div>';
-    if(pag) pag.innerHTML='';
     return;
   }
   const cq=(document.getElementById('clientSearch')?.value||'').toLowerCase();
@@ -2865,14 +2873,10 @@ function renderClients(){
     (c.cidade||'').toLowerCase().includes(cq)
   ):allClients;
 
-  const totalPages=Math.ceil(shown.length/CLIENTS_PER_PAGE);
-  if(clientPage>totalPages) clientPage=1;
-  const start=(clientPage-1)*CLIENTS_PER_PAGE;
-  const pageItems=shown.slice(start,start+CLIENTS_PER_PAGE);
-
   document.getElementById('clientCount').textContent=shown.length+' clientes';
+  const visible=shown.slice(0,clientsShown);
 
-  el.innerHTML=pageItems.map(c=>`
+  el.innerHTML=visible.map(c=>`
     <div class="client-card" onclick="openClient(${c.id||JSON.stringify(c.email)})">
       <div class="cc-top">
         <div class="cc-avatar">${(c.nome||c.name||'?')[0].toUpperCase()}</div>
@@ -2891,22 +2895,31 @@ function renderClients(){
       </div>
     </div>`).join('');
 
-  // Pagination controls
-  if(pag){
-    if(totalPages<=1){pag.innerHTML='';return;}
-    let btns='';
-    btns+=`<button class="cpag-btn" onclick="clientPage--;renderClients()" ${clientPage===1?'disabled':''}>‹</button>`;
-    const range=2;
-    for(let i=1;i<=totalPages;i++){
-      if(i===1||i===totalPages||Math.abs(i-clientPage)<=range){
-        btns+=`<button class="cpag-btn${i===clientPage?' active':''}" onclick="clientPage=${i};renderClients()">${i}</button>`;
-      } else if(Math.abs(i-clientPage)===range+1){
-        btns+='<span style="padding:0 4px;color:rgba(13,9,13,.3)">…</span>';
-      }
-    }
-    btns+=`<button class="cpag-btn" onclick="clientPage++;renderClients()" ${clientPage===totalPages?'disabled':''}>›</button>`;
-    pag.innerHTML=btns;
+  if(clientsShown < shown.length){
+    el.innerHTML += `<div id="clientLoadMore" style="text-align:center;padding:20px;color:rgba(13,9,13,.35);font-size:.78rem">Carregando mais...</div>`;
   }
+}
+
+function initClientScroll(){
+  const page = document.getElementById('page-clientes');
+  if(!page) return;
+  const observer = new IntersectionObserver(entries=>{
+    if(entries[0].isIntersecting){
+      const sentinel = document.getElementById('clientLoadMore');
+      if(!sentinel) return;
+      clientsShown += CLIENTS_BATCH;
+      renderClients();
+    }
+  },{threshold:0.1});
+  // Observe dynamically
+  const check=()=>{
+    const s=document.getElementById('clientLoadMore');
+    if(s) observer.observe(s);
+  };
+  setTimeout(check, 300);
+  // Re-observe after each render
+  const orig = renderClients;
+  window._clientObserver = observer;
 }
 
 // ── CUPONS ────────────────────────────────────────────────────────────
