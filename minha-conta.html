@@ -1666,7 +1666,13 @@ async function loginEmail(){
   if(isSignUp&&data.session){
     toast('Bem-vinda à Chuchu Rosa! 🌸','ok');
   }
-  if(data.session){HDR.Authorization='Bearer '+data.session.access_token;onLogin(data.session);}
+  if(data.session){
+    HDR.Authorization='Bearer '+data.session.access_token;
+    await onLogin(data.session);
+    // Redirect back if came from checkout
+    const params=new URLSearchParams(window.location.search);
+    if(params.get('next')==='checkout') window.location.href='checkout.html';
+  }
 }
 
 function toggleMode(){
