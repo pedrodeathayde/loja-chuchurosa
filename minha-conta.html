@@ -1657,8 +1657,14 @@ async function loginEmail(){
     return;
   }
   if(isSignUp&&!data.session){
-    toast('Verifique seu e-mail para confirmar a conta','info');
+    // Show friendly message
+    document.getElementById('loginErr').style.color='var(--ok,#22c55e)';
+    document.getElementById('loginErr').textContent='✅ Conta criada! Verifique seu e-mail para confirmar.';
+    document.getElementById('loginErr').style.display='block';
     return;
+  }
+  if(isSignUp&&data.session){
+    toast('Bem-vinda à Chuchu Rosa! 🌸','ok');
   }
   if(data.session){HDR.Authorization='Bearer '+data.session.access_token;onLogin(data.session);}
 }
@@ -1713,6 +1719,17 @@ async function onLogin(session){
     await sbPatch(`/rest/v1/pedidos?visitante_email=eq.${encodeURIComponent(currentUser.email)}&user_id=is.null`,
       {user_id:currentUser.id});
   }
+
+  // Upsert na tabela clientes — cria ou vincula registro existente
+  const nomeCliente=currentUser.user_metadata?.full_name||currentUser.email?.split('@')[0]||'';
+  await fetch(SB+'/rest/v1/clientes',{
+    method:'POST',
+    headers:{...HDR,'Prefer':'resolution=merge-duplicates,return=minimal'},
+    body:JSON.stringify({
+      nome:nomeCliente,
+      email:currentUser.email,
+    })
+  });
 }
 
 // ── ORDERS ────────────────────────────────────────────────────────────
@@ -1930,6 +1947,24 @@ mkLogo(document.getElementById('loginLogo'),60);
 document.getElementById('navLogoutBtn').style.display='none';
 // Show logout btn when logged in
 const _origOnLogin=onLogin;
+
+// ── PRE-FILL EMAIL FROM URL ───────────────────────────────────────
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const email = params.get('email');
+  if(email){
+    const el = document.getElementById('emailInput');
+    if(el) el.value = decodeURIComponent(email);
+    // Switch to signup mode automatically
+    if(!document.getElementById('emailBtn').textContent.includes('Criar')) toggleMode();
+    // Show helpful message
+    const hint = document.createElement('p');
+    hint.style.cssText = 'font-size:.78rem;color:rgba(13,9,13,.5);margin-top:8px;text-align:center';
+    hint.textContent = 'Crie uma senha para salvar seus dados e acompanhar seus pedidos.';
+    document.getElementById('emailBtn')?.parentElement?.appendChild(hint);
+  }
+})();
+
 </script>
 </body>
 </html>
