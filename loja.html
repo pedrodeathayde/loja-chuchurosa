@@ -2610,7 +2610,7 @@ function renderGrid(){
       <div class="pcard-img">
         ${img}
         <div class="pcard-ph" ${p.url?'style="display:none"':''}>🌸</div>
-        ${badge}${newBadge}
+        ${badge}
         ${p.url?`<button class="lb-trigger" onclick="event.stopPropagation();openLightbox('${p.url}','${p.name.replace(/'/g,"\\'")}')" title="Ver foto">⤢</button>`:''}
       </div>
       <div class="pcard-body">
