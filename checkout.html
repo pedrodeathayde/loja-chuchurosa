@@ -165,6 +165,9 @@ nav{background:rgba(255,249,246,.97);backdrop-filter:blur(16px);border-bottom:1p
 .frete-opt-price{margin-left:auto;font-weight:800;color:var(--rose);font-size:.95rem;white-space:nowrap}
 .frete-loading{text-align:center;padding:12px;color:rgba(13,9,13,.35);font-size:.82rem}
 </style>
+
+  <!-- Mercado Pago SDK -->
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
 </head>
 <body>
 
@@ -589,7 +592,58 @@ async function placeOrder(){
 
   const btn = document.getElementById('btnPlace');
   btn.disabled=true;
-  showLoading('Salvando seu pedido…');
+  showLoading('Processando pagamento…');
+
+  // Tokenizar cartão via MP SDK
+  if(payMethod === 'cartao'){
+    try{
+      showLoading('Tokenizando cartão…');
+      const num = document.getElementById('fCardNum').value.replace(/\s/g,'');
+      const [mm, yy] = (document.getElementById('fCardExp').value||'/').split('/');
+      const tokenRes = await mpInstance.createCardToken({
+        cardNumber: num,
+        cardholderName: document.getElementById('fCardName').value,
+        cardExpirationMonth: mm?.trim(),
+        cardExpirationYear: '20'+(yy?.trim()||''),
+        securityCode: document.getElementById('fCardCvv').value,
+        identificationType: 'CPF',
+        identificationNumber: (document.getElementById('fCpf')?.value||'').replace(/\D/g,''),
+      });
+      if(!tokenRes?.id){
+        showToast('Dados do cartão inválidos','err');
+        btn.disabled=false; hideLoading(); return;
+      }
+      cardToken = tokenRes.id;
+    }catch(e){
+      showToast('Erro ao processar cartão. Verifique os dados.','err');
+      btn.disabled=false; hideLoading(); return;
+    }
+  }
+
+  // Tokenizar cartão se necessário
+  if(payMethod === 'cartao'){
+    try{
+      showLoading('Tokenizando cartão…');
+      const [month, year] = (document.getElementById('fCardExp').value||'').split('/');
+      const tokenRes = await mpInstance.fields.createCardToken({
+        cardNumber: document.getElementById('fCardNum').value.replace(/\s/g,''),
+        cardholderName: document.getElementById('fCardName').value,
+        cardExpirationMonth: month?.trim(),
+        cardExpirationYear: '20'+year?.trim(),
+        securityCode: document.getElementById('fCardCvv').value,
+        identificationType: 'CPF',
+        identificationNumber: document.getElementById('fCpf').value.replace(/\D/g,''),
+      });
+      if(tokenRes.error || !tokenRes.id){
+        showToast('Dados do cartão inválidos. Verifique e tente novamente.','err');
+        btn.disabled=false; hideLoading(); return;
+      }
+      cardToken = tokenRes.id;
+    }catch(e){
+      showToast('Erro ao processar cartão. Tente novamente.','err');
+      btn.disabled=false; hideLoading(); return;
+    }
+  }
 
   const nome  = document.getElementById('fNome').value.trim();
   const email = document.getElementById('fEmail').value.trim();
@@ -671,31 +725,65 @@ async function placeOrder(){
     }
 
     // 4. Redirect to Mercado Pago (when MP token is configured)
-    // For now: show success screen + WhatsApp
-    showLoading('Quase lá…');
-    await new Promise(r=>setTimeout(r,800));
-    hideLoading();
-    showSuccess({nome,email,total,prazo:maxPrazo,orderId,payMethod});
+    // 4. Processar pagamento via Mercado Pago
+    showLoading('Enviando para Mercado Pago…');
 
-    // Clear cart
+    const payer = {
+      nome, email,
+      cpf: document.getElementById('fCpf')?.value.trim()||'',
+      cep: document.getElementById('fCep').value.trim(),
+      logradouro: document.getElementById('fLogradouro').value.trim(),
+      numero: document.getElementById('fNumero').value.trim(),
+      bairro: document.getElementById('fBairro').value.trim(),
+      cidade: document.getElementById('fCidade').value.trim(),
+      estado: document.getElementById('fEstado').value.trim(),
+    };
+
+    let payment_method_mp = {};
+    if(payMethod === 'cartao'){
+      const num = document.getElementById('fCardNum').value.replace(/\s/g,'');
+      const brand = num.startsWith('4') ? 'visa' : /^5[1-5]/.test(num) ? 'master' : 'master';
+      payment_method_mp = {
+        type: 'card', brand, card_type: 'credit_card',
+        token: cardToken,
+        installments: parseInt(document.getElementById('fParcelas')?.value||'1'),
+      };
+    } else if(payMethod === 'pix'){
+      payment_method_mp = { type: 'pix' };
+    } else {
+      payment_method_mp = { type: 'boleto' };
+    }
+
+    const mpRes = await fetch(EDGE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'create_order',
+        payload: { cart, payer, payment_method: payment_method_mp, total, pedido_id: orderId }
+      })
+    });
+    const mpData = await mpRes.json();
+
+    if(!mpRes.ok || mpData.error){
+      throw new Error(mpData.error?.message || 'Pagamento não processado. Tente novamente.');
+    }
+
+    await fetch(SB+'/rest/v1/pedidos?id=eq.'+orderId, {
+      method: 'PATCH',
+      headers: {...HDR},
+      body: JSON.stringify({ mp_order_id: mpData.order_id, payment_method: payMethod })
+    });
+
     localStorage.removeItem('cr_cart');
     cart=[];
+    hideLoading();
 
-    // Send WhatsApp notification
-    const msg = `Olá! Acabei de fazer um pedido na loja Chuchu Rosa 🌸
-
-Pedido #${orderId}
-Nome: ${nome}
-Total: ${fmt(total)}
-Pagamento: ${payMethod==='pix'?'PIX':payMethod==='cartao'?'Cartão':'Boleto'}
-
-Aguardo confirmação! 😊`;
-    setTimeout(()=>{
-      if(confirm('Deseja enviar os detalhes do pedido pelo WhatsApp para agilizar o atendimento?')){
-        window.open(`https://wa.me/5519993041555?text=${encodeURIComponent(msg)}`,'_blank');
-      }
-    }, 1000);
-
+    if(payMethod === 'pix') showPixResult(mpData, orderId, maxPrazo);
+    else if(payMethod === 'boleto') showBoletoResult(mpData, orderId, maxPrazo);
+    else {
+      if(mpData.status === 'failed') throw new Error('Pagamento recusado. Verifique os dados do cartão.');
+      showSuccess({nome,email,total,prazo:maxPrazo,orderId,payMethod});
+    }
   } catch(err){
     hideLoading();
     btn.disabled=false;
@@ -729,6 +817,47 @@ function showLoading(msg){
 }
 function hideLoading(){
   document.getElementById('loadingOverlay').classList.remove('show');
+}
+
+
+// ── PIX RESULT ────────────────────────────────────────────────────
+function showPixResult(data, pedidoId, prazo){
+  const el = document.getElementById('successSection') || document.createElement('div');
+  el.id = 'successSection';
+  el.style.cssText = 'position:fixed;inset:0;background:rgba(12,9,13,.7);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px';
+  el.innerHTML = `
+    <div style="background:#fff;border-radius:20px;padding:32px;max-width:420px;width:100%;text-align:center">
+      <div style="font-size:2.5rem;margin-bottom:12px">📱</div>
+      <h2 style="font-family:var(--fd);font-size:1.3rem;margin-bottom:8px">Pague via Pix</h2>
+      <p style="font-size:.82rem;color:rgba(13,9,13,.5);margin-bottom:20px">Pedido #${pedidoId} · Válido por 24h</p>
+      ${data.qr_code_base64 ? `<img src="data:image/png;base64,${data.qr_code_base64}" style="width:200px;height:200px;border-radius:12px;margin-bottom:16px">` : ''}
+      ${data.qr_code ? `
+        <div style="background:#f8f0ec;border-radius:10px;padding:12px;margin-bottom:16px;word-break:break-all;font-size:.72rem;color:rgba(13,9,13,.6);text-align:left">${data.qr_code}</div>
+        <button onclick="navigator.clipboard.writeText('${data.qr_code}').then(()=>alert('Copiado!'))" style="background:var(--pink);color:#fff;border:none;border-radius:100px;padding:10px 24px;font-family:var(--fb);font-weight:600;cursor:pointer;margin-bottom:12px">📋 Copiar código Pix</button>
+      ` : ''}
+      ${data.ticket_url ? `<br><a href="${data.ticket_url}" target="_blank" style="font-size:.8rem;color:var(--pink)">Abrir no app →</a>` : ''}
+      <p style="font-size:.75rem;color:rgba(13,9,13,.4);margin-top:16px">Após o pagamento, você receberá confirmação por e-mail.<br>Prazo de produção: ${prazo} dias úteis.</p>
+    </div>`;
+  document.body.appendChild(el);
+}
+
+// ── BOLETO RESULT ─────────────────────────────────────────────────
+function showBoletoResult(data, pedidoId, prazo){
+  const el = document.createElement('div');
+  el.style.cssText = 'position:fixed;inset:0;background:rgba(12,9,13,.7);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px';
+  el.innerHTML = `
+    <div style="background:#fff;border-radius:20px;padding:32px;max-width:420px;width:100%;text-align:center">
+      <div style="font-size:2.5rem;margin-bottom:12px">🧾</div>
+      <h2 style="font-family:var(--fd);font-size:1.3rem;margin-bottom:8px">Boleto gerado!</h2>
+      <p style="font-size:.82rem;color:rgba(13,9,13,.5);margin-bottom:20px">Pedido #${pedidoId} · Vence em 3 dias</p>
+      ${data.barcode ? `
+        <div style="background:#f8f0ec;border-radius:10px;padding:12px;margin-bottom:16px;font-size:.72rem;color:rgba(13,9,13,.6);word-break:break-all">${data.barcode}</div>
+        <button onclick="navigator.clipboard.writeText('${data.barcode}').then(()=>alert('Copiado!'))" style="background:var(--ink);color:#fff;border:none;border-radius:100px;padding:10px 24px;font-family:var(--fb);font-weight:600;cursor:pointer;margin-bottom:12px">📋 Copiar código de barras</button>
+      ` : ''}
+      ${data.ticket_url ? `<br><a href="${data.ticket_url}" target="_blank" style="display:inline-block;margin-top:10px;background:var(--pink);color:#fff;text-decoration:none;border-radius:100px;padding:10px 24px;font-family:var(--fb);font-weight:600">🖨 Imprimir boleto</a>` : ''}
+      <p style="font-size:.75rem;color:rgba(13,9,13,.4);margin-top:16px">O pedido será confirmado após o pagamento (1-2 dias úteis).<br>Prazo de produção: ${prazo} dias úteis após confirmação.</p>
+    </div>`;
+  document.body.appendChild(el);
 }
 
 // ── INIT ────────────────────────────────────────────────────────────
