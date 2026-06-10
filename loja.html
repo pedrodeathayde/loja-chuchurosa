@@ -135,11 +135,13 @@ nav.elevated{
   width:220px;flex-shrink:0;
   background:var(--white);
   border-right:1px solid rgba(229,37,100,.08);
-  padding:20px 16px;
-  position:sticky;top:60px;
-  height:calc(100vh - 60px);
+  padding:20px 16px 40px;
+  position:sticky;top:64px;
+  height:calc(100vh - 64px);
   overflow-y:auto;
+  scrollbar-width:none;
 }
+.sidebar::-webkit-scrollbar{display:none}
 .sidebar::-webkit-scrollbar{width:2px}
 .sidebar::-webkit-scrollbar-thumb{background:rgba(229,37,100,.2)}
 .sidebar-label{
@@ -770,13 +772,12 @@ body::before{
 .btn-add{
   flex-shrink:0;
   background:var(--dark);color:#fff;border:none;
-  border-radius:100px;padding:8px 16px;
-  font-family:var(--fb);font-size:.7rem;font-weight:700;
-  cursor:pointer;transition:all .2s;white-space:nowrap;
-  display:flex;align-items:center;gap:5px;
-  letter-spacing:.02em;
+  border-radius:50%;width:36px;height:36px;
+  font-size:1.1rem;font-weight:300;
+  cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;
 }
-.btn-add:hover{background:var(--pink);transform:scale(1.04)}
+.btn-add:hover{background:var(--pink);transform:scale(1.08)}
 
 /* ── SIDEBAR — premium ── */
 .sidebar{
@@ -2490,7 +2491,12 @@ function mergeProducts(){
     }
     function getSecondUrl(name){
       const slug=name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-      const matches=FILES.filter(f=>f.n.startsWith(slug)||f.n.replace(/\.[^.]+$/,'').split('-').slice(0,-1).join('-')===slug);
+      const parts=slug.split('-');
+      const short=parts.slice(0,3).join('-');
+      const matches=FILES.filter(f=>{
+        const fn=f.n.replace(/\.[^.]+$/,'');
+        return fn.startsWith(slug)||fn.startsWith(short);
+      });
       return matches.length>1?matches[1].u:'';
     }
     allProducts=dbProducts
@@ -2573,12 +2579,13 @@ function renderGrid(){
   grid.innerHTML=slice.map(p=>{
     const isFeatured=p.destaque&&!featuredUsed&&viewMode!=='list';
     if(isFeatured)featuredUsed=true;
-    const cats=(p.collections||[]).slice(0,2).join(' · ');
+    const cats=(p.collections||[]).slice(0,2).map(c=>c.charAt(0).toUpperCase()+c.slice(1)).join(' · ');
     const prazo=p.prazo_producao_dias||7;
     const isNew=p.created_at&&(Date.now()-new Date(p.created_at).getTime())<30*24*60*60*1000;
-    const badge=p.destaque?'<span class="pcard-badge badge-destaque">Destaque</span>':'';
+    const badge=p.destaque?'<span class="pcard-badge badge-destaque">Destaque</span>':isNew?'<span class="pcard-badge badge-novo">Novo</span>':'';
 
-    const img=p.url?`<img src="${p.url}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`:'';
+    const imgFirst=p.url?`<img class="img-primary" src="${p.url}" alt="${p.name}" loading="lazy">`:'';
+    const imgSecond=p.url2?`<img class="img-secondary" src="${p.url2}" alt="${p.name}" loading="lazy">`:'';'';
     // Swatches from variacoes (colors) — use design tags as fallback
     const colors=(p._cores||[]).slice(0,5);
     const colorMap={
@@ -2595,12 +2602,12 @@ function renderGrid(){
 
     const priceHtml=p.price
       ?`<div class="pcard-price${p.preco_promocional?' promo':''}">${p.preco_promocional?`<span class="pcard-price-old">${fmt(p.price)}</span>`:''}${fmt(p.preco_promocional||p.price)}</div>
-        <button class="btn-add" onclick="event.stopPropagation();addToCart(event,'${p.id}')">+ Adicionar</button>`
+        <button class="btn-add" onclick="event.stopPropagation();addToCart(event,'${p.id}')">＋</button>`
       :`<div class="pcard-price" style="font-size:.72rem;color:rgba(12,9,13,.35)">Sob consulta</div>
         <button class="btn-consult" onclick="event.stopPropagation();openWA('${p.name.replace(/'/g,"\\'")}')">Consultar</button>`;
     return `<div class="pcard${isFeatured?' featured-card':''}" onclick="goProduct('${p.id}')">
       <div class="pcard-img">
-        ${img}
+        ${imgFirst}${imgSecond}
         <div class="pcard-ph" ${p.url?'style="display:none"':''}>🌸</div>
         ${badge}
         ${p.url?`<button class="lb-trigger" onclick="event.stopPropagation();openLightbox('${p.url}','${p.name.replace(/'/g,"\\'")}')" title="Ver foto">⤢</button>`:''}
@@ -2609,7 +2616,7 @@ function renderGrid(){
         <div class="pcard-cat">${cats}</div>
         <div class="pcard-name">${p.name}</div>
         ${swatchHtml}
-        <div class="pcard-prazo">⏱ ${prazo} dias úteis</div>
+        <div class="pcard-prazo">${prazo} dias úteis</div>
         <div class="pcard-footer">${priceHtml}</div>
       </div>
     </div>`;
@@ -2888,7 +2895,8 @@ function renderFeaturedStrip(){
     const priceHtml=p.price
       ?`<div class="scard-price${p.preco_promocional?' promo':''}">${fmt(p.preco_promocional||p.price)}</div>`
       :`<div class="scard-price" style="color:rgba(12,9,13,.4);font-size:.72rem">Sob consulta</div>`;
-    const img=p.url?`<img src="${p.url}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`:'';
+    const imgFirst=p.url?`<img class="img-primary" src="${p.url}" alt="${p.name}" loading="lazy">`:'';
+    const imgSecond=p.url2?`<img class="img-secondary" src="${p.url2}" alt="${p.name}" loading="lazy">`:'';'';
     return `<div class="scard" onclick="goProduct('${p.id}')">
       <div class="scard-img">${img}<div class="scard-img-ph" ${p.url?'style="display:none"':''}>🌸</div><span class="scard-badge-dest">Destaque</span></div>
       <div class="scard-info"><div class="scard-name">${p.name}</div>${priceHtml}</div>
