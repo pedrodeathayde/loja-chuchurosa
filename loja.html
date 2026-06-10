@@ -126,6 +126,9 @@ nav.elevated{
   background:var(--pink);border-color:var(--pink);
   color:#fff;
 }
+.hbadge:not(.active):hover{
+  background:rgba(229,37,100,.3);border-color:rgba(229,37,100,.4);
+}
 
 /* ── LAYOUT ── */
 .shop-wrap{display:flex;align-items:start;min-height:70vh}
@@ -2819,10 +2822,10 @@ document.getElementById('heroBadges').addEventListener('click',e=>{
   if(!badge)return;
 
   const wasActive=badge.classList.contains('active');
-  // If clicking the only active badge, deselect all
   const activeCount=document.querySelectorAll('#heroBadges .hbadge.active').length;
   if(wasActive && activeCount===1){
     badge.classList.remove('active');
+    badge.blur(); // força reset visual no mobile
   } else {
     badge.classList.toggle('active');
   }
