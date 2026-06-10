@@ -958,16 +958,6 @@ body::before{
 .hamburger .filter-dot.visible{display:block}
 
 
-/* ── BLUR PLACEHOLDER ── */
-.pcard-img img{
-  transition:filter .4s ease,opacity .4s ease,transform .5s ease;
-  filter:blur(8px);
-}
-.pcard-img img.loaded{filter:blur(0)}
-.pcard-img .img-primary,.pcard-img .img-secondary{
-  transition:filter .4s ease,opacity .5s ease,transform .5s ease;
-}
-.pcard-img .img-primary.loaded,.pcard-img .img-secondary.loaded{filter:blur(0)}
 
 </style>
 <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,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">
@@ -2622,8 +2612,7 @@ function renderGrid(){
     if(isFeatured)featuredUsed=true;
     const cats=(p.collections||[]).slice(0,2).map(c=>c.charAt(0).toUpperCase()+c.slice(1)).join(' · ');
     const prazo=p.prazo_producao_dias||7;
-    const isNew=p.created_at&&(Date.now()-new Date(p.created_at).getTime())<30*24*60*60*1000;
-    const badge=p.destaque?'<span class="pcard-badge badge-destaque">Destaque</span>':isNew?'<span class="pcard-badge badge-novo">Novo</span>':'';
+    const badge=p.destaque?'<span class="pcard-badge badge-destaque">Destaque</span>':'';
 
     const imgFirst=p.url?`<img class="img-primary" src="${p.url}" alt="${p.name}" loading="lazy">`:'';
     const imgSecond=p.url2?`<img class="img-secondary" src="${p.url2}" alt="${p.name}" loading="lazy">`:'';'';
@@ -2829,14 +2818,16 @@ document.getElementById('heroBadges').addEventListener('click',e=>{
   const badge=e.target.closest('.hbadge');
   if(!badge)return;
 
-  badge.classList.toggle('active');
+  const wasActive=badge.classList.contains('active');
+  // If clicking the only active badge, deselect all
+  const activeCount=document.querySelectorAll('#heroBadges .hbadge.active').length;
+  if(wasActive && activeCount===1){
+    badge.classList.remove('active');
+  } else {
+    badge.classList.toggle('active');
+  }
   activeDesigns=[...document.querySelectorAll('#heroBadges .hbadge.active')]
     .map(b=>b.dataset.filter).filter(Boolean);
-
-  // If nothing selected, make sure nothing stays pink
-  if(!activeDesigns.length){
-    document.querySelectorAll('#heroBadges .hbadge').forEach(b=>b.classList.remove('active'));
-  }
 
   searchQ='';
   currentCat='Todas';
