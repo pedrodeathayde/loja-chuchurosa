@@ -450,6 +450,52 @@ img{display:block;max-width:100%}
 @media(max-width:768px){
   .frete-top-grid{grid-template-columns:1fr!important}
 }
+
+/* ── CLIENT CARDS ── */
+.client-card{
+  background:#fff;border-radius:14px;
+  border:1.5px solid rgba(229,37,100,.08);
+  padding:16px;margin-bottom:10px;cursor:pointer;
+  transition:border-color .2s,box-shadow .2s;
+}
+.client-card:hover{border-color:rgba(229,37,100,.2);box-shadow:0 4px 16px rgba(229,37,100,.08)}
+.cc-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.cc-avatar{
+  width:40px;height:40px;border-radius:50%;
+  background:linear-gradient(135deg,var(--pink),var(--rose));
+  color:#fff;font-family:var(--fd);font-size:1.1rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.cc-info{flex:1;min-width:0}
+.cc-name{font-weight:700;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-email{font-size:.75rem;color:rgba(13,9,13,.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-actions{display:flex;gap:6px}
+.cc-wa{
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(37,211,102,.1);
+  display:flex;align-items:center;justify-content:center;
+  text-decoration:none;font-size:.9rem;transition:background .2s;
+}
+.cc-wa:hover{background:rgba(37,211,102,.25)}
+.cc-meta{display:flex;flex-wrap:wrap;gap:8px}
+.cc-meta span{
+  font-size:.72rem;color:rgba(13,9,13,.5);
+  background:rgba(13,9,13,.04);
+  padding:3px 10px;border-radius:100px;
+}
+
+/* ── CLIENT HEADER ── */
+.client-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.client-search-wrap{position:relative;flex:1;min-width:200px}
+.client-search-wrap input{
+  width:100%;padding:9px 14px 9px 36px;
+  border:1.5px solid rgba(229,37,100,.15);border-radius:100px;
+  font-family:var(--fb);font-size:.84rem;outline:none;
+  background:#fff;transition:border-color .2s;
+}
+.client-search-wrap input:focus{border-color:var(--pink)}
+.client-search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:rgba(13,9,13,.35)}
+
 </style>
 </head>
 <body>
@@ -608,7 +654,15 @@ img{display:block;max-width:100%}
     <!-- CLIENTES -->
     <div class="page" id="page-clientes">
       <div class="page-header"><div><h1>Clientes 👥</h1><p>Base de clientes cadastrados</p></div></div>
-      <div class="tbl-wrap" id="clientTable"><div class="ld"><div class="spin"></div><span>Carregando...</span></div></div>
+      <div class="client-header">
+        <div class="client-search-wrap">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" id="clientSearch" placeholder="Buscar por nome, email ou cidade…" oninput="renderClients()">
+        </div>
+        <span id="clientCount" style="font-size:.78rem;color:rgba(13,9,13,.4);white-space:nowrap"></span>
+        <button class="btn-p" onclick="openNewClient()" style="white-space:nowrap">+ Novo cliente</button>
+      </div>
+      <div id="clientTable"><div class="ld"><div class="spin"></div><span>Carregando...</span></div></div>
     </div>
 
 
@@ -2459,7 +2513,7 @@ function filterProds(){
   const cat=document.getElementById('pcat').value;
   const st=document.getElementById('pst').value;
   filtProds=allProds.filter(p=>{
-    const mq=!q||p.name.toLowerCase().includes(q);
+    const mq=!q||(p.name||p.nome||'').toLowerCase().includes(q);
     const mc=!cat||(p.collections||[]).includes(cat);
     const ms=!st||(st==='ativo'&&p.ativo&&!p.esgotado&&!p.oculto)||(st==='esgotado'&&p.esgotado)||(st==='oculto'&&p.oculto)||(st==='destaque'&&p.destaque)||(st==='sempreco'&&!p.price);
     return mq&&mc&&ms;
@@ -2480,7 +2534,7 @@ function renderProdTable(){
       return `<div class="tbl-row pc-grid${sel?' selected':''}">
         <input type="checkbox" class="row-cb" data-id="${p.id}" ${sel?'checked':''} onclick="event.stopPropagation();toggleSelect(${p.id},this.checked)">
         <div class="tr-img">${url?`<img src="${url}" loading="lazy">`:'<div class="tr-img-ph">🌸</div>'}</div>
-        <div><div class="tr-name">${p.name||"(sem nome)"}</div><div class="tr-cat">${cats||'—'}</div></div>
+        <div><div class="tr-name">${p.name||p.nome||'(sem nome)'}</div><div class="tr-cat">${cats||'—'}</div></div>
         <div style="font-size:.72rem;color:rgba(13,9,13,.45)">${Array.isArray(p.design)?p.design.slice(0,2).join(', '):(p.design||'—')}</div>
         <div><input class="inline-price" value="${p.price||''}" placeholder="Sem preço" data-id="${p.id}" onblur="saveInlinePrice(this)" onkeydown="if(event.key==='Enter')this.blur()"></div>
         <div style="font-size:.82rem">${p.prazo_producao_dias||7}d</div>
@@ -2777,13 +2831,27 @@ async function loadClients(){
 function renderClients(){
   const el=document.getElementById('clientTable');
   if(!allClients.length){el.innerHTML='<div class="empty"><div class="empty-icon">👥</div><p>Nenhum cliente</p></div>';return;}
-  el.innerHTML=`<div class="tbl-head" style="display:grid;grid-template-columns:1.5fr 1.5fr 1fr 1fr 80px"><span>Nome</span><span>E-mail</span><span>Cidade</span><span>Telefone</span><span>Pedidos</span></div>`
-    +allClients.map(c=>`<div class="tbl-row" style="display:grid;grid-template-columns:1.5fr 1.5fr 1fr 1fr 80px;cursor:pointer;align-items:center" onclick="openClient(${c.id||JSON.stringify(c.email)})">
-      <span style="font-weight:600">${c.nome||c.name||'—'}</span>
-      <span style="font-size:.82rem;color:rgba(13,9,13,.5)">${c.email}</span>
-      <span style="font-size:.82rem;color:rgba(13,9,13,.5)">${c.cidade||'—'}</span>
-      <span style="font-size:.82rem;color:rgba(13,9,13,.5)">${c.telefone||'—'}</span>
-      <span style="font-size:.82rem;text-align:center">${c._pedidos||0}</span>
+  // Search filter
+  const cq=(document.getElementById('clientSearch')?.value||'').toLowerCase();
+  const shown=cq?allClients.filter(c=>(c.nome||c.name||'').toLowerCase().includes(cq)||(c.email||'').toLowerCase().includes(cq)||(c.cidade||'').toLowerCase().includes(cq)):allClients;
+  document.getElementById('clientCount').textContent=shown.length+' clientes';
+  el.innerHTML=shown.map(c=>`
+    <div class="client-card" onclick="openClient(${c.id||JSON.stringify(c.email)})">
+      <div class="cc-top">
+        <div class="cc-avatar">${(c.nome||c.name||'?')[0].toUpperCase()}</div>
+        <div class="cc-info">
+          <div class="cc-name">${c.nome||c.name||'—'}</div>
+          <div class="cc-email">${c.email}</div>
+        </div>
+        <div class="cc-actions" onclick="event.stopPropagation()">
+          ${c.telefone?`<a href="https://wa.me/55${c.telefone.replace(/\D/g,'')}" target="_blank" class="cc-wa" title="WhatsApp">💬</a>`:''}
+        </div>
+      </div>
+      <div class="cc-meta">
+        <span>📍 ${c.cidade||'—'}</span>
+        <span>🛒 ${c._pedidos||0} pedidos</span>
+        ${c.telefone?`<span>📱 ${c.telefone}</span>`:''}
+      </div>
     </div>`).join('');
 }
 
