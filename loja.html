@@ -2576,7 +2576,7 @@ function renderGrid(){
     const cats=(p.collections||[]).slice(0,2).join(' · ');
     const prazo=p.prazo_producao_dias||7;
     const isNew=p.created_at&&(Date.now()-new Date(p.created_at).getTime())<30*24*60*60*1000;
-    const badge=p.destaque?'<span class="pcard-badge badge-destaque">Destaque</span>':isNew?'<span class="pcard-badge badge-novo">Novo</span>':'';
+    const badge=p.destaque?'<span class="pcard-badge badge-destaque">Destaque</span>':'';
 
     const img=p.url?`<img src="${p.url}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`:'';
     // Swatches from variacoes (colors) — use design tags as fallback
