@@ -496,6 +496,24 @@ img{display:block;max-width:100%}
 .client-search-wrap input:focus{border-color:var(--pink)}
 .client-search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:rgba(13,9,13,.35)}
 
+
+/* ── CLIENT PAGINATION ── */
+.client-pag{
+  display:flex;align-items:center;justify-content:center;
+  gap:6px;padding:20px 0 8px;flex-wrap:wrap;
+}
+.cpag-btn{
+  width:36px;height:36px;border-radius:10px;
+  border:1.5px solid rgba(229,37,100,.15);
+  background:#fff;font-family:var(--fb);font-size:.82rem;
+  cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;
+  color:rgba(13,9,13,.5);font-weight:500;
+}
+.cpag-btn:hover{background:rgba(229,37,100,.06);border-color:rgba(229,37,100,.25);color:var(--rose)}
+.cpag-btn.active{background:var(--pink);border-color:var(--pink);color:#fff;box-shadow:0 4px 14px rgba(229,37,100,.3)}
+.cpag-btn:disabled{opacity:.3;cursor:default;pointer-events:none}
+
 </style>
 </head>
 <body>
@@ -657,12 +675,13 @@ img{display:block;max-width:100%}
       <div class="client-header">
         <div class="client-search-wrap">
           <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          <input type="text" id="clientSearch" placeholder="Buscar por nome, email ou cidade…" oninput="renderClients()">
+          <input type="text" id="clientSearch" placeholder="Buscar por nome, email ou cidade…" oninput="clientPage=1;renderClients()">
         </div>
         <span id="clientCount" style="font-size:.78rem;color:rgba(13,9,13,.4);white-space:nowrap"></span>
         <button class="btn-p" onclick="openNewClient()" style="white-space:nowrap">+ Novo cliente</button>
       </div>
       <div id="clientTable"><div class="ld"><div class="spin"></div><span>Carregando...</span></div></div>
+      <div class="client-pag" id="clientPag"></div>
     </div>
 
 
@@ -2813,29 +2832,47 @@ document.getElementById('orderModal').addEventListener('click',e=>{if(e.target==
 function contactWA(id,nome,tel){window.open(`https://wa.me/55${tel}?text=${encodeURIComponent(`Olá ${decodeURIComponent(nome)}! Atualização sobre seu pedido #${id} 🌸`)}`,'_blank');}
 
 // ── CLIENTS ───────────────────────────────────────────────────────────
+const CLIENTS_PER_PAGE = 50;
+let clientPage = 1;
+
 async function loadClients(){
   const [cd, od] = await Promise.all([
-    sbGet('/rest/v1/clientes?select=*&order=created_at.desc'),
+    sbGet('/rest/v1/clientes?select=*&order=created_at.desc&limit=10000'),
     sbGet('/rest/v1/pedidos?select=cliente_id,total,status')
   ]);
   allClients=Array.isArray(cd)?cd:[];
-  // Enrich each client with order stats
   const orders=Array.isArray(od)?od:[];
   allClients.forEach(c=>{
     const cOrders=orders.filter(o=>o.cliente_id===c.id);
     c._pedidos=cOrders.length;
-    c._total=cOrders.reduce((s,o)=>s+(o.total||0),0);
   });
+  clientPage=1;
   renderClients();
 }
+
 function renderClients(){
   const el=document.getElementById('clientTable');
-  if(!allClients.length){el.innerHTML='<div class="empty"><div class="empty-icon">👥</div><p>Nenhum cliente</p></div>';return;}
-  // Search filter
+  const pag=document.getElementById('clientPag');
+  if(!allClients.length){
+    el.innerHTML='<div class="empty"><div class="empty-icon">👥</div><p>Nenhum cliente</p></div>';
+    if(pag) pag.innerHTML='';
+    return;
+  }
   const cq=(document.getElementById('clientSearch')?.value||'').toLowerCase();
-  const shown=cq?allClients.filter(c=>(c.nome||c.name||'').toLowerCase().includes(cq)||(c.email||'').toLowerCase().includes(cq)||(c.cidade||'').toLowerCase().includes(cq)):allClients;
+  const shown=cq?allClients.filter(c=>
+    (c.nome||c.name||'').toLowerCase().includes(cq)||
+    (c.email||'').toLowerCase().includes(cq)||
+    (c.cidade||'').toLowerCase().includes(cq)
+  ):allClients;
+
+  const totalPages=Math.ceil(shown.length/CLIENTS_PER_PAGE);
+  if(clientPage>totalPages) clientPage=1;
+  const start=(clientPage-1)*CLIENTS_PER_PAGE;
+  const pageItems=shown.slice(start,start+CLIENTS_PER_PAGE);
+
   document.getElementById('clientCount').textContent=shown.length+' clientes';
-  el.innerHTML=shown.map(c=>`
+
+  el.innerHTML=pageItems.map(c=>`
     <div class="client-card" onclick="openClient(${c.id||JSON.stringify(c.email)})">
       <div class="cc-top">
         <div class="cc-avatar">${(c.nome||c.name||'?')[0].toUpperCase()}</div>
@@ -2853,6 +2890,23 @@ function renderClients(){
         ${c.telefone?`<span>📱 ${c.telefone}</span>`:''}
       </div>
     </div>`).join('');
+
+  // Pagination controls
+  if(pag){
+    if(totalPages<=1){pag.innerHTML='';return;}
+    let btns='';
+    btns+=`<button class="cpag-btn" onclick="clientPage--;renderClients()" ${clientPage===1?'disabled':''}>‹</button>`;
+    const range=2;
+    for(let i=1;i<=totalPages;i++){
+      if(i===1||i===totalPages||Math.abs(i-clientPage)<=range){
+        btns+=`<button class="cpag-btn${i===clientPage?' active':''}" onclick="clientPage=${i};renderClients()">${i}</button>`;
+      } else if(Math.abs(i-clientPage)===range+1){
+        btns+='<span style="padding:0 4px;color:rgba(13,9,13,.3)">…</span>';
+      }
+    }
+    btns+=`<button class="cpag-btn" onclick="clientPage++;renderClients()" ${clientPage===totalPages?'disabled':''}>›</button>`;
+    pag.innerHTML=btns;
+  }
 }
 
 // ── CUPONS ────────────────────────────────────────────────────────────
