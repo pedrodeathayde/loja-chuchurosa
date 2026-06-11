@@ -21,7 +21,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:#f0ebe8;color:var(--dark);font-family:var(--fb);overflow:hidden;height:100vh}
+body{background:#f0ebe8;color:var(--dark);font-family:var(--fb);overflow:hidden}
 a{text-decoration:none;color:inherit}
 img{display:block;max-width:100%}
 ::-webkit-scrollbar{width:5px}
@@ -41,14 +41,14 @@ img{display:block;max-width:100%}
 .login-err{color:#fca5a5;font-size:.82rem;margin-top:10px;display:none}
 
 /* LAYOUT */
-.admin-wrap{display:grid;grid-template-columns:240px 1fr;height:100vh;overflow:hidden}
+.admin-wrap{display:grid;grid-template-columns:240px 1fr;height:100vh}
 .admin-wrap.hidden{display:none}
 
 /* SIDEBAR */
-.aside{background:var(--dark);color:#fff;display:flex;flex-direction:column;position:relative;z-index:10}
+.aside{background:var(--dark);color:#fff;display:flex;flex-direction:column;position:relative;z-index:10;height:100vh;overflow:hidden}
 .aside-logo{padding:20px;border-bottom:1px solid rgba(244,121,154,.1);display:flex;align-items:center;gap:10px}
 .aside-badge{background:rgba(244,121,154,.15);color:var(--pink2);font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:6px}
-.aside-nav{flex:1;padding:16px 10px;overflow-y:auto}
+.aside-nav{flex:1;padding:16px 10px;overflow-y:auto;overflow-x:hidden}
 .ng-label{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.2);padding:10px 10px 6px}
 .ni{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:10px;cursor:pointer;transition:all .2s;font-size:.86rem;font-weight:500;color:rgba(255,255,255,.5);margin-bottom:2px;border:none;background:none;width:100%;text-align:left}
 .ni:hover{background:rgba(244,121,154,.08);color:#fff}
@@ -64,7 +64,7 @@ img{display:block;max-width:100%}
 .btn-logout:hover{border-color:rgba(244,121,154,.3);color:var(--pink2)}
 
 /* MAIN */
-.main{overflow-y:auto;height:100vh;background:#f0ebe8;-webkit-overflow-scrolling:touch}
+.main{overflow-y:auto;height:100vh;background:#f0ebe8;-webkit-overflow-scrolling:touch;overflow-x:hidden}
 .page{display:none;padding:28px 32px;max-width:1300px}
 .page.active{display:block}
 .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
@@ -5077,6 +5077,18 @@ function renderSugerir(){
   renderSugestaoCarrinho();
 }
 
+function getSugerirUrl(name){
+  if(!name||!FILES||!FILES.length) return '';
+  const slug=name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  const parts=slug.split('-');
+  const short=parts.slice(0,3).join('-');
+  const match=FILES.find(f=>{
+    const fn=f.n.replace(/\.[^.]+$/,'');
+    return fn.startsWith(slug)||fn.startsWith(short);
+  });
+  return match?match.u:'';
+}
+
 function renderSugerirProdutos(){
   const el = document.getElementById('sugerirProdutos');
   if(!el) return;
@@ -5086,11 +5098,12 @@ function renderSugerirProdutos(){
     (!q || (p.name||'').toLowerCase().includes(q))
   ).slice(0,48);
   el.innerHTML = lista.map(p=>{
+    const url = getSugerirUrl(p.name||'');
     const sel = sugestaoCarrinho.some(x=>x.id===p.id);
-    return `<div onclick="toggleSugestao(${p.id})"
+    return `<div onclick="toggleSugestao(${p.id},${JSON.stringify(url)})"
       style="border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid ${sel?'var(--pink)':'rgba(229,37,100,.08)'};transition:all .2s;${sel?'box-shadow:0 4px 14px rgba(229,37,100,.2)':''}">
       <div style="aspect-ratio:3/4;background:#f8f0f6;overflow:hidden">
-        ${p.url?`<img src="${p.url}" style="width:100%;height:100%;object-fit:cover">`:'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem">🌸</div>'}
+        ${url?`<img src="${url}" style="width:100%;height:100%;object-fit:cover">`:'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem">🌸</div>'}
       </div>
       <div style="padding:8px 10px">
         <div style="font-size:.76rem;font-weight:600;line-height:1.3;margin-bottom:3px">${(p.name||'').slice(0,40)}</div>
@@ -5101,12 +5114,12 @@ function renderSugerirProdutos(){
   }).join('');
 }
 
-function toggleSugestao(id){
+function toggleSugestao(id,url){
   const p = allProds.find(x=>x.id===id);
   if(!p) return;
   const idx = sugestaoCarrinho.findIndex(x=>x.id===id);
   if(idx>=0) sugestaoCarrinho.splice(idx,1);
-  else sugestaoCarrinho.push({id:p.id,name:p.name,price:p.price,url:p.url});
+  else sugestaoCarrinho.push({id:p.id,name:p.name,price:p.price,url:url||getSugerirUrl(p.name||'')});
   renderSugerirProdutos();
   renderSugestaoCarrinho();
 }
@@ -5154,22 +5167,23 @@ function limparSugestao(){
 function compartilharSugestao(canal){
   if(!sugestaoCarrinho.length){toast('Selecione pelo menos um produto','err');return;}
   const msg_extra = (document.getElementById('sugerirMsgExtraDesk')?.value || document.getElementById('sugerirMsgExtra')?.value || '').trim();
+  const ids = sugestaoCarrinho.map(p=>p.id).join(',');
   const BASE = 'https://pedrodeathayde.github.io/loja-chuchurosa/loja.html';
-  const nomes = sugestaoCarrinho.map(p=>p.name).join(', ');
+  const link = BASE + '?sugestao=' + ids;
   const total = sugestaoCarrinho.reduce((s,p)=>s+p.price,0);
 
-  let msg = 'Olá! 🌸 Separei alguns produtos da Chuchu Rosa especialmente pra você:' + String.fromCharCode(10,10);
+  let msg = '🌸 Separei estes produtos para você da Chuchu Rosa:' + String.fromCharCode(10,10);
   sugestaoCarrinho.forEach(p=>{
     msg += '• ' + p.name + ' — ' + fmt(p.price) + String.fromCharCode(10);
   });
   msg += String.fromCharCode(10) + 'Total: ' + fmt(total);
-  if(msg_extra) msg += String.fromCharCode(10) + msg_extra;
-  msg += String.fromCharCode(10,10) + '🛍 Ver na loja: ' + BASE;
+  if(msg_extra) msg += String.fromCharCode(10,10) + msg_extra;
+  msg += String.fromCharCode(10,10) + '🛍 Ver e adicionar ao carrinho:' + String.fromCharCode(10) + link;
 
   if(canal==='whatsapp'){
     window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
   } else if(canal==='copiar'){
-    navigator.clipboard.writeText(msg).then(()=>toast('Texto copiado! Cole onde quiser.','ok'));
+    navigator.clipboard.writeText(msg).then(()=>toast('Mensagem copiada!','ok'));
   } else if(canal==='email'){
     const subject = encodeURIComponent('Seleção especial Chuchu Rosa 🌸');
     window.open('mailto:?subject='+subject+'&body='+encodeURIComponent(msg),'_blank');
