@@ -540,6 +540,13 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
 }
 .dark-toggle:hover{background:var(--pink);color:#fff;border-color:var(--pink)}
 
+
+@media(max-width:768px){
+  .sugerir-sidebar{display:none!important}
+  #page-sugerir .sugerir-sidebar{display:none!important}
+  #page-sugerir > div:last-child{grid-template-columns:1fr!important}
+}
+
 </style>
 </head>
 <body>
@@ -815,28 +822,43 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
     </div>
 
 
+    
     <!-- SUGERIR PRODUTOS -->
     <div class="page" id="page-sugerir">
       <div class="page-header">
         <div><h1>Sugerir Produtos 💌</h1><p>Monte uma seleção e compartilhe com um cliente</p></div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start">
-        <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:20px">
-          <div style="margin-bottom:14px">
-            <input type="text" id="sugerirSearch" class="finp" placeholder="Buscar produto..."
-              oninput="renderSugerirProdutos()">
-          </div>
-          <div id="sugerirProdutos" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px"></div>
-        </div>
-        <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:20px;position:sticky;top:20px">
-          <h3 style="font-family:var(--fd);font-size:.95rem;font-weight:700;margin-bottom:14px">
-            Seleção <span id="sugerirCount" style="color:var(--pink)">0</span> produtos
+      <!-- Painel de compartilhamento — aparece no topo no mobile -->
+      <div id="sugerirPainel" style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:16px;margin-bottom:16px;display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <h3 style="font-family:var(--fd);font-size:.95rem;font-weight:700;margin:0">
+            Seleção: <span id="sugerirCount" style="color:var(--pink)">0</span> produto(s)
           </h3>
-          <div id="sugerirCarrinho" style="min-height:60px;margin-bottom:16px"></div>
-          <input id="sugerirMsgExtra" type="text" class="finp" placeholder="Mensagem extra (opcional)..." style="margin-bottom:12px">
+          <button onclick="limparSugestao()" style="background:none;border:none;color:rgba(13,9,13,.35);font-size:.75rem;cursor:pointer">✕ Limpar</button>
+        </div>
+        <div id="sugerirCarrinho" style="margin-bottom:12px"></div>
+        <input id="sugerirMsgExtra" type="text" class="finp" placeholder="Mensagem extra (opcional)..." style="margin-bottom:10px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <button class="btn-p" onclick="compartilharSugestao('whatsapp')">💬 WhatsApp</button>
+          <button class="btn-s" onclick="compartilharSugestao('copiar')">📋 Copiar</button>
+          <button class="btn-s" onclick="compartilharSugestao('email')">📧 E-mail</button>
+          <button class="btn-s" onclick="compartilharSugestao('instagram')" style="background:linear-gradient(135deg,#e1306c,#fd1d1d,#fcb045);color:#fff;border:none">📸 Instagram</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr min(320px,35%);gap:16px;align-items:start">
+        <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:16px">
+          <input type="text" id="sugerirSearch" class="finp" placeholder="Buscar produto..." style="margin-bottom:12px" oninput="renderSugerirProdutos()">
+          <div id="sugerirProdutos" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px"></div>
+        </div>
+        <div class="sugerir-sidebar" style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:16px;position:sticky;top:20px">
+          <h3 style="font-family:var(--fd);font-size:.95rem;font-weight:700;margin-bottom:14px">
+            Seleção <span id="sugerirCountDesk" style="color:var(--pink)">0</span> produtos
+          </h3>
+          <div id="sugerirCarrinhoDesk" style="min-height:60px;margin-bottom:16px"></div>
+          <input id="sugerirMsgExtraDesk" type="text" class="finp" placeholder="Mensagem extra (opcional)..." style="margin-bottom:12px">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
             <button class="btn-p" onclick="compartilharSugestao('whatsapp')">💬 WhatsApp</button>
-            <button class="btn-s" onclick="compartilharSugestao('copiar')">📋 Copiar link</button>
+            <button class="btn-s" onclick="compartilharSugestao('copiar')">📋 Copiar</button>
             <button class="btn-s" onclick="compartilharSugestao('email')">📧 E-mail</button>
             <button class="btn-s" onclick="compartilharSugestao('instagram')" style="background:linear-gradient(135deg,#e1306c,#fd1d1d,#fcb045);color:#fff;border:none">📸 Instagram</button>
           </div>
@@ -969,36 +991,7 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
     </div>
 
 
-    <!-- SUGERIR PRODUTOS -->
-    <div class="page" id="page-sugerir">
-      <div class="page-header">
-        <div><h1>Sugerir Produtos 💌</h1><p>Monte uma seleção e compartilhe com um cliente</p></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start">
-        <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:20px">
-          <div style="margin-bottom:14px">
-            <input type="text" id="sugerirSearch" class="finp" placeholder="Buscar produto..."
-              oninput="renderSugerirProdutos()">
-          </div>
-          <div id="sugerirProdutos" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px"></div>
-        </div>
-        <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:20px;position:sticky;top:20px">
-          <h3 style="font-family:var(--fd);font-size:.95rem;font-weight:700;margin-bottom:14px">
-            Seleção <span id="sugerirCount" style="color:var(--pink)">0</span> produtos
-          </h3>
-          <div id="sugerirCarrinho" style="min-height:60px;margin-bottom:16px"></div>
-          <input id="sugerirMsgExtra" type="text" class="finp" placeholder="Mensagem extra (opcional)..." style="margin-bottom:12px">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <button class="btn-p" onclick="compartilharSugestao('whatsapp')">💬 WhatsApp</button>
-            <button class="btn-s" onclick="compartilharSugestao('copiar')">📋 Copiar link</button>
-            <button class="btn-s" onclick="compartilharSugestao('email')">📧 E-mail</button>
-            <button class="btn-s" onclick="compartilharSugestao('instagram')" style="background:linear-gradient(135deg,#e1306c,#fd1d1d,#fcb045);color:#fff;border:none">📸 Instagram</button>
-          </div>
-          <button onclick="limparSugestao()" style="width:100%;margin-top:10px;background:none;border:none;color:rgba(13,9,13,.35);font-size:.75rem;cursor:pointer">✕ Limpar seleção</button>
-        </div>
-      </div>
-    </div>
-
+    
     <!-- FRETE -->
     <div class="page" id="page-frete">
       <div class="page-header">
@@ -5119,15 +5112,21 @@ function toggleSugestao(id){
 }
 
 function renderSugestaoCarrinho(){
-  const el = document.getElementById('sugerirCarrinho');
-  const count = document.getElementById('sugerirCount');
+  const isMob = window.innerWidth <= 768;
+  const elId = isMob ? 'sugerirCarrinho' : 'sugerirCarrinhoDesk';
+  const countId = isMob ? 'sugerirCount' : 'sugerirCountDesk';
+  const el = document.getElementById(elId);
+  const count = document.getElementById(countId);
   if(count) count.textContent = sugestaoCarrinho.length;
+  // Show/hide mobile panel
+  const painel = document.getElementById('sugerirPainel');
+  if(painel) painel.style.display = isMob && sugestaoCarrinho.length ? 'block' : (isMob ? 'none' : 'none');
   if(!el) return;
   if(!sugestaoCarrinho.length){
     el.innerHTML='<p style="font-size:.78rem;color:rgba(13,9,13,.35);text-align:center;padding:10px 0">Clique nos produtos para selecionar</p>';
     return;
   }
-  el.innerHTML = sugestaoCarrinho.map(p=>`
+  const cartHTML = sugestaoCarrinho.map(p=>`
     <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(229,37,100,.06)">
       ${p.url?`<img src="${p.url}" style="width:36px;height:48px;object-fit:cover;border-radius:6px;flex-shrink:0">`:'<div style="width:36px;height:48px;background:#f8f0f6;border-radius:6px;flex-shrink:0"></div>'}
       <div style="flex:1;min-width:0">
@@ -5136,6 +5135,14 @@ function renderSugestaoCarrinho(){
       </div>
       <button onclick="toggleSugestao(${p.id})" style="background:none;border:none;color:rgba(13,9,13,.3);cursor:pointer">✕</button>
     </div>`).join('');
+  el.innerHTML = cartHTML;
+  // Also update desktop if on mobile
+  if(isMob){
+    const desk=document.getElementById('sugerirCarrinhoDesk');
+    if(desk) desk.innerHTML=cartHTML;
+    const dcount=document.getElementById('sugerirCountDesk');
+    if(dcount) dcount.textContent=sugestaoCarrinho.length;
+  }
 }
 
 function limparSugestao(){
@@ -5146,7 +5153,7 @@ function limparSugestao(){
 
 function compartilharSugestao(canal){
   if(!sugestaoCarrinho.length){toast('Selecione pelo menos um produto','err');return;}
-  const msg_extra = document.getElementById('sugerirMsgExtra')?.value.trim()||'';
+  const msg_extra = (document.getElementById('sugerirMsgExtraDesk')?.value || document.getElementById('sugerirMsgExtra')?.value || '').trim();
   const BASE = 'https://pedrodeathayde.github.io/loja-chuchurosa/loja.html';
   const nomes = sugestaoCarrinho.map(p=>p.name).join(', ');
   const total = sugestaoCarrinho.reduce((s,p)=>s+p.price,0);
