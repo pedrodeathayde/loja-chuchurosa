@@ -295,7 +295,7 @@ img{display:block;max-width:100%}
 .notes-area:focus{border-color:var(--pink)}
 
 /* BULK ACTION BAR */
-.bulk-bar{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--dark);color:#fff;border-radius:100px;padding:12px 20px;display:flex;align-items:center;gap:12px;z-index:500;box-shadow:0 16px 48px rgba(0,0,0,.3);transition:transform .35s cubic-bezier(.25,.46,.45,.94);white-space:nowrap;flex-wrap:wrap;justify-content:center;max-width:90vw}
+.bulk-bar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--dark);color:#fff;border-radius:100px;padding:10px 16px;display:flex;align-items:center;gap:8px;z-index:500;box-shadow:0 16px 48px rgba(0,0,0,.3);transition:transform .35s cubic-bezier(.25,.46,.45,.94);white-space:nowrap;flex-wrap:nowrap;justify-content:center;max-width:calc(100vw - 32px);overflow-x:auto}
 .bulk-bar.show{transform:translateX(-50%) translateY(0)}
 .bulk-count{background:var(--pink);color:#fff;border-radius:100px;padding:3px 12px;font-size:.78rem;font-weight:700;flex-shrink:0}
 .bulk-sep{width:1px;height:20px;background:rgba(255,255,255,.1);flex-shrink:0}
@@ -556,12 +556,12 @@ img{display:block;max-width:100%}
       <button class="ni" data-page="clientes" onclick="goPage('clientes')"><span class="ni-icon">👥</span>Clientes</button>
       <div class="ng-label" style="margin-top:8px">Configurações</div>
       <button class="ni" data-page="categorias" onclick="goPage('categorias')"><span class="ni-icon">🏷️</span>Categorias</button>
+      <button class="ni" data-page="designs" onclick="goPage('designs')"><span class="ni-icon">🎨</span>Designs</button>
+      <button class="ni" data-page="cupons" onclick="goPage('cupons')"><span class="ni-icon">🎟️</span>Cupons</button>
       <button class="ni" data-page="email" onclick="goPage('email');renderEmailList()"><span class="ni-icon">📧</span>E-mail</button>
       <button class="ni" data-page="relatorio" onclick="goPage('relatorio');renderRelatorio()"><span class="ni-icon">📊</span>Relatórios</button>
       <button class="ni" data-page="historico" onclick="goPage('historico');renderHist();renderAccessLog()"><span class="ni-icon">📋</span>Histórico</button>
       <button class="ni" data-page="agenda" onclick="goPage('agenda');loadAgenda()"><span class="ni-icon">📋</span>Agenda</button>
-      <button class="ni" data-page="designs" onclick="goPage('designs')"><span class="ni-icon">🎨</span>Designs</button>
-      <button class="ni" data-page="cupons" onclick="goPage('cupons')"><span class="ni-icon">🎟️</span>Cupons</button>
       <button class="ni" data-page="frete" onclick="goPage('frete');loadFreteConfig()"><span class="ni-icon">🚚</span>Frete</button>
       <button class="ni" data-page="banners" onclick="goPage('banners')"><span class="ni-icon">📢</span>Banners</button>
       <button class="ni" data-page="notif" onclick="goPage('notif')"><span class="ni-icon">🔔</span>Notificações</button>
@@ -734,14 +734,24 @@ img{display:block;max-width:100%}
     <!-- EMAIL -->
     <div class="page" id="page-email">
       <div class="page-header">
-        <div><h1>Lista de E-mail 📧</h1><p>Clientes para contato</p></div>
-        <button class="btn-s" onclick="exportEmailCSV()">⬇️ Exportar CSV</button>
+        <div><h1>Lista de E-mail 📧</h1><p>Todos os clientes cadastrados</p></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-s" onclick="exportEmailCSV()">⬇️ Exportar CSV</button>
+          <button class="btn-s" onclick="copyAllEmails()">📋 Copiar todos</button>
+        </div>
       </div>
       <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:24px">
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center">
           <span class="filter-chip active" data-ef="todos" onclick="setEmailFilter(this,'todos')">Todos</span>
+          <span class="filter-chip" data-ef="compradores" onclick="setEmailFilter(this,'compradores')">Compradores</span>
+          <span class="filter-chip" data-ef="naocompraram" onclick="setEmailFilter(this,'naocompraram')">Nunca compraram</span>
           <span class="filter-chip" data-ef="pagos" onclick="setEmailFilter(this,'pagos')">Só pagos</span>
-          <span class="filter-chip" data-ef="inativos" onclick="setEmailFilter(this,'inativos')">Inativos 30d+</span>
+          <span id="emailCountLabel" style="margin-left:auto;font-size:.78rem;color:rgba(13,9,13,.4)"></span>
+        </div>
+        <div style="margin-bottom:12px">
+          <input type="text" id="emailSearch" placeholder="Buscar por nome, email ou cidade..." 
+            style="width:100%;padding:9px 14px;border:1.5px solid rgba(229,37,100,.15);border-radius:10px;font-family:var(--fb);font-size:.84rem;outline:none"
+            oninput="renderEmailList()">
         </div>
         <div id="emailList"></div>
       </div>
@@ -917,7 +927,7 @@ img{display:block;max-width:100%}
         </div>
         <div class="frow"><div class="fg"><label>Nota interna</label><textarea id="mNota" placeholder="Observações internas (não aparece na loja)" style="min-height:56px"></textarea></div></div>
       </div>
-      <div class="msec"><h3>Coleções</h3><div class="cols-grid" id="colsGrid"></div></div>
+      <div class="msec"><h3>Categorias <span style="font-size:.65rem;font-weight:400;color:rgba(13,9,13,.4)">(múltipla escolha)</span></h3><div class="cols-grid" id="colsGrid"></div></div>
       <div class="msec"><h3>Design / Tema</h3><div class="cols-grid" id="designsGrid"></div></div>
       <div class="msec"><h3>Variações</h3>
         <div class="var-header"><span>Tamanho</span><span>Cor</span><span>Estoque</span><span>Preço extra</span><span></span></div>
@@ -2483,6 +2493,12 @@ function goPage(name){
   document.getElementById('page-'+name)?.classList.add('active');
   document.querySelector(`.ni[data-page="${name}"]`)?.classList.add('active');
   if(name==='pedidos') dismissNovos();
+  // Hide bulk bar when leaving produtos
+  if(name!=='produtos'){
+    selectedIds.clear();
+    const bar=document.getElementById('bulkBar');
+    if(bar){bar.classList.remove('show');setTimeout(()=>bar.style.display='none',350);}
+  }
 }
 
 // ── STATE ─────────────────────────────────────────────────────────────
@@ -2669,7 +2685,8 @@ function setCover(el){
 }
 
 function buildCols(sel=[]){
-  return COLS.map(c=>`<div class="col-ch ${sel.includes(c)?'checked':''}" onclick="this.classList.toggle('checked')"><input type="checkbox" ${sel.includes(c)?'checked':''}>${c}</div>`).join('');
+  if(!COLS||!COLS.length) return '<p style="color:rgba(13,9,13,.4);font-size:.8rem">Carregando coleções...</p>';
+  return COLS.map(c=>`<div class="col-ch ${sel.map(s=>s.toLowerCase()).includes(c.toLowerCase())?'checked':''}" onclick="this.classList.toggle('checked')">${c}</div>`).join('');
 }
 function buildSizes(v){return '';} // legacy stub
 
@@ -2683,7 +2700,7 @@ function buildSizes(vars=[]){
   }).join('');
 }
 
-function getSelCols(){return [...document.querySelectorAll('#colsGrid .col-ch.checked')].map(e=>e.textContent.trim());}
+function getSelCols(){return [...document.querySelectorAll('#colsGrid .col-ch.checked')].map(e=>e.textContent.trim()).filter(Boolean);}
 
 function togBtn(btn){btn.classList.toggle('on');}
 
@@ -2792,6 +2809,19 @@ async function openOrder(id){
           `<button class="pgto-btn${(p.pagamento_status||'pendente')===s?' active':''}" data-p="${s}" onclick="setOrderPgto(${p.id},'${s}')">${{pendente:'💳 Pendente',pago:'💚 Pago'}[s]}</button>`
         ).join('')}
       </div>
+    </div>
+    <div class="msec"><h3>Rastreio</h3>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <input id="trackingInput" type="text" class="finp" style="flex:1;min-width:180px"
+          placeholder="Código de rastreio (ex: BR123456789BR)"
+          value="${p.tracking_code||''}">
+        <button class="btn-s" onclick="saveTracking(${p.id})">💾 Salvar</button>
+        ${p.tracking_url?`<a href="${p.tracking_url}" target="_blank" class="btn-s">🔍 Rastrear</a>`:''}
+      </div>
+      ${p.tracking_code?`<div style="margin-top:8px;font-size:.75rem;color:rgba(13,9,13,.4)">
+        Código: <b>${p.tracking_code}</b>
+        ${p.tracking_url?` · <a href="${p.tracking_url}" target="_blank" style="color:var(--pink)">Ver rastreio →</a>`:''}
+      </div>`:''}
     </div>
     <div class="msec" style="margin-top:16px"><h3>Notas internas</h3>
       <textarea class="notes-area" placeholder="Anotações sobre este pedido (não visível ao cliente)..." onblur="saveOrderNotes(${p.id},this.value)">${p.notas_internas||''}</textarea>
@@ -4165,45 +4195,73 @@ function setEmailFilter(el,f){
 
 function getEmailList(){
   const seen=new Map();
+  // Add all clientes first
+  (allClients||[]).forEach(c=>{
+    if(!c.email)return;
+    seen.set(c.email.toLowerCase(),{
+      nome:c.nome||c.name||'',
+      email:c.email,
+      tel:c.telefone||'',
+      cidade:c.cidade||'',
+      total:0,pedidos:0,pago:false,last:c.created_at
+    });
+  });
+  // Enrich with orders
   allOrders.forEach(o=>{
-    if(!o.visitante_email)return;
-    const existing=seen.get(o.visitante_email);
-    if(!existing||new Date(o.created_at)>new Date(existing.last)){
-      seen.set(o.visitante_email,{
-        nome:o.visitante_nome||'',
-        email:o.visitante_email,
-        tel:o.visitante_telefone||'',
-        total:((existing?.total)||0)+(o.total||0),
-        pedidos:((existing?.pedidos)||0)+1,
-        pago:existing?.pago||o.pagamento_status==='pago',
-        last:o.created_at
-      });
-    }else{
-      existing.total+=(o.total||0);
-      existing.pedidos+=1;
-      if(o.pagamento_status==='pago')existing.pago=true;
-    }
+    const email=(o.visitante_email||'').toLowerCase();
+    if(!email)return;
+    const existing=seen.get(email)||{nome:o.visitante_nome||'',email,tel:o.visitante_telefone||'',cidade:'',total:0,pedidos:0,pago:false,last:o.created_at};
+    existing.total+=(o.total||0);
+    existing.pedidos+=1;
+    if(o.pagamento_status==='pago')existing.pago=true;
+    if(new Date(o.created_at)>new Date(existing.last))existing.last=o.created_at;
+    if(!existing.nome&&o.visitante_nome)existing.nome=o.visitante_nome;
+    seen.set(email,existing);
   });
   let list=[...seen.values()];
   const now=new Date();
+  const q=(document.getElementById('emailSearch')?.value||'').toLowerCase();
+  if(q) list=list.filter(c=>(c.nome||'').toLowerCase().includes(q)||(c.email||'').toLowerCase().includes(q)||(c.cidade||'').toLowerCase().includes(q));
+  if(emailFilter==='compradores') list=list.filter(c=>c.pedidos>0);
+  if(emailFilter==='naocompraram') list=list.filter(c=>c.pedidos===0);
   if(emailFilter==='pagos') list=list.filter(c=>c.pago);
-  if(emailFilter==='inativos') list=list.filter(c=>(now-new Date(c.last))>30*86400000);
-  return list.sort((a,b)=>b.total-a.total);
+  return list.sort((a,b)=>b.pedidos-a.pedidos||b.total-a.total);
 }
 
 function renderEmailList(){
   const el=document.getElementById('emailList');
   if(!el)return;
   const list=getEmailList();
-  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">📧</div><p>Nenhum e-mail</p></div>';return;}
-  el.innerHTML=`<div class="tbl-head" style="display:grid;grid-template-columns:1fr 1fr 80px 100px 80px"><span>Nome</span><span>E-mail</span><span>Pedidos</span><span>Total gasto</span><span></span></div>`
-    +list.map(c=>`<div class="tbl-row" style="display:grid;grid-template-columns:1fr 1fr 80px 100px 80px;align-items:center">
-      <span style="font-weight:600;font-size:.84rem">${c.nome||'—'}</span>
-      <span style="font-size:.8rem;color:rgba(13,9,13,.55)">${c.email}</span>
-      <span style="text-align:center">${c.pedidos}</span>
-      <span style="font-weight:700;color:var(--rose)">${fmt(c.total)}</span>
-      <button class="btn-s" style="padding:4px 10px;font-size:.72rem" onclick="navigator.clipboard.writeText('${c.email}').then(()=>toast('Copiado!','ok'))">Copiar</button>
+  const label=document.getElementById('emailCountLabel');
+  if(label) label.textContent=list.length+' contatos';
+  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">📧</div><p>Nenhum e-mail encontrado</p></div>';return;}
+  el.innerHTML=list.map(c=>`
+    <div class="client-card" style="margin-bottom:8px">
+      <div class="cc-top">
+        <div class="cc-avatar" style="width:36px;height:36px;font-size:.9rem">${(c.nome||'?')[0].toUpperCase()}</div>
+        <div class="cc-info">
+          <div class="cc-name">${c.nome||'—'}</div>
+          <div class="cc-email">${c.email}</div>
+        </div>
+        <div class="cc-actions" style="display:flex;gap:6px">
+          ${c.tel?`<a href="https://wa.me/55${c.tel.replace(/\D/g,'')}" target="_blank" class="cc-wa">💬</a>`:''}
+          <button class="btn-s" style="padding:4px 10px;font-size:.7rem;border-radius:8px" onclick="navigator.clipboard.writeText('${c.email}').then(()=>toast('Copiado!','ok'))">📋</button>
+        </div>
+      </div>
+      <div class="cc-meta">
+        ${c.cidade?`<span>📍 ${c.cidade}</span>`:''}
+        <span>🛒 ${c.pedidos} pedidos</span>
+        ${c.total>0?`<span style="color:var(--rose);font-weight:600">${fmt(c.total)}</span>`:''}
+      </div>
     </div>`).join('');
+}
+
+
+// ── COPY ALL EMAILS ───────────────────────────────────────────────
+function copyAllEmails(){
+  const list=getEmailList();
+  const emails=list.map(c=>c.email).join(', ');
+  navigator.clipboard.writeText(emails).then(()=>toast(`${list.length} emails copiados!`,'ok'));
 }
 
 function exportEmailCSV(){
@@ -4690,6 +4748,23 @@ async function uploadFoto(file, prodNome){
 }
 
 mkLogo(document.getElementById('loginLogo'),52);
+
+// ── TRACKING ─────────────────────────────────────────────────────
+async function saveTracking(id){
+  const code = document.getElementById('trackingInput')?.value.trim();
+  if(!code){toast('Informe o código de rastreio','err');return;}
+  const trackingUrl = `https://www.melhorrastreio.com.br/rastreio/${code}`;
+  await sbPatch(`/rest/v1/pedidos?id=eq.${id}`,{
+    tracking_code: code,
+    tracking_url: trackingUrl,
+    status: 'enviado'
+  });
+  const p = allOrders.find(x=>x.id==id);
+  if(p){ p.tracking_code=code; p.tracking_url=trackingUrl; p.status='enviado'; }
+  toast('Rastreio salvo e status → Enviado ✓','ok');
+  openOrder(id);
+}
+
 </script>
 </body>
 </html>
