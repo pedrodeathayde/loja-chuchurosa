@@ -6,7 +6,7 @@
 <title>Loja — Chuchu Rosa</title>
 <meta name="description" content="Fantasias artesanais, brinquedos educativos e decoração infantil. Flamingos, raposas, unicórnios e muito mais.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,500;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;9..40,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --pink:#e52564;--pink2:#f04d7f;--rose:#c41d55;
@@ -14,7 +14,7 @@
   --cream:#fdf8f5;--cream2:#f5ede8;--white:#fff;
   --gold:#c9a96e;
   --fd:'Playfair Display',Georgia,serif;
-  --fb:'Plus Jakarta Sans',sans-serif;
+  --fb:'Outfit',sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{overflow-x:hidden;max-width:100%}
@@ -981,7 +981,7 @@ body::before{
     <div class="search-history" id="searchHistory"></div>
   </div>
   <button class="nav-cart" id="cartBtn">
-    🛍 Carrinho <span class="cart-count" id="cartCount">0</span>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> <span class="cart-count" id="cartCount">0</span>
   </button>
 </nav>
 
@@ -1070,7 +1070,7 @@ body::before{
 <div class="cart-overlay" id="cartOverlay"></div>
 <div class="cart-drawer" id="cartDrawer">
   <div class="cart-head">
-    <h2>🛍 Carrinho</h2>
+    <h2><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> Carrinho</h2>
     <button class="cart-close" id="cartClose">✕</button>
   </div>
   <div class="cart-items" id="cartItems"></div>
@@ -2708,7 +2708,7 @@ function renderCartDrawer(){
   const el=document.getElementById('cartItems');
   const foot=document.getElementById('cartFoot');
   if(!cart.length){
-    el.innerHTML='<div class="cart-empty"><div style="font-size:3rem;margin-bottom:12px">🛍️</div><p>Carrinho vazio</p></div>';
+    el.innerHTML='<div class="cart-empty"><div style="font-size:3rem;margin-bottom:12px;opacity:.3"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></div><p>Carrinho vazio</p></div>';
     foot.style.display='none';return;
   }
   foot.style.display='block';
