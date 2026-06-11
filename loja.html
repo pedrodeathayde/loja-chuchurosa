@@ -3049,6 +3049,59 @@ document.getElementById('listViewBtn').addEventListener('click',()=>{
   if(hero){hero.addEventListener('mouseenter',stop);hero.addEventListener('mouseleave',start)}
 })();
 
+
+// ══ SUGESTAO DE PRODUTOS ═══════════════════════════════════════════
+(function(){
+  var params=new URLSearchParams(window.location.search);
+  var sq=params.get('sugestao');
+  if(!sq)return;
+  var ids=sq.split(',').map(Number).filter(Boolean);
+  if(!ids.length)return;
+
+  function f2(v){return 'R$ '+Number(v).toFixed(2).replace('.',',');}
+
+  function show(){
+    var prods=ids.map(function(id){return allProducts.find(function(p){return p.id==id;});}).filter(Boolean);
+    if(!prods.length)return;
+    window._sugestaoProds=prods;
+
+    var banner=document.getElementById('sugestaoBanner');
+    if(banner){
+      banner.style.display='block';
+      banner.innerHTML='<div class="sugestao-banner"><p>\uD83C\uDF38 Separei estes produtos para voc\u00EA!</p><button onclick="adicionarTodosSugestao()">\uD83D\uDED2 Adicionar todos ao carrinho</button></div>';
+    }
+
+    var section=document.getElementById('sugestaoSection');
+    if(section){
+      var cards=prods.map(function(p){
+        var img=p.url?('<img src="'+p.url+'" loading="lazy" alt="'+p.name+'">'):'<div style="aspect-ratio:3/4;background:var(--cream2);display:flex;align-items:center;justify-content:center;font-size:2rem">\uD83C\uDF38</div>';
+        return '<div class="sugestao-card" onclick="goProduct(\'' +p.id+ '\')">'+img+'<div class="sugestao-card-body"><div class="sugestao-card-name">'+p.name+'</div><div class="sugestao-card-price">'+f2(p.price||0)+'</div></div></div>';
+      }).join('');
+      var total=prods.reduce(function(s,p){return s+(p.price||0);},0);
+      section.style.display='block';
+      section.innerHTML='<div class="sugestao-produtos"><h3>Produtos selecionados para voc\u00EA</h3><div class="sugestao-grid">'+cards+'</div><button class="sugestao-add-all" onclick="adicionarTodosSugestao()">\uD83D\uDED2 Adicionar todos ('+f2(total)+')</button></div>';
+    }
+  }
+
+  window.adicionarTodosSugestao=function(){
+    var prods=window._sugestaoProds||[];
+    prods.forEach(function(p){
+      var ex=cart.find(function(i){return i.id==p.id;});
+      if(ex)ex.qty++;
+      else cart.push({id:p.id,name:p.name||'',price:p.price||0,url:p.url||'',prazo:p.prazo_producao_dias||5,qty:1});
+    });
+    saveCart();updateCartUI();
+    var cb=document.getElementById('cartBtn');
+    if(cb){cb.classList.remove('bounce');void cb.offsetWidth;cb.classList.add('bounce');setTimeout(function(){cb.classList.remove('bounce');},600);}
+    showToast(prods.length+' produtos adicionados!');
+    setTimeout(openCart,400);
+  };
+
+  var t=setInterval(function(){
+    if(allProducts&&allProducts.length>0){clearInterval(t);show();}
+  },250);
+  setTimeout(function(){clearInterval(t);},20000);
+})();
 </script>
 
 <div class="lightbox" id="lightbox">
