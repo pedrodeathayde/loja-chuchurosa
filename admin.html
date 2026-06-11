@@ -21,7 +21,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:#f0ebe8;color:var(--dark);font-family:var(--fb);overflow:hidden}
+body{background:#f0ebe8;color:var(--dark);font-family:var(--fb)}
 a{text-decoration:none;color:inherit}
 img{display:block;max-width:100%}
 ::-webkit-scrollbar{width:5px}
@@ -547,6 +547,29 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
   #page-sugerir > div:last-child{grid-template-columns:1fr!important}
 }
 
+
+@media(min-width:769px){
+  body{overflow:hidden}
+  .main{overflow-y:auto;height:100vh}
+}
+@media(max-width:768px){
+  .admin-wrap{height:auto}
+  .main{height:auto;overflow-y:visible}
+  body{overflow-y:auto}
+}
+
+
+@media(max-width:768px){
+  #page-lista-compras .finp,
+  #page-lista-compras select,
+  #page-lista-compras input{
+    max-width:100%;box-sizing:border-box;
+  }
+  #page-lista-compras > div{overflow-x:hidden}
+  #novoItemInput{flex:1;min-width:0;font-size:.84rem}
+  #novoItemCat{width:110px!important;font-size:.78rem}
+}
+
 </style>
 </head>
 <body>
@@ -856,13 +879,8 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
           </h3>
           <div id="sugerirCarrinhoDesk" style="min-height:60px;margin-bottom:16px"></div>
           <input id="sugerirMsgExtraDesk" type="text" class="finp" placeholder="Mensagem extra (opcional)..." style="margin-bottom:12px">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <button class="btn-p" onclick="compartilharSugestao('whatsapp')">💬 WhatsApp</button>
-            <button class="btn-s" onclick="compartilharSugestao('copiar')">📋 Copiar</button>
-            <button class="btn-s" onclick="compartilharSugestao('email')">📧 E-mail</button>
-            <button class="btn-s" onclick="compartilharSugestao('instagram')" style="background:linear-gradient(135deg,#e1306c,#fd1d1d,#fcb045);color:#fff;border:none">📸 Instagram</button>
-          </div>
-          <button onclick="limparSugestao()" style="width:100%;margin-top:10px;background:none;border:none;color:rgba(13,9,13,.35);font-size:.75rem;cursor:pointer">✕ Limpar seleção</button>
+          <button class="btn-p" style="width:100%" onclick="abrirModalCompartilhar()">📤 Compartilhar seleção</button>
+          <button onclick="limparSugestao()" style="width:100%;margin-top:8px;background:none;border:none;color:rgba(13,9,13,.35);font-size:.75rem;cursor:pointer">✕ Limpar seleção</button>
         </div>
       </div>
     </div>
@@ -4216,60 +4234,96 @@ async function openClient(idOrEmail){
   localStorage.setItem(key,JSON.stringify(logs));
 })();
 
-function renderAccessLog(){
+async function renderAccessLog(){
   const el=document.getElementById('accessLog');
   if(!el)return;
-  const logs=JSON.parse(localStorage.getItem('cr_access_log')||'[]');
+  el.innerHTML='<div class="ld"><div class="spin"></div><span>Carregando...</span></div>';
+
+  // Load from Supabase
+  let logs=[];
+  try{
+    const r=await fetch(SB+'/rest/v1/admin_logins?select=*&order=ts.desc&limit=200',{headers:HDR});
+    if(r.ok) logs=await r.json();
+  }catch(e){}
+
+  // Fallback to localStorage
+  if(!logs.length){
+    logs=JSON.parse(localStorage.getItem('cr_access_log')||'[]');
+  }
+
   if(!logs.length){el.innerHTML='<div class="empty"><div class="empty-icon">🔒</div><p>Nenhum acesso registrado</p></div>';return;}
-  const isMobile=ua=>(/Android|iPhone|iPad/i.test(ua)?'📱 Mobile':'💻 Desktop');
+
+  const isMobile=ua=>(/Android|iPhone|iPad/i.test(ua)?'📱':'💻');
   const getBrowser=ua=>{
+    if(/Edg/i.test(ua))return'Edge';
     if(/Chrome/i.test(ua))return'Chrome';
     if(/Firefox/i.test(ua))return'Firefox';
     if(/Safari/i.test(ua))return'Safari';
-    if(/Edge/i.test(ua))return'Edge';
     return'Outro';
   };
-  const currentUA = navigator.userAgent;
-  el.innerHTML=`<div style="font-size:.75rem;color:rgba(13,9,13,.4);margin-bottom:12px">${logs.length} acessos registrados</div>`+
-  logs.map((l,idx)=>{
-    const isCurrent = idx===0;
+  const currentIP=logs[0]?.ip||'';
+
+  // Group by IP + device type
+  const groups={};
+  logs.forEach(l=>{
+    const key=(l.ip||'unknown')+'|'+getBrowser(l.ua)+'|'+isMobile(l.ua);
+    if(!groups[key]) groups[key]={ip:l.ip,city:l.city,region:l.region,browser:getBrowser(l.ua),device:isMobile(l.ua),logs:[]};
+    groups[key].logs.push(l);
+  });
+
+  const entries=Object.entries(groups);
+  el.innerHTML=`<div style="font-size:.75rem;color:rgba(13,9,13,.4);margin-bottom:14px">${logs.length} acessos · ${entries.length} dispositivos</div>`+
+  entries.map(([key,g],idx)=>{
+    const isCurrent=g.ip&&g.ip===currentIP&&idx===0;
+    const last=new Date(g.logs[0].ts).toLocaleString('pt-BR');
     return `
-    <div class="hist-item" style="${isCurrent?'border-left:3px solid var(--pink);padding-left:10px':''}">
-      <div class="hist-time" style="display:flex;align-items:center;gap:8px">
-        ${new Date(l.ts).toLocaleString('pt-BR')}
+    <div class="hist-item" style="cursor:pointer;${isCurrent?'border-left:3px solid var(--pink);padding-left:12px':''}" onclick="this.querySelector('.device-log-detail').style.display=this.querySelector('.device-log-detail').style.display==='none'?'block':'none'">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span style="font-size:1.1rem">${g.device}</span>
+        <span style="font-weight:600;font-size:.84rem">${g.browser}</span>
         ${isCurrent?'<span style="background:var(--pink);color:#fff;font-size:.58rem;padding:2px 8px;border-radius:100px;font-weight:700">ESTE DISPOSITIVO</span>':''}
+        ${g.ip?`<span style="font-family:monospace;font-size:.72rem;color:rgba(13,9,13,.5)">${g.ip}</span>`:''}
+        ${g.city?`<span style="font-size:.72rem">📍 ${g.city}${g.region?', '+g.region:''}</span>`:''}
+        <span style="font-size:.72rem;color:rgba(13,9,13,.4);margin-left:auto">${g.logs.length}x · último: ${last}</span>
+        <span style="font-size:.7rem;color:rgba(13,9,13,.3)">▼</span>
       </div>
-      <div class="hist-action" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:4px">
-        <span>${isMobile(l.ua)}</span>
-        <span style="background:rgba(229,37,100,.07);padding:2px 8px;border-radius:100px;font-size:.7rem">${getBrowser(l.ua)}</span>
-        ${l.ip?`<span style="font-family:monospace;font-size:.72rem;color:rgba(13,9,13,.5)">IP: ${l.ip}</span>`:''}
-        ${l.city?`<span style="font-size:.72rem">📍 ${l.city}${l.region?', '+l.region:''}</span>`:''}
-        <span style="font-size:.72rem;color:rgba(13,9,13,.4)">${l.ref!=='direto'?`Via: ${l.ref.slice(0,50)}`:'Direto'}</span>
+      <div class="device-log-detail" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid rgba(229,37,100,.08)">
+        ${g.logs.map(l=>`<div style="font-size:.74rem;color:rgba(13,9,13,.5);padding:3px 0">${new Date(l.ts).toLocaleString('pt-BR')} · ${l.ref!=='direto'?'Via: '+l.ref.slice(0,40):'Direto'}</div>`).join('')}
       </div>
-    </div>`;}).join('');
+    </div>`;
+  }).join('');
 }
 
 // Fetch IP and location on login
 async function fetchAndLogAccess(){
   try{
+    // Get IP and location
     const r = await fetch('https://ipapi.co/json/');
     const d = await r.json();
-    const logs = JSON.parse(localStorage.getItem('cr_access_log')||'[]');
-    logs.unshift({
-      ts: Date.now(),
+    const entry = {
+      ts: new Date().toISOString(),
       ua: navigator.userAgent,
       ref: document.referrer||'direto',
       ip: d.ip||'',
       city: d.city||'',
       region: d.region||'',
-      country: d.country_name||'',
-    });
-    localStorage.setItem('cr_access_log', JSON.stringify(logs.slice(0,50)));
-  }catch(e){
-    // Fallback sem IP
+      country: d.country_name||'BR',
+    };
+    // Save to Supabase
+    await fetch(SB+'/rest/v1/admin_logins',{
+      method:'POST',
+      headers:{...HDR,'Prefer':'return=minimal'},
+      body:JSON.stringify(entry)
+    }).catch(()=>{});
+    // Also save locally as fallback
     const logs = JSON.parse(localStorage.getItem('cr_access_log')||'[]');
-    logs.unshift({ts:Date.now(),ua:navigator.userAgent,ref:document.referrer||'direto'});
-    localStorage.setItem('cr_access_log', JSON.stringify(logs.slice(0,50)));
+    logs.unshift(entry);
+    localStorage.setItem('cr_access_log', JSON.stringify(logs.slice(0,100)));
+  }catch(e){
+    const entry = {ts:new Date().toISOString(),ua:navigator.userAgent,ref:document.referrer||'direto',ip:'',city:'',region:''};
+    const logs = JSON.parse(localStorage.getItem('cr_access_log')||'[]');
+    logs.unshift(entry);
+    localStorage.setItem('cr_access_log', JSON.stringify(logs.slice(0,100)));
   }
 }
 
@@ -4974,13 +5028,20 @@ async function deleteCliente(id, nome){
 // ── DELETE EMAIL CONTATO ──────────────────────────────────────────
 async function deleteEmailContato(email, nome){
   if(!confirm(`Remover "${nome||email}" da lista?`)) return;
-  // Find by email in allClients
-  const cliente = allClients.find(c=>c.email===email);
+  const cliente = allClients.find(c=>(c.email||'').toLowerCase()===(email||'').toLowerCase());
   if(cliente){
-    await fetch(SB+`/rest/v1/clientes?id=eq.${cliente.id}`,{method:'DELETE',headers:HDR});
-    allClients = allClients.filter(c=>c.id!==cliente.id);
+    const r=await fetch(SB+`/rest/v1/clientes?id=eq.${cliente.id}`,{method:'DELETE',headers:{...HDR,'Prefer':'return=minimal'}});
+    if(r.ok||r.status===204){
+      allClients = allClients.filter(c=>c.id!==cliente.id);
+      toast('Removido!','ok');
+    } else {
+      toast('Erro ao remover','err');
+      return;
+    }
+  } else {
+    toast('Cliente não encontrado na base','err');
+    return;
   }
-  toast('Removido da lista','ok');
   renderEmailList();
 }
 
@@ -5166,7 +5227,7 @@ function limparSugestao(){
 
 function compartilharSugestao(canal){
   if(!sugestaoCarrinho.length){toast('Selecione pelo menos um produto','err');return;}
-  const msg_extra = (document.getElementById('sugerirMsgExtraDesk')?.value || document.getElementById('sugerirMsgExtra')?.value || '').trim();
+  const msg_extra = (document.getElementById('shareModalMsg')?.value || document.getElementById('sugerirMsgExtraDesk')?.value || document.getElementById('sugerirMsgExtra')?.value || '').trim();
   const ids = sugestaoCarrinho.map(p=>p.id).join(',');
   const BASE = 'https://pedrodeathayde.github.io/loja-chuchurosa/loja.html';
   const link = BASE + '?sugestao=' + ids;
@@ -5196,5 +5257,37 @@ function compartilharSugestao(canal){
 }
 
 </script>
+
+<div id="shareModal" class="modal-ov" style="display:none">
+  <div class="modal" style="max-width:400px">
+    <div class="mhead">
+      <h2>📤 Compartilhar seleção</h2>
+      <button class="mclose" onclick="fecharModalCompartilhar()">✕</button>
+    </div>
+    <div class="mbody">
+      <div id="shareModalPreview" style="margin-bottom:20px;padding:14px;background:rgba(229,37,100,.04);border-radius:12px;font-size:.82rem;line-height:1.6;color:rgba(13,9,13,.7)"></div>
+      <div class="fg">
+        <label>Mensagem extra (opcional)</label>
+        <input id="shareModalMsg" type="text" class="finp" placeholder="Ex: Para a festa da sua filha! 🎉">
+      </div>
+      <div style="display:grid;gap:10px;margin-top:16px">
+        <button class="btn-p" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px" onclick="compartilharSugestao('whatsapp');fecharModalCompartilhar()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Enviar pelo WhatsApp
+        </button>
+        <button class="btn-s" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px" onclick="compartilharSugestao('email');fecharModalCompartilhar()">
+          📧 Enviar por E-mail
+        </button>
+        <button class="btn-s" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px" onclick="compartilharSugestao('copiar');fecharModalCompartilhar()">
+          📋 Copiar mensagem
+        </button>
+        <button class="btn-s" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:linear-gradient(135deg,#e1306c,#fd1d1d,#fcb045);color:#fff;border:none" onclick="compartilharSugestao('instagram');fecharModalCompartilhar()">
+          📸 Copiar para Instagram
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
