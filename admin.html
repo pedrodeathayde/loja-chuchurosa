@@ -5207,21 +5207,18 @@ function toggleSugestao(id,url){
 }
 
 function renderSugestaoCarrinho(){
-  const isMob = window.innerWidth <= 768;
-  const elId = isMob ? 'sugerirCarrinho' : 'sugerirCarrinhoDesk';
-  const countId = isMob ? 'sugerirCount' : 'sugerirCountDesk';
-  const el = document.getElementById(elId);
-  const count = document.getElementById(countId);
-  if(count) count.textContent = sugestaoCarrinho.length;
-  // Show/hide mobile panel
-  const painel = document.getElementById('sugerirPainel');
-  if(painel) painel.style.display = isMob && sugestaoCarrinho.length ? 'block' : (isMob ? 'none' : 'none');
-  if(!el) return;
-  if(!sugestaoCarrinho.length){
-    el.innerHTML='<p style="font-size:.78rem;color:rgba(13,9,13,.35);text-align:center;padding:10px 0">Clique nos produtos para selecionar</p>';
-    return;
-  }
-  const cartHTML = sugestaoCarrinho.map(p=>`
+  const n = sugestaoCarrinho.length;
+  // Update both counters always
+  ['sugerirCount','sugerirCountDesk'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.textContent=n;
+  });
+  // Mobile panel
+  const painel=document.getElementById('sugerirPainel');
+  if(painel) painel.style.display=(window.innerWidth<=768&&n)?'block':'none';
+
+  const empty='<p style="font-size:.78rem;color:rgba(13,9,13,.35);text-align:center;padding:10px 0">Clique nos produtos para selecionar</p>';
+  const cartHTML=n?sugestaoCarrinho.map(p=>`
     <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(229,37,100,.06)">
       ${p.url?`<img src="${p.url}" style="width:36px;height:48px;object-fit:cover;border-radius:6px;flex-shrink:0">`:'<div style="width:36px;height:48px;background:#f8f0f6;border-radius:6px;flex-shrink:0"></div>'}
       <div style="flex:1;min-width:0">
@@ -5229,15 +5226,13 @@ function renderSugestaoCarrinho(){
         <div style="font-size:.76rem;color:var(--rose)">${fmt(p.price)}</div>
       </div>
       <button onclick="toggleSugestao(${p.id})" style="background:none;border:none;color:rgba(13,9,13,.3);cursor:pointer">✕</button>
-    </div>`).join('');
-  el.innerHTML = cartHTML;
-  // Also update desktop if on mobile
-  if(isMob){
-    const desk=document.getElementById('sugerirCarrinhoDesk');
-    if(desk) desk.innerHTML=cartHTML;
-    const dcount=document.getElementById('sugerirCountDesk');
-    if(dcount) dcount.textContent=sugestaoCarrinho.length;
-  }
+    </div>`).join(''):empty;
+
+  // Update both cart containers always
+  ['sugerirCarrinho','sugerirCarrinhoDesk'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.innerHTML=cartHTML;
+  });
 }
 
 function limparSugestao(){
