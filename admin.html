@@ -21,7 +21,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:#f0ebe8;color:var(--dark);font-family:var(--fb);overflow-x:hidden}
+body{background:#f0ebe8;color:var(--dark);font-family:var(--fb);overflow:hidden;height:100vh}
 a{text-decoration:none;color:inherit}
 img{display:block;max-width:100%}
 ::-webkit-scrollbar{width:5px}
@@ -41,7 +41,7 @@ img{display:block;max-width:100%}
 .login-err{color:#fca5a5;font-size:.82rem;margin-top:10px;display:none}
 
 /* LAYOUT */
-.admin-wrap{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+.admin-wrap{display:grid;grid-template-columns:240px 1fr;height:100vh;overflow:hidden}
 .admin-wrap.hidden{display:none}
 
 /* SIDEBAR */
@@ -64,7 +64,7 @@ img{display:block;max-width:100%}
 .btn-logout:hover{border-color:rgba(244,121,154,.3);color:var(--pink2)}
 
 /* MAIN */
-.main{overflow-y:auto;height:100vh;background:#f0ebe8}
+.main{overflow-y:auto;height:100vh;background:#f0ebe8;-webkit-overflow-scrolling:touch}
 .page{display:none;padding:28px 32px;max-width:1300px}
 .page.active{display:block}
 .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
@@ -514,6 +514,32 @@ img{display:block;max-width:100%}
 .cpag-btn.active{background:var(--pink);border-color:var(--pink);color:#fff;box-shadow:0 4px 14px rgba(229,37,100,.3)}
 .cpag-btn:disabled{opacity:.3;cursor:default;pointer-events:none}
 
+
+/* ── DARK MODE ── */
+body.dark-mode{
+  --cream:#1a1118;--cream2:#221620;--white:#2a1d28;--ink:#f8f0f6;
+  --dark:#f8f0f6;background:#1a1118;color:#f8f0f6;
+}
+body.dark-mode .sidebar{background:#221620;border-color:rgba(229,37,100,.15)}
+body.dark-mode .main{background:#1a1118}
+body.dark-mode .tbl-wrap,body.dark-mode .modal,body.dark-mode .page-header,
+body.dark-mode .client-card,body.dark-mode .hist-item{background:#2a1d28;border-color:rgba(229,37,100,.12)}
+body.dark-mode .finp,body.dark-mode select{background:#221620;color:#f8f0f6;border-color:rgba(229,37,100,.2)}
+body.dark-mode .sc{background:#2a1d28}
+body.dark-mode .tbl-row:hover{background:rgba(229,37,100,.08)}
+body.dark-mode .ni{color:rgba(255,255,255,.55)}
+body.dark-mode .ni.active,.dark-mode .ni:hover{background:rgba(229,37,100,.15);color:#fff}
+body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)}
+.dark-toggle{
+  position:fixed;bottom:72px;right:16px;z-index:300;
+  width:40px;height:40px;border-radius:50%;
+  background:var(--white);border:1px solid rgba(229,37,100,.2);
+  cursor:pointer;font-size:1rem;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 12px rgba(0,0,0,.15);transition:all .2s;
+}
+.dark-toggle:hover{background:var(--pink);color:#fff;border-color:var(--pink)}
+
 </style>
 </head>
 <body>
@@ -560,9 +586,10 @@ img{display:block;max-width:100%}
       <button class="ni" data-page="cupons" onclick="goPage('cupons')"><span class="ni-icon">🎟️</span>Cupons</button>
       <button class="ni" data-page="email" onclick="goPage('email');renderEmailList()"><span class="ni-icon">📧</span>E-mail</button>
       <button class="ni" data-page="relatorio" onclick="goPage('relatorio');renderRelatorio()"><span class="ni-icon">📊</span>Relatórios</button>
-      <button class="ni" data-page="historico" onclick="goPage('historico');renderHist();renderAccessLog()"><span class="ni-icon">📋</span>Histórico</button>
       <button class="ni" data-page="agenda" onclick="goPage('agenda');loadAgenda()"><span class="ni-icon">📋</span>Agenda</button>
       <button class="ni" data-page="lista-compras" onclick="goPage('lista-compras');renderListaCompras()"><span class="ni-icon">🛒</span>Lista de compras</button>
+      <button class="ni" data-page="sugerir" onclick="goPage('sugerir');renderSugerir()"><span class="ni-icon">💌</span>Sugerir produtos</button>
+      <button class="ni" data-page="historico" onclick="goPage('historico');renderHist();renderAccessLog()"><span class="ni-icon">🔒</span>Histórico de login</button>
       <button class="ni" data-page="frete" onclick="goPage('frete');loadFreteConfig()"><span class="ni-icon">🚚</span>Frete</button>
       <button class="ni" data-page="banners" onclick="goPage('banners')"><span class="ni-icon">📢</span>Banners</button>
       <button class="ni" data-page="notif" onclick="goPage('notif')"><span class="ni-icon">🔔</span>Notificações</button>
@@ -590,10 +617,10 @@ img{display:block;max-width:100%}
     <div class="page active" id="page-dashboard">
       <div class="page-header"><div><h1>Dashboard 📊</h1><p>Visão geral da loja Chuchu Rosa</p></div></div>
       <div class="stats-row">
-        <div class="sc pink"><div class="sc-label">Pedidos hoje</div><div class="sc-val" id="dPedHoje">—</div><div class="sc-sub">Recebidos</div></div>
-        <div class="sc green"><div class="sc-label">Receita total</div><div class="sc-val" id="dReceita">—</div><div class="sc-sub">Pedidos pagos</div></div>
-        <div class="sc blue"><div class="sc-label">Produtos ativos</div><div class="sc-val" id="dProds">—</div><div class="sc-sub">Com preço</div></div>
-        <div class="sc yellow"><div class="sc-label">Em produção</div><div class="sc-val" id="dProd">—</div><div class="sc-sub">Pedidos</div></div>
+        <div class="sc pink" onclick="goPage('pedidos')" style="cursor:pointer"><div class="sc-label">Pedidos hoje</div><div class="sc-val" id="dPedHoje">—</div><div class="sc-sub">Clique para ver →</div></div>
+        <div class="sc green" onclick="goPage('pedidos')" style="cursor:pointer"><div class="sc-label">Receita total</div><div class="sc-val" id="dReceita">—</div><div class="sc-sub">Pedidos pagos</div></div>
+        <div class="sc blue" onclick="goPage('produtos')" style="cursor:pointer"><div class="sc-label">Produtos ativos</div><div class="sc-val" id="dProds">—</div><div class="sc-sub">Clique para ver →</div></div>
+        <div class="sc yellow" onclick="goPage('pedidos')" style="cursor:pointer"><div class="sc-label">Em produção</div><div class="sc-val" id="dProd">—</div><div class="sc-sub">Clique para ver →</div></div>
       </div>
       <div class="chart-wrap" style="margin-bottom:20px">
         <div class="chart-head"><h3>Receita por mês</h3></div>
@@ -787,6 +814,37 @@ img{display:block;max-width:100%}
       </div>
     </div>
 
+
+    <!-- SUGERIR PRODUTOS -->
+    <div class="page" id="page-sugerir">
+      <div class="page-header">
+        <div><h1>Sugerir Produtos 💌</h1><p>Monte uma seleção e compartilhe com um cliente</p></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start">
+        <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:20px">
+          <div style="margin-bottom:14px">
+            <input type="text" id="sugerirSearch" class="finp" placeholder="Buscar produto..."
+              oninput="renderSugerirProdutos()">
+          </div>
+          <div id="sugerirProdutos" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px"></div>
+        </div>
+        <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:20px;position:sticky;top:20px">
+          <h3 style="font-family:var(--fd);font-size:.95rem;font-weight:700;margin-bottom:14px">
+            Seleção <span id="sugerirCount" style="color:var(--pink)">0</span> produtos
+          </h3>
+          <div id="sugerirCarrinho" style="min-height:60px;margin-bottom:16px"></div>
+          <input id="sugerirMsgExtra" type="text" class="finp" placeholder="Mensagem extra (opcional)..." style="margin-bottom:12px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="btn-p" onclick="compartilharSugestao('whatsapp')">💬 WhatsApp</button>
+            <button class="btn-s" onclick="compartilharSugestao('copiar')">📋 Copiar link</button>
+            <button class="btn-s" onclick="compartilharSugestao('email')">📧 E-mail</button>
+            <button class="btn-s" onclick="compartilharSugestao('instagram')" style="background:linear-gradient(135deg,#e1306c,#fd1d1d,#fcb045);color:#fff;border:none">📸 Instagram</button>
+          </div>
+          <button onclick="limparSugestao()" style="width:100%;margin-top:10px;background:none;border:none;color:rgba(13,9,13,.35);font-size:.75rem;cursor:pointer">✕ Limpar seleção</button>
+        </div>
+      </div>
+    </div>
+
     <!-- FRETE -->
     <div class="page" id="page-frete">
       <div class="page-header">
@@ -906,6 +964,37 @@ img{display:block;max-width:100%}
             </select>
             <button class="btn-p" onclick="adicionarItemLista()">Adicionar</button>
           </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- SUGERIR PRODUTOS -->
+    <div class="page" id="page-sugerir">
+      <div class="page-header">
+        <div><h1>Sugerir Produtos 💌</h1><p>Monte uma seleção e compartilhe com um cliente</p></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start">
+        <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:20px">
+          <div style="margin-bottom:14px">
+            <input type="text" id="sugerirSearch" class="finp" placeholder="Buscar produto..."
+              oninput="renderSugerirProdutos()">
+          </div>
+          <div id="sugerirProdutos" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px"></div>
+        </div>
+        <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:20px;position:sticky;top:20px">
+          <h3 style="font-family:var(--fd);font-size:.95rem;font-weight:700;margin-bottom:14px">
+            Seleção <span id="sugerirCount" style="color:var(--pink)">0</span> produtos
+          </h3>
+          <div id="sugerirCarrinho" style="min-height:60px;margin-bottom:16px"></div>
+          <input id="sugerirMsgExtra" type="text" class="finp" placeholder="Mensagem extra (opcional)..." style="margin-bottom:12px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="btn-p" onclick="compartilharSugestao('whatsapp')">💬 WhatsApp</button>
+            <button class="btn-s" onclick="compartilharSugestao('copiar')">📋 Copiar link</button>
+            <button class="btn-s" onclick="compartilharSugestao('email')">📧 E-mail</button>
+            <button class="btn-s" onclick="compartilharSugestao('instagram')" style="background:linear-gradient(135deg,#e1306c,#fd1d1d,#fcb045);color:#fff;border:none">📸 Instagram</button>
+          </div>
+          <button onclick="limparSugestao()" style="width:100%;margin-top:10px;background:none;border:none;color:rgba(13,9,13,.35);font-size:.75rem;cursor:pointer">✕ Limpar seleção</button>
         </div>
       </div>
     </div>
@@ -2910,8 +2999,8 @@ async function saveOrderStatus(){
   await sbPatch(`/rest/v1/pedidos?id=eq.${editOrderId}`,{status:selStatus});
   const p=allOrders.find(x=>x.id==editOrderId);
   if(p)p.status=selStatus;
-  toast('Status atualizado!','ok');
   closeOrderModal();
+  toast('Status atualizado para: '+selStatus,'ok');
   renderOrderTable();
   renderDash();
 }
@@ -4087,6 +4176,8 @@ async function openClient(idOrEmail){
         <div class="client-detail">
           📧 ${c.email||'—'}<br>
           📱 ${c.phone||c.telefone||'—'}<br>
+          📍 ${[c.logradouro,c.numero,c.complemento,c.bairro,c.cidade,c.estado].filter(Boolean).join(', ')||'Endereço não cadastrado'}<br>
+          ${c.cep?`CEP: ${c.cep}<br>`:''}
           📅 Cadastro: ${c.created_at?new Date(c.created_at).toLocaleDateString('pt-BR'):'—'}<br>
           💰 Total gasto: <b style="color:var(--rose)">${fmt(total)}</b><br>
           📦 Pedidos: <b>${clientOrders.length}</b>
@@ -4145,18 +4236,24 @@ function renderAccessLog(){
     if(/Edge/i.test(ua))return'Edge';
     return'Outro';
   };
+  const currentUA = navigator.userAgent;
   el.innerHTML=`<div style="font-size:.75rem;color:rgba(13,9,13,.4);margin-bottom:12px">${logs.length} acessos registrados</div>`+
-  logs.map(l=>`
-    <div class="hist-item">
-      <div class="hist-time">${new Date(l.ts).toLocaleString('pt-BR')}</div>
-      <div class="hist-action" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+  logs.map((l,idx)=>{
+    const isCurrent = idx===0;
+    return `
+    <div class="hist-item" style="${isCurrent?'border-left:3px solid var(--pink);padding-left:10px':''}">
+      <div class="hist-time" style="display:flex;align-items:center;gap:8px">
+        ${new Date(l.ts).toLocaleString('pt-BR')}
+        ${isCurrent?'<span style="background:var(--pink);color:#fff;font-size:.58rem;padding:2px 8px;border-radius:100px;font-weight:700">ESTE DISPOSITIVO</span>':''}
+      </div>
+      <div class="hist-action" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:4px">
         <span>${isMobile(l.ua)}</span>
         <span style="background:rgba(229,37,100,.07);padding:2px 8px;border-radius:100px;font-size:.7rem">${getBrowser(l.ua)}</span>
         ${l.ip?`<span style="font-family:monospace;font-size:.72rem;color:rgba(13,9,13,.5)">IP: ${l.ip}</span>`:''}
         ${l.city?`<span style="font-size:.72rem">📍 ${l.city}${l.region?', '+l.region:''}</span>`:''}
         <span style="font-size:.72rem;color:rgba(13,9,13,.4)">${l.ref!=='direto'?`Via: ${l.ref.slice(0,50)}`:'Direto'}</span>
       </div>
-    </div>`).join('');
+    </div>`;}).join('');
 }
 
 // Fetch IP and location on login
@@ -4962,6 +5059,119 @@ function enviarListaWA(){
   });
   msg += '_' + new Date().toLocaleDateString('pt-BR') + '_';
   window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');
+}
+
+
+// ── DARK MODE ─────────────────────────────────────────────────────
+function toggleDarkMode(){
+  const isDark=document.body.classList.toggle('dark-mode');
+  localStorage.setItem('cr_dark',isDark?'1':'0');
+  document.getElementById('darkToggle').textContent=isDark?'☀️':'🌙';
+}
+(function(){
+  if(localStorage.getItem('cr_dark')==='1'){
+    document.body.classList.add('dark-mode');
+    document.getElementById('darkToggle').textContent='☀️';
+  }
+})();
+
+
+// ── SUGERIR PRODUTOS ─────────────────────────────────────────────
+let sugestaoCarrinho = [];
+
+function renderSugerir(){
+  renderSugerirProdutos();
+  renderSugestaoCarrinho();
+}
+
+function renderSugerirProdutos(){
+  const el = document.getElementById('sugerirProdutos');
+  if(!el) return;
+  const q = (document.getElementById('sugerirSearch')?.value||'').toLowerCase();
+  const lista = allProds.filter(p=>
+    p.ativo && p.price &&
+    (!q || (p.name||'').toLowerCase().includes(q))
+  ).slice(0,48);
+  el.innerHTML = lista.map(p=>{
+    const sel = sugestaoCarrinho.some(x=>x.id===p.id);
+    return `<div onclick="toggleSugestao(${p.id})"
+      style="border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid ${sel?'var(--pink)':'rgba(229,37,100,.08)'};transition:all .2s;${sel?'box-shadow:0 4px 14px rgba(229,37,100,.2)':''}">
+      <div style="aspect-ratio:3/4;background:#f8f0f6;overflow:hidden">
+        ${p.url?`<img src="${p.url}" style="width:100%;height:100%;object-fit:cover">`:'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem">🌸</div>'}
+      </div>
+      <div style="padding:8px 10px">
+        <div style="font-size:.76rem;font-weight:600;line-height:1.3;margin-bottom:3px">${(p.name||'').slice(0,40)}</div>
+        <div style="font-size:.8rem;color:var(--rose);font-weight:700">${fmt(p.price)}</div>
+        ${sel?'<div style="font-size:.65rem;color:var(--pink);font-weight:700;margin-top:2px">✓ Selecionado</div>':''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleSugestao(id){
+  const p = allProds.find(x=>x.id===id);
+  if(!p) return;
+  const idx = sugestaoCarrinho.findIndex(x=>x.id===id);
+  if(idx>=0) sugestaoCarrinho.splice(idx,1);
+  else sugestaoCarrinho.push({id:p.id,name:p.name,price:p.price,url:p.url});
+  renderSugerirProdutos();
+  renderSugestaoCarrinho();
+}
+
+function renderSugestaoCarrinho(){
+  const el = document.getElementById('sugerirCarrinho');
+  const count = document.getElementById('sugerirCount');
+  if(count) count.textContent = sugestaoCarrinho.length;
+  if(!el) return;
+  if(!sugestaoCarrinho.length){
+    el.innerHTML='<p style="font-size:.78rem;color:rgba(13,9,13,.35);text-align:center;padding:10px 0">Clique nos produtos para selecionar</p>';
+    return;
+  }
+  el.innerHTML = sugestaoCarrinho.map(p=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(229,37,100,.06)">
+      ${p.url?`<img src="${p.url}" style="width:36px;height:48px;object-fit:cover;border-radius:6px;flex-shrink:0">`:'<div style="width:36px;height:48px;background:#f8f0f6;border-radius:6px;flex-shrink:0"></div>'}
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.76rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
+        <div style="font-size:.76rem;color:var(--rose)">${fmt(p.price)}</div>
+      </div>
+      <button onclick="toggleSugestao(${p.id})" style="background:none;border:none;color:rgba(13,9,13,.3);cursor:pointer">✕</button>
+    </div>`).join('');
+}
+
+function limparSugestao(){
+  sugestaoCarrinho=[];
+  renderSugerirProdutos();
+  renderSugestaoCarrinho();
+}
+
+function compartilharSugestao(canal){
+  if(!sugestaoCarrinho.length){toast('Selecione pelo menos um produto','err');return;}
+  const msg_extra = document.getElementById('sugerirMsgExtra')?.value.trim()||'';
+  const BASE = 'https://pedrodeathayde.github.io/loja-chuchurosa/loja.html';
+  const nomes = sugestaoCarrinho.map(p=>p.name).join(', ');
+  const total = sugestaoCarrinho.reduce((s,p)=>s+p.price,0);
+
+  let msg = 'Olá! 🌸 Separei alguns produtos da Chuchu Rosa especialmente pra você:' + String.fromCharCode(10,10);
+  sugestaoCarrinho.forEach(p=>{
+    msg += '• ' + p.name + ' — ' + fmt(p.price) + String.fromCharCode(10);
+  });
+  msg += String.fromCharCode(10) + 'Total: ' + fmt(total);
+  if(msg_extra) msg += String.fromCharCode(10) + msg_extra;
+  msg += String.fromCharCode(10,10) + '🛍 Ver na loja: ' + BASE;
+
+  if(canal==='whatsapp'){
+    window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+  } else if(canal==='copiar'){
+    navigator.clipboard.writeText(msg).then(()=>toast('Texto copiado! Cole onde quiser.','ok'));
+  } else if(canal==='email'){
+    const subject = encodeURIComponent('Seleção especial Chuchu Rosa 🌸');
+    window.open('mailto:?subject='+subject+'&body='+encodeURIComponent(msg),'_blank');
+  } else if(canal==='instagram'){
+    navigator.clipboard.writeText(msg).then(()=>{
+      toast('Texto copiado! Cole na legenda do Instagram.','ok');
+      setTimeout(()=>window.open('https://www.instagram.com/','_blank'),800);
+    });
+  }
 }
 
 </script>
