@@ -4317,35 +4317,35 @@ async function renderAccessLog(){
 
 // Fetch IP and location on login
 async function fetchAndLogAccess(){
+  let ip='', city='', region='', country='';
+  // Try multiple IP APIs
+  const ipApis=['https://ipapi.co/json/','https://api.ipify.org?format=json'];
+  for(const api of ipApis){
+    try{
+      const r=await fetch(api,{signal:AbortSignal.timeout(3000)});
+      const d=await r.json();
+      ip=d.ip||''; city=d.city||''; region=d.region||''; country=d.country_name||d.country||'';
+      if(ip)break;
+    }catch(e){}
+  }
+  const entry={
+    ts:new Date().toISOString(),
+    ua:navigator.userAgent,
+    ref:document.referrer||'direto',
+    ip, city, region, country,
+  };
+  // Save to Supabase
   try{
-    // Get IP and location
-    const r = await fetch('https://ipapi.co/json/');
-    const d = await r.json();
-    const entry = {
-      ts: new Date().toISOString(),
-      ua: navigator.userAgent,
-      ref: document.referrer||'direto',
-      ip: d.ip||'',
-      city: d.city||'',
-      region: d.region||'',
-      country: d.country_name||'BR',
-    };
-    // Save to Supabase
     await fetch(SB+'/rest/v1/admin_logins',{
       method:'POST',
       headers:{...HDR,'Prefer':'return=minimal'},
       body:JSON.stringify(entry)
-    }).catch(()=>{});
-    // Also save locally as fallback
-    const logs = JSON.parse(localStorage.getItem('cr_access_log')||'[]');
-    logs.unshift(entry);
-    localStorage.setItem('cr_access_log', JSON.stringify(logs.slice(0,100)));
-  }catch(e){
-    const entry = {ts:new Date().toISOString(),ua:navigator.userAgent,ref:document.referrer||'direto',ip:'',city:'',region:''};
-    const logs = JSON.parse(localStorage.getItem('cr_access_log')||'[]');
-    logs.unshift(entry);
-    localStorage.setItem('cr_access_log', JSON.stringify(logs.slice(0,100)));
-  }
+    });
+  }catch(e){}
+  // Also localStorage fallback
+  const logs=JSON.parse(localStorage.getItem('cr_access_log')||'[]');
+  logs.unshift(entry);
+  localStorage.setItem('cr_access_log',JSON.stringify(logs.slice(0,100)));
 }
 
 
