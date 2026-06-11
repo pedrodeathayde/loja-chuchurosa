@@ -5161,7 +5161,7 @@ function renderSugerirProdutos(){
   el.innerHTML = lista.map(p=>{
     const url = getSugerirUrl(p.name||'');
     const sel = sugestaoCarrinho.some(x=>x.id===p.id);
-    return `<div onclick="toggleSugestao(${p.id},${JSON.stringify(url)})"
+    return `<div data-id="${p.id}" data-url="${url}" onclick="toggleSugestao(+this.dataset.id,this.dataset.url)"
       style="border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid ${sel?'var(--pink)':'rgba(229,37,100,.08)'};transition:all .2s;${sel?'box-shadow:0 4px 14px rgba(229,37,100,.2)':''}">
       <div style="aspect-ratio:3/4;background:#f8f0f6;overflow:hidden">
         ${url?`<img src="${url}" style="width:100%;height:100%;object-fit:cover">`:'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem">🌸</div>'}
