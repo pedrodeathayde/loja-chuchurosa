@@ -295,7 +295,7 @@ img{display:block;max-width:100%}
 .notes-area:focus{border-color:var(--pink)}
 
 /* BULK ACTION BAR */
-.bulk-bar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--dark);color:#fff;border-radius:100px;padding:10px 16px;display:flex;align-items:center;gap:8px;z-index:500;box-shadow:0 16px 48px rgba(0,0,0,.3);transition:transform .35s cubic-bezier(.25,.46,.45,.94);white-space:nowrap;flex-wrap:nowrap;justify-content:center;max-width:calc(100vw - 32px);overflow-x:auto}
+.bulk-bar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--dark);color:#fff;border-radius:20px;padding:12px 16px;display:flex;align-items:center;gap:8px;z-index:500;box-shadow:0 16px 48px rgba(0,0,0,.3);transition:transform .35s cubic-bezier(.25,.46,.45,.94);flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 32px);width:max-content}
 .bulk-bar.show{transform:translateX(-50%) translateY(0)}
 .bulk-count{background:var(--pink);color:#fff;border-radius:100px;padding:3px 12px;font-size:.78rem;font-weight:700;flex-shrink:0}
 .bulk-sep{width:1px;height:20px;background:rgba(255,255,255,.1);flex-shrink:0}
@@ -562,6 +562,7 @@ img{display:block;max-width:100%}
       <button class="ni" data-page="relatorio" onclick="goPage('relatorio');renderRelatorio()"><span class="ni-icon">📊</span>Relatórios</button>
       <button class="ni" data-page="historico" onclick="goPage('historico');renderHist();renderAccessLog()"><span class="ni-icon">📋</span>Histórico</button>
       <button class="ni" data-page="agenda" onclick="goPage('agenda');loadAgenda()"><span class="ni-icon">📋</span>Agenda</button>
+      <button class="ni" data-page="lista-compras" onclick="goPage('lista-compras');renderListaCompras()"><span class="ni-icon">🛒</span>Lista de compras</button>
       <button class="ni" data-page="frete" onclick="goPage('frete');loadFreteConfig()"><span class="ni-icon">🚚</span>Frete</button>
       <button class="ni" data-page="banners" onclick="goPage('banners')"><span class="ni-icon">📢</span>Banners</button>
       <button class="ni" data-page="notif" onclick="goPage('notif')"><span class="ni-icon">🔔</span>Notificações</button>
@@ -758,6 +759,34 @@ img{display:block;max-width:100%}
     </div>
 
 
+
+    <!-- LISTA DE COMPRAS -->
+    <div class="page" id="page-lista-compras">
+      <div class="page-header">
+        <div><h1>Lista de Compras 🛒</h1><p>Itens para repor ou comprar</p></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-s" onclick="enviarListaWA()">💬 Enviar pelo WhatsApp</button>
+          <button class="btn-p" onclick="adicionarItemLista()">+ Adicionar item</button>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:20px">
+        <div id="listaComprasItems"></div>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(229,37,100,.08)">
+          <div style="display:flex;gap:8px">
+            <input id="novoItemInput" type="text" class="finp" placeholder="Novo item (ex: Tecido floral rosa, 3m)..." 
+              style="flex:1" onkeydown="if(event.key==='Enter')adicionarItemLista()">
+            <select id="novoItemCat" class="finp" style="width:140px">
+              <option value="material">🧵 Material</option>
+              <option value="embalagem">📦 Embalagem</option>
+              <option value="ferramenta">🔧 Ferramenta</option>
+              <option value="outro">📌 Outro</option>
+            </select>
+            <button class="btn-p" onclick="adicionarItemLista()">Adicionar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- FRETE -->
     <div class="page" id="page-frete">
       <div class="page-header">
@@ -851,6 +880,34 @@ img{display:block;max-width:100%}
         <button class="btn-p" onclick="openNewCupom()">+ Novo cupom</button>
       </div>
       <div id="cupomList"><div class="ld"><div class="spin"></div></div></div>
+    </div>
+
+
+    <!-- LISTA DE COMPRAS -->
+    <div class="page" id="page-lista-compras">
+      <div class="page-header">
+        <div><h1>Lista de Compras 🛒</h1><p>Itens para repor ou comprar</p></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-s" onclick="enviarListaWA()">💬 Enviar pelo WhatsApp</button>
+          <button class="btn-p" onclick="adicionarItemLista()">+ Adicionar item</button>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:20px">
+        <div id="listaComprasItems"></div>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(229,37,100,.08)">
+          <div style="display:flex;gap:8px">
+            <input id="novoItemInput" type="text" class="finp" placeholder="Novo item (ex: Tecido floral rosa, 3m)..." 
+              style="flex:1" onkeydown="if(event.key==='Enter')adicionarItemLista()">
+            <select id="novoItemCat" class="finp" style="width:140px">
+              <option value="material">🧵 Material</option>
+              <option value="embalagem">📦 Embalagem</option>
+              <option value="ferramenta">🔧 Ferramenta</option>
+              <option value="outro">📌 Outro</option>
+            </select>
+            <button class="btn-p" onclick="adicionarItemLista()">Adicionar</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- FRETE -->
@@ -2541,6 +2598,7 @@ async function loadProds(){
   document.getElementById('nb-prods').textContent=allProds.length||0;
   filtProds=[...allProds];
   renderProdTable();
+  document.getElementById('prodCount').textContent=filtProds.length;
 }
 
 function filterProds(){
@@ -2916,6 +2974,7 @@ function renderClients(){
         </div>
         <div class="cc-actions" onclick="event.stopPropagation()">
           ${c.telefone?`<a href="https://wa.me/55${c.telefone.replace(/\D/g,'')}" target="_blank" class="cc-wa" title="WhatsApp">💬</a>`:''}
+          <button onclick="event.stopPropagation();deleteCliente(${c.id},'${(c.nome||c.name||'').replace(/'/g,"\'")}')" style="width:30px;height:30px;border-radius:50%;background:rgba(239,68,68,.1);border:none;color:#ef4444;cursor:pointer;font-size:.8rem;transition:background .2s" title="Excluir">🗑</button>
         </div>
       </div>
       <div class="cc-meta">
@@ -3907,6 +3966,7 @@ function filterOrders(){
 
 // ── STATUS BUTTONS IN ORDER MODAL ────────────────────────────────────
 async function setOrderStatus(id,status){
+  closeOrderModal();
   await sbPatch(`/rest/v1/pedidos?id=eq.${id}`,{status});
   const o=allOrders.find(x=>x.id==id);
   if(o)o.status=status;
@@ -4077,12 +4137,50 @@ function renderAccessLog(){
   if(!el)return;
   const logs=JSON.parse(localStorage.getItem('cr_access_log')||'[]');
   if(!logs.length){el.innerHTML='<div class="empty"><div class="empty-icon">🔒</div><p>Nenhum acesso registrado</p></div>';return;}
-  const isMobile=ua=>(/Android|iPhone|iPad/i.test(ua)?'📱':'💻');
-  el.innerHTML=logs.map(l=>`
+  const isMobile=ua=>(/Android|iPhone|iPad/i.test(ua)?'📱 Mobile':'💻 Desktop');
+  const getBrowser=ua=>{
+    if(/Chrome/i.test(ua))return'Chrome';
+    if(/Firefox/i.test(ua))return'Firefox';
+    if(/Safari/i.test(ua))return'Safari';
+    if(/Edge/i.test(ua))return'Edge';
+    return'Outro';
+  };
+  el.innerHTML=`<div style="font-size:.75rem;color:rgba(13,9,13,.4);margin-bottom:12px">${logs.length} acessos registrados</div>`+
+  logs.map(l=>`
     <div class="hist-item">
-      <div class="hist-time">${new Date(l.ts).toLocaleString('pt-BR')} ${isMobile(l.ua)}</div>
-      <div class="hist-action">${l.ref!=='direto'?`Via: ${l.ref.slice(0,60)}`:'Acesso direto'}</div>
+      <div class="hist-time">${new Date(l.ts).toLocaleString('pt-BR')}</div>
+      <div class="hist-action" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+        <span>${isMobile(l.ua)}</span>
+        <span style="background:rgba(229,37,100,.07);padding:2px 8px;border-radius:100px;font-size:.7rem">${getBrowser(l.ua)}</span>
+        ${l.ip?`<span style="font-family:monospace;font-size:.72rem;color:rgba(13,9,13,.5)">IP: ${l.ip}</span>`:''}
+        ${l.city?`<span style="font-size:.72rem">📍 ${l.city}${l.region?', '+l.region:''}</span>`:''}
+        <span style="font-size:.72rem;color:rgba(13,9,13,.4)">${l.ref!=='direto'?`Via: ${l.ref.slice(0,50)}`:'Direto'}</span>
+      </div>
     </div>`).join('');
+}
+
+// Fetch IP and location on login
+async function fetchAndLogAccess(){
+  try{
+    const r = await fetch('https://ipapi.co/json/');
+    const d = await r.json();
+    const logs = JSON.parse(localStorage.getItem('cr_access_log')||'[]');
+    logs.unshift({
+      ts: Date.now(),
+      ua: navigator.userAgent,
+      ref: document.referrer||'direto',
+      ip: d.ip||'',
+      city: d.city||'',
+      region: d.region||'',
+      country: d.country_name||'',
+    });
+    localStorage.setItem('cr_access_log', JSON.stringify(logs.slice(0,50)));
+  }catch(e){
+    // Fallback sem IP
+    const logs = JSON.parse(localStorage.getItem('cr_access_log')||'[]');
+    logs.unshift({ts:Date.now(),ua:navigator.userAgent,ref:document.referrer||'direto'});
+    localStorage.setItem('cr_access_log', JSON.stringify(logs.slice(0,50)));
+  }
 }
 
 
@@ -4246,6 +4344,7 @@ function renderEmailList(){
         <div class="cc-actions" style="display:flex;gap:6px">
           ${c.tel?`<a href="https://wa.me/55${c.tel.replace(/\D/g,'')}" target="_blank" class="cc-wa">💬</a>`:''}
           <button class="btn-s" style="padding:4px 10px;font-size:.7rem;border-radius:8px" onclick="navigator.clipboard.writeText('${c.email}').then(()=>toast('Copiado!','ok'))">📋</button>
+          <button onclick="event.stopPropagation();deleteEmailContato('${c.email}','${(c.nome||'').replace(/'/g,"\'")}')" style="width:28px;height:28px;border-radius:50%;background:rgba(239,68,68,.1);border:none;color:#ef4444;cursor:pointer;font-size:.75rem" title="Excluir">🗑</button>
         </div>
       </div>
       <div class="cc-meta">
@@ -4763,6 +4862,106 @@ async function saveTracking(id){
   if(p){ p.tracking_code=code; p.tracking_url=trackingUrl; p.status='enviado'; }
   toast('Rastreio salvo e status → Enviado ✓','ok');
   openOrder(id);
+}
+
+
+// ── DELETE CLIENTE ────────────────────────────────────────────────
+async function deleteCliente(id, nome){
+  if(!confirm(`Excluir cliente "${nome}"? Esta ação não pode ser desfeita.`)) return;
+  const r = await fetch(SB+`/rest/v1/clientes?id=eq.${id}`,{
+    method:'DELETE', headers:HDR
+  });
+  if(r.ok||r.status===204){
+    allClients = allClients.filter(c=>c.id!==id);
+    toast('Cliente excluído','ok');
+    renderClients();
+  } else {
+    toast('Erro ao excluir cliente','err');
+  }
+}
+
+
+// ── DELETE EMAIL CONTATO ──────────────────────────────────────────
+async function deleteEmailContato(email, nome){
+  if(!confirm(`Remover "${nome||email}" da lista?`)) return;
+  // Find by email in allClients
+  const cliente = allClients.find(c=>c.email===email);
+  if(cliente){
+    await fetch(SB+`/rest/v1/clientes?id=eq.${cliente.id}`,{method:'DELETE',headers:HDR});
+    allClients = allClients.filter(c=>c.id!==cliente.id);
+  }
+  toast('Removido da lista','ok');
+  renderEmailList();
+}
+
+
+// ── LISTA DE COMPRAS ─────────────────────────────────────────────
+let listaCompras = JSON.parse(localStorage.getItem('cr_lista_compras')||'[]');
+
+const catLabels = {material:'🧵 Material', embalagem:'📦 Embalagem', ferramenta:'🔧 Ferramenta', outro:'📌 Outro'};
+
+function salvarLista(){ localStorage.setItem('cr_lista_compras', JSON.stringify(listaCompras)); }
+
+function renderListaCompras(){
+  const el = document.getElementById('listaComprasItems');
+  if(!el) return;
+  if(!listaCompras.length){
+    el.innerHTML = '<div class="empty"><div class="empty-icon">🛒</div><p>Lista vazia. Adicione itens abaixo.</p></div>';
+    return;
+  }
+  const grupos = {};
+  listaCompras.forEach(i=>{ if(!grupos[i.cat]) grupos[i.cat]=[]; grupos[i.cat].push(i); });
+  el.innerHTML = Object.entries(grupos).map(([cat, items])=>`
+    <div style="margin-bottom:20px">
+      <div style="font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(13,9,13,.4);margin-bottom:8px">${catLabels[cat]||cat}</div>
+      ${items.map(i=>`
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(229,37,100,.06)" data-id="${i.id}">
+          <input type="checkbox" ${i.feito?'checked':''} onchange="toggleItemLista('${i.id}',this.checked)"
+            style="width:18px;height:18px;accent-color:var(--pink);cursor:pointer;flex-shrink:0">
+          <span style="flex:1;font-size:.88rem;${i.feito?'text-decoration:line-through;color:rgba(13,9,13,.35)':''}">${i.texto}</span>
+          <span style="font-size:.72rem;background:rgba(229,37,100,.07);padding:2px 8px;border-radius:100px;color:var(--rose)">${catLabels[i.cat]||i.cat}</span>
+          <button onclick="removerItemLista('${i.id}')" style="background:none;border:none;color:rgba(13,9,13,.3);cursor:pointer;font-size:.9rem;padding:4px">✕</button>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+function adicionarItemLista(){
+  const input = document.getElementById('novoItemInput');
+  const cat = document.getElementById('novoItemCat')?.value || 'material';
+  const texto = input?.value.trim();
+  if(!texto){ toast('Digite o item','err'); return; }
+  listaCompras.push({ id: Date.now().toString(), texto, cat, feito: false });
+  salvarLista();
+  if(input) input.value = '';
+  renderListaCompras();
+  toast('Item adicionado!','ok');
+}
+
+function toggleItemLista(id, feito){
+  const item = listaCompras.find(i=>i.id===id);
+  if(item){ item.feito = feito; salvarLista(); renderListaCompras(); }
+}
+
+function removerItemLista(id){
+  listaCompras = listaCompras.filter(i=>i.id!==id);
+  salvarLista();
+  renderListaCompras();
+}
+
+function enviarListaWA(){
+  if(!listaCompras.length){ toast('Lista vazia','err'); return; }
+  const pendentes = listaCompras.filter(i=>!i.feito);
+  if(!pendentes.length){ toast('Todos os itens já foram marcados!','ok'); return; }
+  const grupos = {};
+  pendentes.forEach(i=>{ if(!grupos[i.cat]) grupos[i.cat]=[]; grupos[i.cat].push(i.texto); });
+  let msg = '🛒 *Lista de Compras — Chuchu Rosa*' + String.fromCharCode(10,10);
+  Object.entries(grupos).forEach(([cat, items])=>{
+    msg += '*' + (catLabels[cat]||cat) + '*' + String.fromCharCode(10);
+    items.forEach(t=>{ msg += '• ' + t + String.fromCharCode(10); });
+    msg += String.fromCharCode(10);
+  });
+  msg += '_' + new Date().toLocaleDateString('pt-BR') + '_';
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');
 }
 
 </script>
