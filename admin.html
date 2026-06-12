@@ -127,7 +127,7 @@ img{display:block;max-width:100%}
 .tbl-row:last-child{border:none}
 .tbl-row:hover{background:rgba(244,121,154,.025)}
 /* Products cols: img nome cats preco prazo status acoes */
-.pc-grid{grid-template-columns:28px 48px 2fr 110px 70px 50px 80px auto}
+.pc-grid{grid-template-columns:28px 48px minmax(140px,1.5fr) minmax(80px,1fr) 80px 50px 90px auto}
 .tr-img{width:44px;height:44px;border-radius:10px;overflow:hidden;background:var(--cream);position:relative;flex-shrink:0}
 .tr-img img,.tr-img-ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .tr-img-ph{display:flex;align-items:center;justify-content:center;font-size:1.1rem}
@@ -2831,7 +2831,7 @@ function openNewProd(){
   document.getElementById('mNota').value='';
   document.getElementById('designsGrid').innerHTML=buildDesignsGrid([]);
   document.getElementById('colsGrid').innerHTML=buildCols([]);
-  document.getElementById('sizesGrid').innerHTML=buildSizes([]);
+  if(document.getElementById('sizesGrid')) document.getElementById('sizesGrid').innerHTML=buildSizes([]);
   document.getElementById('togAtivo').classList.add('on');
   document.getElementById('togDestaque').classList.remove('on');
   document.getElementById('togEsgotado').classList.remove('on');
@@ -2866,7 +2866,7 @@ function editProd(id){
 
 async function loadVars(prodId){
   const d=await sbGet(`/rest/v1/produto_variacoes?produto_id=eq.${prodId}&order=tamanho`);
-  if(Array.isArray(d)&&d.length) document.getElementById('sizesGrid').innerHTML=buildSizes(d);
+  if(Array.isArray(d)&&d.length&&document.getElementById('sizesGrid')) document.getElementById('sizesGrid').innerHTML=buildSizes(d);
 }
 
 function loadPhotos(nome){
