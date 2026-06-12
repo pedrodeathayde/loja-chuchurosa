@@ -127,7 +127,7 @@ img{display:block;max-width:100%}
 .tbl-row:last-child{border:none}
 .tbl-row:hover{background:rgba(244,121,154,.025)}
 /* Products cols: img nome cats preco prazo status acoes */
-.pc-grid{grid-template-columns:32px 52px 1fr 110px 90px 70px 110px 90px}
+.pc-grid{grid-template-columns:28px 48px 1fr 100px 80px 50px 90px 160px}
 .tr-img{width:44px;height:44px;border-radius:10px;overflow:hidden;background:var(--cream);position:relative;flex-shrink:0}
 .tr-img img,.tr-img-ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .tr-img-ph{display:flex;align-items:center;justify-content:center;font-size:1.1rem}
@@ -270,7 +270,7 @@ img{display:block;max-width:100%}
 /* RESPONSIVE */
 @media(max-width:1100px){
   .stats-row{grid-template-columns:1fr 1fr}
-  .pc-grid{grid-template-columns:28px 1fr auto}
+  .pc-grid{grid-template-columns:28px 44px 1fr auto}
 }
 @media(max-width:768px){
   .admin-wrap{grid-template-columns:1fr}
@@ -390,7 +390,7 @@ img{display:block;max-width:100%}
 }
 
 @media(max-width:768px){
-  .pc-grid{grid-template-columns:28px 1fr auto}
+  .pc-grid{grid-template-columns:28px 44px 1fr auto}
 }
 
 .status-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
@@ -459,6 +459,7 @@ img{display:block;max-width:100%}
   .tbl-row.pc-grid>input[type=checkbox]{flex-shrink:0;width:18px;height:18px}
   .tbl-row.pc-grid>.tr-img{flex-shrink:0;width:52px;height:52px}
   .tbl-row.pc-grid>div:nth-child(3){flex:1;min-width:0}
+  .tbl-row.pc-grid>div:nth-child(4){flex:1;min-width:0;overflow:hidden}
   .tbl-row.pc-grid>div:nth-child(4),
   .tbl-row.pc-grid>div:nth-child(5),
   .tbl-row.pc-grid>div:nth-child(6){display:none!important}
@@ -589,6 +590,13 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
   #page-lista-compras > div{overflow-x:hidden}
   #novoItemInput{flex:1;min-width:0;font-size:.84rem}
   #novoItemCat{width:110px!important;font-size:.78rem}
+}
+
+
+@media(max-width:768px){
+  .ibtn{width:28px;height:28px;font-size:.75rem}
+  .ibtns{gap:2px}
+  .tr-name{font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
 }
 
 </style>
