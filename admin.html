@@ -2747,13 +2747,20 @@ function renderProdTable(){
       const pill=p.esgotado?'<span class="pill esgotado">⊘ Esgotado</span>':p.oculto?'<span class="pill oculto">○ Oculto</span>':p.destaque?'<span class="pill destaque">⭐ Destaque</span>':p.ativo?'<span class="pill active">● Ativo</span>':'<span class="pill inactive">○ Inativo</span>';
       return `<div class="tbl-row pc-grid${sel?' selected':''}">
         <input type="checkbox" class="row-cb" data-id="${p.id}" ${sel?'checked':''} onclick="event.stopPropagation();toggleSelect(${p.id},this.checked)">
-        <div class="tr-img">${url?`<img src="${url}" loading="lazy">`:'<div class="tr-img-ph">🌸</div>'}</div>
-        <div><div class="tr-name">${p.name||p.nome||'(sem nome)'}</div><div class="tr-cat">${cats||'—'}</div></div>
+        <div class="tr-img" onclick="event.stopPropagation();previewProdLoja(${p.id})" title="Ver na loja" style="cursor:pointer;position:relative">
+          ${url?`<img src="${url}" loading="lazy">`:'<div class="tr-img-ph">🌸</div>'}
+          <div style="position:absolute;inset:0;background:rgba(229,37,100,.0);transition:background .2s;border-radius:8px;display:flex;align-items:center;justify-content:center" class="img-hover-ov"></div>
+        </div>
+        <div>
+          <div class="tr-name" onclick="event.stopPropagation();previewProdLoja(${p.id})" style="cursor:pointer" title="Ver na loja">${p.name||p.nome||'(sem nome)'}</div>
+          <div class="tr-cat">${cats||'—'}</div>
+        </div>
         <div style="font-size:.72rem;color:rgba(13,9,13,.45)">${Array.isArray(p.design)?p.design.slice(0,2).join(', '):(p.design||'—')}</div>
         <div><input class="inline-price" value="${p.price||''}" placeholder="Sem preço" data-id="${p.id}" onblur="saveInlinePrice(this)" onkeydown="if(event.key==='Enter')this.blur()"></div>
         <div style="font-size:.82rem">${p.prazo_producao_dias||7}d</div>
         <div>${pill}</div>
         <div class="ibtns">
+          <button class="ibtn" data-pid="${p.id}" onclick="event.stopPropagation();var btn=this;abrirFotosById(+btn.dataset.pid)" title="Fotos">📷</button>
           <button class="ibtn edit" onclick="editProd(${p.id})" title="Editar">✏️</button>
           <button class="ibtn eye" onclick="toggleField(${p.id},'oculto',${!p.oculto})" title="${p.oculto?'Mostrar':'Ocultar'}">${p.oculto?'👁':'🙈'}</button>
           <button class="ibtn ${p.esgotado?'edit':'del'}" onclick="toggleField(${p.id},'esgotado',${!p.esgotado})" title="${p.esgotado?'Disponível':'Esgotado'}">${p.esgotado?'✅':'⊘'}</button>
@@ -5304,6 +5311,48 @@ function compartilharSugestao(canal){
         </button>
       </div>
     </div>
+  </div>
+</div>
+
+
+<div id="fotoModal" class="modal-ov" style="display:none" onclick="if(event.target===this)fecharFotos()">
+  <div class="modal" style="max-width:680px;width:95vw">
+    <div class="mhead">
+      <h2 id="fotoModalTitle">📷 Fotos do produto</h2>
+      <button class="mclose" onclick="fecharFotos()">✕</button>
+    </div>
+    <div class="mbody">
+      <div id="fotoSlide" style="position:relative;background:#f8f0f6;border-radius:14px;overflow:hidden;margin-bottom:16px;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center">
+        <img id="fotoSlideImg" src="" style="max-height:100%;max-width:100%;object-fit:contain;display:none">
+        <div id="fotoSlidePh" style="font-size:3rem;opacity:.3">🌸</div>
+        <button id="fotoPrev" onclick="slideNav(-1)" style="position:absolute;left:10px;background:rgba(0,0,0,.3);color:#fff;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:1.1rem">‹</button>
+        <button id="fotoNext" onclick="slideNav(1)" style="position:absolute;right:10px;background:rgba(0,0,0,.3);color:#fff;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:1.1rem">›</button>
+        <div id="fotoIdx" style="position:absolute;bottom:8px;right:12px;background:rgba(0,0,0,.4);color:#fff;font-size:.72rem;padding:2px 8px;border-radius:100px"></div>
+      </div>
+      <div id="fotoThumbsRow" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <label style="flex:1;cursor:pointer">
+          <input type="file" id="fotoUploadInput" multiple accept="image/*" style="display:none" onchange="uploadFotosModal(this)">
+          <div class="btn-p" style="text-align:center;pointer-events:none">+ Adicionar fotos</div>
+        </label>
+        <button class="btn-s" onclick="deleteFotoAtual()" style="color:#ef4444">🗑 Remover esta foto</button>
+        <button class="btn-s" onclick="setFotoCapa()">⭐ Definir como capa</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="previewModal" class="modal-ov" style="display:none" onclick="if(event.target===this)fecharPreview()">
+  <div class="modal" style="max-width:900px;width:96vw;max-height:90vh;overflow:hidden;padding:0">
+    <div class="mhead" style="padding:14px 20px">
+      <h2 id="previewModalTitle" style="font-size:.95rem">Prévia do produto</h2>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn-s" id="previewOpenBtn" onclick="abrirProdutoNovaAba()" style="font-size:.72rem;padding:5px 12px">↗ Abrir em nova aba</button>
+        <button class="mclose" onclick="fecharPreview()">✕</button>
+      </div>
+    </div>
+    <iframe id="previewIframe" src="" style="width:100%;height:75vh;border:none;display:block"></iframe>
   </div>
 </div>
 
