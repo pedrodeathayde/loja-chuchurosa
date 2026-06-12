@@ -2707,7 +2707,7 @@ let editProdId=null, editOrderId=null, editCupomId=null;
 
 // ── INIT ──────────────────────────────────────────────────────────────
 async function init(){
-  await Promise.all([loadProds(),loadOrders(),loadClients(),loadCupons(),loadFrete(),loadBanners(),loadCats(),loadNotifConfig(),loadDesigns()]);
+  await Promise.all([loadProds(),loadOrders(),loadClients(),loadCupons(),loadFrete(),loadBanners(),loadCats(),loadNotifConfig(),loadDesigns(),loadFotosDB()]);
   renderDash();
   renderBannerStrip();
   sessionStorage.removeItem('novos_visto');
@@ -2734,6 +2734,20 @@ function getUrl(nome){
 }
 
 // ── PRODUCTS ──────────────────────────────────────────────────────────
+let fotosDB={};
+
+async function loadFotosDB(){
+  let off=0;
+  fotosDB={};
+  while(true){
+    const chunk=await sbGet('/rest/v1/fotos?select=produto_id,url,ordem&order=ordem&limit=1000&offset='+off);
+    if(!Array.isArray(chunk)||!chunk.length)break;
+    chunk.forEach(f=>{if(!fotosDB[f.produto_id])fotosDB[f.produto_id]=[];fotosDB[f.produto_id].push(f.url);});
+    if(chunk.length<1000)break;
+    off+=1000;
+  }
+}
+
 async function loadProds(){
   const d=await sbGet('/rest/v1/produtos?select=*&order=name');
   allProds=Array.isArray(d)?d:[];
@@ -2777,7 +2791,7 @@ function renderProdTable(){
   if(!filtProds.length){el.innerHTML='<div class="empty"><div class="empty-icon">🌸</div><p>Nenhum produto</p></div>';return;}
   el.innerHTML=`<div class="tbl-head pc-grid"><span></span><span>Foto</span><span>Produto</span><span>Design</span><span>Preço</span><span>Prazo</span><span>Status</span><span>Ações</span></div>`
     +filtProds.map(p=>{
-      const url=getUrl(p.name||'');
+      const url=getUrl(p.name||'',p.id);
       const cats=(p.collections||[]).slice(0,2).join(', ');
       const sel=selectedIds.has(p.id);
       const pill=p.esgotado?'<span class="pill esgotado">⊘ Esgotado</span>':p.oculto?'<span class="pill oculto">○ Oculto</span>':p.destaque?'<span class="pill destaque">⭐ Destaque</span>':p.ativo?'<span class="pill active">● Ativo</span>':'<span class="pill inactive">○ Inativo</span>';
