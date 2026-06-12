@@ -2892,7 +2892,7 @@ function buildCols(sel=[]){
   if(!COLS||!COLS.length) return '<p style="color:rgba(13,9,13,.4);font-size:.8rem">Carregando coleções...</p>';
   return COLS.map(c=>`<div class="col-ch ${sel.map(s=>s.toLowerCase()).includes(c.toLowerCase())?'checked':''}" onclick="this.classList.toggle('checked')">${c}</div>`).join('');
 }
-function buildSizes(v){return '';} // legacy stub
+const SIZES=['PP','P','M','G','GG','1-2 anos','2-3 anos','3-4 anos','4-5 anos','5-6 anos','6-7 anos','7-8 anos','8-9 anos','9-10 anos','10-12 anos','Único'];
 
 function buildSizes(vars=[]){
   return SIZES.map(s=>{
