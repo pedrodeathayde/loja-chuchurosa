@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Produto — Chuchu Rosa</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<meta name="description" content="Chuchu Rosa — Produto artesanal feito com carinho sob encomenda.">
+<meta name="description" content="Chuchu Rosa — Produto feito com carinho sob encomenda.">
   <meta name="robots" content="index, follow">
   <meta name="author" content="Chuchu Rosa">
 
@@ -15,7 +15,7 @@
   <meta property="og:type" content="product">
   <meta property="og:site_name" content="Chuchu Rosa">
   <meta property="og:title" content="Chuchu Rosa">
-  <meta property="og:description" content="Produto artesanal feito com carinho sob encomenda.">
+  <meta property="og:description" content="Produto feito com carinho sob encomenda.">
   <meta property="og:image" content="https://chuchurosa.com.br/og-image.jpg">
   <meta property="og:locale" content="pt_BR">
   <meta property="og:availability" content="instock">
@@ -1672,7 +1672,7 @@ function renderProduct(){
   // Dynamic SEO
   const prodUrl=`https://loja.chuchurosa.com.br/produto.html?id=${prod.id}`;
   const prodImg=getUrl(prod.name)||'https://chuchurosa.com.br/og-image.jpg';
-  const prodDesc=prod.descricao||`${prod.name} — produto artesanal Chuchu Rosa, feito com carinho sob encomenda.`;
+  const prodDesc=prod.descricao||`${prod.name} — produto Chuchu Rosa, feito com carinho sob encomenda.`;
 
   document.querySelector('meta[name="description"]').content=prodDesc;
   document.querySelector('link[rel="canonical"]')?.remove();
@@ -2013,7 +2013,7 @@ function initStickyCta(){
 
 
 function renderDesc(text){
-  if(!text) return 'Produto artesanal feito com carinho sob encomenda.';
+  if(!text) return 'Produto feito com carinho sob encomenda.';
   // If multiline or has periods mid-text, convert to bullets
   const lines=text.split(/\n|(?<=\. )/).map(l=>l.trim()).filter(l=>l.length>10);
   if(lines.length>1){
