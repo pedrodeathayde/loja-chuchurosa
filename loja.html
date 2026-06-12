@@ -2948,6 +2948,18 @@ async function loadCats(){
 async function init(){
   showSkeletons();
   await loadFromDB();
+  // Load fotos table
+  try{
+    let off=0; fotosDB={};
+    while(true){
+      const r=await fetch(SB+'/rest/v1/fotos?select=produto_id,url,ordem&order=ordem&limit=1000&offset='+off,{headers:HDR});
+      const chunk=await r.json();
+      if(!Array.isArray(chunk)||!chunk.length)break;
+      chunk.forEach(f=>{if(!fotosDB[f.produto_id])fotosDB[f.produto_id]=[];fotosDB[f.produto_id].push(f.url);});
+      if(chunk.length<1000)break;
+      off+=1000;
+    }
+  }catch(e){console.log('fotos err:',e);}
   await loadCats();
   mergeProducts();
   applyFilters();
