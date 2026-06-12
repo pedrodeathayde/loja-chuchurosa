@@ -5363,7 +5363,7 @@ function previewProdLoja(id){
   _previewProdId=id;
   const p=allProds.find(x=>x.id==id);
   document.getElementById('previewModalTitle').textContent=p?p.name:'Prévia do produto';
-  document.getElementById('previewIframe').src='produto.html?id='+id;
+  document.getElementById('previewIframe').src='https://pedrodeathayde.github.io/loja-chuchurosa/produto.html?id='+id;
   document.getElementById('previewModal').style.display='flex';
 }
 function fecharPreview(){
