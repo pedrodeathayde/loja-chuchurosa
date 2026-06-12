@@ -2993,8 +2993,11 @@ let _stripDone=false;
 const _origApply=applyFilters;
 applyFilters=function(){
   _origApply();
-  if(!_stripDone&&allProducts.length){renderFeaturedStrip();
-  renderDesignChips();_stripDone=true;}
+  if(!_stripDone&&allProducts.length){
+    renderFeaturedStrip();
+    if(typeof renderDesignChips==="function")renderDesignChips();
+    _stripDone=true;
+  }
 };
 
 
@@ -3060,8 +3063,24 @@ document.getElementById('listViewBtn').addEventListener('click',()=>{
 
   function f2(v){return 'R$ '+Number(v).toFixed(2).replace('.',',');}
 
-  function show(){
-    var prods=ids.map(function(id){return allProducts.find(function(p){return p.id==id;});}).filter(Boolean);
+  async function show(){
+    // Find in allProducts first
+    var prods=ids.map(function(id){return allProducts.find(function(p){return p.id==id;});});
+    // For missing ones, fetch directly from Supabase (may be inactive/hidden)
+    var missing=ids.filter(function(id,i){return !prods[i];});
+    if(missing.length){
+      try{
+        var SB='https://oznpfqsgurztffwfyfec.supabase.co';
+        var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA';
+        var r=await fetch(SB+'/rest/v1/produtos?select=id,name,price,url,prazo_producao_dias&id=in.('+missing.join(',')+')',{headers:{apikey:KEY,Authorization:'Bearer '+KEY}});
+        var extra=await r.json();
+        extra.forEach(function(p){
+          var idx=ids.indexOf(p.id);
+          if(idx>=0)prods[idx]=p;
+        });
+      }catch(e){}
+    }
+    prods=prods.filter(Boolean);
     if(!prods.length)return;
     window._sugestaoProds=prods;
 
