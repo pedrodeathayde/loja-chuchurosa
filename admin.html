@@ -127,7 +127,7 @@ img{display:block;max-width:100%}
 .tbl-row:last-child{border:none}
 .tbl-row:hover{background:rgba(244,121,154,.025)}
 /* Products cols: img nome cats preco prazo status acoes */
-.pc-grid{grid-template-columns:28px 48px minmax(140px,1.5fr) minmax(80px,1fr) 80px 50px 90px auto}
+.pc-grid{grid-template-columns:28px 48px 1fr 140px 70px 55px 90px 160px}
 .tr-img{width:44px;height:44px;border-radius:10px;overflow:hidden;background:var(--cream);position:relative;flex-shrink:0}
 .tr-img img,.tr-img-ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .tr-img-ph{display:flex;align-items:center;justify-content:center;font-size:1.1rem}
@@ -726,6 +726,9 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
           <option>Plush &amp; pelúcia</option>
           <option>Lembrancinhas</option>
           <option>Bolsas &amp; mochilas</option>
+        </select>
+        <select class="tfilter" id="pdesign" onchange="filterProds()">
+          <option value="">Todos os designs</option>
         </select>
         <select class="tfilter" id="pst" onchange="filterProds()">
           <option value="">Todos os status</option>
@@ -2738,17 +2741,26 @@ async function loadProds(){
   filtProds=[...allProds];
   renderProdTable();
   document.getElementById('prodCount').textContent=filtProds.length;
+  // Populate design filter
+  const dsel=document.getElementById('pdesign');
+  if(dsel&&dsel.options.length<=1){
+    const designs=new Set();
+    allProds.forEach(p=>(Array.isArray(p.design)?p.design:[p.design]).filter(Boolean).forEach(d=>designs.add(d)));
+    [...designs].sort().forEach(d=>{const o=document.createElement('option');o.value=o.textContent=d;dsel.appendChild(o);});
+  }
 }
 
 function filterProds(){
   const q=document.getElementById('ps').value.toLowerCase();
   const cat=document.getElementById('pcat').value;
   const st=document.getElementById('pst').value;
+  const design=(document.getElementById('pdesign')?.value)||'';
   filtProds=allProds.filter(p=>{
     const mq=!q||(p.name||p.nome||'').toLowerCase().includes(q);
     const mc=!cat||(p.collections||[]).includes(cat);
     const ms=!st||(st==='ativo'&&p.ativo&&!p.esgotado&&!p.oculto)||(st==='esgotado'&&p.esgotado)||(st==='oculto'&&p.oculto)||(st==='destaque'&&p.destaque)||(st==='sempreco'&&!p.price);
-    return mq&&mc&&ms;
+    const md=!design||((Array.isArray(p.design)?p.design:[p.design]).filter(Boolean).includes(design));
+    return mq&&mc&&ms&&md;
   });
   renderProdTable();
   document.getElementById('prodCount').textContent=filtProds.length;
