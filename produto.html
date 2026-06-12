@@ -1624,8 +1624,21 @@ function getUrls(name,limit=8){
 function getUrl(name){return getUrls(name,1)[0]||'';}
 
 // ── CART ──────────────────────────────────────────────────────────────
-function getCart(){try{return JSON.parse(localStorage.getItem('cr_cart')||'[]');}catch{return[];}}
-function saveCart(c){localStorage.setItem('cr_cart',JSON.stringify(c));updateCartBadge();}
+function getCart(){
+  try{
+    const raw=localStorage.getItem('cr_cart');
+    if(!raw)return[];
+    const p=JSON.parse(raw);
+    if(Array.isArray(p))return p;
+    if(p.exp&&Date.now()>p.exp){localStorage.removeItem('cr_cart');return[];}
+    return p.data||[];
+  }catch{return[];}
+}
+function saveCart(c){
+  const payload={data:c,exp:Date.now()+7*24*60*60*1000};
+  localStorage.setItem('cr_cart',JSON.stringify(payload));
+  updateCartBadge();
+}
 function updateCartBadge(){
   const n=getCart().reduce((s,i)=>s+(i.qty||1),0);
   document.getElementById('cartBadge').textContent=n||'';
