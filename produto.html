@@ -1640,7 +1640,7 @@ function saveCart(c){
   updateCartBadge();
 }
 function updateCartBadge(){
-  const n=getCart().reduce((s,i)=>s+(i.qty||1),0);
+  let n=0;try{n=getCart().reduce((s,i)=>s+(i.qty||1),0);}catch(e){}
   document.getElementById('cartBadge').textContent=n||'';
   document.getElementById('cartBadge').style.display=n?'flex':'none';
 }
@@ -1670,7 +1670,7 @@ async function loadProduct(){
   try{
     const r=await fetch(`${SB}/rest/v1/produtos?id=eq.${id}&select=*`,{headers:HDR});
     const d=await r.json();
-    if(!d||!d[0]){location.href='loja.html';return;}
+    if(!d||!d[0]){if(window.self===window.top){location.href='loja.html';}else{document.body.innerHTML='<div style="padding:40px;text-align:center">Produto não encontrado</div>';}return;}
     prod=d[0];
     renderProduct();
     loadVars();
