@@ -1930,9 +1930,17 @@ async function loadRelated(){
     }
     if(!Array.isArray(prods)||!prods.length){document.getElementById('related').style.display='none';return;}
     prods=prods.slice(0,4);
+    // Fetch fotos for related products
+    const relIds=prods.map(p=>p.id).join(',');
+    let relFotos={};
+    try{
+      const rf=await fetch(`${SB}/rest/v1/fotos?produto_id=in.(${relIds})&select=produto_id,url,ordem&order=ordem`,{headers:HDR});
+      const rfData=await rf.json();
+      if(Array.isArray(rfData)) rfData.forEach(f=>{if(!relFotos[f.produto_id])relFotos[f.produto_id]=f.url;});
+    }catch(e){}
     document.getElementById('related').style.display='block';
     document.getElementById('relatedGrid').innerHTML=prods.map(p=>{
-      const purl=getUrl(p.name);
+      const purl=relFotos[p.id]||getUrl(p.name);
       return `<div class="pcard" onclick="location.href='produto.html?id=${p.id}'" style="cursor:pointer">
         <div class="pcard-img">
           ${purl?`<img src="${purl}" loading="lazy" onerror="this.style.display='none'">`:''}
