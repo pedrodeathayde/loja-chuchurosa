@@ -1604,6 +1604,8 @@ for(const f of FILES){
   if(!fileIdx.has(prefix))fileIdx.set(prefix,f.u);
 }
 function getUrls(name,limit=8){
+  // Use fotos table if available
+  if(window._prodFotos&&window._prodFotos.length) return window._prodFotos.slice(0,limit);
   if(!name)return[];
   const slug=name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
   const parts=slug.split('-');
@@ -1672,6 +1674,14 @@ async function loadProduct(){
     const d=await r.json();
     if(!d||!d[0]){if(window.self===window.top){location.href='loja.html';}else{document.body.innerHTML='<div style="padding:40px;text-align:center">Produto não encontrado</div>';}return;}
     prod=d[0];
+    // Load fotos from table
+    try{
+      const fr=await fetch(`${SB}/rest/v1/fotos?produto_id=eq.${id}&select=url,ordem&order=ordem`,{headers:HDR});
+      const fotos=await fr.json();
+      if(Array.isArray(fotos)&&fotos.length){
+        window._prodFotos=fotos.map(f=>f.url);
+      }
+    }catch(e){}
     renderProduct();
     loadVars();
     loadRelated();
