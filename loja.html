@@ -2590,8 +2590,8 @@ function mergeProducts(){
         collections:p.collections||[],
         destaque:p.destaque||false,
         esgotado:p.esgotado||false,
-        url:getUrlForName(p.name),
-        url2:getSecondUrl(p.name),
+        url:(fotosDB[p.id]&&fotosDB[p.id][0])||getUrlForName(p.name),
+        url2:(fotosDB[p.id]&&fotosDB[p.id][1])||getSecondUrl(p.name),
         design:p.design,
         created_at:p.created_at,
       }));
