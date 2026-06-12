@@ -27,87 +27,6 @@ function fecharModalCompartilhar(){
   var modal=document.getElementById('shareModal');
   if(modal)modal.style.display='none';
 }
-
-// ── FOTO MODAL ────────────────────────────────────────────────────
-let _fotoModalProd=null,_fotoModalIdx=0,_fotoModalFotos=[];
-
-function abrirFotosById(id){
-  const p=allProds.find(x=>x.id==id);
-  if(p)abrirFotos(id,p.name||p.nome||'');
-}
-
-function abrirFotos(id,nome){
-  const p=allProds.find(x=>x.id==id);
-  if(!p)return;
-  _fotoModalProd=p;_fotoModalIdx=0;
-  document.getElementById('fotoModalTitle').textContent='📷 '+nome;
-  const slug=(nome||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-  const short=slug.split('-').slice(0,3).join('-');
-  _fotoModalFotos=FILES.filter(f=>{const fn=f.n.replace(/\.[^.]+$/,'');return fn.startsWith(slug)||fn.startsWith(short);}).map(f=>f.u);
-  renderFotoModal();
-  document.getElementById('fotoModal').style.display='flex';
-}
-
-function fecharFotos(){document.getElementById('fotoModal').style.display='none';}
-
-function renderFotoModal(){
-  const img=document.getElementById('fotoSlideImg');
-  const ph=document.getElementById('fotoSlidePh');
-  const idx=document.getElementById('fotoIdx');
-  const thumbs=document.getElementById('fotoThumbsRow');
-  const n=_fotoModalFotos.length;
-  if(!n){img.style.display='none';ph.style.display='block';idx.textContent='Sem fotos';thumbs.innerHTML='';return;}
-  if(_fotoModalIdx>=n)_fotoModalIdx=0;
-  if(_fotoModalIdx<0)_fotoModalIdx=n-1;
-  img.src=_fotoModalFotos[_fotoModalIdx];img.style.display='block';ph.style.display='none';
-  idx.textContent=(_fotoModalIdx+1)+'/'+n;
-  thumbs.innerHTML=_fotoModalFotos.map((u,i)=>`<img src="${u}" onclick="_fotoModalIdx=${i};renderFotoModal()" style="width:60px;height:60px;object-fit:cover;border-radius:8px;cursor:pointer;flex-shrink:0;border:2px solid ${i===_fotoModalIdx?'var(--pink)':'transparent'};transition:border .15s">`).join('');
-}
-
-function slideNav(dir){_fotoModalIdx+=dir;renderFotoModal();}
-
-function deleteFotoAtual(){
-  if(!_fotoModalFotos.length)return;
-  if(!confirm('Remover esta foto?'))return;
-  _fotoModalFotos.splice(_fotoModalIdx,1);
-  if(_fotoModalIdx>=_fotoModalFotos.length)_fotoModalIdx=0;
-  renderFotoModal();toast('Foto removida','ok');
-}
-
-function setFotoCapa(){
-  if(!_fotoModalFotos.length||!_fotoModalProd)return;
-  const url=_fotoModalFotos[_fotoModalIdx];
-  _fotoModalFotos.splice(_fotoModalIdx,1);_fotoModalFotos.unshift(url);_fotoModalIdx=0;
-  renderFotoModal();toast('Definida como capa','ok');
-}
-
-async function uploadFotosModal(input){
-  if(!_fotoModalProd||!input.files.length)return;
-  toast('Enviando...','ok');
-  for(const file of input.files){
-    const slug=(_fotoModalProd.name||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-    const ext=file.name.split('.').pop();
-    const fname=slug+'-'+Date.now()+'.'+ext;
-    const r=await fetch(SB+'/storage/v1/object/Fotos/'+fname,{method:'POST',headers:{...HDR,'Content-Type':file.type,'x-upsert':'true'},body:file});
-    if(r.ok){_fotoModalFotos.push(SB+'/storage/v1/object/public/Fotos/'+fname);_fotoModalIdx=_fotoModalFotos.length-1;}
-  }
-  renderFotoModal();toast('Fotos enviadas!','ok');input.value='';
-}
-
-// ── PREVIEW MODAL ─────────────────────────────────────────────────
-let _previewProdId=null;
-function previewProdLoja(id){
-  _previewProdId=id;
-  const p=allProds.find(x=>x.id==id);
-  document.getElementById('previewModalTitle').textContent=p?p.name:'Prévia do produto';
-  document.getElementById('previewIframe').src='produto.html?id='+id;
-  document.getElementById('previewModal').style.display='flex';
-}
-function fecharPreview(){
-  document.getElementById('previewModal').style.display='none';
-  document.getElementById('previewIframe').src='';
-}
-function abrirProdutoNovaAba(){if(_previewProdId)window.open('produto.html?id='+_previewProdId,'_blank');}
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
@@ -5362,6 +5281,89 @@ function compartilharSugestao(canal){
 
 
 // ── SHARE MODAL FUNCTIONS ─────────────────────────────────────────
+
+
+// ── FOTO MODAL ────────────────────────────────────────────────────
+let _fotoModalProd=null,_fotoModalIdx=0,_fotoModalFotos=[];
+
+function abrirFotosById(id){
+  const p=allProds.find(x=>x.id==id);
+  if(p)abrirFotos(id,p.name||p.nome||'');
+}
+
+function abrirFotos(id,nome){
+  const p=allProds.find(x=>x.id==id);
+  if(!p)return;
+  _fotoModalProd=p;_fotoModalIdx=0;
+  document.getElementById('fotoModalTitle').textContent='📷 '+nome;
+  const slug=(nome||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  const short=slug.split('-').slice(0,3).join('-');
+  _fotoModalFotos=FILES.filter(f=>{const fn=f.n.replace(/\.[^.]+$/,'');return fn.startsWith(slug)||fn.startsWith(short);}).map(f=>f.u);
+  renderFotoModal();
+  document.getElementById('fotoModal').style.display='flex';
+}
+
+function fecharFotos(){document.getElementById('fotoModal').style.display='none';}
+
+function renderFotoModal(){
+  const img=document.getElementById('fotoSlideImg');
+  const ph=document.getElementById('fotoSlidePh');
+  const idx=document.getElementById('fotoIdx');
+  const thumbs=document.getElementById('fotoThumbsRow');
+  const n=_fotoModalFotos.length;
+  if(!n){img.style.display='none';ph.style.display='block';idx.textContent='Sem fotos';thumbs.innerHTML='';return;}
+  if(_fotoModalIdx>=n)_fotoModalIdx=0;
+  if(_fotoModalIdx<0)_fotoModalIdx=n-1;
+  img.src=_fotoModalFotos[_fotoModalIdx];img.style.display='block';ph.style.display='none';
+  idx.textContent=(_fotoModalIdx+1)+'/'+n;
+  thumbs.innerHTML=_fotoModalFotos.map((u,i)=>`<img src="${u}" onclick="_fotoModalIdx=${i};renderFotoModal()" style="width:60px;height:60px;object-fit:cover;border-radius:8px;cursor:pointer;flex-shrink:0;border:2px solid ${i===_fotoModalIdx?'var(--pink)':'transparent'};transition:border .15s">`).join('');
+}
+
+function slideNav(dir){_fotoModalIdx+=dir;renderFotoModal();}
+
+function deleteFotoAtual(){
+  if(!_fotoModalFotos.length)return;
+  if(!confirm('Remover esta foto?'))return;
+  _fotoModalFotos.splice(_fotoModalIdx,1);
+  if(_fotoModalIdx>=_fotoModalFotos.length)_fotoModalIdx=0;
+  renderFotoModal();toast('Foto removida','ok');
+}
+
+function setFotoCapa(){
+  if(!_fotoModalFotos.length||!_fotoModalProd)return;
+  const url=_fotoModalFotos[_fotoModalIdx];
+  _fotoModalFotos.splice(_fotoModalIdx,1);_fotoModalFotos.unshift(url);_fotoModalIdx=0;
+  renderFotoModal();toast('Definida como capa','ok');
+}
+
+async function uploadFotosModal(input){
+  if(!_fotoModalProd||!input.files.length)return;
+  toast('Enviando...','ok');
+  for(const file of input.files){
+    const slug=(_fotoModalProd.name||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+    const ext=file.name.split('.').pop();
+    const fname=slug+'-'+Date.now()+'.'+ext;
+    const r=await fetch(SB+'/storage/v1/object/Fotos/'+fname,{method:'POST',headers:{...HDR,'Content-Type':file.type,'x-upsert':'true'},body:file});
+    if(r.ok){_fotoModalFotos.push(SB+'/storage/v1/object/public/Fotos/'+fname);_fotoModalIdx=_fotoModalFotos.length-1;}
+  }
+  renderFotoModal();toast('Fotos enviadas!','ok');input.value='';
+}
+
+// ── PREVIEW MODAL ─────────────────────────────────────────────────
+let _previewProdId=null;
+function previewProdLoja(id){
+  _previewProdId=id;
+  const p=allProds.find(x=>x.id==id);
+  document.getElementById('previewModalTitle').textContent=p?p.name:'Prévia do produto';
+  document.getElementById('previewIframe').src='produto.html?id='+id;
+  document.getElementById('previewModal').style.display='flex';
+}
+function fecharPreview(){
+  document.getElementById('previewModal').style.display='none';
+  document.getElementById('previewIframe').src='';
+}
+function abrirProdutoNovaAba(){if(_previewProdId)window.open('produto.html?id='+_previewProdId,'_blank');}
+
 </script>
 
 <div id="shareModal" class="modal-ov" style="display:none">
