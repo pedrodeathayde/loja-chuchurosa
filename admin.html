@@ -127,7 +127,7 @@ img{display:block;max-width:100%}
 .tbl-row:last-child{border:none}
 .tbl-row:hover{background:rgba(244,121,154,.025)}
 /* Products cols: img nome cats preco prazo status acoes */
-.pc-grid{grid-template-columns:28px 48px 1fr 140px 70px 55px 90px 160px}
+.pc-grid{grid-template-columns:28px 48px 1fr 120px 75px 45px 80px 150px}
 .tr-img{width:44px;height:44px;border-radius:10px;overflow:hidden;background:var(--cream);position:relative;flex-shrink:0}
 .tr-img img,.tr-img-ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .tr-img-ph{display:flex;align-items:center;justify-content:center;font-size:1.1rem}
@@ -2743,10 +2743,16 @@ async function loadProds(){
   document.getElementById('prodCount').textContent=filtProds.length;
   // Populate design filter
   const dsel=document.getElementById('pdesign');
-  if(dsel&&dsel.options.length<=1){
+  if(dsel){
+    const cur=dsel.value;
+    dsel.innerHTML='<option value="">Todos os designs</option>';
     const designs=new Set();
-    allProds.forEach(p=>(Array.isArray(p.design)?p.design:[p.design]).filter(Boolean).forEach(d=>designs.add(d)));
+    allProds.forEach(p=>{
+      const ds=Array.isArray(p.design)?p.design:(p.design?[p.design]:[]);
+      ds.filter(Boolean).forEach(d=>designs.add(d));
+    });
     [...designs].sort().forEach(d=>{const o=document.createElement('option');o.value=o.textContent=d;dsel.appendChild(o);});
+    if(cur)dsel.value=cur;
   }
 }
 
@@ -2785,7 +2791,7 @@ function renderProdTable(){
           <div class="tr-name" onclick="event.stopPropagation();previewProdLoja(${p.id})" style="cursor:pointer" title="Ver na loja">${p.name||p.nome||'(sem nome)'}</div>
           <div class="tr-cat">${cats||'—'}</div>
         </div>
-        <div style="font-size:.72rem;color:rgba(13,9,13,.45)">${Array.isArray(p.design)?p.design.slice(0,2).join(', '):(p.design||'—')}</div>
+        <div style="font-size:.72rem;color:rgba(13,9,13,.45);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${Array.isArray(p.design)?p.design.slice(0,1).join(', '):(p.design||'—')}</div>
         <div><input class="inline-price" value="${p.price||''}" placeholder="Sem preço" data-id="${p.id}" onblur="saveInlinePrice(this)" onkeydown="if(event.key==='Enter')this.blur()"></div>
         <div style="font-size:.82rem">${p.prazo_producao_dias||7}d</div>
         <div>${pill}</div>
