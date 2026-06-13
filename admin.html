@@ -7,27 +7,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin — Chuchu Rosa</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js">
-// ── SHARE MODAL FUNCTIONS ─────────────────────────────────────────
-function abrirModalCompartilhar(){
-  if(!sugestaoCarrinho.length){toast('Selecione pelo menos um produto','err');return;}
-  var modal=document.getElementById('shareModal');
-  if(!modal)return;
-  var preview=document.getElementById('shareModalPreview');
-  var total=sugestaoCarrinho.reduce(function(s,p){return s+(p.price||0);},0);
-  var nl=String.fromCharCode(10);
-  var txt='Separei estes produtos para voce:'+nl;
-  sugestaoCarrinho.forEach(function(p){txt+='- '+p.name+' - '+fmt(p.price)+nl;});
-  txt+=nl+'Total: '+fmt(total);
-  if(preview)preview.textContent=txt;
-  modal.style.display='flex';
-  var inp=document.getElementById('shareModalMsg');
-  if(inp)inp.value='';
-}
-function fecharModalCompartilhar(){
-  var modal=document.getElementById('shareModal');
-  if(modal)modal.style.display='none';
-}
-</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
@@ -5459,6 +5438,29 @@ function fecharPreview(){
   document.getElementById('previewIframe').src='';
 }
 function abrirProdutoNovaAba(){if(_previewProdId)window.open('produto.html?id='+_previewProdId,'_blank');}
+
+
+
+// ── SHARE MODAL FUNCTIONS ─────────────────────────────────────────
+function abrirModalCompartilhar(){
+  if(!sugestaoCarrinho.length){toast('Selecione pelo menos um produto','err');return;}
+  var modal=document.getElementById('shareModal');
+  if(!modal)return;
+  var preview=document.getElementById('shareModalPreview');
+  var total=sugestaoCarrinho.reduce(function(s,p){return s+(p.price||0);},0);
+  var nl=String.fromCharCode(10);
+  var txt='Separei estes produtos para voce:'+nl;
+  sugestaoCarrinho.forEach(function(p){txt+='- '+p.name+' - '+fmt(p.price)+nl;});
+  txt+=nl+'Total: '+fmt(total);
+  if(preview)preview.textContent=txt;
+  modal.style.display='flex';
+  var inp=document.getElementById('shareModalMsg');
+  if(inp)inp.value='';
+}
+function fecharModalCompartilhar(){
+  var modal=document.getElementById('shareModal');
+  if(modal)modal.style.display='none';
+}
 
 </script>
 
