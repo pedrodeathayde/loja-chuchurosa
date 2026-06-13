@@ -5723,9 +5723,16 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')smartBack();});
   // Touch drag — only when touching the bar background, not buttons
   bar.addEventListener('touchstart',e=>{
     if(e.target.tagName==='BUTTON'||e.target.tagName==='SPAN'||e.target.closest('button'))return;
-    if(e.target.tagName==='BUTTON')return;
-    const t=e.touches[0];startX=t.clientX;startY=t.clientY;
-    const r=bar.getBoundingClientRect();initX=r.left;initY=r.top;
+    const t=e.touches[0];
+    startX=t.clientX;startY=t.clientY;
+    const r=bar.getBoundingClientRect();
+    // Store current visual position
+    initX=r.left;initY=r.top;
+    // Remove transform so position is absolute
+    bar.style.transform='none';
+    bar.style.bottom='auto';
+    bar.style.left=initX+'px';
+    bar.style.top=initY+'px';
     bar.style.transition='none';
   },{passive:true});
   bar.addEventListener('touchmove',e=>{
@@ -5735,7 +5742,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')smartBack();});
     const dx=t.clientX-startX,dy=t.clientY-startY;
     bar.style.left=(initX+dx)+'px';
     bar.style.top=(initY+dy)+'px';
-    bar.style.bottom='auto';bar.style.transform='none';
   },{passive:false});
 })();
 </script>
