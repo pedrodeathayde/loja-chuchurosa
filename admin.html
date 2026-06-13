@@ -5715,8 +5715,9 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')smartBack();});
     bar.style.bottom='auto';bar.style.transform='none';
   });
   document.addEventListener('mouseup',()=>{dragging=false;bar.style.transition='';});
-  // Touch
+  // Touch drag — only when touching the bar background, not buttons
   bar.addEventListener('touchstart',e=>{
+    if(e.target.tagName==='BUTTON'||e.target.tagName==='SPAN'||e.target.closest('button'))return;
     if(e.target.tagName==='BUTTON')return;
     const t=e.touches[0];startX=t.clientX;startY=t.clientY;
     const r=bar.getBoundingClientRect();initX=r.left;initY=r.top;
