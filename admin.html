@@ -2686,7 +2686,8 @@ let editProdId=null, editOrderId=null, editCupomId=null;
 
 // ── INIT ──────────────────────────────────────────────────────────────
 async function init(){
-  await Promise.all([loadProds(),loadOrders(),loadClients(),loadCupons(),loadFrete(),loadBanners(),loadCats(),loadNotifConfig(),loadDesigns(),loadFotosDB()]);
+  await loadFotosDB();
+  await Promise.all([loadProds(),loadOrders(),loadClients(),loadCupons(),loadFrete(),loadBanners(),loadCats(),loadNotifConfig(),loadDesigns()]);
   renderDash();
   renderBannerStrip();
   sessionStorage.removeItem('novos_visto');
