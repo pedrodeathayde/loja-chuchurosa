@@ -4606,6 +4606,9 @@ function setEmailFilter(el,f){
   renderEmailList();
 }
 
+// Emails manually removed from list
+let _deletedEmails=new Set();
+
 function getEmailList(){
   const seen=new Map();
   // Add all clientes first
@@ -4631,7 +4634,7 @@ function getEmailList(){
     if(!existing.nome&&o.visitante_nome)existing.nome=o.visitante_nome;
     seen.set(email,existing);
   });
-  let list=[...seen.values()];
+  let list=[...seen.values()].filter(c=>!_deletedEmails.has(c.email.toLowerCase()));
   const now=new Date();
   const q=(document.getElementById('emailSearch')?.value||'').toLowerCase();
   if(q) list=list.filter(c=>(c.nome||'').toLowerCase().includes(q)||(c.email||'').toLowerCase().includes(q)||(c.cidade||'').toLowerCase().includes(q));
@@ -5208,6 +5211,7 @@ async function deleteEmailContato(email, nome){
     }catch(e){}
   }
   // Remove from view regardless
+  _deletedEmails.add(emailLower);
   allClients = allClients.filter(c=>(c.email||'').toLowerCase()!==emailLower);
   toast('Removido!','ok');
   renderEmailList();
@@ -5665,12 +5669,9 @@ async function loadTicker(){
 async function saveTicker(){
   const ativo=document.getElementById('tickerToggle')?.classList.contains('on')?'true':'false';
   const texto=document.getElementById('tickerTexto')?.value||'';
-  // Upsert both configs
-  await fetch(SB+'/rest/v1/configuracoes',{
-    method:'POST',
-    headers:{...HDR,'Prefer':'resolution=merge-duplicates'},
-    body:JSON.stringify([{chave:'ticker_ativo',valor:ativo},{chave:'ticker_texto',valor:texto}])
-  });
+  // Update each config key
+  await sbPatch('/rest/v1/configuracoes?chave=eq.ticker_ativo',{valor:ativo});
+  await sbPatch('/rest/v1/configuracoes?chave=eq.ticker_texto',{valor:texto});
   toast('Ticker salvo!','ok');
 }
 
