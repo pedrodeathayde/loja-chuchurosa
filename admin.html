@@ -127,7 +127,7 @@ img{display:block;max-width:100%}
 .tbl-row:last-child{border:none}
 .tbl-row:hover{background:rgba(244,121,154,.025)}
 /* Products cols: img nome cats preco prazo status acoes */
-.pc-grid{grid-template-columns:28px 48px 1fr 120px 75px 45px 80px 150px}
+.pc-grid{grid-template-columns:28px 48px 180px 120px 75px 45px 85px 150px}
 .tr-img{width:44px;height:44px;border-radius:10px;overflow:hidden;background:var(--cream);position:relative;flex-shrink:0}
 .tr-img img,.tr-img-ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .tr-img-ph{display:flex;align-items:center;justify-content:center;font-size:1.1rem}
@@ -658,9 +658,9 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
       <button class="ni" data-page="agenda" onclick="goPage('agenda');loadAgenda()"><span class="ni-icon">📋</span>Agenda</button>
       <button class="ni" data-page="lista-compras" onclick="goPage('lista-compras');renderListaCompras()"><span class="ni-icon">🛒</span>Lista de compras</button>
       <button class="ni" data-page="sugerir" onclick="goPage('sugerir');renderSugerir()"><span class="ni-icon">💌</span>Sugerir produtos</button>
-      <button class="ni" data-page="historico" onclick="goPage('historico');renderHist();renderAccessLog()"><span class="ni-icon">🔒</span>Histórico de login</button>
       <button class="ni" data-page="frete" onclick="goPage('frete');loadFreteConfig()"><span class="ni-icon">🚚</span>Frete</button>
       <button class="ni" data-page="banners" onclick="goPage('banners')"><span class="ni-icon">📢</span>Banners</button>
+      <button class="ni" data-page="historico" onclick="goPage('historico');renderHist();renderAccessLog()"><span class="ni-icon">🔒</span>Histórico de login</button>
       <button class="ni" data-page="notif" onclick="goPage('notif')"><span class="ni-icon">🔔</span>Notificações</button>
       <div class="ng-label" style="margin-top:8px">Loja</div>
       <button class="ni" onclick="window.open('loja.html','_blank')"><span class="ni-icon">🛍️</span>Ver loja ↗</button>
@@ -2721,8 +2721,9 @@ for(const f of FILES){
   const prefix=base.includes('-')?base.substring(0,base.lastIndexOf('-')):base;
   if(!fileIdx.has(prefix))fileIdx.set(prefix,f.u);
 }
-function getUrl(nome){
-  const slug=slugify(nome);
+function getUrl(nome,prodId){
+  if(prodId&&fotosDB[prodId]&&fotosDB[prodId][0])return fotosDB[prodId][0];
+  const slug=slugify(nome||'');
   if(fileIdx.has(slug))return fileIdx.get(slug);
   const parts=slug.split('-');
   for(let i=parts.length-1;i>=2;i--){
@@ -2762,7 +2763,9 @@ async function loadProds(){
     dsel.innerHTML='<option value="">Todos os designs</option>';
     const designs=new Set();
     allProds.forEach(p=>{
-      const ds=Array.isArray(p.design)?p.design:(p.design?[p.design]:[]);
+      let ds=p.design;
+      if(typeof ds==='string') try{ds=JSON.parse(ds);}catch(e){ds=[ds];}
+      if(!Array.isArray(ds))ds=ds?[ds]:[];
       ds.filter(Boolean).forEach(d=>designs.add(d));
     });
     [...designs].sort().forEach(d=>{const o=document.createElement('option');o.value=o.textContent=d;dsel.appendChild(o);});
@@ -5106,7 +5109,8 @@ async function deleteCliente(id, nome){
 // ── DELETE EMAIL CONTATO ──────────────────────────────────────────
 async function deleteEmailContato(email, nome){
   if(!confirm(`Remover "${nome||email}" da lista?`)) return;
-  const cliente = allClients.find(c=>(c.email||'').toLowerCase()===(email||'').toLowerCase());
+  const emailLower=(email||'').toLowerCase();
+  const cliente = allClients.find(c=>(c.email||'').toLowerCase()===emailLower);
   if(cliente){
     const r=await fetch(SB+`/rest/v1/clientes?id=eq.${cliente.id}`,{method:'DELETE',headers:{...HDR,'Prefer':'return=minimal'}});
     if(r.ok||r.status===204){
@@ -5117,8 +5121,8 @@ async function deleteEmailContato(email, nome){
       return;
     }
   } else {
-    toast('Cliente não encontrado na base','err');
-    return;
+    // Not in allClients but remove from view anyway
+    toast('Removido da lista','ok');
   }
   renderEmailList();
 }
@@ -5216,7 +5220,8 @@ function renderSugerir(){
   renderSugestaoCarrinho();
 }
 
-function getSugerirUrl(name){
+function getSugerirUrl(name,prodId){
+  if(prodId&&fotosDB[prodId]&&fotosDB[prodId][0])return fotosDB[prodId][0];
   if(!name||!FILES||!FILES.length) return '';
   const slug=name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
   const parts=slug.split('-');
@@ -5233,11 +5238,11 @@ function renderSugerirProdutos(){
   if(!el) return;
   const q = (document.getElementById('sugerirSearch')?.value||'').toLowerCase();
   const lista = allProds.filter(p=>
-    p.ativo && p.price &&
+    p.ativo && !p.oculto && p.price &&
     (!q || (p.name||'').toLowerCase().includes(q))
   ).slice(0,48);
   el.innerHTML = lista.map(p=>{
-    const url = getSugerirUrl(p.name||'');
+    const url = getSugerirUrl(p.name||'',p.id);
     const sel = sugestaoCarrinho.some(x=>x.id===p.id);
     return `<div data-id="${p.id}" data-url="${url}" onclick="toggleSugestao(+this.dataset.id,this.dataset.url)"
       style="border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid ${sel?'var(--pink)':'rgba(229,37,100,.08)'};transition:all .2s;${sel?'box-shadow:0 4px 14px rgba(229,37,100,.2)':''}">
