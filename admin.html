@@ -606,10 +606,15 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
 
 @media(max-width:768px){
   #designManager .cat-row{
-    display:grid;
-    grid-template-columns:24px 40px 1fr auto auto auto;
-    gap:6px;align-items:center;overflow:hidden;
+    display:flex;
+    flex-wrap:nowrap;
+    gap:6px;align-items:center;
+    padding:8px 10px;
   }
+  #designManager .cat-row input[type="text"]:first-of-type{width:32px!important;flex-shrink:0}
+  #designManager .cat-row input[type="text"]:last-of-type{flex:1;min-width:0}
+  #designManager .cat-row .tog{transform:scale(.65)!important;flex-shrink:0}
+  #designManager .cat-row .ibtn{flex-shrink:0;width:28px;height:28px}
   #designManager input[type="text"]{font-size:.82rem;padding:6px 8px}
 }
 
