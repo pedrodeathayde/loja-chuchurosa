@@ -106,7 +106,7 @@ img{display:block;max-width:100%}
 .tbl-row:last-child{border:none}
 .tbl-row:hover{background:rgba(244,121,154,.025)}
 /* Products cols: img nome cats preco prazo status acoes */
-.pc-grid{grid-template-columns:28px 48px 180px 120px 75px 45px 85px 150px}
+.pc-grid{grid-template-columns:28px 48px 1fr 130px 72px 45px 80px 160px}
 .tr-img{width:44px;height:44px;border-radius:10px;overflow:hidden;background:var(--cream);position:relative;flex-shrink:0}
 .tr-img img,.tr-img-ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .tr-img-ph{display:flex;align-items:center;justify-content:center;font-size:1.1rem}
@@ -644,6 +644,7 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
       <button class="ni" data-page="lista-compras" onclick="goPage('lista-compras');renderListaCompras()"><span class="ni-icon">🛒</span>Lista de compras</button>
       <button class="ni" data-page="sugerir" onclick="goPage('sugerir');renderSugerir()"><span class="ni-icon">💌</span>Sugerir produtos</button>
       <button class="ni" data-page="frete" onclick="goPage('frete');loadFreteConfig()"><span class="ni-icon">🚚</span>Frete</button>
+      <button class="ni" data-page="ticker" onclick="goPage('ticker');loadTicker()"><span class="ni-icon">📢</span>Ticker</button>
       <button class="ni" data-page="banners" onclick="goPage('banners')"><span class="ni-icon">📢</span>Banners</button>
       <button class="ni" data-page="historico" onclick="goPage('historico');renderHist();renderAccessLog()"><span class="ni-icon">🔒</span>Histórico de login</button>
       <button class="ni" data-page="notif" onclick="goPage('notif')"><span class="ni-icon">🔔</span>Notificações</button>
@@ -912,6 +913,31 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
       </div>
     </div>
 
+
+    <!-- TICKER -->
+    <div class="page" id="page-ticker">
+      <div class="page-header">
+        <div><h1>Barra de Texto 📢</h1><p>Barra rosa rolante na loja</p></div>
+        <button class="btn-p" onclick="saveTicker()">💾 Salvar</button>
+      </div>
+      <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:24px;max-width:700px">
+        <div class="fg" style="margin-bottom:20px">
+          <label style="display:flex;align-items:center;gap:12px;cursor:pointer">
+            <button id="tickerToggle" class="tog" onclick="this.classList.toggle('on')"></button>
+            <span>Ativar barra na loja</span>
+          </label>
+        </div>
+        <div class="fg">
+          <label>Texto da barra</label>
+          <textarea id="tickerTexto" class="finp" rows="3" placeholder="🌸 Entrega em todo o Brasil · Feito com carinho · Prazo: 5 dias úteis 🌸" style="resize:vertical"></textarea>
+          <p style="font-size:.75rem;color:rgba(13,9,13,.4);margin-top:6px">Use · para separar os itens. O texto vai repetir automaticamente.</p>
+        </div>
+        <div style="margin-top:20px;background:var(--pink);border-radius:10px;padding:10px 0;overflow:hidden">
+          <div id="tickerPreview" style="white-space:nowrap;color:#fff;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:0 20px;opacity:.9">Preview do ticker...</div>
+        </div>
+      </div>
+    </div>
+
     <!-- FRETE -->
     <div class="page" id="page-frete">
       <div class="page-header">
@@ -1037,6 +1063,31 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
 
 
     
+
+    <!-- TICKER -->
+    <div class="page" id="page-ticker">
+      <div class="page-header">
+        <div><h1>Barra de Texto 📢</h1><p>Barra rosa rolante na loja</p></div>
+        <button class="btn-p" onclick="saveTicker()">💾 Salvar</button>
+      </div>
+      <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:24px;max-width:700px">
+        <div class="fg" style="margin-bottom:20px">
+          <label style="display:flex;align-items:center;gap:12px;cursor:pointer">
+            <button id="tickerToggle" class="tog" onclick="this.classList.toggle('on')"></button>
+            <span>Ativar barra na loja</span>
+          </label>
+        </div>
+        <div class="fg">
+          <label>Texto da barra</label>
+          <textarea id="tickerTexto" class="finp" rows="3" placeholder="🌸 Entrega em todo o Brasil · Feito com carinho · Prazo: 5 dias úteis 🌸" style="resize:vertical"></textarea>
+          <p style="font-size:.75rem;color:rgba(13,9,13,.4);margin-top:6px">Use · para separar os itens. O texto vai repetir automaticamente.</p>
+        </div>
+        <div style="margin-top:20px;background:var(--pink);border-radius:10px;padding:10px 0;overflow:hidden">
+          <div id="tickerPreview" style="white-space:nowrap;color:#fff;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:0 20px;opacity:.9">Preview do ticker...</div>
+        </div>
+      </div>
+    </div>
+
     <!-- FRETE -->
     <div class="page" id="page-frete">
       <div class="page-header">
@@ -1192,18 +1243,20 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
 <!-- MODAL BANNER -->
 <div class="modal-ov" id="bannerModal">
   <div class="modal" style="max-width:480px">
-    <div class="mhead"><h2 id="mBannerTitle">Banner</h2><button class="mclose" onclick="closeBannerModal()">✕</button></div>
+    <div class="mhead"><h2 id="mBannerTitle">Pop-up da loja</h2><button class="mclose" onclick="closeBannerModal()">✕</button></div>
     <div class="mbody">
-      <div class="frow"><div class="fg"><label>Texto do banner *</label><input type="text" id="bTexto" placeholder="Ex: 🎄 Frete grátis nas compras acima de R$ 300!"></div></div>
+      <div class="fg"><label>Título *</label><input type="text" id="bTexto" placeholder="Ex: 🎄 Promoção de Natal!"></div>
+      <div class="fg"><label>Descrição</label><input type="text" id="bDescricao" placeholder="Ex: Frete grátis nas compras acima de R$ 300!"></div>
+      <div class="fg"><label>Imagem (URL, opcional)</label><input type="url" id="bImagem" placeholder="https://..."></div>
       <div class="frow c2">
         <div class="fg"><label>Link (opcional)</label><input type="url" id="bLink" placeholder="https://..."></div>
-        <div class="fg"><label>Texto do link</label><input type="text" id="bLinkTexto" placeholder="Ver mais"></div>
+        <div class="fg"><label>Texto do botão</label><input type="text" id="bLinkTexto" placeholder="Ver mais"></div>
       </div>
       <div class="frow c2">
-        <div class="fg"><label>Cor de fundo</label><input type="color" id="bCorFundo" value="#f4799a"></div>
+        <div class="fg"><label>Cor de destaque</label><input type="color" id="bCorFundo" value="#f4799a"></div>
         <div class="fg"><label>Cor do texto</label><input type="color" id="bCorTexto" value="#ffffff"></div>
       </div>
-      <div class="tog-row"><div><div class="tog-lbl">Banner ativo</div><div class="tog-sub">Aparece no topo do site</div></div><button class="tog on" id="togBannerAtivo" onclick="this.classList.toggle('on')"></button></div>
+      <div class="tog-row"><div><div class="tog-lbl">Pop-up ativo</div><div class="tog-sub">Aparece 2s após abrir a loja (1x por sessão)</div></div><button class="tog on" id="togBannerAtivo" onclick="this.classList.toggle('on')"></button></div>
     </div>
     <div class="mfoot">
       <button class="btn-s" onclick="closeBannerModal()">Cancelar</button>
@@ -3314,6 +3367,8 @@ function openNewBanner(){
   document.getElementById('mBannerTitle').textContent='Novo banner';
   document.getElementById('bTexto').value='';
   document.getElementById('bLink').value='';
+  document.getElementById('bDescricao').value='';
+  document.getElementById('bImagem').value='';
   document.getElementById('bLinkTexto').value='';
   document.getElementById('bCorFundo').value='#f4799a';
   document.getElementById('bCorTexto').value='#ffffff';
@@ -3324,7 +3379,9 @@ function editBanner(id){
   const b=allBanners.find(x=>x.id==id);if(!b)return;
   editBannerId=id;
   document.getElementById('mBannerTitle').textContent='Editar banner';
-  document.getElementById('bTexto').value=b.texto||'';
+  document.getElementById('bTexto').value=b.texto||b.titulo||'';
+  document.getElementById('bDescricao').value=b.descricao||'';
+  document.getElementById('bImagem').value=b.imagem_url||'';
   document.getElementById('bLink').value=b.link||'';
   document.getElementById('bLinkTexto').value=b.texto_link||'';
   document.getElementById('bCorFundo').value=b.cor_fundo||'#f4799a';
@@ -3335,7 +3392,7 @@ function editBanner(id){
 async function saveBanner(){
   const texto=document.getElementById('bTexto').value.trim();
   if(!texto){toast('Informe o texto','err');return;}
-  const payload={texto,link:document.getElementById('bLink').value.trim()||null,texto_link:document.getElementById('bLinkTexto').value.trim()||null,cor_fundo:document.getElementById('bCorFundo').value,cor_texto:document.getElementById('bCorTexto').value,ativo:document.getElementById('togBannerAtivo').classList.contains('on')};
+  const payload={titulo:texto,texto,descricao:document.getElementById('bDescricao').value.trim()||null,imagem_url:document.getElementById('bImagem').value.trim()||null,link:document.getElementById('bLink').value.trim()||null,texto_link:document.getElementById('bLinkTexto').value.trim()||null,cor_fundo:document.getElementById('bCorFundo').value,cor_texto:document.getElementById('bCorTexto').value,ativo:document.getElementById('togBannerAtivo').classList.contains('on')};
   if(editBannerId) await sbPatch(`/rest/v1/banners?id=eq.${editBannerId}`,payload);
   else await sbPost('/rest/v1/banners',payload);
   toast('Banner salvo!','ok');closeBannerModal();await loadBanners();renderBannerStrip();
@@ -4018,7 +4075,11 @@ function buildDesignsGrid(sel=[]){
 }
 
 function getSelDesigns(){
-  return [...document.querySelectorAll('#designsGrid .col-ch.checked')].map(e=>e.textContent.trim().replace(/^\S+\s/,''));
+  // Check bulk modal grid first, then product edit grid
+  const bulkGrid=document.querySelectorAll('#bulkDesignGrid .col-ch.checked');
+  const editGrid=document.querySelectorAll('#designsGrid .col-ch.checked');
+  const els=bulkGrid.length?bulkGrid:editGrid;
+  return [...els].map(e=>e.textContent.trim().replace(/^\S+\s/,''));
 }
 
 // Drag reorder
@@ -5123,17 +5184,17 @@ async function deleteEmailContato(email, nome){
   const emailLower=(email||'').toLowerCase();
   const cliente = allClients.find(c=>(c.email||'').toLowerCase()===emailLower);
   if(cliente){
-    const r=await fetch(SB+`/rest/v1/clientes?id=eq.${cliente.id}`,{method:'DELETE',headers:{...HDR,'Prefer':'return=minimal'}});
-    if(r.ok||r.status===204){
+    try{
+      await sbDelete(`/rest/v1/clientes?id=eq.${cliente.id}`);
       allClients = allClients.filter(c=>c.id!==cliente.id);
       toast('Removido!','ok');
-    } else {
-      toast('Erro ao remover','err');
+    }catch(e){
+      toast('Erro ao remover: '+e.message,'err');
       return;
     }
   } else {
-    // Not in allClients but remove from view anyway
-    toast('Removido da lista','ok');
+    toast('Email não encontrado na base','err');
+    return;
   }
   renderEmailList();
 }
@@ -5563,6 +5624,37 @@ function initTouchDrag(container, onReorder){
       dragEl=null;
     },{passive:true});
   });
+}
+
+// ── TICKER ADMIN ─────────────────────────────────────────────────
+async function loadTicker(){
+  const cfg=await sbGet('/rest/v1/configuracoes?chave=in.(ticker_ativo,ticker_texto)&select=chave,valor');
+  if(!Array.isArray(cfg))return;
+  const map={};cfg.forEach(c=>{map[c.chave]=c.valor;});
+  const tog=document.getElementById('tickerToggle');
+  if(tog&&map['ticker_ativo']==='true') tog.classList.add('on');
+  const ta=document.getElementById('tickerTexto');
+  if(ta){
+    ta.value=map['ticker_texto']||'';
+    ta.addEventListener('input',()=>{
+      const prev=document.getElementById('tickerPreview');
+      if(prev)prev.textContent=ta.value||'Preview...';
+    });
+    const prev=document.getElementById('tickerPreview');
+    if(prev)prev.textContent=ta.value||'Preview...';
+  }
+}
+
+async function saveTicker(){
+  const ativo=document.getElementById('tickerToggle')?.classList.contains('on')?'true':'false';
+  const texto=document.getElementById('tickerTexto')?.value||'';
+  // Upsert both configs
+  await fetch(SB+'/rest/v1/configuracoes',{
+    method:'POST',
+    headers:{...HDR,'Prefer':'resolution=merge-duplicates'},
+    body:JSON.stringify([{chave:'ticker_ativo',valor:ativo},{chave:'ticker_texto',valor:texto}])
+  });
+  toast('Ticker salvo!','ok');
 }
 </script>
 
