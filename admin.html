@@ -5355,19 +5355,41 @@ function renderFotoModal(){
 
 function slideNav(dir){_fotoModalIdx+=dir;renderFotoModal();}
 
-function deleteFotoAtual(){
+async function deleteFotoAtual(){
   if(!_fotoModalFotos.length)return;
-  if(!confirm('Remover esta foto?'))return;
+  if(!confirm('Remover esta foto do produto?'))return;
+  const url=_fotoModalFotos[_fotoModalIdx];
+  // Remove from fotos table
+  await fetch(SB+'/rest/v1/fotos?produto_id=eq.'+_fotoModalProd.id+'&url=eq.'+encodeURIComponent(url),{
+    method:'DELETE',headers:{...HDR,'Prefer':'return=minimal'}
+  });
   _fotoModalFotos.splice(_fotoModalIdx,1);
   if(_fotoModalIdx>=_fotoModalFotos.length)_fotoModalIdx=0;
-  renderFotoModal();toast('Foto removida','ok');
+  // Update fotosDB
+  if(fotosDB[_fotoModalProd.id])fotosDB[_fotoModalProd.id]=fotosDB[_fotoModalProd.id].filter(u=>u!==url);
+  renderFotoModal();
+  renderProdTable();
+  toast('Foto removida','ok');
 }
 
-function setFotoCapa(){
+async function setFotoCapa(){
   if(!_fotoModalFotos.length||!_fotoModalProd)return;
   const url=_fotoModalFotos[_fotoModalIdx];
-  _fotoModalFotos.splice(_fotoModalIdx,1);_fotoModalFotos.unshift(url);_fotoModalIdx=0;
-  renderFotoModal();toast('Definida como capa','ok');
+  _fotoModalFotos.splice(_fotoModalIdx,1);
+  _fotoModalFotos.unshift(url);
+  _fotoModalIdx=0;
+  // Update ordem in fotos table
+  for(let i=0;i<_fotoModalFotos.length;i++){
+    await fetch(SB+'/rest/v1/fotos?produto_id=eq.'+_fotoModalProd.id+'&url=eq.'+encodeURIComponent(_fotoModalFotos[i]),{
+      method:'PATCH',headers:{...HDR,'Prefer':'return=minimal'},
+      body:JSON.stringify({ordem:i})
+    });
+  }
+  // Update fotosDB
+  fotosDB[_fotoModalProd.id]=[..._fotoModalFotos];
+  renderFotoModal();
+  renderProdTable();
+  toast('Definida como capa','ok');
 }
 
 // ── COMPRESS IMAGE ────────────────────────────────────────────────
@@ -5403,22 +5425,30 @@ async function uploadFotosModal(input){
   for(let i=0;i<files.length;i++){
     const file=files[i];
     try{
-      // Compress
       const blob=await compressImageAdmin(file);
-      // Name: slug + index
       const idx=existingCount+i;
       const fname=idx===0?slug+'.jpg':slug+'-'+(idx+1)+'.jpg';
-      // Upload
       const r=await fetch(SB+'/storage/v1/object/Fotos/'+fname,{
         method:'POST',headers:{...HDR,'Content-Type':'image/jpeg','x-upsert':'true'},body:blob
       });
       if(r.ok){
-        _fotoModalFotos.push(SB+'/storage/v1/object/public/Fotos/'+fname);
+        const publicUrl=SB+'/storage/v1/object/public/Fotos/'+fname;
+        _fotoModalFotos.push(publicUrl);
         _fotoModalIdx=_fotoModalFotos.length-1;
+        // Insert into fotos table
+        await sbPost('/rest/v1/fotos',{
+          produto_id:_fotoModalProd.id,
+          url:publicUrl,
+          ordem:idx
+        });
+        // Update fotosDB
+        if(!fotosDB[_fotoModalProd.id])fotosDB[_fotoModalProd.id]=[];
+        fotosDB[_fotoModalProd.id].push(publicUrl);
       }
     }catch(e){toast('Erro: '+e.message,'err');}
   }
   renderFotoModal();
+  renderProdTable();
   toast(files.length+' foto'+(files.length!==1?'s':'')+' enviada'+(files.length!==1?'s':'')+'!','ok');
   input.value='';
 }
