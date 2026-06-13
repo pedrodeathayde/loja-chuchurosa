@@ -2688,6 +2688,7 @@ let editProdId=null, editOrderId=null, editCupomId=null;
 async function init(){
   await loadFotosDB();
   await Promise.all([loadProds(),loadOrders(),loadClients(),loadCupons(),loadFrete(),loadBanners(),loadCats(),loadNotifConfig(),loadDesigns()]);
+  renderProdTable();
   renderDash();
   renderBannerStrip();
   sessionStorage.removeItem('novos_visto');
@@ -2734,7 +2735,7 @@ async function loadProds(){
   allProds=Array.isArray(d)?d:[];
   document.getElementById('nb-prods').textContent=allProds.length||0;
   filtProds=[...allProds];
-  renderProdTable();
+  // renderProdTable called after loadFotosDB finishes
   document.getElementById('prodCount').textContent=filtProds.length;
   // Populate design filter
   const dsel=document.getElementById('pdesign');
