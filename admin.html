@@ -5729,12 +5729,14 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')smartBack();});
     bar.style.transition='none';
   },{passive:true});
   bar.addEventListener('touchmove',e=>{
+    e.preventDefault();
+    e.stopPropagation();
     const t=e.touches[0];
     const dx=t.clientX-startX,dy=t.clientY-startY;
     bar.style.left=(initX+dx+bar.offsetWidth/2)+'px';
     bar.style.top=(initY+dy)+'px';
     bar.style.bottom='auto';bar.style.transform='none';
-  },{passive:true});
+  },{passive:false});
 })();
 </script>
 
