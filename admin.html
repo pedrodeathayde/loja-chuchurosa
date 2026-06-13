@@ -5326,9 +5326,13 @@ function abrirFotos(id,nome){
   if(!p)return;
   _fotoModalProd=p;_fotoModalIdx=0;
   document.getElementById('fotoModalTitle').textContent='📷 '+nome;
-  const slug=(nome||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-  const short=slug.split('-').slice(0,3).join('-');
-  _fotoModalFotos=FILES.filter(f=>{const fn=f.n.replace(/\.[^.]+$/,'');return fn.startsWith(slug)||fn.startsWith(short);}).map(f=>f.u);
+  if(fotosDB[id]&&fotosDB[id].length){
+    _fotoModalFotos=[...fotosDB[id]];
+  } else {
+    const slug=(nome||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-\$/g,'');
+    const short=slug.split('-').slice(0,3).join('-');
+    _fotoModalFotos=FILES.filter(f=>{const fn=f.n.replace(/\.[^.]+\$/,'');return fn.startsWith(slug)||fn.startsWith(short);}).map(f=>f.u);
+  }
   renderFotoModal();
   document.getElementById('fotoModal').style.display='flex';
 }
