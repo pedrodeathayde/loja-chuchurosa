@@ -5427,7 +5427,8 @@ async function uploadFotosModal(input){
     try{
       const blob=await compressImageAdmin(file);
       const idx=existingCount+i;
-      const fname=idx===0?slug+'.jpg':slug+'-'+(idx+1)+'.jpg';
+      const ts=Date.now();
+      const fname=idx===0?slug+'.jpg':slug+'-'+ts+'.jpg';
       const r=await fetch(SB+'/storage/v1/object/Fotos/'+fname,{
         method:'POST',headers:{...HDR,'Content-Type':'image/jpeg','x-upsert':'true'},body:blob
       });
