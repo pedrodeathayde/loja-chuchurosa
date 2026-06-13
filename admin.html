@@ -446,7 +446,7 @@ img{display:block;max-width:100%}
     grid-column:3;grid-row:1;min-width:0;overflow:hidden;
   }
   .tbl-row.pc-grid>div:nth-child(3) .tr-name{
-    font-size:.84rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px;
+    font-size:.84rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   }
   .tbl-row.pc-grid>div:nth-child(4),
   .tbl-row.pc-grid>div:nth-child(5),
@@ -594,6 +594,25 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
 .drag-item.dragging{opacity:.5;background:rgba(229,37,100,.1)}
 .drag-item.drag-over{border-top:2px solid var(--pink)}
 
+
+.bulk-bar{cursor:grab}
+.bulk-bar:active{cursor:grabbing}
+
+
+.drag-item{transition:background .15s,transform .15s}
+.drag-item.drag-hold{background:rgba(229,37,100,.12);transform:scale(1.02)}
+.drag-item.drag-over{border-top:3px solid var(--pink);background:rgba(229,37,100,.05)}
+
+
+@media(max-width:768px){
+  #designManager .cat-row{
+    display:grid;
+    grid-template-columns:24px 40px 1fr auto auto auto;
+    gap:6px;align-items:center;overflow:hidden;
+  }
+  #designManager input[type="text"]{font-size:.82rem;padding:6px 8px}
+}
+
 </style>
 </head>
 <body>
@@ -639,7 +658,6 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
       <button class="ni" data-page="designs" onclick="goPage('designs')"><span class="ni-icon">🎨</span>Designs</button>
       <button class="ni" data-page="cupons" onclick="goPage('cupons')"><span class="ni-icon">🎟️</span>Cupons</button>
       <button class="ni" data-page="email" onclick="goPage('email');renderEmailList()"><span class="ni-icon">📧</span>E-mail</button>
-      <button class="ni" data-page="relatorio" onclick="goPage('relatorio');renderRelatorio()"><span class="ni-icon">📊</span>Relatórios</button>
       <button class="ni" data-page="agenda" onclick="goPage('agenda');loadAgenda()"><span class="ni-icon">📋</span>Agenda</button>
       <button class="ni" data-page="lista-compras" onclick="goPage('lista-compras');renderListaCompras()"><span class="ni-icon">🛒</span>Lista de compras</button>
       <button class="ni" data-page="sugerir" onclick="goPage('sugerir');renderSugerir()"><span class="ni-icon">💌</span>Sugerir produtos</button>
@@ -5187,15 +5205,11 @@ async function deleteEmailContato(email, nome){
     try{
       await sbDelete(`/rest/v1/clientes?id=eq.${cliente.id}`);
       allClients = allClients.filter(c=>c.id!==cliente.id);
-      toast('Removido!','ok');
-    }catch(e){
-      toast('Erro ao remover: '+e.message,'err');
-      return;
-    }
-  } else {
-    toast('Email não encontrado na base','err');
-    return;
+    }catch(e){}
   }
+  // Remove from view regardless
+  allClients = allClients.filter(c=>(c.email||'').toLowerCase()!==emailLower);
+  toast('Removido!','ok');
   renderEmailList();
 }
 
@@ -5593,12 +5607,15 @@ function fecharModalCompartilhar(){
 
 // ── TOUCH DRAG & DROP (mobile) ───────────────────────────────────
 function initTouchDrag(container, onReorder){
-  let dragEl=null, startY=0, origIdx=-1;
+  let dragEl=null, startY=0, origIdx=-1, holdTimer=null;
   container.querySelectorAll('.drag-item').forEach((el,i)=>{
     el.addEventListener('touchstart',e=>{
-      dragEl=el; origIdx=i; startY=e.touches[0].clientY;
-      el.classList.add('dragging');
+      holdTimer=setTimeout(()=>{
+        dragEl=el; origIdx=i; startY=e.touches[0].clientY;
+        el.classList.add('dragging','drag-hold');
+      },400);
     },{passive:true});
+    el.addEventListener('touchend',()=>{if(holdTimer){clearTimeout(holdTimer);holdTimer=null;}},{passive:true});
     el.addEventListener('touchmove',e=>{
       if(!dragEl)return;
       e.preventDefault();
@@ -5656,6 +5673,62 @@ async function saveTicker(){
   });
   toast('Ticker salvo!','ok');
 }
+
+// ── SMART BACK BUTTON ────────────────────────────────────────────
+function smartBack(){
+  // 1. Close any open modal
+  const openModal=document.querySelector('.modal-ov.open,.bulk-modal-ov.open');
+  if(openModal){openModal.classList.remove('open');return;}
+  // 2. Close any other visible overlay
+  const overlays=['fotoModal','previewModal','shareModal'];
+  for(const id of overlays){
+    const el=document.getElementById(id);
+    if(el&&el.style.display==='flex'){el.style.display='none';return;}
+  }
+  // 3. If not on dashboard, go to dashboard
+  const active=document.querySelector('.page.active');
+  if(active&&active.id!=='page-dashboard'){goPage('dashboard');return;}
+  // 4. Close window
+  window.close();
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')smartBack();});
+
+// ── DRAGGABLE BULK BAR ────────────────────────────────────────────
+(function(){
+  const bar=document.getElementById('bulkBar');
+  if(!bar)return;
+  let dragging=false,startX=0,startY=0,initX=0,initY=0;
+  bar.addEventListener('mousedown',e=>{
+    if(e.target.tagName==='BUTTON'||e.target.tagName==='SPAN')return;
+    dragging=true;startX=e.clientX;startY=e.clientY;
+    const r=bar.getBoundingClientRect();
+    initX=r.left;initY=r.top;
+    bar.style.transition='none';
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove',e=>{
+    if(!dragging)return;
+    const dx=e.clientX-startX,dy=e.clientY-startY;
+    bar.style.left=(initX+dx+bar.offsetWidth/2)+'px';
+    bar.style.top=(initY+dy)+'px';
+    bar.style.bottom='auto';bar.style.transform='none';
+  });
+  document.addEventListener('mouseup',()=>{dragging=false;bar.style.transition='';});
+  // Touch
+  bar.addEventListener('touchstart',e=>{
+    if(e.target.tagName==='BUTTON')return;
+    const t=e.touches[0];startX=t.clientX;startY=t.clientY;
+    const r=bar.getBoundingClientRect();initX=r.left;initY=r.top;
+    bar.style.transition='none';
+  },{passive:true});
+  bar.addEventListener('touchmove',e=>{
+    const t=e.touches[0];
+    const dx=t.clientX-startX,dy=t.clientY-startY;
+    bar.style.left=(initX+dx+bar.offsetWidth/2)+'px';
+    bar.style.top=(initY+dy)+'px';
+    bar.style.bottom='auto';bar.style.transform='none';
+  },{passive:true});
+})();
 </script>
 
 <div id="shareModal" class="modal-ov" style="display:none">
