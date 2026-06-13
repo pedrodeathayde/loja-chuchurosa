@@ -588,6 +588,12 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
   .ibtns{gap:2px;flex-wrap:nowrap}
 }
 
+
+/* ── TOUCH DRAG DESIGNS/CATS ── */
+.drag-item{touch-action:none;user-select:none}
+.drag-item.dragging{opacity:.5;background:rgba(229,37,100,.1)}
+.drag-item.drag-over{border-top:2px solid var(--pink)}
+
 </style>
 </head>
 <body>
@@ -851,8 +857,8 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
         <div id="listaComprasItems"></div>
         <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(229,37,100,.08)">
           <div style="display:flex;gap:8px">
-            <input id="novoItemInput" type="text" class="finp" placeholder="Novo item (ex: Tecido floral rosa, 3m)..." 
-              style="flex:1" onkeydown="if(event.key==='Enter')adicionarItemLista()">
+            <input id="novoItemInput" type="text" class="finp" placeholder="Novo item..." 
+              style="flex:1;min-width:0" onkeydown="if(event.key==='Enter')adicionarItemLista()">
             <select id="novoItemCat" class="finp" style="width:140px">
               <option value="material">🧵 Material</option>
               <option value="embalagem">📦 Embalagem</option>
@@ -1015,8 +1021,8 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
         <div id="listaComprasItems"></div>
         <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(229,37,100,.08)">
           <div style="display:flex;gap:8px">
-            <input id="novoItemInput" type="text" class="finp" placeholder="Novo item (ex: Tecido floral rosa, 3m)..." 
-              style="flex:1" onkeydown="if(event.key==='Enter')adicionarItemLista()">
+            <input id="novoItemInput" type="text" class="finp" placeholder="Novo item..." 
+              style="flex:1;min-width:0" onkeydown="if(event.key==='Enter')adicionarItemLista()">
             <select id="novoItemCat" class="finp" style="width:140px">
               <option value="material">🧵 Material</option>
               <option value="embalagem">📦 Embalagem</option>
@@ -3358,7 +3364,7 @@ function renderCatManager(){
   const el=document.getElementById('catManager');
   if(!el)return;
   el.innerHTML=allCats.map((c,i)=>`
-    <div class="cat-row" draggable="true" data-idx="${i}"
+    <div class="cat-row drag-item" draggable="true" data-idx="${i}"
       ondragstart="catDragStart(event,${i})"
       ondragover="catDragOver(event,${i})"
       ondrop="catDrop(event,${i})">
@@ -3367,6 +3373,15 @@ function renderCatManager(){
       <input type="text" value="${typeof c==='object'?c.nome||c:c}" style="flex:1" onblur="allCats[${i}]=this.value;COLS=[...allCats]">
       <button class="ibtn del" onclick="removeCat(${i})">🗑</button>
     </div>`).join('');
+  // Touch drag for mobile
+  initTouchDrag(el, (from,to)=>{
+    const tmpC=allCats.splice(from,1)[0];
+    allCats.splice(to,0,tmpC);
+    const tmpE=catEmojis.splice(from,1)[0];
+    catEmojis.splice(to,0,tmpE);
+    COLS=[...allCats];
+    renderCatManager();
+  });
 }
 function addCat(){allCats.push('Nova categoria');
   catEmojis.push('🏷️');COLS=[...allCats];renderCatManager();
@@ -3715,6 +3730,20 @@ async function applyBulk(){
       p.collections=cols;
     }
     toast(`Categoria adicionada em ${ids.length} produtos`,'ok');
+  }else if(currentBulkAction==='design'){
+    const selDesigns=getSelDesigns();
+    if(!selDesigns.length){toast('Selecione pelo menos um design','err');return;}
+    for(const id of ids){
+      const p=allProds.find(x=>x.id===id);if(!p)continue;
+      let cur=Array.isArray(p.design)?p.design:(p.design?[p.design]:[]);
+      let novo;
+      if(bulkDesignMode==='add') novo=[...new Set([...cur,...selDesigns])];
+      else if(bulkDesignMode==='replace') novo=[...selDesigns];
+      else novo=cur.filter(d=>!selDesigns.includes(d));
+      await sbPatch(`/rest/v1/produtos?id=eq.${id}`,{design:novo});
+      p.design=novo;
+    }
+    toast(`Design atualizado em ${ids.length} produtos`,'ok');
   }
 
   renderProdTable();
@@ -3921,7 +3950,7 @@ function renderDesignManager(){
   const el=document.getElementById('designManager');
   if(!el)return;
   el.innerHTML=allDesigns.map((d,i)=>`
-    <div class="cat-row" draggable="true" data-idx="${i}"
+    <div class="cat-row drag-item" draggable="true" data-idx="${i}"
       ondragstart="desDragStart(event,${i})"
       ondragover="desDragOver(event,${i})"
       ondrop="desDrop(event,${i})">
@@ -3932,6 +3961,13 @@ function renderDesignManager(){
       <button class="tog ${d.visivel_loja!==false?'on':''}" style="transform:scale(.75);flex-shrink:0" onclick="allDesigns[${i}].visivel_loja=!allDesigns[${i}].visivel_loja;this.classList.toggle('on')"></button>
       <button class="ibtn del" onclick="removeDesign(${i})">🗑</button>
     </div>`).join('');
+  // Touch drag for mobile
+  initTouchDrag(el, (from,to)=>{
+    const tmp=allDesigns.splice(from,1)[0];
+    allDesigns.splice(to,0,tmp);
+    renderDesignManager();
+    populateDesignSelect();
+  });
 }
 
 function addDesign(){
@@ -5493,6 +5529,41 @@ function fecharModalCompartilhar(){
   if(modal)modal.style.display='none';
 }
 
+
+// ── TOUCH DRAG & DROP (mobile) ───────────────────────────────────
+function initTouchDrag(container, onReorder){
+  let dragEl=null, startY=0, origIdx=-1;
+  container.querySelectorAll('.drag-item').forEach((el,i)=>{
+    el.addEventListener('touchstart',e=>{
+      dragEl=el; origIdx=i; startY=e.touches[0].clientY;
+      el.classList.add('dragging');
+    },{passive:true});
+    el.addEventListener('touchmove',e=>{
+      if(!dragEl)return;
+      e.preventDefault();
+      const y=e.touches[0].clientY;
+      const items=[...container.querySelectorAll('.drag-item')];
+      items.forEach(it=>it.classList.remove('drag-over'));
+      const target=items.find(it=>{
+        const r=it.getBoundingClientRect();
+        return y>=r.top&&y<=r.bottom&&it!==dragEl;
+      });
+      if(target)target.classList.add('drag-over');
+    },{passive:false});
+    el.addEventListener('touchend',e=>{
+      if(!dragEl)return;
+      dragEl.classList.remove('dragging');
+      const items=[...container.querySelectorAll('.drag-item')];
+      const overEl=items.find(it=>it.classList.contains('drag-over'));
+      if(overEl){
+        const newIdx=items.indexOf(overEl);
+        onReorder(origIdx,newIdx);
+      }
+      items.forEach(it=>it.classList.remove('drag-over'));
+      dragEl=null;
+    },{passive:true});
+  });
+}
 </script>
 
 <div id="shareModal" class="modal-ov" style="display:none">
