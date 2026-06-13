@@ -2687,7 +2687,9 @@ let editProdId=null, editOrderId=null, editCupomId=null;
 // ── INIT ──────────────────────────────────────────────────────────────
 async function init(){
   await loadFotosDB();
+  console.log('fotosDB loaded:', Object.keys(fotosDB).length, 'produtos');
   await Promise.all([loadProds(),loadOrders(),loadClients(),loadCupons(),loadFrete(),loadBanners(),loadCats(),loadNotifConfig(),loadDesigns()]);
+  console.log('renderProdTable with fotosDB:', Object.keys(fotosDB).length);
   renderProdTable();
   renderDash();
   renderBannerStrip();
@@ -2704,15 +2706,7 @@ for(const f of FILES){
 }
 function getUrl(nome,prodId){
   if(prodId&&fotosDB[prodId]&&fotosDB[prodId][0])return fotosDB[prodId][0];
-  const slug=slugify(nome||'');
-  if(fileIdx.has(slug))return fileIdx.get(slug);
-  const parts=slug.split('-');
-  for(let i=parts.length-1;i>=2;i--){
-    const k=parts.slice(0,i).join('-');
-    if(fileIdx.has(k))return fileIdx.get(k);
-  }
-  const match=FILES.find(f=>f.n.startsWith(slug)||f.n.includes(slug.split('-').slice(0,3).join('-')));
-  return match?match.u:'';
+  return '';
 }
 
 // ── PRODUCTS ──────────────────────────────────────────────────────────
