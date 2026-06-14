@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Avaliar pedido — Chuchu Rosa</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+:root{--pink:#e52564;--rose:#f04d7f;--dark:#0d090d;--cream:#f8f0f6;--fd:'Playfair Display',serif;--fb:'Outfit',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--cream);font-family:var(--fb);color:var(--dark);min-height:100vh;padding:24px 16px}
+.wrap{max-width:520px;margin:0 auto}
+.logo{font-family:var(--fd);font-size:1.3rem;font-weight:700;color:var(--pink);text-align:center;margin-bottom:24px}
+.card{background:#fff;border-radius:20px;padding:28px;box-shadow:0 8px 40px rgba(229,37,100,.08);margin-bottom:16px}
+h1{font-family:var(--fd);font-size:1.3rem;margin-bottom:6px}
+.sub{font-size:.84rem;color:rgba(13,9,13,.5);margin-bottom:24px}
+.prod-preview{display:flex;gap:12px;align-items:center;background:rgba(229,37,100,.04);border-radius:12px;padding:12px;margin-bottom:20px}
+.prod-preview img{width:56px;height:56px;object-fit:cover;border-radius:10px;flex-shrink:0}
+.prod-name{font-weight:600;font-size:.9rem}
+.prod-price{font-size:.8rem;color:var(--pink)}
+/* Stars */
+.stars-wrap{display:flex;gap:6px;margin-bottom:20px;justify-content:center}
+.star{font-size:2.2rem;cursor:pointer;transition:transform .15s;line-height:1}
+.star:hover,.star.active{transform:scale(1.15)}
+.star-hint{text-align:center;font-size:.82rem;color:rgba(13,9,13,.4);margin-top:-12px;margin-bottom:16px;min-height:18px}
+/* Form */
+.fg{margin-bottom:16px}
+label{display:block;font-size:.78rem;font-weight:600;color:rgba(13,9,13,.5);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+input,textarea{width:100%;padding:11px 14px;border:1.5px solid rgba(229,37,100,.15);border-radius:12px;font-family:var(--fb);font-size:.88rem;outline:none;transition:border .2s}
+input:focus,textarea:focus{border-color:var(--pink)}
+textarea{resize:vertical;min-height:90px}
+/* Photo upload */
+.photo-drop{border:2px dashed rgba(229,37,100,.2);border-radius:14px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
+.photo-drop:hover,.photo-drop.over{border-color:var(--pink);background:rgba(229,37,100,.03)}
+.photo-drop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.photo-drop-icon{font-size:2rem;margin-bottom:8px}
+.photo-drop p{font-size:.82rem;color:rgba(13,9,13,.45)}
+.photo-preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-top:12px}
+.photo-thumb{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden}
+.photo-thumb img{width:100%;height:100%;object-fit:cover}
+.photo-thumb button{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:.65rem;cursor:pointer}
+/* Submit */
+.btn-submit{width:100%;background:var(--pink);color:#fff;border:none;border-radius:100px;padding:15px;font-family:var(--fd);font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s;margin-top:8px}
+.btn-submit:hover{background:var(--rose)}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed}
+/* Success */
+.success{text-align:center;padding:32px 16px;display:none}
+.success-icon{font-size:3.5rem;margin-bottom:12px}
+.success h2{font-family:var(--fd);font-size:1.4rem;margin-bottom:8px}
+.success p{font-size:.88rem;color:rgba(13,9,13,.5);margin-bottom:20px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--dark);color:#fff;padding:10px 20px;border-radius:100px;font-size:.82rem;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">🌸 Chuchu Rosa</div>
+
+  <div id="loading" class="card" style="text-align:center;padding:40px">
+    <div style="font-size:2rem;margin-bottom:12px">⏳</div>
+    <p>Carregando...</p>
+  </div>
+
+  <div id="formArea" style="display:none">
+    <div class="card">
+      <h1>Como foi seu pedido?</h1>
+      <p class="sub">Sua avaliação ajuda outras mamães a escolher melhor 💕</p>
+      <div id="prodList"></div>
+    </div>
+
+    <div class="card">
+      <div class="fg">
+        <label>Sua avaliação geral</label>
+        <div class="stars-wrap" id="starsWrap">
+          <span class="star" data-v="1">⭐</span>
+          <span class="star" data-v="2">⭐</span>
+          <span class="star" data-v="3">⭐</span>
+          <span class="star" data-v="4">⭐</span>
+          <span class="star" data-v="5">⭐</span>
+        </div>
+        <div class="star-hint" id="starHint">Toque nas estrelas para avaliar</div>
+      </div>
+
+      <div class="fg">
+        <label>Seu nome</label>
+        <input type="text" id="clienteNome" placeholder="Ex: Maria Silva">
+      </div>
+
+      <div class="fg">
+        <label>Comentário (opcional)</label>
+        <textarea id="comentario" placeholder="Conte o que achou do produto, prazo e qualidade..."></textarea>
+      </div>
+
+      <div class="fg">
+        <label>Foto do produto (opcional)</label>
+        <div class="photo-drop" id="photoDrop">
+          <input type="file" id="fotoInput" accept="image/*" multiple onchange="addPhotos(this.files)">
+          <div class="photo-drop-icon">📸</div>
+          <p>Clique ou arraste fotos aqui</p>
+          <p style="font-size:.72rem;margin-top:4px">Mostra a fantasia em uso — as fotos mais legais aparecem na loja!</p>
+        </div>
+        <div class="photo-preview" id="photoPreview"></div>
+      </div>
+
+      <button class="btn-submit" id="btnSubmit" onclick="enviarAvaliacao()">Enviar avaliação ✨</button>
+    </div>
+  </div>
+
+  <div class="success" id="successArea">
+    <div class="success-icon">🎉</div>
+    <h2>Obrigada pela avaliação!</h2>
+    <p>Sua opinião foi enviada e será analisada em breve. As melhores avaliações aparecem na loja!</p>
+    <a href="loja.html" style="display:inline-block;background:var(--pink);color:#fff;border-radius:100px;padding:12px 28px;text-decoration:none;font-weight:700;font-size:.9rem">Continuar comprando 🛍</a>
+  </div>
+
+  <div id="errorArea" style="display:none" class="card">
+    <div style="text-align:center;padding:20px">
+      <div style="font-size:2.5rem;margin-bottom:12px">😕</div>
+      <h2 style="font-family:var(--fd);margin-bottom:8px">Link inválido</h2>
+      <p style="font-size:.84rem;color:rgba(13,9,13,.5)">Este link de avaliação não é válido ou já foi usado.</p>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SB='https://oznpfqsgurztffwfyfec.supabase.co';
+const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA';
+const HDR={apikey:KEY,Authorization:'Bearer '+KEY,Accept:'application/json','Content-Type':'application/json'};
+const sb=supabase.createClient(SB,KEY);
+
+const params=new URLSearchParams(location.search);
+const pedidoId=params.get('pedido');
+const token=params.get('token');
+
+let pedido=null, estrelas=0, fotoFiles=[];
+const HINTS=['','Muito ruim 😢','Ruim 😕','Regular 😐','Bom 😊','Excelente! 🤩'];
+
+// Star interaction
+document.querySelectorAll('.star').forEach(s=>{
+  s.addEventListener('click',()=>{
+    estrelas=+s.dataset.v;
+    document.querySelectorAll('.star').forEach((st,i)=>st.classList.toggle('active',i<estrelas));
+    document.getElementById('starHint').textContent=HINTS[estrelas];
+  });
+});
+
+// Drag over
+const drop=document.getElementById('photoDrop');
+drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('over');});
+drop.addEventListener('dragleave',()=>drop.classList.remove('over'));
+drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('over');addPhotos(e.dataTransfer.files);});
+
+function addPhotos(files){
+  for(const f of files){
+    if(!f.type.startsWith('image/'))continue;
+    fotoFiles.push(f);
+    const url=URL.createObjectURL(f);
+    const div=document.createElement('div');
+    div.className='photo-thumb';
+    div.innerHTML=`<img src="${url}"><button onclick="removePhoto(${fotoFiles.length-1},this.parentElement)">✕</button>`;
+    document.getElementById('photoPreview').appendChild(div);
+  }
+}
+function removePhoto(idx,el){fotoFiles[idx]=null;el.remove();}
+
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2500);
+}
+
+async function compressImage(file,maxW=1000,q=0.82){
+  return new Promise(res=>{
+    const img=new Image(),url=URL.createObjectURL(file);
+    img.onload=()=>{
+      URL.revokeObjectURL(url);
+      let w=img.naturalWidth,h=img.naturalHeight;
+      if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+      const c=document.createElement('canvas');
+      c.width=w;c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      c.toBlob(b=>res(b),'image/jpeg',q);
+    };
+    img.src=url;
+  });
+}
+
+async function init(){
+  if(!pedidoId){showError();return;}
+  try{
+    const r=await fetch(`${SB}/rest/v1/pedidos?id=eq.${pedidoId}&select=*`,{headers:HDR});
+    const d=await r.json();
+    if(!d[0]){showError();return;}
+    pedido=d[0];
+
+    // Load items
+    const ri=await fetch(`${SB}/rest/v1/itens_pedido?pedido_id=eq.${pedidoId}&select=*`,{headers:HDR});
+    const items=await ri.json();
+
+    // Pre-fill name
+    if(pedido.visitante_nome)document.getElementById('clienteNome').value=pedido.visitante_nome;
+
+    // Show products
+    const prodList=document.getElementById('prodList');
+    if(Array.isArray(items)&&items.length){
+      prodList.innerHTML=items.map(it=>`
+        <div class="prod-preview">
+          <div style="width:56px;height:56px;background:rgba(229,37,100,.08);border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.5rem">🌸</div>
+          <div><div class="prod-name">${it.nome_produto||'Produto'}</div><div class="prod-price">Qtd: ${it.quantidade||1}</div></div>
+        </div>`).join('');
+    }
+
+    document.getElementById('loading').style.display='none';
+    document.getElementById('formArea').style.display='block';
+  }catch(e){showError();}
+}
+
+function showError(){
+  document.getElementById('loading').style.display='none';
+  document.getElementById('errorArea').style.display='block';
+}
+
+async function enviarAvaliacao(){
+  if(!estrelas){toast('Selecione a quantidade de estrelas ⭐');return;}
+  const nome=document.getElementById('clienteNome').value.trim();
+  if(!nome){toast('Digite seu nome');return;}
+
+  const btn=document.getElementById('btnSubmit');
+  btn.disabled=true;btn.textContent='Enviando...';
+
+  try{
+    // Upload photos
+    let fotoUrl=null;
+    const validFiles=fotoFiles.filter(Boolean);
+    if(validFiles.length){
+      const blob=await compressImage(validFiles[0]);
+      const fname=`pedido-${pedidoId}-${Date.now()}.jpg`;
+      const up=await fetch(`${SB}/storage/v1/object/avaliacoes/${fname}`,{
+        method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'image/jpeg','x-upsert':'true'},body:blob
+      });
+      if(up.ok)fotoUrl=`${SB}/storage/v1/object/public/avaliacoes/${fname}`;
+    }
+
+    // Insert avaliacao
+    const payload={
+      pedido_id:parseInt(pedidoId),
+      produto_id:null, // geral do pedido
+      cliente_nome:nome,
+      cliente_email:pedido.visitante_email||null,
+      estrelas,
+      comentario:document.getElementById('comentario').value.trim()||null,
+      foto_url:fotoUrl,
+      aprovada:false
+    };
+
+    const res=await fetch(`${SB}/rest/v1/avaliacoes`,{
+      method:'POST',headers:{...HDR,'Prefer':'return=minimal'},body:JSON.stringify(payload)
+    });
+
+    if(!res.ok)throw new Error('Erro ao salvar');
+    document.getElementById('formArea').style.display='none';
+    document.getElementById('successArea').style.display='block';
+  }catch(e){
+    toast('Erro ao enviar. Tente novamente.');
+    btn.disabled=false;btn.textContent='Enviar avaliação ✨';
+  }
+}
+
+init();
+</script>
+</body>
+</html>

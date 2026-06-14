@@ -3316,6 +3316,9 @@ function flyToCart(imgEl){
     },600);
   });
 }
+
+// ── YEAR ──────────────────────────────────────────────────────────
+document.getElementById('footerYear').textContent = new Date().getFullYear();
 </script>
 
 <div class="lightbox" id="lightbox">
@@ -3348,7 +3351,7 @@ function flyToCart(imgEl){
       <a href="minha-conta.html" style="color:rgba(255,255,255,.6);text-decoration:none">Minha conta</a>
       <a href="rastreio.html" style="color:rgba(255,255,255,.6);text-decoration:none">📦 Rastrear pedido</a>
     </div>
-    <div style="font-size:.72rem;color:rgba(255,255,255,.3)">© 2025 Chuchu Rosa</div>
+    <div style="font-size:.72rem;color:rgba(255,255,255,.3)">© <span id="footerYear"></span> Chuchu Rosa</div>
   </div>
 </footer>
 

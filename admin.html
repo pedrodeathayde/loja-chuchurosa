@@ -669,6 +669,7 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
       <button class="ni" data-page="frete" onclick="goPage('frete');loadFreteConfig()"><span class="ni-icon">🚚</span>Frete</button>
       <button class="ni" data-page="ticker" onclick="goPage('ticker');loadTicker()"><span class="ni-icon">📢</span>Ticker</button>
       <button class="ni" data-page="banners" onclick="goPage('banners')"><span class="ni-icon">📢</span>Banners</button>
+      <button class="ni" data-page="avaliacoes" onclick="goPage('avaliacoes');loadAvaliacoes()"><span class="ni-icon">⭐</span>Avaliações<span class="ni-badge" id="nb-aval" style="display:none">0</span></button>
       <button class="ni" data-page="historico" onclick="goPage('historico');renderHist();renderAccessLog()"><span class="ni-icon">🔒</span>Histórico de login</button>
       <button class="ni" data-page="notif" onclick="goPage('notif')"><span class="ni-icon">🔔</span>Notificações</button>
       <div class="ng-label" style="margin-top:8px">Loja</div>
@@ -961,6 +962,22 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
       </div>
     </div>
 
+
+    <!-- AVALIAÇÕES -->
+    <div class="page" id="page-avaliacoes">
+      <div class="page-header">
+        <div><h1>Avaliações ⭐</h1><p>Modere as avaliações antes de publicar na loja</p></div>
+        <div style="display:flex;gap:8px">
+          <select id="avalFilter" class="tfilter" onchange="renderAvaliacoes()">
+            <option value="pendentes">Pendentes</option>
+            <option value="aprovadas">Aprovadas</option>
+            <option value="todas">Todas</option>
+          </select>
+        </div>
+      </div>
+      <div id="avalList"></div>
+    </div>
+
     <!-- FRETE -->
     <div class="page" id="page-frete">
       <div class="page-header">
@@ -1109,6 +1126,22 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
           <div id="tickerPreview" style="white-space:nowrap;color:#fff;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:0 20px;opacity:.9">Preview do ticker...</div>
         </div>
       </div>
+    </div>
+
+
+    <!-- AVALIAÇÕES -->
+    <div class="page" id="page-avaliacoes">
+      <div class="page-header">
+        <div><h1>Avaliações ⭐</h1><p>Modere as avaliações antes de publicar na loja</p></div>
+        <div style="display:flex;gap:8px">
+          <select id="avalFilter" class="tfilter" onchange="renderAvaliacoes()">
+            <option value="pendentes">Pendentes</option>
+            <option value="aprovadas">Aprovadas</option>
+            <option value="todas">Todas</option>
+          </select>
+        </div>
+      </div>
+      <div id="avalList"></div>
     </div>
 
     <!-- FRETE -->
@@ -2769,6 +2802,7 @@ let editProdId=null, editOrderId=null, editCupomId=null;
 // ── INIT ──────────────────────────────────────────────────────────────
 async function init(){
   await loadFotosDB();
+  loadAlertasCount();
   console.log('fotosDB loaded:', Object.keys(fotosDB).length, 'produtos');
   await Promise.all([loadProds(),loadOrders(),loadClients(),loadCupons(),loadFrete(),loadBanners(),loadCats(),loadNotifConfig(),loadDesigns()]);
   console.log('renderProdTable with fotosDB:', Object.keys(fotosDB).length);
@@ -5744,6 +5778,83 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')smartBack();});
     bar.style.top=(initY+dy)+'px';
   },{passive:false});
 })();
+
+// ── AVALIAÇÕES ────────────────────────────────────────────────────
+let allAvaliacoes=[];
+
+async function loadAvaliacoes(){
+  const d=await sbGet('/rest/v1/avaliacoes?select=*,pedidos(id,visitante_nome)&order=created_at.desc');
+  allAvaliacoes=Array.isArray(d)?d:[];
+  const pending=allAvaliacoes.filter(a=>!a.aprovada).length;
+  const badge=document.getElementById('nb-aval');
+  if(badge){badge.textContent=pending;badge.style.display=pending?'':'none';}
+  renderAvaliacoes();
+}
+
+function renderAvaliacoes(){
+  const el=document.getElementById('avalList');
+  if(!el)return;
+  const filter=document.getElementById('avalFilter')?.value||'pendentes';
+  let list=allAvaliacoes;
+  if(filter==='pendentes')list=list.filter(a=>!a.aprovada);
+  else if(filter==='aprovadas')list=list.filter(a=>a.aprovada);
+  if(!list.length){
+    el.innerHTML='<div class="empty"><div class="empty-icon">⭐</div><p>Nenhuma avaliação '+(filter==='pendentes'?'pendente':'encontrada')+'</p></div>';
+    return;
+  }
+  el.innerHTML=list.map(a=>`
+    <div class="client-card" style="margin-bottom:10px;${a.aprovada?'border-left:3px solid #10b981':'border-left:3px solid #f59e0b'}">
+      <div class="cc-top">
+        <div class="cc-avatar" style="background:${a.aprovada?'#10b981':'#f59e0b'}">${'⭐'.repeat(a.estrelas)}</div>
+        <div class="cc-info">
+          <div class="cc-name">${a.cliente_nome||'—'} <span style="font-size:.72rem;color:rgba(13,9,13,.4)">${a.aprovada?'✅ Aprovada':'⏳ Pendente'}</span></div>
+          <div class="cc-email">${a.cliente_email||''} · ${new Date(a.created_at).toLocaleDateString('pt-BR')}</div>
+          ${a.comentario?`<div style="font-size:.82rem;color:rgba(13,9,13,.6);margin-top:6px">"${a.comentario}"</div>`:''}
+          ${a.foto_url?`<img src="${a.foto_url}" style="width:80px;height:80px;object-fit:cover;border-radius:10px;margin-top:8px;cursor:pointer" onclick="window.open('${a.foto_url}','_blank')">`:''}
+          ${a.pedidos?`<div style="font-size:.72rem;color:rgba(13,9,13,.4);margin-top:6px">Pedido #${a.pedido_id} · ${a.pedidos.visitante_nome||''}</div>`:''}
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+          ${!a.aprovada?`<button class="btn-p" style="padding:6px 12px;font-size:.75rem" onclick="aprovarAval(${a.id})">✅ Aprovar</button>`:''}
+          <button class="btn-s" style="padding:6px 12px;font-size:.75rem;color:#ef4444" onclick="rejeitarAval(${a.id})">🗑 ${a.aprovada?'Remover':'Rejeitar'}</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+async function aprovarAval(id){
+  await sbPatch(`/rest/v1/avaliacoes?id=eq.${id}`,{aprovada:true});
+  const a=allAvaliacoes.find(x=>x.id===id);
+  if(a)a.aprovada=true;
+  toast('Avaliação aprovada!','ok');
+  renderAvaliacoes();
+  // Update badge
+  const pending=allAvaliacoes.filter(a=>!a.aprovada).length;
+  const badge=document.getElementById('nb-aval');
+  if(badge){badge.textContent=pending;badge.style.display=pending?'':'none';}
+}
+
+async function rejeitarAval(id){
+  if(!confirm('Remover esta avaliação?'))return;
+  await sbDelete(`/rest/v1/avaliacoes?id=eq.${id}`);
+  allAvaliacoes=allAvaliacoes.filter(x=>x.id!==id);
+  toast('Avaliação removida','ok');
+  renderAvaliacoes();
+}
+
+// ── ALERTAS DE ESTOQUE ────────────────────────────────────────────
+async function loadAlertasCount(){
+  const d=await sbGet('/rest/v1/alertas_estoque?notificado=eq.false&select=id,produto_id,email,nome,created_at&limit=100');
+  if(!Array.isArray(d)||!d.length)return;
+  // Show in dashboard
+  const dEl=document.getElementById('dRecentOrders');
+  if(dEl&&d.length){
+    const alertaDiv=document.createElement('div');
+    alertaDiv.style.cssText='background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:12px;padding:12px;margin-bottom:12px';
+    alertaDiv.innerHTML=`<div style="font-weight:700;font-size:.84rem;margin-bottom:6px">📬 ${d.length} alerta${d.length!==1?'s':''} de estoque pendente${d.length!==1?'s':''}</div>`+
+      d.slice(0,3).map(a=>`<div style="font-size:.78rem;color:rgba(13,9,13,.5)">${a.nome||a.email} quer ser avisado</div>`).join('');
+    dEl.parentNode.insertBefore(alertaDiv,dEl);
+  }
+}
 </script>
 
 <div id="shareModal" class="modal-ov" style="display:none">

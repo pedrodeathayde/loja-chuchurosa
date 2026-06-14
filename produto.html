@@ -206,6 +206,32 @@ nav{background:var(--dark);padding:0 48px;height:66px;display:flex;align-items:c
 .gallery-main:hover img{transform:scale(1.5)}
 @media(max-width:768px){.gallery-main:hover img{transform:none}}
 
+
+/* ── AVALIAÇÕES ── */
+.reviews{max-width:1200px;margin:0 auto;padding:0 48px 60px}
+.reviews-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.reviews-title{font-family:var(--fd);font-size:1.4rem;font-weight:700}
+.reviews-avg{display:flex;align-items:center;gap:10px}
+.reviews-avg-num{font-family:var(--fd);font-size:2rem;font-weight:700;color:var(--dark)}
+.reviews-avg-stars{color:#f59e0b;font-size:1.1rem}
+.reviews-avg-count{font-size:.82rem;color:rgba(13,9,13,.4)}
+.review-card{background:#fff;border-radius:16px;padding:20px;margin-bottom:12px;border:1px solid rgba(229,37,100,.06)}
+.review-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;flex-wrap:wrap}
+.review-name{font-weight:700;font-size:.9rem}
+.review-stars{color:#f59e0b;font-size:.85rem}
+.review-date{font-size:.72rem;color:rgba(13,9,13,.35)}
+.review-text{font-size:.86rem;color:rgba(13,9,13,.65);line-height:1.6;margin-bottom:10px}
+.review-photo{width:80px;height:80px;object-fit:cover;border-radius:10px;cursor:pointer}
+.reviews-empty{text-align:center;padding:32px;color:rgba(13,9,13,.35);font-size:.88rem}
+@media(max-width:768px){.reviews{padding:0 16px 48px}}
+
+
+/* ── ALERTA ESTOQUE ── */
+.stock-alert{margin-top:12px}
+.stock-alert-form{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.stock-alert-form input{flex:1;min-width:0;padding:10px 14px;border:1.5px solid rgba(229,37,100,.2);border-radius:100px;font-family:var(--fb);font-size:.84rem;outline:none}
+.stock-alert-form button{background:var(--pink);color:#fff;border:none;border-radius:100px;padding:10px 18px;font-family:var(--fb);font-size:.84rem;font-weight:600;cursor:pointer;white-space:nowrap}
+
 </style>
 </head>
 <body>
@@ -299,6 +325,16 @@ nav{background:var(--dark);padding:0 48px;height:66px;display:flex;align-items:c
   <h2>Você também pode gostar</h2>
   <div class="related-grid" id="relatedGrid"></div>
 </div>
+
+
+<!-- AVALIAÇÕES -->
+<section class="reviews" id="reviewsSection" style="display:none">
+  <div class="reviews-header">
+    <div class="reviews-title">Avaliações</div>
+    <div class="reviews-avg" id="reviewsAvg"></div>
+  </div>
+  <div id="reviewsList"></div>
+</section>
 
 <div class="toast" id="toast"></div>
 <div class="sticky-cta" id="stickyCta"><div><div class="sticky-cta-name" id="stickyName">—</div><div class="sticky-cta-price" id="stickyPrice"></div></div><button class="sticky-cta-btn" onclick="doAddToCart()">🛒 Adicionar</button></div>
@@ -1714,6 +1750,7 @@ async function loadProduct(){
     loadVars();
     loadRelated();
     checkFav();
+    loadReviews();
   }catch(e){console.error(e);}
 }
 
@@ -2171,6 +2208,72 @@ function updateSEO(p,imgUrl){
     if(!tag){tag=document.createElement('meta');tag.setAttribute('property','og:'+k);document.head.appendChild(tag);}
     tag.content=v;
   });
+}
+
+// ── AVALIAÇÕES ────────────────────────────────────────────────────
+async function loadReviews(){
+  if(!id)return;
+  try{
+    const r=await fetch(`${SB}/rest/v1/avaliacoes?produto_id=eq.${id}&aprovada=eq.true&select=*&order=created_at.desc`,{headers:HDR});
+    // Also load reviews by pedido that includes this product
+    const r2=await fetch(`${SB}/rest/v1/avaliacoes?aprovada=eq.true&produto_id=is.null&select=avaliacoes.*&pedido_id=in.(select pedido_id from itens_pedido where produto_id=${id})&order=created_at.desc&limit=10`,{headers:HDR});
+    let reviews=await r.json();
+    if(!Array.isArray(reviews))reviews=[];
+
+    // Also fetch general reviews from orders with this product
+    const riPedidos=await fetch(`${SB}/rest/v1/itens_pedido?produto_id=eq.${id}&select=pedido_id`,{headers:HDR});
+    const pedidoIds=await riPedidos.json();
+    if(Array.isArray(pedidoIds)&&pedidoIds.length){
+      const ids=pedidoIds.map(p=>p.pedido_id).join(',');
+      const rg=await fetch(`${SB}/rest/v1/avaliacoes?pedido_id=in.(${ids})&aprovada=eq.true&select=*&order=created_at.desc`,{headers:HDR});
+      const general=await rg.json();
+      if(Array.isArray(general)) reviews=[...reviews,...general];
+    }
+
+    // Deduplicate
+    const seen=new Set();
+    reviews=reviews.filter(r=>{if(seen.has(r.id))return false;seen.add(r.id);return true;});
+
+    const section=document.getElementById('reviewsSection');
+    const list=document.getElementById('reviewsList');
+    const avg=document.getElementById('reviewsAvg');
+    if(!reviews.length){section.style.display='none';return;}
+    section.style.display='block';
+
+    // Average
+    const mean=(reviews.reduce((s,r)=>s+r.estrelas,0)/reviews.length).toFixed(1);
+    avg.innerHTML=`<div class="reviews-avg-num">${mean}</div><div><div class="reviews-avg-stars">${'⭐'.repeat(Math.round(mean))}</div><div class="reviews-avg-count">${reviews.length} avaliação${reviews.length!==1?'ões':''}</div></div>`;
+
+    list.innerHTML=reviews.map(r=>`
+      <div class="review-card">
+        <div class="review-card-head">
+          <div>
+            <div class="review-name">${r.cliente_nome||'Cliente'}</div>
+            <div class="review-stars">${'⭐'.repeat(r.estrelas)}</div>
+          </div>
+          <div class="review-date">${new Date(r.created_at).toLocaleDateString('pt-BR')}</div>
+        </div>
+        ${r.comentario?`<div class="review-text">${r.comentario}</div>`:''}
+        ${r.foto_url?`<img src="${r.foto_url}" class="review-photo" alt="Foto da avaliação" onclick="window.open('${r.foto_url}','_blank')">`:''}
+      </div>`).join('');
+  }catch(e){console.log('reviews:',e);}
+}
+
+// ── ALERTA DE ESTOQUE ─────────────────────────────────────────────
+async function alertarEstoque(){
+  const email=document.getElementById('alertEmail')?.value.trim();
+  if(!email||!email.includes('@')){toast('Digite um email válido','err');return;}
+  const btn=document.getElementById('alertBtn');
+  btn.disabled=true;btn.textContent='Salvando...';
+  try{
+    await fetch(`${SB}/rest/v1/alertas_estoque`,{
+      method:'POST',headers:{...HDR,'Prefer':'return=minimal'},
+      body:JSON.stringify({produto_id:parseInt(id),email,nome:prod?.name})
+    });
+    toast('Você será avisado quando voltar! 📧','ok');
+    document.getElementById('alertEmail').value='';
+  }catch(e){toast('Erro ao salvar email','err');}
+  btn.disabled=false;btn.textContent='Avisar-me';
 }
 </script>
 

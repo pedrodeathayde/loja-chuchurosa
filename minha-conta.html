@@ -171,6 +171,24 @@ nav{background:var(--dark);padding:0 48px;height:66px;display:flex;align-items:c
   .login-card{padding:36px 24px}
   .frow.c2,.frow.c3{grid-template-columns:1fr}
 }
+
+/* ── INLINE REVIEW ── */
+.review-form{background:rgba(229,37,100,.03);border:1.5px solid rgba(229,37,100,.1);border-radius:14px;padding:18px;margin-top:14px;display:none}
+.review-form.open{display:block}
+.review-form h3{font-family:var(--fd);font-size:.95rem;margin-bottom:14px}
+.inline-stars{display:flex;gap:6px;margin-bottom:12px}
+.inline-star{font-size:1.8rem;cursor:pointer;transition:transform .15s;line-height:1;filter:grayscale(1);opacity:.4}
+.inline-star.active{filter:none;opacity:1;transform:scale(1.1)}
+.review-form textarea{width:100%;padding:10px 12px;border:1.5px solid rgba(229,37,100,.15);border-radius:10px;font-family:var(--fb);font-size:.84rem;resize:vertical;min-height:80px;outline:none;margin-bottom:10px}
+.review-form textarea:focus{border-color:var(--pink2)}
+.review-form-footer{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.review-photo-label{display:flex;align-items:center;gap:6px;font-size:.78rem;color:rgba(13,9,13,.5);cursor:pointer;padding:8px 12px;border:1.5px dashed rgba(229,37,100,.2);border-radius:100px;transition:all .2s}
+.review-photo-label:hover{border-color:var(--pink2);color:var(--pink2)}
+.review-thumb{width:40px;height:40px;object-fit:cover;border-radius:8px}
+.btn-review-submit{background:var(--pink2);color:#fff;border:none;border-radius:100px;padding:9px 20px;font-family:var(--fb);font-size:.82rem;font-weight:700;cursor:pointer;margin-left:auto}
+.btn-review-submit:disabled{opacity:.5}
+.review-done{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:12px;padding:12px 16px;margin-top:10px;font-size:.84rem;color:#059669;display:flex;align-items:center;gap:8px}
+
 </style>
 </head>
 <body>
@@ -1788,7 +1806,30 @@ function renderOrders(){
         </div>`:''}
         `:'<p style="color:var(--red);font-size:.85rem;margin-bottom:10px">Este pedido foi cancelado.</p>'}
         <div class="order-items" id="items-${o.id}"><div class="ld"><div class="spin"></div></div></div>
-        ${o.visitante_telefone?`<button class="btn-wa" onclick="contactWA('${o.visitante_telefone?.replace(/\D/g,'')}','${o.id}')">💬 Falar sobre este pedido</button>`:''}</div>
+        ${o.visitante_telefone?`<button class="btn-wa" onclick="contactWA('${o.visitante_telefone?.replace(/\D/g,'')}','${o.id}')">💬 Falar sobre este pedido</button>`:''}
+        ${o.status==='entregue'?`
+        <div id="review-done-${o.id}" class="review-done" style="display:none">✅ Obrigada pela avaliação! Será publicada em breve.</div>
+        <button onclick="toggleReviewForm(${o.id})" id="review-btn-${o.id}" style="display:inline-flex;align-items:center;gap:6px;background:var(--pink2);color:#fff;border:none;border-radius:100px;padding:9px 18px;font-family:var(--fb);font-size:.82rem;font-weight:600;cursor:pointer;margin-top:10px">⭐ Avaliar pedido</button>
+        <div class="review-form" id="review-form-${o.id}">
+          <h3>Como foi seu pedido? ⭐</h3>
+          <div class="inline-stars" id="review-stars-${o.id}">
+            <span class="inline-star" data-oid="${o.id}" data-v="1">⭐</span>
+            <span class="inline-star" data-oid="${o.id}" data-v="2">⭐</span>
+            <span class="inline-star" data-oid="${o.id}" data-v="3">⭐</span>
+            <span class="inline-star" data-oid="${o.id}" data-v="4">⭐</span>
+            <span class="inline-star" data-oid="${o.id}" data-v="5">⭐</span>
+          </div>
+          <textarea id="review-text-${o.id}" placeholder="Conte o que achou da qualidade, prazo e embalagem..."></textarea>
+          <div class="review-form-footer">
+            <label class="review-photo-label">
+              📸 Adicionar foto
+              <input type="file" accept="image/*" style="display:none" onchange="previewReviewPhoto(this,${o.id})">
+            </label>
+            <img id="review-photo-${o.id}" class="review-thumb" style="display:none">
+            <button class="btn-review-submit" id="review-sub-${o.id}" onclick="enviarReviewInline(${o.id})">Enviar ✨</button>
+          </div>
+        </div>`:''}
+      </div>
     </div>`;
   }).join('');
 }
@@ -1990,6 +2031,86 @@ const _origOnLogin=onLogin;
   }
 })();
 
+
+// ── INLINE REVIEW ────────────────────────────────────────────────
+const _reviewStars={};
+const _reviewPhotos={};
+
+function toggleReviewForm(oid){
+  const form=document.getElementById('review-form-'+oid);
+  if(!form)return;
+  form.classList.toggle('open');
+  // Init stars
+  document.querySelectorAll(`#review-stars-${oid} .inline-star`).forEach(s=>{
+    s.onclick=()=>{
+      _reviewStars[oid]=+s.dataset.v;
+      document.querySelectorAll(`#review-stars-${oid} .inline-star`).forEach((st,i)=>{
+        st.classList.toggle('active',i<_reviewStars[oid]);
+      });
+    };
+  });
+}
+
+function previewReviewPhoto(input,oid){
+  const file=input.files[0];
+  if(!file)return;
+  _reviewPhotos[oid]=file;
+  const img=document.getElementById('review-photo-'+oid);
+  img.src=URL.createObjectURL(file);
+  img.style.display='block';
+}
+
+async function enviarReviewInline(oid){
+  const stars=_reviewStars[oid];
+  if(!stars){alert('Selecione as estrelas ⭐');return;}
+  const btn=document.getElementById('review-sub-'+oid);
+  btn.disabled=true;btn.textContent='Enviando...';
+
+  try{
+    let fotoUrl=null;
+    if(_reviewPhotos[oid]){
+      // Compress
+      const blob=await new Promise(res=>{
+        const img=new Image(),url=URL.createObjectURL(_reviewPhotos[oid]);
+        img.onload=()=>{
+          URL.revokeObjectURL(url);
+          let w=img.naturalWidth,h=img.naturalHeight;
+          if(w>1000){h=Math.round(h*1000/w);w=1000;}
+          const c=document.createElement('canvas');c.width=w;c.height=h;
+          c.getContext('2d').drawImage(img,0,0,w,h);
+          c.toBlob(b=>res(b),'image/jpeg',.82);
+        };img.src=url;
+      });
+      const fname=`pedido-${oid}-${Date.now()}.jpg`;
+      const up=await fetch(`${SB}/storage/v1/object/avaliacoes/${fname}`,{
+        method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'image/jpeg','x-upsert':'true'},body:blob
+      });
+      if(up.ok)fotoUrl=`${SB}/storage/v1/object/public/avaliacoes/${fname}`;
+    }
+
+    await fetch(`${SB}/rest/v1/avaliacoes`,{
+      method:'POST',
+      headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({
+        pedido_id:oid,
+        cliente_nome:currentUser?.user_metadata?.nome||currentUser?.email||'Cliente',
+        cliente_email:currentUser?.email,
+        estrelas:stars,
+        comentario:document.getElementById('review-text-'+oid)?.value.trim()||null,
+        foto_url:fotoUrl,
+        aprovada:false
+      })
+    });
+
+    // Show done, hide button and form
+    document.getElementById('review-done-'+oid).style.display='flex';
+    document.getElementById('review-btn-'+oid).style.display='none';
+    document.getElementById('review-form-'+oid).classList.remove('open');
+  }catch(e){
+    btn.disabled=false;btn.textContent='Enviar ✨';
+    alert('Erro ao enviar. Tente novamente.');
+  }
+}
 </script>
 </body>
 </html>
