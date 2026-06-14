@@ -1748,8 +1748,8 @@ async function loadOrders(){
   document.getElementById('tab-orders').textContent=`📦 Pedidos (${orders.length})`;
 }
 
-const STATUS_STEPS=['pendente','pago','producao','enviado','entregue'];
-const STATUS_LABELS={pendente:'⏳ Aguardando',pago:'✅ Pago',producao:'🔨 Em produção',enviado:'🚚 Enviado',entregue:'📬 Entregue',cancelado:'❌ Cancelado'};
+const STATUS_STEPS=['pendente','confirmado','pago','em_producao','pronto','enviado','entregue'];
+const STATUS_LABELS={pendente:'⏳ Aguardando pagamento',confirmado:'✅ Confirmado',pago:'💳 Pagamento confirmado',em_producao:'🔨 Em produção',pronto:'📦 Pronto para envio',enviado:'🚚 Enviado',entregue:'🎉 Entregue',cancelado:'❌ Cancelado',recusado:'❌ Pagamento recusado'};
 
 function renderOrders(){
   const el=document.getElementById('ordersList');
@@ -1763,10 +1763,10 @@ function renderOrders(){
     const steps=STATUS_STEPS.map((s,i)=>{
       const done=!isCanceled&&i<=stepIdx;
       const curr=!isCanceled&&i===stepIdx;
-      const icons={pendente:'⏳',pago:'✅',producao:'🔨',enviado:'🚚',entregue:'📬'};
+      const icons={pendente:'📋',confirmado:'✅',pago:'💳',em_producao:'🔨',pronto:'📦',enviado:'🚚',entregue:'🎉'};
       return `<div class="track-step ${done?'done':''} ${curr?'current':''}">
         <div class="track-dot">${done||curr?icons[s]:''}</div>
-        <div class="track-label">${s==='pendente'?'Pedido':s==='pago'?'Pago':s==='producao'?'Produção':s==='enviado'?'Enviado':'Entregue'}</div>
+        <div class="track-label">${{pendente:'Pedido',confirmado:'Confirmado',pago:'Pago',em_producao:'Em produção',pronto:'Pronto',enviado:'Enviado',entregue:'Entregue'}[s]||s}</div>
       </div>`;
     }).join('');
     return `<div class="order-card">
@@ -1780,7 +1780,13 @@ function renderOrders(){
         <span style="color:rgba(13,9,13,.3);font-size:.9rem" id="arr-${o.id}">▾</span>
       </div>
       <div class="order-body" id="body-${o.id}">
-        ${!isCanceled?`<div class="order-track">${steps}</div>`:'<p style="color:var(--red);font-size:.85rem;margin-bottom:10px">Este pedido foi cancelado.</p>'}
+        ${!isCanceled?`<div class="order-track">${steps}</div>
+        ${o.tracking_code?`<div style="background:rgba(229,37,100,.05);border-radius:12px;padding:12px 14px;margin-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span style="font-size:.78rem;color:rgba(13,9,13,.5)">Código de rastreio:</span>
+          <span style="font-weight:700;font-size:.84rem;font-family:monospace">${o.tracking_code}</span>
+          ${o.tracking_url?`<a href="${o.tracking_url}" target="_blank" style="background:var(--pink);color:#fff;border-radius:100px;padding:5px 14px;font-size:.75rem;font-weight:700;text-decoration:none;white-space:nowrap">🔍 Rastrear →</a>`:''}
+        </div>`:''}
+        `:'<p style="color:var(--red);font-size:.85rem;margin-bottom:10px">Este pedido foi cancelado.</p>'}
         <div class="order-items" id="items-${o.id}"><div class="ld"><div class="spin"></div></div></div>
         ${o.visitante_telefone?`<button class="btn-wa" onclick="contactWA('${o.visitante_telefone?.replace(/\D/g,'')}','${o.id}')">💬 Falar sobre este pedido</button>`:''}</div>
     </div>`;
@@ -1795,14 +1801,27 @@ function toggleOrder(id){
   if(isOpen)loadOrderItems(id);
 }
 
+// fotos for order items
+let _orderFotosCache={};
+async function loadOrderItemFoto(prodId){
+  if(_orderFotosCache[prodId]!==undefined)return _orderFotosCache[prodId];
+  try{
+    const r=await fetch(SB+'/rest/v1/fotos?produto_id=eq.'+prodId+'&select=url&order=ordem&limit=1',{headers:HDR});
+    const d=await r.json();
+    _orderFotosCache[prodId]=d[0]?.url||'';
+    return _orderFotosCache[prodId];
+  }catch(e){return'';}
+}
 async function loadOrderItems(orderId){
   const el=document.getElementById('items-'+orderId);
   if(!el||el.dataset.loaded)return;
   el.dataset.loaded='1';
   const items=await sbGet(`/rest/v1/itens_pedido?select=*&pedido_id=eq.${orderId}`);
   if(!Array.isArray(items)||!items.length){el.innerHTML='<p style="font-size:.82rem;color:rgba(13,9,13,.38)">Detalhes não disponíveis</p>';return;}
-  el.innerHTML=items.map(it=>{
-    const url=getUrl(it.nome_produto||'');
+  const fotosPromises=items.map(it=>it.produto_id?loadOrderItemFoto(it.produto_id):Promise.resolve(''));
+  const fotos=await Promise.all(fotosPromises);
+  el.innerHTML=items.map((it,idx)=>{
+    const url=fotos[idx]||getUrl(it.nome_produto||'');
     return `<div class="oi">
       <div class="oi-img">${url?`<img src="${url}" loading="lazy">`:'<span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">🌸</span>'}</div>
       <div><div class="oi-name">${it.nome_produto||'Produto'}</div><div class="oi-qty">Qtd: ${it.quantidade||1}</div></div>

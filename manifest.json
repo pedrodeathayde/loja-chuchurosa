@@ -1,0 +1,21 @@
+{
+  "name": "Chuchu Rosa",
+  "short_name": "Chuchu Rosa",
+  "description": "Fantasia e artesanato infantil feito com carinho",
+  "start_url": "/loja-chuchurosa/loja.html",
+  "display": "standalone",
+  "background_color": "#f8f0f6",
+  "theme_color": "#e52564",
+  "icons": [
+    {
+      "src": "logotransp.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logotransp.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

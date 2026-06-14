@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rastrear Pedido — Chuchu Rosa</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--pink:#e52564;--rose:#f04d7f;--dark:#0d090d;--cream:#f8f0f6;--fd:'Playfair Display',serif;--fb:'Outfit',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--cream);font-family:var(--fb);color:var(--dark);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.card{background:#fff;border-radius:20px;padding:32px;max-width:480px;width:100%;box-shadow:0 8px 40px rgba(229,37,100,.08)}
+.logo{font-family:var(--fd);font-size:1.5rem;font-weight:700;color:var(--pink);text-align:center;margin-bottom:8px}
+h1{font-family:var(--fd);font-size:1.2rem;text-align:center;margin-bottom:4px}
+p{font-size:.84rem;color:rgba(13,9,13,.5);text-align:center;margin-bottom:24px}
+.input-wrap{display:flex;gap:8px;margin-bottom:24px}
+input{flex:1;padding:12px 16px;border:1.5px solid rgba(229,37,100,.2);border-radius:12px;font-family:var(--fb);font-size:.88rem;outline:none}
+input:focus{border-color:var(--pink)}
+button{background:var(--pink);color:#fff;border:none;border-radius:12px;padding:12px 20px;font-family:var(--fb);font-size:.88rem;font-weight:700;cursor:pointer;white-space:nowrap}
+button:hover{background:var(--rose)}
+#result{display:none;border-top:1px solid rgba(229,37,100,.1);padding-top:20px}
+.track-status{display:flex;align-items:center;gap:12px;padding:12px 0}
+.track-dot{width:12px;height:12px;border-radius:50%;background:rgba(229,37,100,.2);flex-shrink:0}
+.track-dot.done{background:var(--pink)}
+.track-info{flex:1}
+.track-label{font-size:.84rem;font-weight:600}
+.track-sub{font-size:.75rem;color:rgba(13,9,13,.45)}
+.track-link{display:block;margin-top:16px;background:rgba(229,37,100,.06);border-radius:12px;padding:12px 16px;text-decoration:none;color:var(--pink);font-size:.82rem;font-weight:600;text-align:center}
+.error{color:#ef4444;font-size:.82rem;text-align:center;margin-top:-12px;margin-bottom:12px;display:none}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">🌸 Chuchu Rosa</div>
+  <h1>Rastrear Pedido</h1>
+  <p>Digite o código de rastreio ou número do pedido</p>
+  <div class="input-wrap">
+    <input id="trackInput" type="text" placeholder="Ex: BR123456789BR ou #42" onkeydown="if(event.key==='Enter')rastrear()">
+    <button onclick="rastrear()">Rastrear</button>
+  </div>
+  <div class="error" id="trackError">Pedido não encontrado</div>
+  <div id="result">
+    <div id="trackSteps"></div>
+    <a id="trackExternal" href="#" target="_blank" class="track-link" style="display:none">🔍 Ver no Melhor Rastreio →</a>
+  </div>
+</div>
+<script>
+const SB='https://oznpfqsgurztffwfyfec.supabase.co';
+const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA';
+const HDR={apikey:KEY,Authorization:'Bearer '+KEY,Accept:'application/json'};
+
+const STATUS_STEPS=[
+  {key:'pendente',label:'Pedido recebido',icon:'📋'},
+  {key:'confirmado',label:'Confirmado',icon:'✅'},
+  {key:'em_producao',label:'Em produção',icon:'🔧'},
+  {key:'pronto',label:'Pronto para envio',icon:'📦'},
+  {key:'enviado',label:'Enviado',icon:'🚚'},
+  {key:'entregue',label:'Entregue',icon:'🎉'},
+];
+
+async function rastrear(){
+  const val=document.getElementById('trackInput').value.trim();
+  if(!val)return;
+  document.getElementById('trackError').style.display='none';
+  document.getElementById('result').style.display='none';
+  
+  let pedido=null;
+  // Try by tracking code
+  const r1=await fetch(SB+'/rest/v1/pedidos?tracking_code=eq.'+encodeURIComponent(val)+'&select=*',{headers:HDR});
+  const d1=await r1.json();
+  if(d1[0])pedido=d1[0];
+  
+  // Try by ID
+  if(!pedido&&/^#?\d+$/.test(val)){
+    const id=val.replace('#','');
+    const r2=await fetch(SB+'/rest/v1/pedidos?id=eq.'+id+'&select=*',{headers:HDR});
+    const d2=await r2.json();
+    if(d2[0])pedido=d2[0];
+  }
+  
+  if(!pedido){document.getElementById('trackError').style.display='block';return;}
+  
+  const currentIdx=STATUS_STEPS.findIndex(s=>s.key===pedido.status);
+  const steps=document.getElementById('trackSteps');
+  steps.innerHTML=STATUS_STEPS.map((s,i)=>`
+    <div class="track-status">
+      <div class="track-dot ${i<=currentIdx?'done':''}"></div>
+      <div class="track-info">
+        <div class="track-label" style="opacity:${i<=currentIdx?1:.4}">${s.icon} ${s.label}</div>
+        ${i===currentIdx&&pedido.updated_at?`<div class="track-sub">${new Date(pedido.updated_at).toLocaleDateString('pt-BR')}</div>`:''}
+      </div>
+    </div>`).join('');
+  
+  const extLink=document.getElementById('trackExternal');
+  if(pedido.tracking_url){extLink.href=pedido.tracking_url;extLink.style.display='block';}
+  else if(pedido.tracking_code){extLink.href='https://www.melhorrastreio.com.br/rastreio/'+pedido.tracking_code;extLink.style.display='block';}
+  else extLink.style.display='none';
+  
+  document.getElementById('result').style.display='block';
+}
+</script>
+</body>
+</html>

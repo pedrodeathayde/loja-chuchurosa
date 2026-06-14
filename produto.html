@@ -193,6 +193,19 @@ nav{background:var(--dark);padding:0 48px;height:66px;display:flex;align-items:c
 .gallery-dot{width:6px;height:6px;border-radius:50%;background:rgba(229,37,100,.2);transition:all .2s;cursor:pointer;border:none;padding:0}
 .gallery-dot.active{background:var(--pink);width:18px;border-radius:100px}
 
+
+/* ── SHARE ── */
+.share-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.share-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:100px;border:1.5px solid rgba(229,37,100,.2);background:#fff;font-family:var(--fb);font-size:.78rem;font-weight:600;cursor:pointer;color:var(--dark);transition:all .2s}
+.share-btn:hover{background:var(--pink);color:#fff;border-color:var(--pink)}
+
+
+/* ── ZOOM ── */
+.gallery-main{overflow:hidden}
+.gallery-main img{transition:transform .3s ease;transform-origin:var(--ox,50%) var(--oy,50%)}
+.gallery-main:hover img{transform:scale(1.5)}
+@media(max-width:768px){.gallery-main:hover img{transform:none}}
+
 </style>
 </head>
 <body>
@@ -1706,6 +1719,7 @@ async function loadProduct(){
 
 function renderProduct(){
   document.title=prod.name+' — Chuchu Rosa';
+  updateSEO(prod, window._prodFotos?.[0]||getUrl(prod.name));
 
   // Dynamic SEO
   const prodUrl=`https://loja.chuchurosa.com.br/produto.html?id=${prod.id}`;
@@ -2113,6 +2127,51 @@ document.addEventListener('keydown',e=>{
     if(e.key==='ArrowRight')lightboxNav(1);
   }
 });
+
+// ── SHARE ─────────────────────────────────────────────────────────
+function shareWA(){
+  const txt=`${prod?.name} — R$ ${fmt(prod?.price||0).replace('R$ ','')}%0A${window.location.href}`;
+  window.open('https://wa.me/?text='+encodeURIComponent(prod?.name+' — '+fmt(prod?.price||0)+'
+'+window.location.href),'_blank');
+}
+function shareCopy(){
+  navigator.clipboard.writeText(window.location.href).then(()=>toast('Link copiado!','ok'));
+}
+async function shareNative(){
+  if(navigator.share){
+    try{await navigator.share({title:prod?.name,text:prod?.name+' — '+fmt(prod?.price||0),url:window.location.href});}
+    catch(e){}
+  } else { shareCopy(); }
+}
+
+// ── ZOOM ──────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  const gm=document.querySelector('.gallery-main');
+  if(!gm)return;
+  gm.addEventListener('mousemove',e=>{
+    const r=gm.getBoundingClientRect();
+    const x=((e.clientX-r.left)/r.width*100).toFixed(1)+'%';
+    const y=((e.clientY-r.top)/r.height*100).toFixed(1)+'%';
+    gm.style.setProperty('--ox',x);
+    gm.style.setProperty('--oy',y);
+  });
+});
+
+// ── SEO DINÂMICO ─────────────────────────────────────────────────
+function updateSEO(p,imgUrl){
+  const desc=`${p.name} — Produto artesanal da Chuchu Rosa. ${p.descricao||'Feito com carinho e dedicação.'} Prazo: ${p.prazo_producao_dias||5} dias úteis.`;
+  // Meta description
+  let metaDesc=document.querySelector('meta[name="description"]');
+  if(!metaDesc){metaDesc=document.createElement('meta');metaDesc.name='description';document.head.appendChild(metaDesc);}
+  metaDesc.content=desc.slice(0,160);
+  // OG tags
+  const ogs={title:p.name+' — Chuchu Rosa',description:desc.slice(0,200),image:imgUrl||'',url:window.location.href,type:'product'};
+  Object.entries(ogs).forEach(([k,v])=>{
+    let tag=document.querySelector(`meta[property="og:${k}"]`);
+    if(!tag){tag=document.createElement('meta');tag.setAttribute('property','og:'+k);document.head.appendChild(tag);}
+    tag.content=v;
+  });
+}
 </script>
 
 <div id="lightbox" onclick="if(event.target===this)fecharLightbox()">
