@@ -178,6 +178,21 @@ nav{background:var(--dark);padding:0 48px;height:66px;display:flex;align-items:c
 .sticky-cta-btn{background:var(--pink);color:#fff;border:none;border-radius:100px;padding:10px 20px;font-family:var(--fb);font-size:.85rem;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .2s}
 .sticky-cta-btn:hover{background:var(--rose)}
 @media(min-width:901px){.sticky-cta{display:none!important}}
+
+/* ── LIGHTBOX ── */
+#lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9000;display:none;align-items:center;justify-content:center;cursor:zoom-out}
+#lightbox img{max-width:95vw;max-height:90vh;object-fit:contain;border-radius:8px;user-select:none}
+#lightboxClose{position:fixed;top:16px;right:16px;background:rgba(255,255,255,.15);border:none;color:#fff;width:40px;height:40px;border-radius:50%;font-size:1.1rem;cursor:pointer}
+#lightboxPrev,#lightboxNext{position:fixed;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:none;color:#fff;width:44px;height:44px;border-radius:50%;font-size:1.3rem;cursor:pointer}
+#lightboxPrev{left:12px}#lightboxNext{right:12px}
+#lightboxIdx{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.6);font-size:.78rem}
+
+
+/* ── GALLERY DOTS ── */
+.gallery-dots{display:flex;justify-content:center;gap:6px;margin-top:8px}
+.gallery-dot{width:6px;height:6px;border-radius:50%;background:rgba(229,37,100,.2);transition:all .2s;cursor:pointer;border:none;padding:0}
+.gallery-dot.active{background:var(--pink);width:18px;border-radius:100px}
+
 </style>
 </head>
 <body>
@@ -204,7 +219,7 @@ nav{background:var(--dark);padding:0 48px;height:66px;display:flex;align-items:c
 
   <!-- GALLERY -->
   <div class="gallery">
-    <div class="gallery-main" id="galleryMain">
+    <div class="gallery-main" onclick="abrirLightbox(galleryIdx)" id="galleryMain">
       <div class="ph">🌸</div>
     </div>
     <div class="gallery-thumbs" id="galleryThumbs"></div>
@@ -2064,6 +2079,49 @@ function renderDesc(text){
 
 loadProduct();
 
+
+// ── LIGHTBOX ─────────────────────────────────────────────────────
+let _lbIdx=0;
+function abrirLightbox(idx){
+  const urls=window._prodFotos||getUrls(prod?.name);
+  if(!urls||!urls.length)return;
+  _lbIdx=idx||0;
+  const lb=document.getElementById('lightbox');
+  const img=document.getElementById('lightboxImg');
+  if(!lb||!img)return;
+  img.src=urls[_lbIdx];
+  document.getElementById('lightboxIdx').textContent=(_lbIdx+1)+' / '+urls.length;
+  lb.style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function fecharLightbox(){
+  const lb=document.getElementById('lightbox');
+  if(lb)lb.style.display='none';
+  document.body.style.overflow='';
+}
+function lightboxNav(dir){
+  const urls=window._prodFotos||getUrls(prod?.name);
+  if(!urls)return;
+  _lbIdx=(_lbIdx+dir+urls.length)%urls.length;
+  document.getElementById('lightboxImg').src=urls[_lbIdx];
+  document.getElementById('lightboxIdx').textContent=(_lbIdx+1)+' / '+urls.length;
+}
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('lightbox')?.style.display==='flex'){
+    if(e.key==='Escape')fecharLightbox();
+    if(e.key==='ArrowLeft')lightboxNav(-1);
+    if(e.key==='ArrowRight')lightboxNav(1);
+  }
+});
 </script>
+
+<div id="lightbox" onclick="if(event.target===this)fecharLightbox()">
+  <button id="lightboxClose" onclick="fecharLightbox()">✕</button>
+  <button id="lightboxPrev" onclick="lightboxNav(-1)">‹</button>
+  <img id="lightboxImg" src="" alt="">
+  <button id="lightboxNext" onclick="lightboxNav(1)">›</button>
+  <div id="lightboxIdx"></div>
+</div>
+
 </body>
 </html>
