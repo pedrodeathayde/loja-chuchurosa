@@ -2167,9 +2167,8 @@ document.addEventListener('keydown',e=>{
 
 // ── SHARE ─────────────────────────────────────────────────────────
 function shareWA(){
-  const txt=`${prod?.name} — R$ ${fmt(prod?.price||0).replace('R$ ','')}%0A${window.location.href}`;
-  window.open('https://wa.me/?text='+encodeURIComponent(prod?.name+' — '+fmt(prod?.price||0)+'
-'+window.location.href),'_blank');
+  const text=encodeURIComponent((prod?.name||'')+' — '+fmt(prod?.price||0)+'\n'+window.location.href);
+  window.open('https://wa.me/?text='+text,'_blank');
 }
 function shareCopy(){
   navigator.clipboard.writeText(window.location.href).then(()=>toast('Link copiado!','ok'));
