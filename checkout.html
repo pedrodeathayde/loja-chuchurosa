@@ -164,10 +164,16 @@ nav{background:rgba(255,249,246,.97);backdrop-filter:blur(16px);border-bottom:1p
 .frete-opt-info{font-size:.72rem;color:rgba(13,9,13,.4);margin-top:2px}
 .frete-opt-price{margin-left:auto;font-weight:800;color:var(--rose);font-size:.95rem;white-space:nowrap}
 .frete-loading{text-align:center;padding:12px;color:rgba(13,9,13,.35);font-size:.82rem}
-</style>
 
-  <!-- Mercado Pago SDK -->
-  <script src="https://sdk.mercadopago.com/js/v2"></script>
+/* ── CUPOM ── */
+.cupom-wrap{display:flex;gap:8px;margin-bottom:12px}
+.cupom-wrap input{flex:1;padding:10px 14px;border:1.5px solid rgba(229,37,100,.2);border-radius:10px;font-family:var(--fb);font-size:.84rem;outline:none;text-transform:uppercase}
+.cupom-wrap input:focus{border-color:var(--pink)}
+.cupom-wrap button{background:var(--dark);color:#fff;border:none;border-radius:10px;padding:10px 16px;font-family:var(--fb);font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap}
+.cupom-ok{font-size:.78rem;color:#10b981;font-weight:600;margin-bottom:8px;display:none}
+.cupom-err{font-size:.78rem;color:#ef4444;margin-bottom:8px;display:none}
+
+</style>
 </head>
 <body>
 
@@ -198,7 +204,14 @@ nav{background:rgba(255,249,246,.97);backdrop-filter:blur(16px);border-bottom:1p
   <h1>Pedido <em>confirmado!</em></h1>
   <p>Obrigada pela sua compra! Você receberá um e-mail de confirmação em breve. Assim que o pagamento for confirmado, começamos a produção com todo carinho. 🌸</p>
   <div class="success-details" id="successDetails"></div>
-  <button class="btn-back" onclick="window.location.href='loja.html'">Continuar comprando</button>
+  <div style="margin-top:24px;padding:16px;background:rgba(229,37,100,.05);border-radius:12px;font-size:.84rem;color:rgba(13,9,13,.6);line-height:1.6">
+    📦 Acompanhe seu pedido em <strong>Minha conta</strong><br>
+    <span id="redirectCountdown">Redirecionando em <strong id="countNum">5</strong> segundos...</span>
+  </div>
+  <div style="display:flex;gap:10px;margin-top:16px;justify-content:center;flex-wrap:wrap">
+    <button class="btn-back" onclick="window.location.href='minha-conta.html'" style="background:var(--pink);color:#fff;border:none">Ver meus pedidos →</button>
+    <button class="btn-back" onclick="window.location.href='loja.html'" style="background:transparent;border:1.5px solid rgba(13,9,13,.15);color:rgba(13,9,13,.6)">Continuar comprando</button>
+  </div>
 </div>
 
 <!-- CHECKOUT WRAP -->
@@ -214,9 +227,6 @@ nav{background:rgba(255,249,246,.97);backdrop-filter:blur(16px);border-bottom:1p
         <button class="acc-btn active" id="btnVisitante" onclick="setMode('visitante')">Comprar como visitante</button>
         <button class="acc-btn" id="btnConta" onclick="setMode('conta')">Criar conta</button>
       </div>
-      <p style="font-size:.74rem;color:rgba(13,9,13,.4);margin-top:12px;margin-bottom:20px;text-align:center;padding:10px 0;border-top:1px solid rgba(229,37,100,.08)">
-        Já tem conta? <a href="minha-conta.html?next=checkout" style="color:var(--pink);font-weight:700;text-decoration:none">Entrar e preencher automaticamente →</a>
-      </p>
       <div class="form-row cols2">
         <div class="form-group" id="fgNome">
           <label>Nome completo *</label>
@@ -462,7 +472,16 @@ function renderSummary(){
   // Totals
   const subtotal = cart.reduce((s,i)=>s+(i.price||0)*i.qty,0);
   const desconto = payMethod==='pix' ? subtotal*0.05 : 0;
-  const total = subtotal - desconto;
+  // Cupom
+  let cupomVal=0;
+  if(cupomAtivo){
+    if(cupomAtivo.tipo==='porcentagem') cupomVal=(subtotal-desconto)*((cupomAtivo.valor||0)/100);
+    else cupomVal=Math.min(cupomAtivo.valor||0, subtotal-desconto);
+  }
+  const total = subtotal - desconto - cupomVal;
+  // Update cupom display
+  const rowCupom=document.getElementById('osRowCupom');
+  if(rowCupom){rowCupom.style.display=cupomVal>0?'flex':'none';document.getElementById('osCupomVal').textContent='-'+fmt(cupomVal);}
 
   document.getElementById('osSubtotal').textContent = fmt(subtotal);
   document.getElementById('osTotal').textContent = fmt(total);
@@ -595,65 +614,19 @@ async function placeOrder(){
 
   const btn = document.getElementById('btnPlace');
   btn.disabled=true;
-  showLoading('Processando pagamento…');
-
-  // Tokenizar cartão via MP SDK
-  if(payMethod === 'cartao'){
-    try{
-      showLoading('Tokenizando cartão…');
-      const num = document.getElementById('fCardNum').value.replace(/\s/g,'');
-      const [mm, yy] = (document.getElementById('fCardExp').value||'/').split('/');
-      const tokenRes = await mpInstance.createCardToken({
-        cardNumber: num,
-        cardholderName: document.getElementById('fCardName').value,
-        cardExpirationMonth: mm?.trim(),
-        cardExpirationYear: '20'+(yy?.trim()||''),
-        securityCode: document.getElementById('fCardCvv').value,
-        identificationType: 'CPF',
-        identificationNumber: (document.getElementById('fCpf')?.value||'').replace(/\D/g,''),
-      });
-      if(!tokenRes?.id){
-        showToast('Dados do cartão inválidos','err');
-        btn.disabled=false; hideLoading(); return;
-      }
-      cardToken = tokenRes.id;
-    }catch(e){
-      showToast('Erro ao processar cartão. Verifique os dados.','err');
-      btn.disabled=false; hideLoading(); return;
-    }
-  }
-
-  // Tokenizar cartão se necessário
-  if(payMethod === 'cartao'){
-    try{
-      showLoading('Tokenizando cartão…');
-      const [month, year] = (document.getElementById('fCardExp').value||'').split('/');
-      const tokenRes = await mpInstance.fields.createCardToken({
-        cardNumber: document.getElementById('fCardNum').value.replace(/\s/g,''),
-        cardholderName: document.getElementById('fCardName').value,
-        cardExpirationMonth: month?.trim(),
-        cardExpirationYear: '20'+year?.trim(),
-        securityCode: document.getElementById('fCardCvv').value,
-        identificationType: 'CPF',
-        identificationNumber: document.getElementById('fCpf').value.replace(/\D/g,''),
-      });
-      if(tokenRes.error || !tokenRes.id){
-        showToast('Dados do cartão inválidos. Verifique e tente novamente.','err');
-        btn.disabled=false; hideLoading(); return;
-      }
-      cardToken = tokenRes.id;
-    }catch(e){
-      showToast('Erro ao processar cartão. Tente novamente.','err');
-      btn.disabled=false; hideLoading(); return;
-    }
-  }
+  showLoading('Salvando seu pedido…');
 
   const nome  = document.getElementById('fNome').value.trim();
   const email = document.getElementById('fEmail').value.trim();
   const tel   = document.getElementById('fTel').value.trim();
   const subtotal = cart.reduce((s,i)=>s+(i.price||0)*i.qty,0);
   const desconto = payMethod==='pix' ? subtotal*0.05 : 0;
-  const total    = subtotal - desconto;
+  let cupomVal=0;
+  if(cupomAtivo){
+    if(cupomAtivo.tipo==='porcentagem') cupomVal=(subtotal-desconto)*((cupomAtivo.valor||0)/100);
+    else cupomVal=Math.min(cupomAtivo.valor||0, subtotal-desconto);
+  }
+  const total = subtotal - desconto - cupomVal;
   const maxPrazo = Math.max(...cart.map(i=>i.prazo||7));
 
   try {
@@ -728,65 +701,31 @@ async function placeOrder(){
     }
 
     // 4. Redirect to Mercado Pago (when MP token is configured)
-    // 4. Processar pagamento via Mercado Pago
-    showLoading('Enviando para Mercado Pago…');
+    // For now: show success screen + WhatsApp
+    showLoading('Quase lá…');
+    await new Promise(r=>setTimeout(r,800));
+    hideLoading();
+    showSuccess({nome,email,total,prazo:maxPrazo,orderId,payMethod});
 
-    const payer = {
-      nome, email,
-      cpf: document.getElementById('fCpf')?.value.trim()||'',
-      cep: document.getElementById('fCep').value.trim(),
-      logradouro: document.getElementById('fLogradouro').value.trim(),
-      numero: document.getElementById('fNumero').value.trim(),
-      bairro: document.getElementById('fBairro').value.trim(),
-      cidade: document.getElementById('fCidade').value.trim(),
-      estado: document.getElementById('fEstado').value.trim(),
-    };
-
-    let payment_method_mp = {};
-    if(payMethod === 'cartao'){
-      const num = document.getElementById('fCardNum').value.replace(/\s/g,'');
-      const brand = num.startsWith('4') ? 'visa' : /^5[1-5]/.test(num) ? 'master' : 'master';
-      payment_method_mp = {
-        type: 'card', brand, card_type: 'credit_card',
-        token: cardToken,
-        installments: parseInt(document.getElementById('fParcelas')?.value||'1'),
-      };
-    } else if(payMethod === 'pix'){
-      payment_method_mp = { type: 'pix' };
-    } else {
-      payment_method_mp = { type: 'boleto' };
-    }
-
-    const mpRes = await fetch(EDGE_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'create_order',
-        payload: { cart, payer, payment_method: payment_method_mp, total, pedido_id: orderId }
-      })
-    });
-    const mpData = await mpRes.json();
-
-    if(!mpRes.ok || mpData.error){
-      throw new Error(mpData.error?.message || 'Pagamento não processado. Tente novamente.');
-    }
-
-    await fetch(SB+'/rest/v1/pedidos?id=eq.'+orderId, {
-      method: 'PATCH',
-      headers: {...HDR},
-      body: JSON.stringify({ mp_order_id: mpData.order_id, payment_method: payMethod })
-    });
-
+    // Clear cart
     localStorage.removeItem('cr_cart');
     cart=[];
-    hideLoading();
 
-    if(payMethod === 'pix') showPixResult(mpData, orderId, maxPrazo);
-    else if(payMethod === 'boleto') showBoletoResult(mpData, orderId, maxPrazo);
-    else {
-      if(mpData.status === 'failed') throw new Error('Pagamento recusado. Verifique os dados do cartão.');
-      showSuccess({nome,email,total,prazo:maxPrazo,orderId,payMethod});
-    }
+    // Send WhatsApp notification
+    const msg = `Olá! Acabei de fazer um pedido na loja Chuchu Rosa 🌸
+
+Pedido #${orderId}
+Nome: ${nome}
+Total: ${fmt(total)}
+Pagamento: ${payMethod==='pix'?'PIX':payMethod==='cartao'?'Cartão':'Boleto'}
+
+Aguardo confirmação! 😊`;
+    setTimeout(()=>{
+      if(confirm('Deseja enviar os detalhes do pedido pelo WhatsApp para agilizar o atendimento?')){
+        window.open(`https://wa.me/5519993041555?text=${encodeURIComponent(msg)}`,'_blank');
+      }
+    }, 1000);
+
   } catch(err){
     hideLoading();
     btn.disabled=false;
@@ -796,7 +735,6 @@ async function placeOrder(){
 }
 
 function showSuccess({nome,email,total,prazo,orderId,payMethod}){
-  offerAccountCreation(email, nome);
   document.getElementById('checkoutWrap').style.display='none';
   const ss=document.getElementById('successScreen');
   ss.classList.add('show');
@@ -813,6 +751,7 @@ function showSuccess({nome,email,total,prazo,orderId,payMethod}){
   document.getElementById('step4').classList.add('done','active');
   document.getElementById('stepLine3').classList.add('done');
   document.getElementById('stepLine4').classList.add('done');
+  startRedirectCountdown();
 }
 
 function showLoading(msg){
@@ -821,47 +760,6 @@ function showLoading(msg){
 }
 function hideLoading(){
   document.getElementById('loadingOverlay').classList.remove('show');
-}
-
-
-// ── PIX RESULT ────────────────────────────────────────────────────
-function showPixResult(data, pedidoId, prazo){
-  const el = document.getElementById('successSection') || document.createElement('div');
-  el.id = 'successSection';
-  el.style.cssText = 'position:fixed;inset:0;background:rgba(12,9,13,.7);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px';
-  el.innerHTML = `
-    <div style="background:#fff;border-radius:20px;padding:32px;max-width:420px;width:100%;text-align:center">
-      <div style="font-size:2.5rem;margin-bottom:12px">📱</div>
-      <h2 style="font-family:var(--fd);font-size:1.3rem;margin-bottom:8px">Pague via Pix</h2>
-      <p style="font-size:.82rem;color:rgba(13,9,13,.5);margin-bottom:20px">Pedido #${pedidoId} · Válido por 24h</p>
-      ${data.qr_code_base64 ? `<img src="data:image/png;base64,${data.qr_code_base64}" style="width:200px;height:200px;border-radius:12px;margin-bottom:16px">` : ''}
-      ${data.qr_code ? `
-        <div style="background:#f8f0ec;border-radius:10px;padding:12px;margin-bottom:16px;word-break:break-all;font-size:.72rem;color:rgba(13,9,13,.6);text-align:left">${data.qr_code}</div>
-        <button onclick="navigator.clipboard.writeText('${data.qr_code}').then(()=>alert('Copiado!'))" style="background:var(--pink);color:#fff;border:none;border-radius:100px;padding:10px 24px;font-family:var(--fb);font-weight:600;cursor:pointer;margin-bottom:12px">📋 Copiar código Pix</button>
-      ` : ''}
-      ${data.ticket_url ? `<br><a href="${data.ticket_url}" target="_blank" style="font-size:.8rem;color:var(--pink)">Abrir no app →</a>` : ''}
-      <p style="font-size:.75rem;color:rgba(13,9,13,.4);margin-top:16px">Após o pagamento, você receberá confirmação por e-mail.<br>Prazo de produção: ${prazo} dias úteis.</p>
-    </div>`;
-  document.body.appendChild(el);
-}
-
-// ── BOLETO RESULT ─────────────────────────────────────────────────
-function showBoletoResult(data, pedidoId, prazo){
-  const el = document.createElement('div');
-  el.style.cssText = 'position:fixed;inset:0;background:rgba(12,9,13,.7);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px';
-  el.innerHTML = `
-    <div style="background:#fff;border-radius:20px;padding:32px;max-width:420px;width:100%;text-align:center">
-      <div style="font-size:2.5rem;margin-bottom:12px">🧾</div>
-      <h2 style="font-family:var(--fd);font-size:1.3rem;margin-bottom:8px">Boleto gerado!</h2>
-      <p style="font-size:.82rem;color:rgba(13,9,13,.5);margin-bottom:20px">Pedido #${pedidoId} · Vence em 3 dias</p>
-      ${data.barcode ? `
-        <div style="background:#f8f0ec;border-radius:10px;padding:12px;margin-bottom:16px;font-size:.72rem;color:rgba(13,9,13,.6);word-break:break-all">${data.barcode}</div>
-        <button onclick="navigator.clipboard.writeText('${data.barcode}').then(()=>alert('Copiado!'))" style="background:var(--ink);color:#fff;border:none;border-radius:100px;padding:10px 24px;font-family:var(--fb);font-weight:600;cursor:pointer;margin-bottom:12px">📋 Copiar código de barras</button>
-      ` : ''}
-      ${data.ticket_url ? `<br><a href="${data.ticket_url}" target="_blank" style="display:inline-block;margin-top:10px;background:var(--pink);color:#fff;text-decoration:none;border-radius:100px;padding:10px 24px;font-family:var(--fb);font-weight:600">🖨 Imprimir boleto</a>` : ''}
-      <p style="font-size:.75rem;color:rgba(13,9,13,.4);margin-top:16px">O pedido será confirmado após o pagamento (1-2 dias úteis).<br>Prazo de produção: ${prazo} dias úteis após confirmação.</p>
-    </div>`;
-  document.body.appendChild(el);
 }
 
 // ── INIT ────────────────────────────────────────────────────────────
@@ -974,87 +872,50 @@ function updateFreteTotal(freteVal){
 }
 
 
-// ── AUTO-FILL FROM SAVED ADDRESS ─────────────────────────────────
-(async function(){
+// ── CUPOM ─────────────────────────────────────────────────────────
+let cupomAtivo=null, cupomDesconto=0;
+
+async function aplicarCupom(){
+  const code=(document.getElementById('cupomInput')?.value||'').trim().toUpperCase();
+  if(!code)return;
+  document.getElementById('cupomOk').style.display='none';
+  document.getElementById('cupomErr').style.display='none';
   try{
-    // Check if user is logged in via Supabase
-    const SB_URL = 'https://oznpfqsgurztffwfyfec.supabase.co';
-    const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA';
-
-    // Get session from localStorage (Supabase stores it there)
-    const sessionKey = Object.keys(localStorage).find(k=>k.includes('supabase')&&k.includes('session'));
-    if(!sessionKey) return;
-    const session = JSON.parse(localStorage.getItem(sessionKey)||'{}');
-    const token = session?.access_token || session?.currentSession?.access_token;
-    if(!token) return;
-
-    // Fetch saved address
-    const r = await fetch(SB_URL+'/rest/v1/enderecos_salvos?select=*&limit=1',{
-      headers:{
-        apikey: ANON_KEY,
-        Authorization: 'Bearer '+token,
-        Accept: 'application/json'
-      }
-    });
-    if(!r.ok) return;
-    const data = await r.json();
-    if(!data||!data.length) return;
-
-    const addr = data[0];
-    const fields = {
-      fNome: addr.nome,
-      fEmail: addr.email,
-      fTelefone: addr.telefone,
-      fCep: addr.cep,
-      fLogradouro: addr.logradouro,
-      fNumero: addr.numero,
-      fComplemento: addr.complemento,
-      fBairro: addr.bairro,
-      fCidade: addr.cidade,
-      fEstado: addr.estado,
-    };
-    let filled = 0;
-    Object.entries(fields).forEach(([id,val])=>{
-      const el = document.getElementById(id);
-      if(el && val && !el.value) { el.value=val; filled++; }
-    });
-    if(filled > 0){
-      // Show subtle banner
-      const banner = document.createElement('div');
-      banner.style.cssText = 'background:rgba(37,211,102,.1);color:#166534;border:1px solid rgba(37,211,102,.2);border-radius:10px;padding:10px 16px;font-size:.78rem;margin-bottom:16px;display:flex;align-items:center;gap:8px;';
-      banner.innerHTML = '✅ Dados preenchidos automaticamente da sua conta.';
-      const firstSection = document.querySelector('.checkout-section');
-      if(firstSection) firstSection.prepend(banner);
+    const r=await fetch(SB+'/rest/v1/cupons?codigo=eq.'+encodeURIComponent(code)+'&ativo=eq.true&select=*',{headers:HDR});
+    const d=await r.json();
+    if(!Array.isArray(d)||!d[0]){
+      document.getElementById('cupomErr').style.display='block';
+      document.getElementById('cupomErr').textContent='Cupom inválido ou expirado';
+      cupomAtivo=null;cupomDesconto=0;
+      updateOrderSummary();return;
     }
+    const c=d[0];
+    // Check expiry
+    if(c.validade&&new Date(c.validade)<new Date()){
+      document.getElementById('cupomErr').style.display='block';
+      document.getElementById('cupomErr').textContent='Cupom expirado';
+      cupomAtivo=null;cupomDesconto=0;
+      updateOrderSummary();return;
+    }
+    cupomAtivo=c;
+    document.getElementById('cupomOk').style.display='block';
+    document.getElementById('cupomOk').textContent='✓ '+c.descricao+' aplicado!';
+    updateOrderSummary();
   }catch(e){
-    // Silent fail — never block checkout
-    console.log('autofill:', e.message);
+    document.getElementById('cupomErr').style.display='block';
   }
-})();
-
-// ── OFFER ACCOUNT CREATION AFTER ORDER ───────────────────────────
-function offerAccountCreation(email, nome){
-  // Check if already logged in
-  const sessionKey = Object.keys(localStorage).find(k=>k.includes('supabase')&&k.includes('session'));
-  if(sessionKey) return; // already has account
-
-  setTimeout(()=>{
-    const banner = document.getElementById('successSection');
-    if(!banner) return;
-    const div = document.createElement('div');
-    div.style.cssText = 'margin-top:16px;padding:16px;background:rgba(229,37,100,.06);border-radius:12px;text-align:center';
-    div.innerHTML = `
-      <p style="font-size:.82rem;color:rgba(13,9,13,.6);margin-bottom:10px">
-        💾 Salve seus dados para a próxima compra
-      </p>
-      <a href="minha-conta.html?email=${encodeURIComponent(email)}" 
-         style="background:var(--pink);color:#fff;text-decoration:none;border-radius:100px;padding:8px 20px;font-size:.78rem;font-weight:600;display:inline-block">
-        Criar conta grátis →
-      </a>`;
-    banner.appendChild(div);
-  }, 1000);
 }
 
+// ── SUCCESS REDIRECT ──────────────────────────────────────────────
+function startRedirectCountdown(){
+  let n=5;
+  const el=document.getElementById('countNum');
+  const timer=setInterval(()=>{
+    n--;
+    if(el)el.textContent=n;
+    if(n<=0){clearInterval(timer);window.location.href='minha-conta.html';}
+  },1000);
+}
 </script>
 </body>
 </html>
