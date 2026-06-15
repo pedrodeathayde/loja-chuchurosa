@@ -1040,7 +1040,7 @@ body::before{
 
 
 /* ── WISHLIST ── */
-.pcard-fav{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.9);border:none;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;transition:all .2s;backdrop-filter:blur(4px);z-index:2}
+.pcard-fav{position:absolute;top:8px;right:8px;background:transparent;border:none;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;transition:all .2s;z-index:3;filter:drop-shadow(0 1px 3px rgba(0,0,0,.3))}
 .pcard-fav:hover{transform:scale(1.15)}
 .pcard-fav.active{background:var(--pink);color:#fff}
 
@@ -2751,11 +2751,11 @@ function renderGrid(){
       :`<div class="pcard-price" style="font-size:.72rem;color:rgba(12,9,13,.35)">Sob consulta</div>
         <button class="btn-consult" onclick="event.stopPropagation();openWA('${p.name.replace(/'/g,"\\'")}')">Consultar</button>`;
     return `<div class="pcard${isFeatured?' featured-card':''}" style="position:relative" onclick="goProduct('${p.id}')">
-      <button class="pcard-fav ${favs.has(p.id)?'active':''}" onclick="event.stopPropagation();toggleFavLoja(${p.id},this)">${favs.has(p.id)?'❤️':'🤍'}</button>
       <div class="pcard-img">
         ${imgFirst}${imgSecond}
         <div class="pcard-ph" ${p.url?'style="display:none"':''}>🌸</div>
         ${badge}
+        <button class="pcard-fav ${favs.has(p.id)?'active':''}" onclick="event.stopPropagation();toggleFavLoja(${p.id},this)">${favs.has(p.id)?'❤️':'🤍'}</button>
         ${p.url?`<button class="lb-trigger" onclick="event.stopPropagation();openLightbox('${p.url}','${p.name.replace(/'/g,"\\'")}')" title="Ver foto">⤢</button>`:''}
       </div>
       <div class="pcard-body">
@@ -2825,6 +2825,12 @@ function renderCartDrawer(){
     foot.style.display='none';return;
   }
   foot.style.display='block';
+  // Enrich URLs and prazo from current data
+  cart.forEach(i=>{
+    if(!i.url&&fotosDB[i.id]&&fotosDB[i.id][0])i.url=fotosDB[i.id][0];
+    const p=allProducts.find(x=>String(x.id)===String(i.id));
+    if(p){if(!i.url&&p.url)i.url=p.url;if(!i.prazo||i.prazo===7)i.prazo=p.prazo_producao_dias||7;}
+  });
   const maxPrazo=Math.max(...cart.map(i=>i.prazo||7));
   document.getElementById('cartPrazoText').textContent=`⏱ Prazo estimado: ${maxPrazo} dias úteis após confirmação do pagamento.`;
   document.getElementById('cartTotal').textContent='R$ '+cart.reduce((s,i)=>s+(i.price||0)*i.qty,0).toFixed(2).replace('.',',');
