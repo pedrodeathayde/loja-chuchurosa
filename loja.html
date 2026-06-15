@@ -635,6 +635,7 @@ nav.elevated{
   border:none;font-size:1.05rem;cursor:pointer;
   display:none;align-items:center;justify-content:center;
   transition:all .2s;filter:drop-shadow(0 1px 3px rgba(0,0,0,.25));
+  opacity:1;
 }
 .pcard:hover .lb-trigger{opacity:1}
 .lb-trigger:hover{background:rgba(229,37,100,.7)!important}
@@ -1074,6 +1075,7 @@ body::before{
 
 .pcard:hover .pcard-img .lb-trigger{display:flex}
 .pcard-img .lb-trigger:hover{transform:scale(1.15);background:rgba(255,255,255,.3)}
+@media(max-width:768px){.pcard-img .lb-trigger{display:flex!important;opacity:1!important}}
 
 </style>
 <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,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">
@@ -2760,7 +2762,7 @@ function renderGrid(){
         ${imgFirst}${imgSecond}
         <div class="pcard-ph" ${p.url?'style="display:none"':''}>🌸</div>
         ${badge}
-${p.url?`<button class="lb-trigger" onclick="event.stopPropagation();openLightbox('${p.url}','${p.name.replace(/'/g,"\\'")}')" title="Favoritar">${favs.has(p.id)?'❤️':'🤍'}</button>`:''}
+${p.url?`<button class="lb-trigger" onclick="event.stopPropagation();toggleFavLoja(${p.id},this)" title="Favoritar">${favs.has(p.id)?'❤️':'🤍'}</button>`:''}
       </div>
       <div class="pcard-body">
         <div class="pcard-cat">${cats}</div>
