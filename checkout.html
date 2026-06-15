@@ -687,7 +687,15 @@ function hideLoading(){
 }
 
 // ── INIT ────────────────────────────────────────────────────────────
+// Parse cart properly
+cart = JSON.parse(localStorage.getItem('cr_cart')||'[]');
+if(typeof cart === 'string') cart = JSON.parse(cart);
+if(!Array.isArray(cart)) cart = [];
+// Fix qty field
+cart = cart.map(i=>({...i, qty:i.qty||i.quantidade||1}));
+
 renderSummary();
+selectPM('pix');
 if(!cart.length){
   document.getElementById('btnPlace').disabled=true;
   document.getElementById('osSummary').innerHTML='<p style="font-size:.85rem;color:rgba(13,9,13,.4);text-align:center;padding:20px">Seu carrinho está vazio. <a href="loja.html" style="color:var(--rose)">Voltar à loja</a></p>';
