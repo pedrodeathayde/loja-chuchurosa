@@ -1983,15 +1983,16 @@ async function toggleFav(){
 async function loadRelated(){
   if(!prod)return;
   const cats=(prod.collections||[]);
-  const designs=(Array.isArray(prod.design)?prod.design:[prod.design]).filter(Boolean);
-  let url=`${SB}/rest/v1/produtos?select=id,name,price,collections&ativo=eq.true&oculto=eq.false&id=neq.${id}&limit=20`;
+  // Random offset for variety
+  const randomOffset=Math.floor(Math.random()*30);
+  let url=`${SB}/rest/v1/produtos?select=id,name,price,collections&ativo=eq.true&oculto=eq.false&id=neq.${id}&limit=20&offset=${randomOffset}`;
   if(cats.length)url+=`&collections=cs.${JSON.stringify([cats[0]])}`;  
   try{
     const r=await fetch(url,{headers:HDR});
     let prods=await r.json();
-    // If no results with category filter, try without
+    // If no results with category filter or offset, try without
     if(!Array.isArray(prods)||!prods.length){
-      const r2=await fetch(`${SB}/rest/v1/produtos?select=id,name,price,collections&ativo=eq.true&oculto=eq.false&id=neq.${id}&limit=4`,{headers:HDR});
+      const r2=await fetch(`${SB}/rest/v1/produtos?select=id,name,price,collections&ativo=eq.true&oculto=eq.false&id=neq.${id}&limit=20`,{headers:HDR});
       prods=await r2.json();
     }
     if(!Array.isArray(prods)||!prods.length){document.getElementById('related').style.display='none';return;}
