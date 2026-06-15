@@ -3044,6 +3044,7 @@ async function init(){
   mergeProducts();
   applyFilters();
   updateCartUI();
+  loadFavsFromDB();
 }
 init();
 
@@ -3276,20 +3277,70 @@ function clearAllFilters(){
 
 // ── WISHLIST ──────────────────────────────────────────────────────
 let favs=new Set(JSON.parse(localStorage.getItem('cr_favs')||'[]').map(Number));
-function saveFavs(){localStorage.setItem('cr_favs',JSON.stringify([...favs]));}
-function toggleFavLoja(id,btn){
+let _favsUser=null; // logged in user id
+
+// Load favs from Supabase if logged in
+async function loadFavsFromDB(){
+  try{
+    const sb=window._sb||(window._sb=supabase.createClient(SB,KEY));
+    const {data:{session}}=await sb.auth.getSession();
+    if(!session)return;
+    _favsUser=session.user.id;
+    const r=await fetch(`${SB}/rest/v1/favoritos?user_id=eq.${_favsUser}&select=produto_id`,{
+      headers:{apikey:KEY,Authorization:'Bearer '+session.access_token,Accept:'application/json'}
+    });
+    const d=await r.json();
+    if(Array.isArray(d)){
+      // Merge localStorage favs with DB favs
+      const localFavs=[...favs];
+      favs=new Set(d.map(f=>Number(f.produto_id)));
+      // Migrate local favs to DB
+      for(const id of localFavs){
+        if(!favs.has(id)){
+          favs.add(id);
+          await fetch(`${SB}/rest/v1/favoritos`,{
+            method:'POST',
+            headers:{apikey:KEY,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json','Prefer':'return=minimal'},
+            body:JSON.stringify({user_id:_favsUser,produto_id:id})
+          });
+        }
+      }
+      localStorage.removeItem('cr_favs');
+    }
+  }catch(e){}
+}
+
+function saveFavs(){
+  if(!_favsUser)localStorage.setItem('cr_favs',JSON.stringify([...favs]));
+}
+
+async function toggleFavLoja(id,btn){
   id=Number(id);
+  const sb=window._sb||(window._sb=supabase.createClient(SB,KEY));
+  const {data:{session}}=await sb.auth.getSession().catch(()=>({data:{session:null}}));
+
   if(favs.has(id)){
     favs.delete(id);
     btn.innerHTML='🤍';
     btn.classList.remove('active');
+    if(session){
+      await fetch(`${SB}/rest/v1/favoritos?user_id=eq.${session.user.id}&produto_id=eq.${id}`,{
+        method:'DELETE',headers:{apikey:KEY,Authorization:'Bearer '+session.access_token,'Prefer':'return=minimal'}
+      });
+    } else saveFavs();
   } else {
     favs.add(id);
     btn.innerHTML='❤️';
     btn.classList.add('active');
     showToast('Adicionado aos favoritos! ❤️');
+    if(session){
+      await fetch(`${SB}/rest/v1/favoritos`,{
+        method:'POST',
+        headers:{apikey:KEY,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json','Prefer':'return=minimal'},
+        body:JSON.stringify({user_id:session.user.id,produto_id:id})
+      });
+    } else saveFavs();
   }
-  saveFavs();
 }
 
 // ── GLOBAL SEARCH ─────────────────────────────────────────────────
