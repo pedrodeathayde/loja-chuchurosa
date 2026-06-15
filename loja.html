@@ -2750,7 +2750,8 @@ function renderGrid(){
         <button class="btn-add" onclick="event.stopPropagation();addToCart(event,'${p.id}')">＋</button>`
       :`<div class="pcard-price" style="font-size:.72rem;color:rgba(12,9,13,.35)">Sob consulta</div>
         <button class="btn-consult" onclick="event.stopPropagation();openWA('${p.name.replace(/'/g,"\\'")}')">Consultar</button>`;
-    return `<div class="pcard${isFeatured?' featured-card':''}" onclick="goProduct('${p.id}')">
+    return `<div class="pcard${isFeatured?' featured-card':''}" style="position:relative" onclick="goProduct('${p.id}')">
+      <button class="pcard-fav ${favs.has(p.id)?'active':''}" onclick="event.stopPropagation();toggleFavLoja(${p.id},this)">${favs.has(p.id)?'❤️':'🤍'}</button>
       <div class="pcard-img">
         ${imgFirst}${imgSecond}
         <div class="pcard-ph" ${p.url?'style="display:none"':''}>🌸</div>
@@ -3014,8 +3015,7 @@ async function loadCats(){
 
 async function init(){
   showSkeletons();
-  await loadFromDB();
-  // Load fotos table
+  // Load fotos FIRST so mergeProducts has correct URLs and prazo
   try{
     let off=0; fotosDB={};
     while(true){
@@ -3027,6 +3027,7 @@ async function init(){
       off+=1000;
     }
   }catch(e){console.log('fotos err:',e);}
+  await loadFromDB();
   await loadCats();
   mergeProducts();
   applyFilters();
@@ -3262,11 +3263,20 @@ function clearAllFilters(){
 }
 
 // ── WISHLIST ──────────────────────────────────────────────────────
-let favs=new Set(JSON.parse(localStorage.getItem('cr_favs')||'[]'));
+let favs=new Set(JSON.parse(localStorage.getItem('cr_favs')||'[]').map(Number));
 function saveFavs(){localStorage.setItem('cr_favs',JSON.stringify([...favs]));}
 function toggleFavLoja(id,btn){
-  if(favs.has(id)){favs.delete(id);btn.innerHTML='🤍';btn.classList.remove('active');}
-  else{favs.add(id);btn.innerHTML='❤️';btn.classList.add('active');showToast('Adicionado aos favoritos!');}
+  id=Number(id);
+  if(favs.has(id)){
+    favs.delete(id);
+    btn.innerHTML='🤍';
+    btn.classList.remove('active');
+  } else {
+    favs.add(id);
+    btn.innerHTML='❤️';
+    btn.classList.add('active');
+    showToast('Adicionado aos favoritos! ❤️');
+  }
   saveFavs();
 }
 
