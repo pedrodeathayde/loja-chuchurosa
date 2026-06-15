@@ -164,15 +164,6 @@ nav{background:rgba(255,249,246,.97);backdrop-filter:blur(16px);border-bottom:1p
 .frete-opt-info{font-size:.72rem;color:rgba(13,9,13,.4);margin-top:2px}
 .frete-opt-price{margin-left:auto;font-weight:800;color:var(--rose);font-size:.95rem;white-space:nowrap}
 .frete-loading{text-align:center;padding:12px;color:rgba(13,9,13,.35);font-size:.82rem}
-
-/* ── CUPOM ── */
-.cupom-wrap{display:flex;gap:8px;margin-bottom:12px}
-.cupom-wrap input{flex:1;padding:10px 14px;border:1.5px solid rgba(229,37,100,.2);border-radius:10px;font-family:var(--fb);font-size:.84rem;outline:none;text-transform:uppercase}
-.cupom-wrap input:focus{border-color:var(--pink)}
-.cupom-wrap button{background:var(--dark);color:#fff;border:none;border-radius:10px;padding:10px 16px;font-family:var(--fb);font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap}
-.cupom-ok{font-size:.78rem;color:#10b981;font-weight:600;margin-bottom:8px;display:none}
-.cupom-err{font-size:.78rem;color:#ef4444;margin-bottom:8px;display:none}
-
 </style>
 </head>
 <body>
@@ -204,14 +195,7 @@ nav{background:rgba(255,249,246,.97);backdrop-filter:blur(16px);border-bottom:1p
   <h1>Pedido <em>confirmado!</em></h1>
   <p>Obrigada pela sua compra! Você receberá um e-mail de confirmação em breve. Assim que o pagamento for confirmado, começamos a produção com todo carinho. 🌸</p>
   <div class="success-details" id="successDetails"></div>
-  <div style="margin-top:24px;padding:16px;background:rgba(229,37,100,.05);border-radius:12px;font-size:.84rem;color:rgba(13,9,13,.6);line-height:1.6">
-    📦 Acompanhe seu pedido em <strong>Minha conta</strong><br>
-    <span id="redirectCountdown">Redirecionando em <strong id="countNum">5</strong> segundos...</span>
-  </div>
-  <div style="display:flex;gap:10px;margin-top:16px;justify-content:center;flex-wrap:wrap">
-    <button class="btn-back" onclick="window.location.href='minha-conta.html'" style="background:var(--pink);color:#fff;border:none">Ver meus pedidos →</button>
-    <button class="btn-back" onclick="window.location.href='loja.html'" style="background:transparent;border:1.5px solid rgba(13,9,13,.15);color:rgba(13,9,13,.6)">Continuar comprando</button>
-  </div>
+  <button class="btn-back" onclick="window.location.href='loja.html'">Continuar comprando</button>
 </div>
 
 <!-- CHECKOUT WRAP -->
@@ -221,51 +205,6 @@ nav{background:rgba(255,249,246,.97);backdrop-filter:blur(16px);border-bottom:1p
   <div>
 
     <!-- CONTA -->
-    <div class="form-section">
-      <h2><span>👤</span> Identificação</h2>
-      <div class="account-toggle">
-        <button class="acc-btn active" id="btnVisitante" onclick="setMode('visitante')">Comprar como visitante</button>
-        <button class="acc-btn" id="btnConta" onclick="setMode('conta')">Criar conta</button>
-      </div>
-      <div class="form-row cols2">
-        <div class="form-group" id="fgNome">
-          <label>Nome completo *</label>
-          <input type="text" id="fNome" placeholder="Seu nome completo" autocomplete="name">
-          <span class="err-msg">Informe seu nome completo</span>
-        </div>
-        <div class="form-group" id="fgCpf">
-          <label>CPF</label>
-          <input type="text" id="fCpf" placeholder="000.000.000-00" maxlength="14" autocomplete="off">
-          <span class="hint">Necessário para nota fiscal</span>
-        </div>
-      </div>
-      <div class="form-row cols2">
-        <div class="form-group" id="fgEmail">
-          <label>E-mail *</label>
-          <input type="email" id="fEmail" placeholder="seu@email.com" autocomplete="email">
-          <span class="err-msg">Informe um e-mail válido</span>
-        </div>
-        <div class="form-group" id="fgTel">
-          <label>WhatsApp *</label>
-          <input type="tel" id="fTel" placeholder="(19) 99999-9999" maxlength="15" autocomplete="tel">
-          <span class="err-msg">Informe seu WhatsApp</span>
-        </div>
-      </div>
-      <div id="senhaFields" style="display:none">
-        <div class="form-row cols2">
-          <div class="form-group">
-            <label>Senha *</label>
-            <input type="password" id="fSenha" placeholder="Mínimo 6 caracteres">
-          </div>
-          <div class="form-group">
-            <label>Confirmar senha *</label>
-            <input type="password" id="fSenha2" placeholder="Repita a senha">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ENDEREÇO -->
     <div class="form-section">
       <h2><span>📦</span> Endereço de entrega</h2>
       <div class="form-row cols2">
@@ -472,16 +411,7 @@ function renderSummary(){
   // Totals
   const subtotal = cart.reduce((s,i)=>s+(i.price||0)*i.qty,0);
   const desconto = payMethod==='pix' ? subtotal*0.05 : 0;
-  // Cupom
-  let cupomVal=0;
-  if(cupomAtivo){
-    if(cupomAtivo.tipo==='porcentagem') cupomVal=(subtotal-desconto)*((cupomAtivo.valor||0)/100);
-    else cupomVal=Math.min(cupomAtivo.valor||0, subtotal-desconto);
-  }
-  const total = subtotal - desconto - cupomVal;
-  // Update cupom display
-  const rowCupom=document.getElementById('osRowCupom');
-  if(rowCupom){rowCupom.style.display=cupomVal>0?'flex':'none';document.getElementById('osCupomVal').textContent='-'+fmt(cupomVal);}
+  const total = subtotal - desconto;
 
   document.getElementById('osSubtotal').textContent = fmt(subtotal);
   document.getElementById('osTotal').textContent = fmt(total);
@@ -512,10 +442,10 @@ function renderSummary(){
 // ── ACCOUNT MODE ──────────────────────────────────────────────────────
 function setMode(m){
   mode = m;
-  document.getElementById('btnVisitante').classList.toggle('active',m==='visitante');
-  document.getElementById('btnConta').classList.toggle('active',m==='conta');
-  document.getElementById('senhaFields').style.display = m==='conta'?'block':'none';
 }
+
+
+
 
 // ── PAYMENT METHOD ────────────────────────────────────────────────────
 function selectPM(pm){
@@ -621,12 +551,7 @@ async function placeOrder(){
   const tel   = document.getElementById('fTel').value.trim();
   const subtotal = cart.reduce((s,i)=>s+(i.price||0)*i.qty,0);
   const desconto = payMethod==='pix' ? subtotal*0.05 : 0;
-  let cupomVal=0;
-  if(cupomAtivo){
-    if(cupomAtivo.tipo==='porcentagem') cupomVal=(subtotal-desconto)*((cupomAtivo.valor||0)/100);
-    else cupomVal=Math.min(cupomAtivo.valor||0, subtotal-desconto);
-  }
-  const total = subtotal - desconto - cupomVal;
+  const total    = subtotal - desconto;
   const maxPrazo = Math.max(...cart.map(i=>i.prazo||7));
 
   try {
@@ -751,7 +676,6 @@ function showSuccess({nome,email,total,prazo,orderId,payMethod}){
   document.getElementById('step4').classList.add('done','active');
   document.getElementById('stepLine3').classList.add('done');
   document.getElementById('stepLine4').classList.add('done');
-  startRedirectCountdown();
 }
 
 function showLoading(msg){
@@ -871,51 +795,6 @@ function updateFreteTotal(freteVal){
   }
 }
 
-
-// ── CUPOM ─────────────────────────────────────────────────────────
-let cupomAtivo=null, cupomDesconto=0;
-
-async function aplicarCupom(){
-  const code=(document.getElementById('cupomInput')?.value||'').trim().toUpperCase();
-  if(!code)return;
-  document.getElementById('cupomOk').style.display='none';
-  document.getElementById('cupomErr').style.display='none';
-  try{
-    const r=await fetch(SB+'/rest/v1/cupons?codigo=eq.'+encodeURIComponent(code)+'&ativo=eq.true&select=*',{headers:HDR});
-    const d=await r.json();
-    if(!Array.isArray(d)||!d[0]){
-      document.getElementById('cupomErr').style.display='block';
-      document.getElementById('cupomErr').textContent='Cupom inválido ou expirado';
-      cupomAtivo=null;cupomDesconto=0;
-      updateOrderSummary();return;
-    }
-    const c=d[0];
-    // Check expiry
-    if(c.validade&&new Date(c.validade)<new Date()){
-      document.getElementById('cupomErr').style.display='block';
-      document.getElementById('cupomErr').textContent='Cupom expirado';
-      cupomAtivo=null;cupomDesconto=0;
-      updateOrderSummary();return;
-    }
-    cupomAtivo=c;
-    document.getElementById('cupomOk').style.display='block';
-    document.getElementById('cupomOk').textContent='✓ '+c.descricao+' aplicado!';
-    updateOrderSummary();
-  }catch(e){
-    document.getElementById('cupomErr').style.display='block';
-  }
-}
-
-// ── SUCCESS REDIRECT ──────────────────────────────────────────────
-function startRedirectCountdown(){
-  let n=5;
-  const el=document.getElementById('countNum');
-  const timer=setInterval(()=>{
-    n--;
-    if(el)el.textContent=n;
-    if(n<=0){clearInterval(timer);window.location.href='minha-conta.html';}
-  },1000);
-}
 </script>
 </body>
 </html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Entrar — Chuchu Rosa</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+:root{--pink:#e52564;--rose:#f04d7f;--dark:#0d090d;--cream:#f8f0f6;--fd:'Playfair Display',serif;--fb:'Outfit',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--cream);font-family:var(--fb);color:var(--dark);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px}
+.logo{font-family:var(--fd);font-size:1.4rem;font-weight:700;color:var(--pink);text-align:center;margin-bottom:6px}
+.logo-sub{font-size:.82rem;color:rgba(13,9,13,.4);text-align:center;margin-bottom:28px}
+.card{background:#fff;border-radius:20px;padding:32px;max-width:420px;width:100%;box-shadow:0 8px 40px rgba(229,37,100,.08)}
+.tabs{display:flex;gap:0;border:1.5px solid rgba(229,37,100,.15);border-radius:100px;overflow:hidden;margin-bottom:24px}
+.tab{flex:1;padding:10px;border:none;background:transparent;font-family:var(--fb);font-size:.85rem;font-weight:500;cursor:pointer;transition:all .2s;color:rgba(13,9,13,.5)}
+.tab.active{background:var(--pink);color:#fff;font-weight:600}
+/* Social buttons */
+.social-btn{display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;border:1.5px solid rgba(13,9,13,.12);border-radius:12px;background:#fff;font-family:var(--fb);font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s;margin-bottom:10px}
+.social-btn:hover{border-color:var(--pink);background:rgba(229,37,100,.03)}
+.divider{display:flex;align-items:center;gap:10px;margin:16px 0}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(13,9,13,.1)}
+.divider span{font-size:.75rem;color:rgba(13,9,13,.35);white-space:nowrap}
+/* Form */
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:.78rem;font-weight:600;color:rgba(13,9,13,.5);margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}
+.fg input{width:100%;padding:12px 14px;border:1.5px solid rgba(229,37,100,.15);border-radius:12px;font-family:var(--fb);font-size:.88rem;outline:none;transition:border .2s}
+.fg input:focus{border-color:var(--pink)}
+.btn-main{width:100%;background:var(--pink);color:#fff;border:none;border-radius:100px;padding:14px;font-family:var(--fb);font-size:.92rem;font-weight:700;cursor:pointer;transition:all .2s;margin-top:4px}
+.btn-main:hover{background:var(--rose)}
+.btn-main:disabled{opacity:.5;cursor:not-allowed}
+.err{color:#ef4444;font-size:.78rem;margin-top:8px;display:none}
+.ok{color:#10b981;font-size:.78rem;margin-top:8px;display:none}
+.skip{text-align:center;margin-top:18px;font-size:.82rem;color:rgba(13,9,13,.4)}
+.skip a{color:var(--pink);font-weight:600;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="logo">🌸 Chuchu Rosa</div>
+<div class="logo-sub">Entre para finalizar sua compra</div>
+
+<div class="card">
+  <div class="tabs">
+    <button class="tab active" id="tabEntrar" onclick="showTab('entrar')">Entrar</button>
+    <button class="tab" id="tabCadastro" onclick="showTab('cadastro')">Criar conta</button>
+  </div>
+
+  <!-- ENTRAR -->
+  <div id="secEntrar">
+    <button class="social-btn" onclick="loginSocial('google')">
+      <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/><path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/><path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z"/><path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"/></svg>
+      Continuar com Google
+    </button>
+    <button class="social-btn" onclick="loginSocial('facebook')">
+      <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#1877F2" d="M48 24C48 10.745 37.255 0 24 0S0 10.745 0 24c0 11.979 8.776 21.908 20.25 23.708V30.937h-6.094V24H20.25v-5.288c0-6.01 3.578-9.33 9.057-9.33 2.624 0 5.372.469 5.372.469v5.906h-3.026c-2.981 0-3.91 1.85-3.91 3.748V24h6.656l-1.063 6.938H27.75v16.77C39.224 45.908 48 35.979 48 24z"/></svg>
+      Continuar com Facebook
+    </button>
+    <div class="divider"><span>ou entre com e-mail</span></div>
+    <div class="fg"><label>E-mail</label><input type="email" id="eEmail" placeholder="seu@email.com" autocomplete="email"></div>
+    <div class="fg"><label>Senha</label><input type="password" id="eSenha" placeholder="Sua senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')entrar()"></div>
+    <button class="btn-main" id="btnEntrar" onclick="entrar()">Entrar →</button>
+    <div class="err" id="entrarErr">E-mail ou senha incorretos</div>
+  </div>
+
+  <!-- CADASTRO -->
+  <div id="secCadastro" style="display:none">
+    <button class="social-btn" onclick="loginSocial('google')">
+      <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/><path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/><path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z"/><path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"/></svg>
+      Cadastrar com Google
+    </button>
+    <div class="divider"><span>ou cadastre com e-mail</span></div>
+    <div class="fg"><label>Nome completo</label><input type="text" id="cNome" placeholder="Seu nome" autocomplete="name"></div>
+    <div class="fg"><label>E-mail</label><input type="email" id="cEmail" placeholder="seu@email.com" autocomplete="email"></div>
+    <div class="fg"><label>Senha</label><input type="password" id="cSenha" placeholder="Mínimo 6 caracteres" autocomplete="new-password"></div>
+    <button class="btn-main" id="btnCadastro" onclick="cadastrar()">Criar conta →</button>
+    <div class="err" id="cadastroErr">Erro ao criar conta. Tente novamente.</div>
+    <div class="ok" id="cadastroOk">✓ Conta criada! Redirecionando...</div>
+  </div>
+
+  <div class="skip">
+    Prefere não criar conta? <a href="checkout.html">Comprar como visitante →</a>
+  </div>
+</div>
+
+<script>
+const SB='https://oznpfqsgurztffwfyfec.supabase.co';
+const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA';
+const sb=supabase.createClient(SB,KEY);
+
+// Get redirect target (default: checkout)
+const params=new URLSearchParams(location.search);
+const redirect=params.get('redirect')||'checkout.html';
+
+function showTab(tab){
+  document.getElementById('tabEntrar').classList.toggle('active',tab==='entrar');
+  document.getElementById('tabCadastro').classList.toggle('active',tab==='cadastro');
+  document.getElementById('secEntrar').style.display=tab==='entrar'?'block':'none';
+  document.getElementById('secCadastro').style.display=tab==='cadastro'?'block':'none';
+}
+
+async function loginSocial(provider){
+  try{
+    await sb.auth.signInWithOAuth({
+      provider,
+      options:{redirectTo:window.location.origin+'/'+redirect}
+    });
+  }catch(e){alert('Erro ao conectar. Tente novamente.');}
+}
+
+async function entrar(){
+  const email=document.getElementById('eEmail').value.trim();
+  const senha=document.getElementById('eSenha').value;
+  if(!email||!senha)return;
+  const btn=document.getElementById('btnEntrar');
+  btn.disabled=true;btn.textContent='Entrando...';
+  document.getElementById('entrarErr').style.display='none';
+  const {error}=await sb.auth.signInWithPassword({email,password:senha});
+  if(error){
+    document.getElementById('entrarErr').style.display='block';
+    btn.disabled=false;btn.textContent='Entrar →';
+    return;
+  }
+  window.location.href=redirect;
+}
+
+async function cadastrar(){
+  const nome=document.getElementById('cNome').value.trim();
+  const email=document.getElementById('cEmail').value.trim();
+  const senha=document.getElementById('cSenha').value;
+  if(!nome||!email||senha.length<6){
+    document.getElementById('cadastroErr').style.display='block';
+    document.getElementById('cadastroErr').textContent='Preencha todos os campos (senha mín. 6 caracteres)';
+    return;
+  }
+  const btn=document.getElementById('btnCadastro');
+  btn.disabled=true;btn.textContent='Criando conta...';
+  document.getElementById('cadastroErr').style.display='none';
+  const {error}=await sb.auth.signUp({
+    email,password:senha,
+    options:{data:{nome}}
+  });
+  if(error){
+    document.getElementById('cadastroErr').style.display='block';
+    document.getElementById('cadastroErr').textContent=error.message.includes('already')
+      ?'Este e-mail já está cadastrado. Tente entrar.':'Erro ao criar conta. Tente novamente.';
+    btn.disabled=false;btn.textContent='Criar conta →';
+    return;
+  }
+  document.getElementById('cadastroOk').style.display='block';
+  setTimeout(()=>window.location.href=redirect,1500);
+}
+
+// Check if already logged in
+sb.auth.getSession().then(({data:{session}})=>{
+  if(session)window.location.href=redirect;
+});
+</script>
+</body>
+</html>

@@ -2848,7 +2848,11 @@ function renderCartDrawer(){
 
 function openCart(){ renderCartDrawer(); document.getElementById('cartDrawer').classList.add('open'); document.getElementById('cartOverlay').classList.add('open'); document.body.style.overflow='hidden'; }
 function closeCart(){ document.getElementById('cartDrawer').classList.remove('open'); document.getElementById('cartOverlay').classList.remove('open'); document.body.style.overflow=''; }
-function goCheckout(){ localStorage.setItem('cr_cart',JSON.stringify(cart)); window.location.href='checkout.html'; }
+function goCheckout(){
+  localStorage.setItem('cr_cart',JSON.stringify(cart));
+  // Go to checkout directly (login is optional, handled in checkout)
+  window.location.href='checkout.html';
+}
 document.getElementById('cartBtn').addEventListener('click',openCart);
 document.getElementById('cartClose').addEventListener('click',closeCart);
 document.getElementById('cartOverlay').addEventListener('click',closeCart);
