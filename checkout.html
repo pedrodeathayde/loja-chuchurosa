@@ -505,6 +505,10 @@ async function fetchCep(cep){
   }catch(e){hint.textContent='Erro ao buscar CEP';}
 }
 
+// Run init before masks so price shows even if a field is missing
+renderSummary();
+selectPM('pix');
+
 // ── MASKS ─────────────────────────────────────────────────────────────
 document.getElementById('fTel')?.addEventListener('input',e=>{
   let v=e.target.value.replace(/\D/g,'').slice(0,11);
@@ -513,7 +517,7 @@ document.getElementById('fTel')?.addEventListener('input',e=>{
   else if(v.length>2)v=v.replace(/^(\d{2})(\d*)$/,'($1) $2');
   e.target.value=v;
 });
-document.getElementById('fCpf').addEventListener('input',e=>{
+document.getElementById('fCpf')?.addEventListener('input',e=>{
   let v=e.target.value.replace(/\D/g,'').slice(0,11);
   if(v.length>9)v=v.replace(/(\d{3})(\d{3})(\d{3})(\d*)/,'$1.$2.$3-$4');
   else if(v.length>6)v=v.replace(/(\d{3})(\d{3})(\d*)/,'$1.$2.$3');
@@ -714,8 +718,6 @@ try{
   cart = cart.map(i=>({...i, qty:+(i.qty||i.quantidade||1), price:+(i.price||i.preco||0)}));
 }catch(e){cart=[];}
 
-renderSummary();
-selectPM('pix');
 if(!cart.length){
   document.getElementById('btnPlace').disabled=true;
   document.getElementById('osSummary').innerHTML='<p style="font-size:.85rem;color:rgba(13,9,13,.4);text-align:center;padding:20px">Seu carrinho está vazio. <a href="loja.html" style="color:var(--rose)">Voltar à loja</a></p>';
