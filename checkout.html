@@ -379,7 +379,7 @@ const LOGO_URI='data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST
 })();
 
 // ── STATE ────────────────────────────────────────────────────────────
-let cart = JSON.parse(localStorage.getItem('cr_cart')||'[]');
+let cart = (()=>{try{const c=JSON.parse(localStorage.getItem('cr_cart')||'[]');return Array.isArray(c)?c.map(i=>({...i,qty:+(i.qty||i.quantidade||1),price:+(i.price||i.preco||0)})):[];}catch(e){return[];}})();
 let mode = 'visitante'; // visitante | conta
 let payMethod = 'pix';
 let orderId = null;
@@ -688,11 +688,13 @@ function hideLoading(){
 
 // ── INIT ────────────────────────────────────────────────────────────
 // Parse cart properly
-cart = JSON.parse(localStorage.getItem('cr_cart')||'[]');
-if(typeof cart === 'string') cart = JSON.parse(cart);
-if(!Array.isArray(cart)) cart = [];
-// Fix qty field
-cart = cart.map(i=>({...i, qty:i.qty||i.quantidade||1}));
+try{
+  cart = JSON.parse(localStorage.getItem('cr_cart')||'[]');
+  if(typeof cart === 'string') cart = JSON.parse(cart);
+  if(!Array.isArray(cart)) cart = [];
+  // Fix qty field — cart items may use qty or quantidade
+  cart = cart.map(i=>({...i, qty:+(i.qty||i.quantidade||1), price:+(i.price||i.preco||0)}));
+}catch(e){cart=[];}
 
 renderSummary();
 selectPM('pix');
