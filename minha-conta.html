@@ -1894,7 +1894,7 @@ function renderFavorites(){
     const p=f.produtos||{};
     const url=getUrl(p.name||'');
     const price=p.price?fmt(p.price):'';
-    return `<div class="fav-card" onclick="window.location.href='produto.html?id=${p.id}'">
+    return `<div class="fav-card" onclick="window.location.href='produto.html?id=${f.produto_id}'">
       <div class="fav-img">${url?`<img src="${url}" loading="lazy">`:'<div class="fav-img-ph">🌸</div>'}</div>
       <div class="fav-info">
         <div class="fav-name">${p.name||'Produto'}</div>
