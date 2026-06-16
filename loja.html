@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Loja — Chuchu Rosa</title>
 <meta name="description" content="Fantasias artesanais, brinquedos educativos e decoração infantil. Flamingos, raposas, unicórnios e muito mais.">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#e52564">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3277,70 +3278,69 @@ function clearAllFilters(){
 
 // ── WISHLIST ──────────────────────────────────────────────────────
 let favs=new Set(JSON.parse(localStorage.getItem('cr_favs')||'[]').map(Number));
-let _favsUser=null; // logged in user id
+let _favsSession=null;
 
-// Load favs from Supabase if logged in
+// Load session and favs from DB if logged in
 async function loadFavsFromDB(){
   try{
     const sb=window._sb||(window._sb=supabase.createClient(SB,KEY));
     const {data:{session}}=await sb.auth.getSession();
     if(!session)return;
-    _favsUser=session.user.id;
-    const r=await fetch(`${SB}/rest/v1/favoritos?user_id=eq.${_favsUser}&select=produto_id`,{
+    _favsSession={userId:session.user.id,token:session.access_token};
+    const r=await fetch(`${SB}/rest/v1/favoritos?user_id=eq.${session.user.id}&select=produto_id`,{
       headers:{apikey:KEY,Authorization:'Bearer '+session.access_token,Accept:'application/json'}
     });
     const d=await r.json();
     if(Array.isArray(d)){
-      // Merge localStorage favs with DB favs
       const localFavs=[...favs];
       favs=new Set(d.map(f=>Number(f.produto_id)));
-      // Migrate local favs to DB
       for(const id of localFavs){
         if(!favs.has(id)){
           favs.add(id);
-          await fetch(`${SB}/rest/v1/favoritos`,{
-            method:'POST',
-            headers:{apikey:KEY,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json','Prefer':'return=minimal'},
-            body:JSON.stringify({user_id:_favsUser,produto_id:id})
-          });
+          saveFavDB(id,'add');
         }
       }
       localStorage.removeItem('cr_favs');
+      applyFilters();
     }
   }catch(e){}
 }
 
 function saveFavs(){
-  if(!_favsUser)localStorage.setItem('cr_favs',JSON.stringify([...favs]));
+  if(!_favsSession)localStorage.setItem('cr_favs',JSON.stringify([...favs]));
 }
 
-async function toggleFavLoja(id,btn){
-  id=Number(id);
-  const sb=window._sb||(window._sb=supabase.createClient(SB,KEY));
-  const {data:{session}}=await sb.auth.getSession().catch(()=>({data:{session:null}}));
+function saveFavDB(id,action){
+  if(!_favsSession)return;
+  if(action==='add'){
+    fetch(`${SB}/rest/v1/favoritos`,{
+      method:'POST',
+      headers:{apikey:KEY,Authorization:'Bearer '+_favsSession.token,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({user_id:_favsSession.userId,produto_id:id})
+    }).catch(()=>{});
+  } else {
+    fetch(`${SB}/rest/v1/favoritos?user_id=eq.${_favsSession.userId}&produto_id=eq.${id}`,{
+      method:'DELETE',
+      headers:{apikey:KEY,Authorization:'Bearer '+_favsSession.token,'Prefer':'return=minimal'}
+    }).catch(()=>{});
+  }
+}
 
+function toggleFavLoja(id,btn){
+  id=Number(id);
   if(favs.has(id)){
     favs.delete(id);
     btn.innerHTML='🤍';
     btn.classList.remove('active');
-    if(session){
-      await fetch(`${SB}/rest/v1/favoritos?user_id=eq.${session.user.id}&produto_id=eq.${id}`,{
-        method:'DELETE',headers:{apikey:KEY,Authorization:'Bearer '+session.access_token,'Prefer':'return=minimal'}
-      });
-    } else saveFavs();
+    saveFavDB(id,'remove');
   } else {
     favs.add(id);
     btn.innerHTML='❤️';
     btn.classList.add('active');
     showToast('Adicionado aos favoritos! ❤️');
-    if(session){
-      await fetch(`${SB}/rest/v1/favoritos`,{
-        method:'POST',
-        headers:{apikey:KEY,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json','Prefer':'return=minimal'},
-        body:JSON.stringify({user_id:session.user.id,produto_id:id})
-      });
-    } else saveFavs();
+    saveFavDB(id,'add');
   }
+  saveFavs();
 }
 
 // ── GLOBAL SEARCH ─────────────────────────────────────────────────
