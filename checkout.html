@@ -206,7 +206,25 @@ nav{background:rgba(255,249,246,.97);backdrop-filter:blur(16px);border-bottom:1p
 
     <!-- CONTA -->
     <div class="form-section">
-      <h2><span>📦</span> Endereço de entrega</h2>
+      <h2><span>👤</span> Seus dados</h2>
+      <div class="form-row cols2">
+        <div class="form-group">
+          <label>Nome completo *</label>
+          <input type="text" id="fNome" placeholder="Seu nome completo" autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label>WhatsApp *</label>
+          <input type="tel" id="fTel" placeholder="(11) 99999-9999" maxlength="15" autocomplete="tel">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>E-mail *</label>
+        <input type="email" id="fEmail" placeholder="seu@email.com" autocomplete="email">
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h2><span>📍</span> Endereço de entrega</h2>
       <div class="form-row cols2">
         <div class="form-group" id="fgCep">
           <label>CEP *</label>
@@ -460,7 +478,7 @@ function selectPM(pm){
 
 // ── CEP LOOKUP ────────────────────────────────────────────────────────
 let cepTimer;
-document.getElementById('fCep').addEventListener('input',e=>{
+document.getElementById('fCep')?.addEventListener('input',e=>{
   let v=e.target.value.replace(/\D/g,'');
   if(v.length>5)v=v.slice(0,5)+'-'+v.slice(5,8);
   e.target.value=v;
@@ -488,7 +506,7 @@ async function fetchCep(cep){
 }
 
 // ── MASKS ─────────────────────────────────────────────────────────────
-document.getElementById('fTel').addEventListener('input',e=>{
+document.getElementById('fTel')?.addEventListener('input',e=>{
   let v=e.target.value.replace(/\D/g,'').slice(0,11);
   if(v.length>10)v=v.replace(/^(\d{2})(\d{5})(\d{4})$/,'($1) $2-$3');
   else if(v.length>6)v=v.replace(/^(\d{2})(\d{4})(\d*)$/,'($1) $2-$3');
@@ -502,7 +520,7 @@ document.getElementById('fCpf').addEventListener('input',e=>{
   else if(v.length>3)v=v.replace(/(\d{3})(\d*)/,'$1.$2');
   e.target.value=v;
 });
-document.getElementById('fCardNum').addEventListener('input',e=>{
+document.getElementById('fCardNum')?.addEventListener('input',e=>{
   let v=e.target.value.replace(/\D/g,'').slice(0,16);
   v=v.replace(/(\d{4})(?=\d)/g,'$1 ');
   e.target.value=v;
@@ -514,7 +532,7 @@ document.getElementById('fCardNum').addEventListener('input',e=>{
   else if(/^3[47]/.test(n))brand.textContent='💳';
   else brand.textContent='💳';
 });
-document.getElementById('fCardExp').addEventListener('input',e=>{
+document.getElementById('fCardExp')?.addEventListener('input',e=>{
   let v=e.target.value.replace(/\D/g,'').slice(0,4);
   if(v.length>2)v=v.slice(0,2)+'/'+v.slice(2);
   e.target.value=v;
