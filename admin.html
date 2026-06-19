@@ -618,6 +618,24 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
   #designManager input[type="text"]{font-size:.82rem;padding:6px 8px}
 }
 
+
+/* ── DASHBOARD UPGRADE ── */
+.rel-kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.rel-kpi{background:#fff;border-radius:14px;padding:16px;border:1px solid rgba(229,37,100,.07);text-align:center}
+.rel-kpi-label{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(13,9,13,.4);margin-bottom:6px}
+.rel-kpi-val{font-family:var(--fd);font-size:1.5rem;font-weight:700;color:var(--dark)}
+.dash-section{background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:20px;margin-bottom:16px}
+.dash-section h3{font-family:var(--fd);font-size:.95rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.dash-order-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(229,37,100,.05);cursor:pointer;transition:background .15s;border-radius:8px;padding-left:6px}
+.dash-order-row:hover{background:rgba(229,37,100,.03)}
+.dash-order-row:last-child{border-bottom:none}
+.dash-top-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(229,37,100,.05)}
+.dash-top-row:last-child{border-bottom:none}
+.dash-mini-chart{display:flex;align-items:flex-end;gap:3px;height:40px;margin-top:8px}
+.dash-bar{background:var(--pink);border-radius:4px 4px 0 0;flex:1;opacity:.7;transition:opacity .2s;min-height:4px}
+.dash-bar:hover{opacity:1}
+@media(max-width:768px){.rel-kpi-grid{grid-template-columns:1fr 1fr}}
+
 </style>
 </head>
 <body>
@@ -662,7 +680,6 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
       <button class="ni" data-page="categorias" onclick="goPage('categorias')"><span class="ni-icon">🏷️</span>Categorias</button>
       <button class="ni" data-page="designs" onclick="goPage('designs')"><span class="ni-icon">🎨</span>Designs</button>
       <button class="ni" data-page="cupons" onclick="goPage('cupons')"><span class="ni-icon">🎟️</span>Cupons</button>
-      <button class="ni" data-page="email" onclick="goPage('email');renderEmailList()"><span class="ni-icon">📧</span>E-mail</button>
       <button class="ni" data-page="agenda" onclick="goPage('agenda');loadAgenda()"><span class="ni-icon">📋</span>Agenda</button>
       <button class="ni" data-page="lista-compras" onclick="goPage('lista-compras');renderListaCompras()"><span class="ni-icon">🛒</span>Lista de compras</button>
       <button class="ni" data-page="sugerir" onclick="goPage('sugerir');renderSugerir()"><span class="ni-icon">💌</span>Sugerir produtos</button>
@@ -1062,6 +1079,25 @@ body.dark-mode .bulk-bar{background:#2a1d28;border:1px solid rgba(229,37,100,.2)
           <button class="btn-p" onclick="saveCats()">💾 Salvar categorias</button>
         </div>
       </div>
+    </div>
+
+    <!-- EMAIL LIST (inside clientes) -->
+    <div id="emailSection" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin:32px 0 16px;flex-wrap:wrap;gap:10px">
+        <h2 style="font-family:var(--fd);font-size:1.1rem">📧 Lista de E-mails</h2>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn-s" onclick="exportEmailCSV()">⬇️ Exportar CSV</button>
+          <button class="btn-s" onclick="copyAllEmails()">📋 Copiar todos</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+        <button class="filter-btn active" id="efAll" onclick="emailFilter='todos';renderEmailList()">Todos</button>
+        <button class="filter-btn" id="efBuy" onclick="emailFilter='compradores';renderEmailList()">Compradores</button>
+        <button class="filter-btn" id="efNo" onclick="emailFilter='naocompraram';renderEmailList()">Nunca compraram</button>
+        <button class="filter-btn" id="efPaid" onclick="emailFilter='pagos';renderEmailList()">Só pagos</button>
+      </div>
+      <input type="text" id="emailSearch" class="finp" placeholder="Buscar por nome, email ou cidade..." style="margin-bottom:12px" oninput="renderEmailList()">
+      <div id="emailListEl"></div>
     </div>
 
     <!-- CUPONS -->
@@ -3535,16 +3571,7 @@ function catDrop(e,i){
 // ── PRODUCT PHOTOS ────────────────────────────────────────────────────
 let currentPhotos=[]; // [{url, name, isNew, file, order}]
 
-function loadPhotos(nome){
-  const slug=nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-  const slugParts=slug.split('-').slice(0,4).join('-');
-  const photos=FILES.filter(f=>{
-    const n=f.n.replace(/\.[^.]+$/,'').toLowerCase();
-    return n.startsWith(slug)||n.startsWith(slugParts)||n.includes(slug);
-  });
-  currentPhotos=photos.map((f,i)=>({url:f.u,name:f.n,isNew:false,order:i}));
-  renderPhotoGrid();
-}
+// (loadPhotos legado FILES-based removido — usa fotosDB/tabela fotos)
 
 function renderPhotoGrid(){
   const grid=document.getElementById('photoGrid');
@@ -4042,7 +4069,7 @@ let allDesigns=[];
 
 async function loadDesigns(){
   try{
-    const d=await sbGet('/rest/v1/designs?select=id,nome,emoji,ordem&order=ordem');
+    const d=await sbGet('/rest/v1/designs?select=id,nome,emoji,ordem,visivel_loja&order=ordem');
     if(Array.isArray(d)&&d.length) allDesigns=d;
     else allDesigns=[
       {nome:'Flamingos',emoji:'🦩'},{nome:'Raposas',emoji:'🦊'},
@@ -4684,7 +4711,7 @@ function getEmailList(){
 }
 
 function renderEmailList(){
-  const el=document.getElementById('emailList');
+  const el=document.getElementById('emailListEl')||document.getElementById('emailList');
   if(!el)return;
   const list=getEmailList();
   const label=document.getElementById('emailCountLabel');
@@ -5187,21 +5214,7 @@ function renderRecentOrders(){
 }
 
 // ── UPLOAD FOTO ───────────────────────────────────────────────────────
-async function uploadFoto(file, prodNome){
-  if(!file)return;
-  const slug=slugify(prodNome);
-  const ext=file.name.split('.').pop();
-  const path=`${slug}-${Date.now()}.${ext}`;
-  try{
-    const r=await fetch(`${SB}/storage/v1/object/Fotos/${path}`,{
-      method:'POST',
-      headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':file.type,'x-upsert':'true'},
-      body:file
-    });
-    if(r.ok){toast('Foto enviada!','ok');loadPhotos(prodNome);}
-    else toast('Erro no upload','err');
-  }catch{toast('Erro no upload','err');}
-}
+// (uploadFoto duplicada removida — usa a versão correta com inserção na tabela fotos)
 
 mkLogo(document.getElementById('loginLogo'),52);
 
@@ -5854,6 +5867,16 @@ async function loadAlertasCount(){
       d.slice(0,3).map(a=>`<div style="font-size:.78rem;color:rgba(13,9,13,.5)">${a.nome||a.email} quer ser avisado</div>`).join('');
     dEl.parentNode.insertBefore(alertaDiv,dEl);
   }
+}
+
+function toggleEmailSection(){
+  const sec=document.getElementById('emailSection');
+  const btn=document.getElementById('emailToggleBtn');
+  if(!sec)return;
+  const open=sec.style.display==='block';
+  sec.style.display=open?'none':'block';
+  btn.textContent=open?'📧 Ver e-mails':'✕ Fechar e-mails';
+  if(!open)renderEmailList();
 }
 </script>
 
