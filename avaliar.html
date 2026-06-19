@@ -190,13 +190,19 @@ async function compressImage(file,maxW=1000,q=0.82){
 async function init(){
   if(!pedidoId){showError();return;}
   try{
-    const r=await fetch(`${SB}/rest/v1/pedidos?id=eq.${pedidoId}&select=*`,{headers:HDR});
+    const r=await fetch(`${SB}/rest/v1/rpc/rastrear_pedido`,{
+      method:'POST',headers:{...HDR,'Content-Type':'application/json'},
+      body:JSON.stringify({p_id:parseInt(pedidoId),p_tracking_code:null})
+    });
     const d=await r.json();
-    if(!d[0]){showError();return;}
+    if(!Array.isArray(d)||!d[0]){showError();return;}
     pedido=d[0];
 
-    // Load items
-    const ri=await fetch(`${SB}/rest/v1/itens_pedido?pedido_id=eq.${pedidoId}&select=*`,{headers:HDR});
+    // Load items via secure RPC
+    const ri=await fetch(`${SB}/rest/v1/rpc/itens_do_pedido`,{
+      method:'POST',headers:{...HDR,'Content-Type':'application/json'},
+      body:JSON.stringify({p_pedido_id:parseInt(pedidoId)})
+    });
     const items=await ri.json();
 
     // Pre-fill name

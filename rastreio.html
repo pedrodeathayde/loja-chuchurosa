@@ -66,17 +66,23 @@ async function rastrear(){
   document.getElementById('result').style.display='none';
   
   let pedido=null;
-  // Try by tracking code
-  const r1=await fetch(SB+'/rest/v1/pedidos?tracking_code=eq.'+encodeURIComponent(val)+'&select=*',{headers:HDR});
+  // Try by tracking code via secure RPC
+  const r1=await fetch(SB+'/rest/v1/rpc/rastrear_pedido',{
+    method:'POST',headers:{...HDR,'Content-Type':'application/json'},
+    body:JSON.stringify({p_tracking_code:val,p_id:null})
+  });
   const d1=await r1.json();
-  if(d1[0])pedido=d1[0];
+  if(Array.isArray(d1)&&d1[0])pedido=d1[0];
   
-  // Try by ID
+  // Try by ID via secure RPC
   if(!pedido&&/^#?\d+$/.test(val)){
-    const id=val.replace('#','');
-    const r2=await fetch(SB+'/rest/v1/pedidos?id=eq.'+id+'&select=*',{headers:HDR});
+    const id=parseInt(val.replace('#',''));
+    const r2=await fetch(SB+'/rest/v1/rpc/rastrear_pedido',{
+      method:'POST',headers:{...HDR,'Content-Type':'application/json'},
+      body:JSON.stringify({p_id:id,p_tracking_code:null})
+    });
     const d2=await r2.json();
-    if(d2[0])pedido=d2[0];
+    if(Array.isArray(d2)&&d2[0])pedido=d2[0];
   }
   
   if(!pedido){document.getElementById('trackError').style.display='block';return;}
