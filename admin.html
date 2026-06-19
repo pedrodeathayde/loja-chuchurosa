@@ -2711,7 +2711,7 @@ function mkLogo(el,h){
 
 // ── API ───────────────────────────────────────────────────────────────
 async function sbGet(path){try{const r=await fetch(SB+path,{headers:HDR});return r.ok?r.json():[];}catch{return[];}}
-async function sbPost(path,body){try{const r=await fetch(SB+path,{method:'POST',headers:{...HDR,'Prefer':'return=representation'},body:JSON.stringify(body)});return r.ok?r.json():null;}catch{return null;}}
+async function sbPost(path,body){try{const r=await fetch(SB+path,{method:'POST',headers:{...HDR,'Prefer':'return=representation'},body:JSON.stringify(body)});if(!r.ok){const t=await r.text().catch(()=>'');console.error('sbPost failed',path,r.status,t);return null;}return r.json();}catch(e){console.error('sbPost error',path,e);return null;}}
 async function sbPatch(path,body){try{const r=await fetch(SB+path,{method:'PATCH',headers:{...HDR,'Prefer':'return=representation'},body:JSON.stringify(body)});return r.ok?r.json():null;}catch{return null;}}
 async function sbDelete(path){try{const r=await fetch(SB+path,{method:'DELETE',headers:HDR});return r.ok;}catch{return false;}}
 
@@ -5604,20 +5604,28 @@ async function uploadFotosModal(input){
         _fotoModalFotos.push(publicUrl);
         _fotoModalIdx=_fotoModalFotos.length-1;
         // Insert into fotos table
-        await sbPost('/rest/v1/fotos',{
+        const insertResult=await sbPost('/rest/v1/fotos',{
           produto_id:_fotoModalProd.id,
           url:publicUrl,
           ordem:idx
         });
+        if(!insertResult){
+          toast('Foto subiu mas falhou ao salvar no banco (RLS?). Verifique policy de INSERT na tabela fotos.','err');
+          console.error('Falha ao inserir foto na tabela fotos:',{produto_id:_fotoModalProd.id,url:publicUrl});
+        }
         // Update fotosDB
         if(!fotosDB[_fotoModalProd.id])fotosDB[_fotoModalProd.id]=[];
         fotosDB[_fotoModalProd.id].push(publicUrl);
+      } else {
+        const errText=await r.text().catch(()=>'');
+        toast('Erro no upload da foto: '+r.status,'err');
+        console.error('Erro upload Storage:',r.status,errText);
       }
-    }catch(e){toast('Erro: '+e.message,'err');}
+    }catch(e){toast('Erro: '+e.message,'err');console.error(e);}
   }
   renderFotoModal();
   renderProdTable();
-  toast(files.length+' foto'+(files.length!==1?'s':'')+' enviada'+(files.length!==1?'s':'')+'!','ok');
+  toast(files.length+' foto'+(files.length!==1?'s':'')+' processada'+(files.length!==1?'s':''),'ok');
   input.value='';
 }
 
