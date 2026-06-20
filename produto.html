@@ -34,7 +34,16 @@
   --fb:'DM Sans',sans-serif;
   --r:16px;--rl:28px;
 }
+[data-theme="dark"]{
+  --cream:#15101a;--white:#1e1722;
+  --dark:#f0e8ec;--dark2:#2a2030;--dark3:#352a3d;
+}
+[data-theme="dark"] body{background:var(--cream)}
+[data-theme="dark"] img{filter:brightness(.94)}
+[data-theme="dark"] input,[data-theme="dark"] select,[data-theme="dark"] textarea{background:var(--white);color:var(--dark);border-color:rgba(244,121,154,.2)}
+[data-theme="dark"] ::-webkit-scrollbar-thumb{background:var(--pink2)}
 *{margin:0;padding:0;box-sizing:border-box}
+body,nav,header,footer{transition:background-color .3s ease,color .3s ease,border-color .3s ease}
 html{scroll-behavior:smooth}
 body{background:var(--cream);color:var(--dark);font-family:var(--fb);min-height:100vh}
 a{text-decoration:none;color:inherit}
@@ -261,6 +270,10 @@ nav{background:var(--dark);padding:0 48px;height:66px;display:flex;align-items:c
   <div class="nav-right">
     <a href="loja.html" class="nav-link">← Loja</a>
     <a href="minha-conta.html" class="nav-link">Conta</a>
+    <button onclick="toggleTheme()" title="Alternar tema" style="background:none;border:none;color:rgba(13,9,13,.5);display:flex;align-items:center;padding:6px;border-radius:50%;cursor:pointer">
+      <svg id="themeIconMoon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg id="themeIconSun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
     <button class="cart-btn" onclick="openCartDrawer()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
       <span class="cart-badge" id="cartBadge" style="display:none">0</span>
@@ -360,6 +373,30 @@ nav{background:var(--dark);padding:0 48px;height:66px;display:flex;align-items:c
 <div class="sticky-cta" id="stickyCta"><div><div class="sticky-cta-name" id="stickyName">—</div><div class="sticky-cta-price" id="stickyPrice"></div></div><button class="sticky-cta-btn" onclick="doAddToCart()">🛒 Adicionar</button></div>
 
 <script>
+// ── DARK MODE ─────────────────────────────────────────────────────
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme',theme);
+  const moonIcon=document.getElementById('themeIconMoon');
+  const sunIcon=document.getElementById('themeIconSun');
+  if(moonIcon&&sunIcon){
+    moonIcon.style.display=theme==='dark'?'none':'block';
+    sunIcon.style.display=theme==='dark'?'block':'none';
+  }
+}
+function toggleTheme(){
+  const current=document.documentElement.getAttribute('data-theme')||'light';
+  const next=current==='dark'?'light':'dark';
+  localStorage.setItem('cr_theme',next);
+  applyTheme(next);
+}
+function initTheme(){
+  const saved=localStorage.getItem('cr_theme');
+  const prefersDark=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(saved||(prefersDark?'dark':'light'));
+}
+initTheme();
+
+
 const FILES = [
   {n:'abacaxi-decorativo-abacaxi.jpg',u:'https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/abacaxi-decorativo-abacaxi.jpg'},
   {n:'abacaxi-decorativo-festa.jpg',u:'https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/abacaxi-decorativo-festa.jpg'},
