@@ -29,6 +29,7 @@
 [data-theme="dark"] img{filter:brightness(.94)}
 [data-theme="dark"] input,[data-theme="dark"] select,[data-theme="dark"] textarea{background:var(--white);color:var(--dark);border-color:rgba(244,121,154,.2)}
 [data-theme="dark"] ::-webkit-scrollbar-thumb{background:var(--pink2)}
+[data-theme="dark"] nav,[data-theme="dark"] .btn-email,[data-theme="dark"] .toast.info{background:#0c090d!important}
 *{margin:0;padding:0;box-sizing:border-box}
 body,nav,header,footer{transition:background-color .3s ease,color .3s ease,border-color .3s ease}
 html{scroll-behavior:smooth}
@@ -257,6 +258,10 @@ nav{background:var(--dark);padding:0 48px;height:66px;display:flex;align-items:c
 [data-theme="dark"] [style*="color:rgba(13,9,13,.45)"]{color:rgba(240,232,236,.55)!important}
 
 [data-theme="dark"] [style*="background:#fff"]{background:#1e1722!important;color:#f0e8ec!important}
+
+/* AUTO-GENERATED border visibility fix for dark mode */
+[data-theme="dark"] .email-form input,
+[data-theme="dark"] .oauth-btn{border-color:rgba(244,121,154,.25)!important}
 </style>
 </head>
 <body>
