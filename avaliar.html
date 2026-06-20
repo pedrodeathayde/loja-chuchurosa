@@ -19,6 +19,8 @@ body{background:var(--cream);font-family:var(--fb);color:var(--dark);min-height:
 .wrap{max-width:520px;margin:0 auto}
 .logo{font-family:var(--fd);font-size:1.3rem;font-weight:700;color:var(--pink);text-align:center;margin-bottom:24px}
 .card{background:#fff;border-radius:20px;padding:28px;box-shadow:0 8px 40px rgba(229,37,100,.08);margin-bottom:16px}
+.error-text{color:rgba(13,9,13,.5)}
+[data-theme="dark"] .error-text{color:rgba(240,232,236,.55)}
 h1{font-family:var(--fd);font-size:1.3rem;margin-bottom:6px}
 .sub{font-size:.84rem;color:rgba(13,9,13,.5);margin-bottom:24px}
 .prod-preview{display:flex;gap:12px;align-items:center;background:rgba(229,37,100,.04);border-radius:12px;padding:12px;margin-bottom:20px}
@@ -57,6 +59,21 @@ textarea{resize:vertical;min-height:90px}
 .success p{font-size:.88rem;color:rgba(13,9,13,.5);margin-bottom:20px}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--dark);color:#fff;padding:10px 20px;border-radius:100px;font-size:.82rem;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999}
 .toast.show{opacity:1}
+
+/* AUTO-GENERATED dark mode text-color overrides */
+[data-theme="dark"] .photo-drop p,
+[data-theme="dark"] .star-hint,
+[data-theme="dark"] .sub,
+[data-theme="dark"] .success p,
+[data-theme="dark"] label{color:rgba(240,232,236,.55)!important}
+
+/* AUTO-GENERATED dark mode white-bg overrides */
+[data-theme="dark"] .card{background:#1e1722!important;color:#f0e8ec;border-color:rgba(244,121,154,.15)!important}
+
+/* AUTO-GENERATED dark mode override for INLINE styles */
+[data-theme="dark"] [style*="color:rgba(13,9,13,.4)"]{color:rgba(240,232,236,.55)!important}
+[data-theme="dark"] [style*="color:rgba(13,9,13,.5)"]{color:rgba(240,232,236,.55)!important}
+[data-theme="dark"] [style*="color:rgba(13,9,13,.45)"]{color:rgba(240,232,236,.55)!important}
 </style>
 </head>
 <body>
@@ -130,7 +147,7 @@ textarea{resize:vertical;min-height:90px}
     <div style="text-align:center;padding:20px">
       <div style="font-size:2.5rem;margin-bottom:12px">😕</div>
       <h2 style="font-family:var(--fd);margin-bottom:8px">Link inválido</h2>
-      <p style="font-size:.84rem;color:rgba(13,9,13,.5)">Este link de avaliação não é válido ou já foi usado.</p>
+      <p class="error-text" style="font-size:.84rem">Este link de avaliação não é válido ou já foi usado.</p>
     </div>
   </div>
 </div>

@@ -21,13 +21,59 @@
 }
 [data-theme="dark"]{
   --cream:#15101a;--white:#1e1722;
-  --dark:#f0e8ec;--dark2:#2a2030;--dark3:#352a3d;
 }
-[data-theme="dark"] body{background:var(--cream)}
-[data-theme="dark"] .main{background:var(--cream)}
+[data-theme="dark"] body{background:var(--cream);color:#f0e8ec}
+[data-theme="dark"] .main{background:var(--cream);color:#f0e8ec}
 [data-theme="dark"] img{filter:brightness(.92)}
-[data-theme="dark"] input,[data-theme="dark"] select,[data-theme="dark"] textarea{background:var(--white);color:var(--dark);border-color:rgba(244,121,154,.18)}
+[data-theme="dark"] input,[data-theme="dark"] select,[data-theme="dark"] textarea{background:var(--white);color:#f0e8ec;border-color:rgba(244,121,154,.18)}
 [data-theme="dark"] ::-webkit-scrollbar-thumb{background:var(--pink2)}
+[data-theme="dark"] h1,[data-theme="dark"] h2,[data-theme="dark"] h3,
+[data-theme="dark"] .page-header p,[data-theme="dark"] .sc-label,
+[data-theme="dark"] .tr-name,[data-theme="dark"] .tr-cat,
+[data-theme="dark"] .confirm-card h3,[data-theme="dark"] .confirm-card p,
+[data-theme="dark"] .hist-action,[data-theme="dark"] .rel-kpi-val,
+[data-theme="dark"] label,[data-theme="dark"] .client-card *,
+[data-theme="dark"] td,[data-theme="dark"] .tbl-row{color:#f0e8ec}
+[data-theme="dark"] .col-design{color:rgba(240,232,236,.5)!important}
+[data-theme="dark"] .inline-price{color:#f0e8ec}
+[data-theme="dark"] .agenda-empty,
+[data-theme="dark"] .agenda-item-meta,
+[data-theme="dark"] .agenda-section h2,
+[data-theme="dark"] .bar-label,
+[data-theme="dark"] .bulk-preview,
+[data-theme="dark"] .cc-email,
+[data-theme="dark"] .cc-meta span,
+[data-theme="dark"] .client-search-wrap svg,
+[data-theme="dark"] .confirm-card p,
+[data-theme="dark"] .coupon-info p,
+[data-theme="dark"] .cpag-btn,
+[data-theme="dark"] .empty,
+[data-theme="dark"] .fg .hint,
+[data-theme="dark"] .fg label,
+[data-theme="dark"] .filter-chip,
+[data-theme="dark"] .hist-detail,
+[data-theme="dark"] .hist-time,
+[data-theme="dark"] .ld,
+[data-theme="dark"] .mclose,
+[data-theme="dark"] .msec h3,
+[data-theme="dark"] .page-header p,
+[data-theme="dark"] .ph-upload,
+[data-theme="dark"] .rel-kpi-label,
+[data-theme="dark"] .rel-kpi-lbl,
+[data-theme="dark"] .rel-section h3,
+[data-theme="dark"] .sc-label,
+[data-theme="dark"] .sc-sub,
+[data-theme="dark"] .size-card label,
+[data-theme="dark"] .tog-sub,
+[data-theme="dark"] .tr-cat,
+[data-theme="dark"] .tr-price.np,
+[data-theme="dark"] .tsearch svg,
+[data-theme="dark"] .var-header span{color:rgba(240,232,236,.55)!important}
+[data-theme="dark"] .confirm-btn.cancel{background:rgba(240,232,236,.08)!important;color:rgba(240,232,236,.6)!important}
+[data-theme="dark"] .pill.inactive,[data-theme="dark"] .pill.oculto{background:rgba(240,232,236,.08)!important;color:rgba(240,232,236,.45)!important}
+[data-theme="dark"] .ibtn.eye{background:rgba(240,232,236,.08)!important;color:rgba(240,232,236,.55)!important}
+[data-theme="dark"] .filter-chip{background:var(--white)!important;color:rgba(240,232,236,.55)!important;border-color:rgba(244,121,154,.18)!important}
+[data-theme="dark"] .page-header p,[data-theme="dark"] .sc-sub,[data-theme="dark"] .sc-label{color:rgba(240,232,236,.5)!important}
 [data-theme="dark"] .sc,
 [data-theme="dark"] .tsearch input,
 [data-theme="dark"] .tfilter,
@@ -58,9 +104,9 @@
 [data-theme="dark"] .empty,
 [data-theme="dark"] .dash-section,
 [data-theme="dark"] .form-section{
-  background:var(--white)!important;color:var(--dark);border-color:rgba(244,121,154,.15)!important;
+  background:var(--white)!important;color:#f0e8ec;border-color:rgba(244,121,154,.15)!important;
 }
-[data-theme="dark"] .tbl-head{background:var(--dark2)!important;color:rgba(240,232,236,.6)!important}
+[data-theme="dark"] .tbl-head{background:#2a2030!important;color:rgba(240,232,236,.6)!important}
 [data-theme="dark"] .tbl-row:hover{background:rgba(244,121,154,.06)!important}
 [data-theme="dark"] input::placeholder,[data-theme="dark"] textarea::placeholder{color:rgba(240,232,236,.35)}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -420,9 +466,11 @@ img{display:block;max-width:100%}
 .gs-empty{padding:20px;text-align:center;color:rgba(255,255,255,.25);font-size:.82rem}
 
 .ham-btn{display:none;position:fixed;top:12px;left:12px;z-index:51;background:var(--dark);border:none;border-radius:10px;cursor:pointer;padding:8px;color:rgba(255,255,255,.8);box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.theme-toggle-float{display:none;position:fixed;top:10px;right:12px;z-index:51;background:var(--dark2);border:1px solid rgba(244,121,154,.2);border-radius:50%;width:36px;height:36px;cursor:pointer;color:rgba(255,255,255,.75);box-shadow:0 2px 12px rgba(0,0,0,.3);align-items:center;justify-content:center}
 .aside-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:49}
 @media(max-width:768px){
   .ham-btn{display:flex;align-items:center;justify-content:center}
+  .theme-toggle-float{display:flex}
   .aside{display:flex;position:fixed;left:-260px;top:0;bottom:0;width:260px;z-index:50;transition:left .25s}
   .aside.open{left:0}
   .aside-overlay.open{display:block}
@@ -511,12 +559,12 @@ img{display:block;max-width:100%}
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   }
   .tbl-row.pc-grid>.col-price,
-  .tbl-row.pc-grid>.col-prazo,
   .tbl-row.pc-grid>.col-status{
-    grid-column:3;grid-row:3;display:inline-flex!important;align-items:center;
+    grid-row:3;display:inline-flex!important;align-items:center;
   }
-  .tbl-row.pc-grid>.col-price{margin-right:0}
-  .tbl-row.pc-grid>.col-prazo{margin:0 8px}
+  .tbl-row.pc-grid>.col-price{grid-column:3;justify-self:start}
+  .tbl-row.pc-grid>.col-status{grid-column:3;justify-self:end}
+  .tbl-row.pc-grid>.col-prazo{display:none!important}
   .tbl-row.pc-grid>.ibtns{
     grid-column:1/4;grid-row:4;display:flex;gap:4px;flex-shrink:0;
     margin-top:8px;padding-top:8px;border-top:1px solid rgba(229,37,100,.06);
@@ -680,6 +728,21 @@ img{display:block;max-width:100%}
 .dash-bar:hover{opacity:1}
 @media(max-width:768px){.rel-kpi-grid{grid-template-columns:1fr 1fr}}
 
+
+/* AUTO-GENERATED dark mode override for INLINE styles */
+[data-theme="dark"] [style*="color:rgba(13,9,13,.3)"]{color:rgba(240,232,236,.55)!important}
+[data-theme="dark"] [style*="color:rgba(13,9,13,.4)"]{color:rgba(240,232,236,.55)!important}
+[data-theme="dark"] [style*="color:rgba(13,9,13,.5)"]{color:rgba(240,232,236,.55)!important}
+[data-theme="dark"] [style*="color:rgba(13,9,13,.6)"]{color:rgba(240,232,236,.55)!important}
+[data-theme="dark"] [style*="color:rgba(13,9,13,.7)"]{color:rgba(240,232,236,.55)!important}
+[data-theme="dark"] [style*="color:rgba(13,9,13,.32)"]{color:rgba(240,232,236,.55)!important}
+[data-theme="dark"] [style*="color:rgba(13,9,13,.35)"]{color:rgba(240,232,236,.55)!important}
+[data-theme="dark"] [style*="color:rgba(13,9,13,.38)"]{color:rgba(240,232,236,.55)!important}
+[data-theme="dark"] [style*="color:rgba(13,9,13,.45)"]{color:rgba(240,232,236,.55)!important}
+[data-theme="dark"] [style*="color:rgba(13,9,13,.48)"]{color:rgba(240,232,236,.55)!important}
+[data-theme="dark"] [style*="color:rgba(13,9,13,.55)"]{color:rgba(240,232,236,.55)!important}
+
+[data-theme="dark"] [style*="background:#fff"]{background:#1e1722!important;color:#f0e8ec!important}
 </style>
 </head>
 <body>
@@ -754,6 +817,10 @@ img{display:block;max-width:100%}
       <div class="mini-stat">Em produção: <b id="ms-prod">—</b></div>
       <div class="mini-stat" id="ms-novos-wrap" style="display:none">🔔 <b id="ms-novos" style="color:var(--pink)">0 novos</b></div>
     </div>
+    <button onclick="toggleTheme()" title="Alternar tema" class="theme-toggle-float">
+      <svg id="themeIconMoon2" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg id="themeIconSun2" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
     <!-- BANNER STRIP -->
     <div class="banner-strip" id="bannerStrip" style="display:none;margin:16px 32px 0;border-radius:12px"></div>
 
@@ -1464,12 +1531,12 @@ img{display:block;max-width:100%}
 // ── DARK MODE ─────────────────────────────────────────────────────
 function applyTheme(theme){
   document.documentElement.setAttribute('data-theme',theme);
-  const moonIcon=document.getElementById('themeIconMoon');
-  const sunIcon=document.getElementById('themeIconSun');
-  if(moonIcon&&sunIcon){
-    moonIcon.style.display=theme==='dark'?'none':'block';
-    sunIcon.style.display=theme==='dark'?'block':'none';
-  }
+  ['themeIconMoon','themeIconSun','themeIconMoon2','themeIconSun2'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    const isMoon=id.includes('Moon');
+    el.style.display=(isMoon?theme!=='dark':theme==='dark')?'block':'none';
+  });
 }
 function toggleTheme(){
   const current=document.documentElement.getAttribute('data-theme')||'light';
