@@ -2676,7 +2676,7 @@ function mergeProducts(){
 function applyFilters(){
   let res=[...allProducts];
   if(currentCat!=='Todas') res=res.filter(p=>(p.collections||[]).some(c=>c.toLowerCase()===currentCat.toLowerCase()));
-  if(searchQ){ const q=searchQ.toLowerCase(); res=res.filter(p=>p.name.toLowerCase().includes(q)); }
+  if(searchQ){ res=res.filter(p=>fuzzyMatch(p.name,searchQ)); }
   if(typeof activeDesigns!=='undefined'&&activeDesigns.length){
     res=res.filter(p=>{
       const designs=Array.isArray(p.design)?p.design:(p.design?[p.design]:[]);
@@ -3348,8 +3348,7 @@ function globalSearch(q){
   const el=document.getElementById('searchResults');
   if(!el)return;
   if(!q||q.length<2){el.style.display='none';return;}
-  const ql=q.toLowerCase();
-  const hits=allProducts.filter(p=>(p.name||'').toLowerCase().includes(ql)).slice(0,6);
+  const hits=allProducts.filter(p=>fuzzyMatch(p.name,q)).slice(0,6);
   if(!hits.length){el.style.display='none';return;}
   el.innerHTML=hits.map(p=>`
     <div class="search-result-item" onclick="goProduct('${p.id}')">
@@ -3387,6 +3386,50 @@ function flyToCart(imgEl){
 
 // ── YEAR ──────────────────────────────────────────────────────────
 document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+// ── BUSCA TOLERANTE (sem acento, sem case, tolera erro de digitação) ──
+function normalizeSearch(str){
+  return (str||'')
+    .toString()
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9\s]/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+function levenshtein(a,b){
+  if(a===b)return 0;
+  const al=a.length, bl=b.length;
+  if(al===0)return bl;
+  if(bl===0)return al;
+  let prev=Array.from({length:bl+1},(_,i)=>i);
+  for(let i=1;i<=al;i++){
+    const cur=[i];
+    for(let j=1;j<=bl;j++){
+      cur[j]=a[i-1]===b[j-1]
+        ? prev[j-1]
+        : Math.min(prev[j-1]+1, prev[j]+1, cur[j-1]+1);
+    }
+    prev=cur;
+  }
+  return prev[bl];
+}
+function fuzzyMatch(text, query){
+  const t=normalizeSearch(text);
+  const q=normalizeSearch(query);
+  if(!q)return true;
+  if(t.includes(q))return true;
+  const qWords=q.split(' ').filter(Boolean);
+  const tWords=t.split(' ').filter(Boolean);
+  return qWords.every(qw=>{
+    if(tWords.some(tw=>tw.includes(qw)))return true;
+    const maxDist = qw.length<=4 ? 1 : qw.length<=8 ? 2 : 3;
+    return tWords.some(tw=>{
+      if(Math.abs(tw.length-qw.length)>maxDist)return false;
+      return levenshtein(tw,qw)<=maxDist;
+    });
+  });
+}
 </script>
 
 <div class="lightbox" id="lightbox">
