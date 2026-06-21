@@ -1895,13 +1895,20 @@ function renderProduct(){
   if(schemaEl)schemaEl.textContent=JSON.stringify(schema);
 
   // Breadcrumb
+  const CAT_LABELS={
+    passaros:'Pássaros',flores:'Flores',raposas:'Raposas',decoracao:'Decoração',
+    almofadas:'Almofadas',bebes:'Bebês',asas:'Asas',natal:'Natal',
+    fantasias:'Fantasias',acessorios:'Acessórios',plush:'Plush',educativo:'Educativo',
+    lembrancinhas:'Lembrancinhas',bolsas:'Bolsas'
+  };
+  const catLabel=c=>CAT_LABELS[c]||(c?c.charAt(0).toUpperCase()+c.slice(1):c);
   const cats=(prod.collections||[]);
-  document.getElementById('breadCat').textContent=cats[0]||'Loja';
+  document.getElementById('breadCat').textContent=catLabel(cats[0])||'Loja';
   document.getElementById('breadCat').href='loja.html'+(cats[0]?'?cat='+encodeURIComponent(cats[0]):'');
   document.getElementById('breadName').textContent=prod.name;
 
   // Category tag
-  document.getElementById('pCat').textContent=cats.join(' · ')||'';
+  document.getElementById('pCat').textContent=cats.map(catLabel).join(' · ')||'';
 
   // Title
   document.getElementById('pName').textContent=prod.name;

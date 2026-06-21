@@ -2550,6 +2550,13 @@ const FILES = [
 const SB  = 'https://oznpfqsgurztffwfyfec.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA';
 const HDR = {apikey:KEY,Authorization:'Bearer '+KEY,Accept:'application/json'};
+const CAT_LABELS={
+  passaros:'Pássaros',flores:'Flores',raposas:'Raposas',decoracao:'Decoração',
+  almofadas:'Almofadas',bebes:'Bebês',asas:'Asas',natal:'Natal',
+  fantasias:'Fantasias',acessorios:'Acessórios',plush:'Plush',educativo:'Educativo',
+  lembrancinhas:'Lembrancinhas',bolsas:'Bolsas'
+};
+const catLabel=c=>CAT_LABELS[c]||(c?c.charAt(0).toUpperCase()+c.slice(1):c);
 
 // ── LOGO ─────────────────────────────────────────────────────────────
 function mkLogo(el,h){
@@ -2769,7 +2776,7 @@ function renderGrid(){
   grid.innerHTML=slice.map((p,_idx)=>{
     const isFeatured=p.destaque&&!featuredUsed&&viewMode!=='list';
     if(isFeatured)featuredUsed=true;
-    const cats=(p.collections||[]).slice(0,2).map(c=>c.charAt(0).toUpperCase()+c.slice(1)).join(' · ');
+    const cats=(p.collections||[]).slice(0,2).map(catLabel).join(' · ');
     const prazo=p.prazo_producao_dias||7;
     const badge=p.destaque?'<span class="pcard-badge badge-destaque">Destaque</span>':'';
 
