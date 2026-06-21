@@ -248,35 +248,6 @@ nav.elevated{
   background:var(--cream);color:var(--dark);
   outline:none;margin-top:8px;cursor:pointer;
 }
-.price-slider-wrap{position:relative;height:28px;margin-top:14px}
-.price-slider-track{
-  position:absolute;top:50%;left:0;right:0;height:4px;
-  transform:translateY(-50%);border-radius:4px;
-  background:rgba(229,37,100,.15);
-}
-[data-theme="dark"] .price-slider-track{background:rgba(244,121,154,.18)}
-.price-slider-fill{
-  position:absolute;top:0;height:100%;border-radius:4px;
-  background:var(--rose);
-}
-.price-range{
-  position:absolute;top:0;left:0;width:100%;height:28px;
-  margin:0;appearance:none;background:transparent;pointer-events:none;
-}
-.price-range::-webkit-slider-thumb{
-  appearance:none;pointer-events:auto;
-  width:18px;height:18px;border-radius:50%;
-  background:#fff;border:2.5px solid var(--rose);
-  cursor:pointer;margin-top:-7px;
-  box-shadow:0 1px 4px rgba(0,0,0,.25);
-}
-.price-range::-moz-range-thumb{
-  pointer-events:auto;width:18px;height:18px;border-radius:50%;
-  background:#fff;border:2.5px solid var(--rose);cursor:pointer;
-  box-shadow:0 1px 4px rgba(0,0,0,.25);
-}
-.price-range::-webkit-slider-runnable-track{background:transparent}
-.price-range::-moz-range-track{background:transparent}
 .price-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
 .price-input{margin-top:0}
 
@@ -1318,11 +1289,6 @@ body::before{
       <option value="price-desc">Maior preço</option>
     </select>
     <div class="sidebar-label">Faixa de preço</div>
-    <div class="price-slider-wrap">
-      <div class="price-slider-track"><div class="price-slider-fill" id="priceFill"></div></div>
-      <input class="price-range" type="range" id="priceRangeMin" min="0" max="500" value="0" step="5" oninput="onPriceRangeInput()">
-      <input class="price-range" type="range" id="priceRangeMax" min="0" max="500" value="500" step="5" oninput="onPriceRangeInput()">
-    </div>
     <div class="price-row">
       <input class="price-input" type="number" id="priceMin" placeholder="Mín" min="0" onchange="onPriceTextInput()">
       <input class="price-input" type="number" id="priceMax" placeholder="Máx" min="0" onchange="onPriceTextInput()">
@@ -3044,50 +3010,11 @@ function showToastRich(name,url,subtitle){
   toastRichTimer=setTimeout(()=>t.classList.remove('show'),3200);
 }
 
-// ── PRICE SLIDER ──────────────────────────────────────────────────────
-function setPriceSliderMax(max){
-  const rMin=document.getElementById('priceRangeMin');
-  const rMax=document.getElementById('priceRangeMax');
-  if(!rMin||!rMax)return;
-  const ceil=Math.max(50,Math.ceil(max/10)*10);
-  rMin.max=ceil; rMax.max=ceil;
-  if(priceMax===null) rMax.value=ceil;
-  renderPriceFill();
-}
-function renderPriceFill(){
-  const rMin=document.getElementById('priceRangeMin');
-  const rMax=document.getElementById('priceRangeMax');
-  const fill=document.getElementById('priceFill');
-  if(!rMin||!rMax||!fill)return;
-  const max=+rMin.max||500;
-  const lo=Math.min(+rMin.value,+rMax.value);
-  const hi=Math.max(+rMin.value,+rMax.value);
-  fill.style.left=(lo/max*100)+'%';
-  fill.style.width=((hi-lo)/max*100)+'%';
-}
-function onPriceRangeInput(){
-  const rMin=document.getElementById('priceRangeMin');
-  const rMax=document.getElementById('priceRangeMax');
-  let lo=+rMin.value, hi=+rMax.value;
-  if(lo>hi){ [lo,hi]=[hi,lo]; rMin.value=lo; rMax.value=hi; }
-  priceMin=lo>0?lo:null;
-  priceMax=hi<+rMax.max?hi:null;
-  document.getElementById('priceMin').value=priceMin??'';
-  document.getElementById('priceMax').value=priceMax??'';
-  renderPriceFill();
-  saveFiltersToURL();
-  applyFilters();
-}
 function onPriceTextInput(){
   const mn=document.getElementById('priceMin').value;
   const mx=document.getElementById('priceMax').value;
   priceMin=mn?+mn:null;
   priceMax=mx?+mx:null;
-  const rMin=document.getElementById('priceRangeMin');
-  const rMax=document.getElementById('priceRangeMax');
-  if(rMin) rMin.value=priceMin??0;
-  if(rMax) rMax.value=priceMax??rMax.max;
-  renderPriceFill();
   saveFiltersToURL();
   applyFilters();
 }
@@ -3252,8 +3179,6 @@ function restoreSavedFilters(){
   const si=document.getElementById('searchInput'); if(si&&searchQ) si.value=searchQ;
   const pMinEl=document.getElementById('priceMin'); if(pMinEl) pMinEl.value=priceMin??'';
   const pMaxEl=document.getElementById('priceMax'); if(pMaxEl) pMaxEl.value=priceMax??'';
-  const rMin=document.getElementById('priceRangeMin'); if(rMin&&priceMin!==null) rMin.value=priceMin;
-  const rMax=document.getElementById('priceRangeMax'); if(rMax&&priceMax!==null) rMax.value=priceMax;
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────
@@ -3398,8 +3323,6 @@ async function init(){
   await loadCats();
   mergeProducts();
   restoreSavedFilters();
-  const prices=allProducts.map(p=>p.preco_promocional||p.price).filter(Boolean);
-  setPriceSliderMax(prices.length?Math.max(...prices):500);
   applyFilters();
   updateCartUI();
   loadFavsFromDB();
@@ -3473,7 +3396,7 @@ function closeSidebar(){
   let startX=0,startY=0,deltaX=0,dragging=false,axisLocked=false,horizontal=false;
   sb.addEventListener('touchstart',e=>{
     if(!sb.classList.contains('mobile-open'))return;
-    if(e.target.closest('.price-range,input,select,button'))return;
+    if(e.target.closest('input,select,button'))return;
     startX=e.touches[0].clientX;
     startY=e.touches[0].clientY;
     dragging=true;axisLocked=false;horizontal=false;
@@ -3673,9 +3596,6 @@ function clearAllFilters(){
   document.getElementById('priceMin').value='';
   document.getElementById('priceMax').value='';
   const si=document.getElementById('searchInput'); if(si) si.value='';
-  const rMin=document.getElementById('priceRangeMin'); if(rMin) rMin.value=0;
-  const rMax=document.getElementById('priceRangeMax'); if(rMax) rMax.value=rMax.max;
-  renderPriceFill();
   document.querySelectorAll('#heroBadges .hbadge').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
   document.querySelector('.cat-tab')?.classList.add('active');
