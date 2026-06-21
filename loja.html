@@ -200,8 +200,17 @@ nav.elevated{
   font-size:.82rem;color:rgba(12,9,13,.6);font-weight:400;
 }
 .cat-item:hover{background:rgba(229,37,100,.06);color:var(--dark)}
+.cat-item:focus-visible{outline:2px solid var(--rose);outline-offset:1px}
 .cat-item.active{background:rgba(229,37,100,.1);color:var(--rose);font-weight:600}
 .cat-icon{font-size:.85rem;width:18px;flex-shrink:0}
+.cat-count{margin-left:auto;font-size:.7rem;color:rgba(12,9,13,.35);font-weight:500}
+.cat-item.active .cat-count{color:rgba(196,29,85,.55)}
+[data-theme="dark"] .cat-count{color:rgba(240,232,236,.35)}
+.sidebar-title{position:relative;display:flex;align-items:center;gap:6px}
+.active-count{
+  background:var(--rose);color:#fff;font-size:.66rem;font-weight:700;
+  border-radius:20px;padding:1px 7px;line-height:1.4;
+}
 .sort-select,.price-input{
   width:100%;padding:7px 10px;
   border:1.5px solid rgba(229,37,100,.15);border-radius:8px;
@@ -518,6 +527,16 @@ nav.elevated{
     border-right:1px solid rgba(244,121,154,.15);
   }
   .sidebar.mobile-open{display:block;transform:translateX(0)}
+  .clear-filters-btn.visible{
+    position:sticky;bottom:0;
+    margin-top:24px;
+    background:var(--white);
+    box-shadow:0 -8px 16px var(--white);
+  }
+  [data-theme="dark"] .clear-filters-btn.visible{
+    background:#241a29;
+    box-shadow:0 -8px 16px #241a29;
+  }
   .sidebar-head{
     display:flex;align-items:center;justify-content:space-between;
     margin:0 0 18px;padding-bottom:14px;
@@ -1225,11 +1244,11 @@ body::before{
 <div class="shop-wrap">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-head">
-      <span class="sidebar-title">Filtrar</span>
+      <span class="sidebar-title">Filtrar<span class="active-count" id="activeCount" style="display:none"></span></span>
       <button class="sidebar-close" onclick="closeSidebar()" aria-label="Fechar menu">✕</button>
     </div>
     <ul class="cat-list" id="catList">
-      <li class="cat-item active" data-cat="Todas"><span class="cat-icon">✨</span> Todos os produtos</li>
+      <li class="cat-item active" data-cat="Todas" role="button" tabindex="0"><span class="cat-icon">✨</span> Todos os produtos<span class="cat-count" id="countTodas"></span></li>
     </ul>
     <div class="sidebar-label">Ordenar</div>
     <select class="sort-select" id="sortSelect" onchange="currentSort=this.value;page=1;applyFilters()">
@@ -2779,6 +2798,8 @@ function applyFilters(){
   page=1;
   renderGrid();
   renderPagination();
+  updateCatCounts();
+  updateActiveFilterCount();
   const lbl=document.getElementById('resultLabel');
   if(lbl) lbl.textContent=filtered.length+' produto'+(filtered.length!==1?'s':'')+(currentCat&&currentCat!=='Todas'?' em '+currentCat:'')+(searchQ?' para "'+searchQ+'"':'');
   document.getElementById('resultCount').textContent=res.length;
@@ -2970,6 +2991,13 @@ document.getElementById('catList').addEventListener('click',e=>{
   currentCat=li.dataset.cat;
   applyFilters();
 });
+document.getElementById('catList').addEventListener('keydown',e=>{
+  if(e.key!=='Enter'&&e.key!==' ')return;
+  const li=e.target.closest('.cat-item');
+  if(!li)return;
+  e.preventDefault();
+  li.click();
+});
 let searchTimer;
 document.getElementById('searchInput').addEventListener('input',e=>{
   clearTimeout(searchTimer);
@@ -3092,8 +3120,11 @@ async function loadCats(){
       const li=document.createElement('li');
       li.className='cat-item';
       li.dataset.cat=c.nome;
-      li.innerHTML=`<span class="cat-icon">${c.emoji||'🏷️'}</span> ${c.nome}`;
-      li.onclick=()=>{
+      li.setAttribute('role','button');
+      li.setAttribute('tabindex','0');
+      const safeId='count_'+c.nome.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]/g,'');
+      li.innerHTML=`<span class="cat-icon">${c.emoji||'🏷️'}</span> ${c.nome}<span class="cat-count" id="${safeId}"></span>`;
+      const selectCat=()=>{
         document.querySelectorAll('.cat-item').forEach(x=>x.classList.remove('active'));
         li.classList.add('active');
         currentCat=c.nome;
@@ -3103,9 +3134,37 @@ async function loadCats(){
         document.querySelectorAll('#heroBadges .hbadge').forEach(b=>b.classList.remove('active'));
         applyFilters();
       };
+      li.onclick=selectCat;
+      li.onkeydown=(e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); selectCat(); } };
       ul.appendChild(li);
     });
   }catch(e){console.warn('loadCats failed',e);}
+}
+
+function updateCatCounts(){
+  const todasEl=document.getElementById('countTodas');
+  if(todasEl) todasEl.textContent=allProducts.length;
+  document.querySelectorAll('#catList .cat-item[data-cat]:not([data-cat="Todas"])').forEach(li=>{
+    const cat=li.dataset.cat;
+    const n=allProducts.filter(p=>(p.collections||[]).some(c=>c.toLowerCase()===cat.toLowerCase())).length;
+    const countEl=li.querySelector('.cat-count');
+    if(countEl) countEl.textContent=n;
+  });
+}
+
+function updateActiveFilterCount(){
+  let n=0;
+  if(currentCat&&currentCat!=='Todas') n++;
+  if(priceMin!==null) n++;
+  if(priceMax!==null) n++;
+  if(typeof activeDesigns!=='undefined'&&activeDesigns.length) n++;
+  const badge=document.getElementById('activeCount');
+  const dot=document.getElementById('filterDot');
+  if(badge){
+    if(n>0){ badge.textContent=n; badge.style.display='inline-block'; }
+    else badge.style.display='none';
+  }
+  if(dot) dot.classList.toggle('visible', n>0);
 }
 
 // ── DARK MODE ─────────────────────────────────────────────────────
