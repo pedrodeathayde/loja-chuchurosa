@@ -936,11 +936,11 @@ img{display:block;max-width:100%}
       <div class="dash-grid-2">
         <div class="dash-section">
           <h3>🏆 Mais vendidos</h3>
-          <div id="topProducts"></div>
+          <div id="topProducts"><div class="empty"><div class="empty-icon">⏳</div><p>Carregando...</p></div></div>
         </div>
         <div class="dash-section">
           <h3>👁️ Mais visualizados</h3>
-          <div id="topViewed"></div>
+          <div id="topViewed"><div class="empty"><div class="empty-icon">⏳</div><p>Carregando...</p></div></div>
         </div>
       </div>
 
@@ -3098,13 +3098,18 @@ let editProdId=null, editOrderId=null, editCupomId=null;
 
 // ── INIT ──────────────────────────────────────────────────────────────
 async function init(){
-  await Promise.all([loadFotosDB(),loadProds(),loadOrders(),loadClients(),loadCupons(),loadFrete(),loadBanners(),loadCats(),loadNotifConfig(),loadDesigns()]);
+  // Pedidos e produtos são tudo que o dashboard precisa — carrega primeiro
+  // e renderiza o dashboard sem esperar o resto (fotos, clientes, cupons, etc.)
+  await Promise.all([loadProds(),loadOrders()]);
+  renderDash();
+  updateMiniStats();
+
+  // Resto das abas carrega em paralelo, em segundo plano
+  await Promise.all([loadFotosDB(),loadClients(),loadCupons(),loadFrete(),loadBanners(),loadCats(),loadNotifConfig(),loadDesigns()]);
   loadAlertasCount();
   renderProdTable();
-  renderDash();
   renderBannerStrip();
   sessionStorage.removeItem('novos_visto');
-  updateMiniStats();
 }
 
 // ── FILES INDEX ───────────────────────────────────────────────────────

@@ -3274,11 +3274,13 @@ function updateActiveFilterCount(){
   if(typeof activeDesigns!=='undefined'&&activeDesigns.length) n++;
   const badge=document.getElementById('activeCount');
   const dot=document.getElementById('filterDot');
+  const clearBtn=document.getElementById('clearFiltersBtn');
   if(badge){
     if(n>0){ badge.textContent=n; badge.style.display='inline-flex'; }
     else badge.style.display='none';
   }
   if(dot) dot.classList.toggle('visible', n>0);
+  if(clearBtn) clearBtn.classList.toggle('visible', n>0);
 }
 
 // ── DARK MODE ─────────────────────────────────────────────────────
