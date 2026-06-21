@@ -3652,9 +3652,23 @@ async function loadFavsFromDB(){
         }
       }
       localStorage.removeItem('cr_favs');
-      applyFilters();
+      syncFavIcons();
     }
   }catch(e){}
+}
+
+// Atualiza só os ícones de coração já visíveis na grade, sem recriar os cards
+// (evita destruir/recriar as <img> da página, que causava o "flash" duplo de imagens)
+function syncFavIcons(){
+  document.querySelectorAll('.lb-trigger').forEach(btn=>{
+    const card=btn.closest('.pcard');
+    if(!card)return;
+    const onclickAttr=btn.getAttribute('onclick')||'';
+    const m=onclickAttr.match(/toggleFavLoja\((\d+)/);
+    if(!m)return;
+    const id=Number(m[1]);
+    btn.innerHTML=favs.has(id)?'❤️':'🤍';
+  });
 }
 
 function saveFavs(){
