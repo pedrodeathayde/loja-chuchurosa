@@ -15,6 +15,7 @@
   --pink:#e52564;--pink2:#f04d7f;--rose:#c41d55;
   --cream:#fff9f6;--white:#fff;--green:#22c55e;
   --red:#ef4444;--yellow:#f59e0b;--blue:#6366f1;
+  --purple:#8b5cf6;--teal:#06b6d4;
   --fd:'Playfair Display',Georgia,serif;
   --fb:'DM Sans',sans-serif;
   --r:12px;--rl:20px;
@@ -180,6 +181,8 @@ img{display:block;max-width:100%}
 .sc.green .sc-val{color:var(--green)}
 .sc.yellow .sc-val{color:var(--yellow)}
 .sc.blue .sc-val{color:var(--blue)}
+.sc.purple .sc-val{color:var(--purple)}
+.sc.teal .sc-val{color:var(--teal)}
 
 /* BANNER STRIP */
 .banner-strip{border-radius:12px;padding:12px 18px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.88rem;font-weight:600}
@@ -742,6 +745,24 @@ img{display:block;max-width:100%}
 .dash-order-row:last-child{border-bottom:none}
 .dash-top-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(229,37,100,.05)}
 .dash-top-row:last-child{border-bottom:none}
+.topprod-rank{width:20px;flex-shrink:0;font-weight:700;font-size:.82rem;color:rgba(13,9,13,.4);text-align:center}
+.topprod-name{flex:0 0 auto;width:120px;font-size:.82rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.topprod-bar-wrap{flex:1;height:8px;background:rgba(229,37,100,.07);border-radius:100px;overflow:hidden}
+.topprod-bar{height:100%;background:var(--pink);border-radius:100px;transition:width .4s ease}
+.topprod-qty{width:32px;flex-shrink:0;text-align:right;font-weight:700;font-size:.82rem;color:var(--rose)}
+.pending-row{display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid rgba(229,37,100,.06);transition:background .15s;border-radius:8px}
+.pending-row:hover{background:rgba(229,37,100,.04)}
+.pending-row:last-child{border-bottom:none}
+.pending-icon{font-size:1.1rem;width:28px;text-align:center;flex-shrink:0}
+.pending-label{flex:1;font-size:.86rem;font-weight:600}
+.pending-count{background:var(--pink);color:#fff;border-radius:100px;min-width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;padding:0 8px}
+.dash-period-toggle{display:flex;gap:4px;background:rgba(229,37,100,.05);border-radius:10px;padding:3px}
+.dash-period-btn{padding:5px 12px;border-radius:8px;border:none;background:transparent;font-family:var(--fb);font-size:.76rem;font-weight:600;cursor:pointer;color:rgba(13,9,13,.5);transition:all .2s}
+.dash-period-btn.active{background:#fff;color:var(--rose);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.dash-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:768px){.dash-grid-2{grid-template-columns:1fr}}
+.cmp-up{color:var(--green);font-weight:700}
+.cmp-down{color:var(--red);font-weight:700}
 .dash-mini-chart{display:flex;align-items:flex-end;gap:3px;height:40px;margin-top:8px}
 .dash-bar{background:var(--pink);border-radius:4px 4px 0 0;flex:1;opacity:.7;transition:opacity .2s;min-height:4px}
 .dash-bar:hover{opacity:1}
@@ -762,6 +783,37 @@ img{display:block;max-width:100%}
 [data-theme="dark"] [style*="color:rgba(13,9,13,.55)"]{color:rgba(240,232,236,.55)!important}
 
 [data-theme="dark"] [style*="background:#fff"]{background:#1e1722!important;color:#f0e8ec!important}
+
+/* AUTO-GENERATED dark mode white-bg overrides (classes) */
+[data-theme="dark"] .sc,
+[data-theme="dark"] .btn-s,
+[data-theme="dark"] .tbl-wrap,
+[data-theme="dark"] .modal,
+[data-theme="dark"] .mhead,
+[data-theme="dark"] .mfoot,
+[data-theme="dark"] .size-card,
+[data-theme="dark"] .chart-wrap,
+[data-theme="dark"] .coupon-card,
+[data-theme="dark"] .banner-card,
+[data-theme="dark"] .confirm-card,
+[data-theme="dark"] .cat-row,
+[data-theme="dark"] .bulk-modal,
+[data-theme="dark"] .bulk-opt:not(.active),
+[data-theme="dark"] .row-cb,
+[data-theme="dark"] .select-all-cb,
+[data-theme="dark"] .agenda-item,
+[data-theme="dark"] .rel-kpi,
+[data-theme="dark"] .rel-section,
+[data-theme="dark"] .dash-section,
+[data-theme="dark"] .client-card{background:#1e1722!important;color:#f0e8ec!important;border-color:rgba(244,121,154,.15)!important}
+[data-theme="dark"] .cpag-btn:not(.active){background:#1e1722!important;color:rgba(240,232,236,.55)!important}
+
+/* status/pagamento badges mantêm cor semântica própria quando .active; só neutraliza estado inativo */
+[data-theme="dark"] .status-btn:not(.active),
+[data-theme="dark"] .pgto-btn:not(.active){background:#1e1722!important}
+[data-theme="dark"] .filter-chip:not(.active){background:#1e1722!important;color:rgba(240,232,236,.55)!important}
+[data-theme="dark"] .dash-period-btn.active{background:#1e1722!important;color:var(--pink2)!important}
+[data-theme="dark"] .dash-period-btn{color:rgba(240,232,236,.5)!important}
 
 /* AUTO-GENERATED border visibility fix for dark mode */
 [data-theme="dark"] .filter-chip,
@@ -851,15 +903,46 @@ img{display:block;max-width:100%}
     <div class="page active" id="page-dashboard">
       <div class="page-header"><div><h1>Dashboard 📊</h1><p>Visão geral da loja Chuchu Rosa</p></div></div>
       <div class="stats-row">
-        <div class="sc pink" onclick="goPage('pedidos')" style="cursor:pointer"><div class="sc-label">Pedidos hoje</div><div class="sc-val" id="dPedHoje">—</div><div class="sc-sub">Clique para ver →</div></div>
-        <div class="sc green" onclick="goPage('pedidos')" style="cursor:pointer"><div class="sc-label">Receita total</div><div class="sc-val" id="dReceita">—</div><div class="sc-sub">Pedidos pagos</div></div>
+        <div class="sc pink" onclick="goPage('pedidos')" style="cursor:pointer"><div class="sc-label">Pedidos hoje</div><div class="sc-val" id="dPedHoje">—</div><div class="sc-sub" id="dPedCmp">—</div></div>
+        <div class="sc green" onclick="goPage('pedidos')" style="cursor:pointer"><div class="sc-label">Receita do mês</div><div class="sc-val" id="dReceita">—</div><div class="sc-sub" id="dReceitaCmp">—</div></div>
         <div class="sc blue" onclick="goPage('produtos')" style="cursor:pointer"><div class="sc-label">Produtos ativos</div><div class="sc-val" id="dProds">—</div><div class="sc-sub">Clique para ver →</div></div>
         <div class="sc yellow" onclick="goPage('pedidos')" style="cursor:pointer"><div class="sc-label">Em produção</div><div class="sc-val" id="dProd">—</div><div class="sc-sub">Clique para ver →</div></div>
       </div>
+      <div class="stats-row">
+        <div class="sc purple"><div class="sc-label">Visitas (mês)</div><div class="sc-val" id="dViews">—</div><div class="sc-sub" id="dViewsCmp">—</div></div>
+        <div class="sc teal"><div class="sc-label">Visitantes únicos (mês)</div><div class="sc-val" id="dVisitors">—</div><div class="sc-sub">Sessões distintas</div></div>
+      </div>
+
+      <!-- PENDÊNCIAS -->
+      <div class="dash-section">
+        <h3>⚡ Precisa de ação</h3>
+        <div id="pendingActions"></div>
+      </div>
+
       <div class="chart-wrap" style="margin-bottom:20px">
-        <div class="chart-head"><h3>Receita por mês</h3></div>
+        <div class="chart-head" style="display:flex;align-items:center;justify-content:space-between">
+          <h3>Receita</h3>
+          <div class="dash-period-toggle">
+            <button class="dash-period-btn" data-period="week" onclick="setDashPeriod('week')">Semana</button>
+            <button class="dash-period-btn active" data-period="month" onclick="setDashPeriod('month')">Mês</button>
+            <button class="dash-period-btn" data-period="year" onclick="setDashPeriod('year')">Ano</button>
+          </div>
+        </div>
         <div class="chart-bars" id="chartBars"></div>
       </div>
+
+      <!-- RANKINGS -->
+      <div class="dash-grid-2">
+        <div class="dash-section">
+          <h3>🏆 Mais vendidos</h3>
+          <div id="topProducts"></div>
+        </div>
+        <div class="dash-section">
+          <h3>👁️ Mais visualizados</h3>
+          <div id="topViewed"></div>
+        </div>
+      </div>
+
       <div class="tbl-wrap">
         <div style="padding:16px 18px;border-bottom:1px solid rgba(244,121,154,.08);display:flex;align-items:center;justify-content:space-between">
           <h3 style="font-family:var(--fd);font-size:.95rem;font-weight:700">Pedidos recentes</h3>
@@ -868,6 +951,7 @@ img{display:block;max-width:100%}
         <div id="recentOrders"></div>
       </div>
     </div>
+
 
     <!-- PRODUTOS -->
     <div class="page" id="page-produtos">
@@ -3013,11 +3097,8 @@ let editProdId=null, editOrderId=null, editCupomId=null;
 
 // ── INIT ──────────────────────────────────────────────────────────────
 async function init(){
-  await loadFotosDB();
+  await Promise.all([loadFotosDB(),loadProds(),loadOrders(),loadClients(),loadCupons(),loadFrete(),loadBanners(),loadCats(),loadNotifConfig(),loadDesigns()]);
   loadAlertasCount();
-  console.log('fotosDB loaded:', Object.keys(fotosDB).length, 'produtos');
-  await Promise.all([loadProds(),loadOrders(),loadClients(),loadCupons(),loadFrete(),loadBanners(),loadCats(),loadNotifConfig(),loadDesigns()]);
-  console.log('renderProdTable with fotosDB:', Object.keys(fotosDB).length);
   renderProdTable();
   renderDash();
   renderBannerStrip();
@@ -5343,31 +5424,99 @@ async function confirmarEtiqueta(pedidoId,serviceId,modalEl){
 }
 
 // ── DASHBOARD ─────────────────────────────────────────────────────────
+// ── DASHBOARD ─────────────────────────────────────────────────────────
+let dashPeriod='month'; // 'week' | 'month' | 'year'
+let dashViewStats={views:0,visitors:0,prevViews:0,prevVisitors:0};
+let dashTopProducts=[];
+
+function pctChange(curr,prev){
+  if(!prev) return curr?{val:100,up:true}:{val:0,up:true};
+  const v=((curr-prev)/prev)*100;
+  return {val:Math.abs(Math.round(v)),up:v>=0};
+}
+
 function renderDash(){
-  const hoje=new Date().toDateString();
+  const now=new Date();
+  const hoje=now.toDateString();
+  const startOfMonth=new Date(now.getFullYear(),now.getMonth(),1);
+  const startOfPrevMonth=new Date(now.getFullYear(),now.getMonth()-1,1);
+
   const pedHoje=allOrders.filter(p=>new Date(p.created_at).toDateString()===hoje).length;
-  const receita=allOrders.filter(p=>p.status==='pago').reduce((s,p)=>s+(p.total||0),0);
-  const emProd=allOrders.filter(p=>p.status==='producao').length;
+
+  const receitaMes=allOrders.filter(p=>p.pagamento_status==='pago'&&new Date(p.created_at)>=startOfMonth).reduce((s,p)=>s+(p.total||0),0);
+  const receitaMesAnterior=allOrders.filter(p=>p.pagamento_status==='pago'&&new Date(p.created_at)>=startOfPrevMonth&&new Date(p.created_at)<startOfMonth).reduce((s,p)=>s+(p.total||0),0);
+  const receitaCmp=pctChange(receitaMes,receitaMesAnterior);
+
+  const pedidosMes=allOrders.filter(p=>new Date(p.created_at)>=startOfMonth).length;
+  const pedidosMesAnterior=allOrders.filter(p=>new Date(p.created_at)>=startOfPrevMonth&&new Date(p.created_at)<startOfMonth).length;
+  const pedidosCmp=pctChange(pedidosMes,pedidosMesAnterior);
+
+  const emProd=allOrders.filter(p=>p.status==='em_producao').length;
   const prodsAtivos=allProds.filter(p=>p.ativo&&!p.oculto&&p.price).length;
+
   document.getElementById('dPedHoje').textContent=pedHoje;
-  document.getElementById('dReceita').textContent=receita?fmt(receita):'R$ 0,00';
+  document.getElementById('dReceita').textContent=fmt(receitaMes);
   document.getElementById('dProds').textContent=prodsAtivos;
   document.getElementById('dProd').textContent=emProd;
+
+  setCmp('dReceitaCmp',receitaCmp,'vs mês anterior');
+  setCmp('dPedCmp',pedidosCmp,'vs mês anterior');
+
   renderChart();
   renderRecentOrders();
+  renderPendingActions();
+  renderTopProducts();
+  renderViewStats();
+}
+
+function setCmp(elId,cmp,suffix){
+  const el=document.getElementById(elId);
+  if(!el)return;
+  const arrow=cmp.up?'▲':'▼';
+  const cls=cmp.up?'cmp-up':'cmp-down';
+  el.innerHTML=`<span class="${cls}">${arrow} ${cmp.val}%</span> ${suffix}`;
+}
+
+function setDashPeriod(p){
+  dashPeriod=p;
+  document.querySelectorAll('.dash-period-btn').forEach(b=>b.classList.toggle('active',b.dataset.period===p));
+  renderChart();
 }
 
 function renderChart(){
-  const months=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
   const now=new Date();
-  const data=Array(6).fill(0).map((_,i)=>{
-    const d=new Date(now.getFullYear(),now.getMonth()-5+i,1);
-    const total=allOrders.filter(o=>{
-      const od=new Date(o.created_at);
-      return od.getMonth()===d.getMonth()&&od.getFullYear()===d.getFullYear()&&o.status!=='cancelado';
-    }).reduce((s,o)=>s+(o.total||0),0);
-    return{label:months[d.getMonth()],val:total};
-  });
+  let data=[];
+  if(dashPeriod==='week'){
+    const days=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+    data=Array(7).fill(0).map((_,i)=>{
+      const d=new Date(now);
+      d.setDate(now.getDate()-6+i);
+      const total=allOrders.filter(o=>{
+        const od=new Date(o.created_at);
+        return od.toDateString()===d.toDateString()&&o.pagamento_status==='pago';
+      }).reduce((s,o)=>s+(o.total||0),0);
+      return{label:days[d.getDay()],val:total};
+    });
+  }else if(dashPeriod==='year'){
+    data=Array(5).fill(0).map((_,i)=>{
+      const y=now.getFullYear()-4+i;
+      const total=allOrders.filter(o=>{
+        const od=new Date(o.created_at);
+        return od.getFullYear()===y&&o.pagamento_status==='pago';
+      }).reduce((s,o)=>s+(o.total||0),0);
+      return{label:String(y),val:total};
+    });
+  }else{
+    const months=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    data=Array(6).fill(0).map((_,i)=>{
+      const d=new Date(now.getFullYear(),now.getMonth()-5+i,1);
+      const total=allOrders.filter(o=>{
+        const od=new Date(o.created_at);
+        return od.getMonth()===d.getMonth()&&od.getFullYear()===d.getFullYear()&&o.pagamento_status==='pago';
+      }).reduce((s,o)=>s+(o.total||0),0);
+      return{label:months[d.getMonth()],val:total};
+    });
+  }
   const max=Math.max(...data.map(d=>d.val),1);
   document.getElementById('chartBars').innerHTML=data.map(d=>`
     <div class="bar-group">
@@ -5387,9 +5536,131 @@ function renderRecentOrders(){
       <div><div style="font-size:.84rem;font-weight:600">${p.visitante_nome||'—'}</div><div style="font-size:.69rem;color:rgba(13,9,13,.35)">${p.visitante_email||''}</div></div>
       <span style="font-weight:700">${fmt(p.total)}</span>
       <span></span>
-      <span><span class="pill ${p.status}">${{pendente:'⏳',pago:'✅',producao:'🔨',enviado:'🚚',entregue:'📬',cancelado:'❌'}[p.status]||''} ${p.status}</span></span>
+      <span><span class="pill ${p.status}">${{pendente:'⏳',confirmado:'✅',em_producao:'🔨',pronto:'📦',enviado:'🚚',entregue:'📬',cancelado:'❌'}[p.status]||''} ${p.status}</span></span>
       <span style="font-size:.71rem;color:rgba(13,9,13,.35)">${fmtDate(p.created_at)}</span>
     </div>`).join('');
+}
+
+// Pedidos que precisam de alguma ação do admin agora
+function renderPendingActions(){
+  const el=document.getElementById('pendingActions');
+  if(!el)return;
+  const semPagamento=allOrders.filter(p=>p.pagamento_status!=='pago'&&p.status!=='cancelado');
+  const semRastreio=allOrders.filter(p=>p.pagamento_status==='pago'&&['confirmado','em_producao','pronto'].includes(p.status)&&!p.tracking_code);
+  const pronto=allOrders.filter(p=>p.status==='pronto');
+
+  const groups=[
+    {label:'Aguardando pagamento',icon:'💳',list:semPagamento,action:'pgto-pendente'},
+    {label:'Pago, sem código de rastreio',icon:'📦',list:semRastreio,action:'pedidos'},
+    {label:'Pronto para envio',icon:'🚚',list:pronto,action:'pedidos'},
+  ].filter(g=>g.list.length);
+
+  if(!groups.length){
+    el.innerHTML='<div class="empty"><div class="empty-icon">✅</div><p>Nenhuma ação pendente</p></div>';
+    return;
+  }
+  el.innerHTML=groups.map(g=>`
+    <div class="pending-row" data-action="${g.action}" style="cursor:pointer">
+      <span class="pending-icon">${g.icon}</span>
+      <span class="pending-label">${g.label}</span>
+      <span class="pending-count">${g.list.length}</span>
+    </div>`).join('');
+  el.querySelectorAll('.pending-row').forEach(row=>{
+    row.addEventListener('click',()=>{
+      if(row.dataset.action==='pgto-pendente'){
+        goPage('pedidos');
+        setTimeout(()=>{orderPgtoFilter='pendente';renderOrderTable();},50);
+      }else{
+        goPage('pedidos');
+      }
+    });
+  });
+}
+
+// Produtos mais vendidos (por quantidade, em pedidos pagos)
+async function renderTopProducts(){
+  const el=document.getElementById('topProducts');
+  if(!el)return;
+  const paidIds=allOrders.filter(o=>o.pagamento_status==='pago').map(o=>o.id);
+  if(!paidIds.length){el.innerHTML='<div class="empty"><div class="empty-icon">🌸</div><p>Sem vendas ainda</p></div>';return;}
+  try{
+    const chunks=[];
+    for(let i=0;i<paidIds.length;i+=200) chunks.push(paidIds.slice(i,i+200));
+    const allItems=[];
+    for(const chunk of chunks){
+      const d=await sbGet(`/rest/v1/itens_pedido?select=produto_id,nome_produto,quantidade&pedido_id=in.(${chunk.join(',')})`);
+      if(Array.isArray(d)) allItems.push(...d);
+    }
+    const byProduct=new Map();
+    allItems.forEach(item=>{
+      const key=item.produto_id||item.nome_produto;
+      const name=item.nome_produto||`Produto #${item.produto_id}`;
+      if(!byProduct.has(key)) byProduct.set(key,{name,qty:0,id:item.produto_id});
+      byProduct.get(key).qty+=item.quantidade||1;
+    });
+    dashTopProducts=[...byProduct.values()].sort((a,b)=>b.qty-a.qty).slice(0,5);
+    if(!dashTopProducts.length){el.innerHTML='<div class="empty"><div class="empty-icon">🌸</div><p>Sem vendas ainda</p></div>';return;}
+    const maxQty=Math.max(...dashTopProducts.map(p=>p.qty));
+    el.innerHTML=dashTopProducts.map((p,i)=>`
+      <div class="dash-top-row" ${p.id?`onclick="previewProdLoja(${p.id})" style="cursor:pointer"`:''}>
+        <span class="topprod-rank">${i+1}</span>
+        <span class="topprod-name">${p.name}</span>
+        <div class="topprod-bar-wrap"><div class="topprod-bar" style="width:${(p.qty/maxQty*100)}%"></div></div>
+        <span class="topprod-qty">${p.qty}</span>
+      </div>`).join('');
+  }catch(e){el.innerHTML='<div class="empty"><p>Erro ao carregar vendas</p></div>';}
+}
+
+// Visitas e visitantes únicos (tabela page_views)
+async function renderViewStats(){
+  const elViews=document.getElementById('dViews');
+  const elVisitors=document.getElementById('dVisitors');
+  const elTopViewed=document.getElementById('topViewed');
+  if(!elViews&&!elTopViewed)return;
+  try{
+    const now=new Date();
+    const since=encodeURIComponent(new Date(now.getFullYear(),now.getMonth(),1).toISOString());
+    const prevSince=encodeURIComponent(new Date(now.getFullYear(),now.getMonth()-1,1).toISOString());
+
+    const [curr,prev]=await Promise.all([
+      sbGet(`/rest/v1/page_views?select=session_id,produto_id&created_at=gte.${since}`),
+      sbGet(`/rest/v1/page_views?select=session_id&created_at=gte.${prevSince}&created_at=lt.${since}`)
+    ]);
+    const currArr=Array.isArray(curr)?curr:[];
+    const prevArr=Array.isArray(prev)?prev:[];
+
+    dashViewStats.views=currArr.length;
+    dashViewStats.visitors=new Set(currArr.map(v=>v.session_id)).size;
+    dashViewStats.prevViews=prevArr.length;
+    dashViewStats.prevVisitors=new Set(prevArr.map(v=>v.session_id)).size;
+
+    if(elViews) elViews.textContent=dashViewStats.views;
+    if(elVisitors) elVisitors.textContent=dashViewStats.visitors;
+    setCmp('dViewsCmp',pctChange(dashViewStats.views,dashViewStats.prevViews),'vs mês anterior');
+
+    if(elTopViewed){
+      const byProd=new Map();
+      currArr.filter(v=>v.produto_id).forEach(v=>byProd.set(v.produto_id,(byProd.get(v.produto_id)||0)+1));
+      const top=[...byProd.entries()].sort((a,b)=>b[1]-a[1]).slice(0,5);
+      if(!top.length){elTopViewed.innerHTML='<div class="empty"><div class="empty-icon">👁️</div><p>Sem visualizações ainda</p></div>';}
+      else{
+        const maxV=Math.max(...top.map(t=>t[1]));
+        elTopViewed.innerHTML=top.map(([pid,count])=>{
+          const prod=allProds.find(p=>p.id===pid);
+          const name=prod?(prod.name||prod.nome):`Produto #${pid}`;
+          return `<div class="dash-top-row" onclick="previewProdLoja(${pid})" style="cursor:pointer">
+            <span class="topprod-rank">👁️</span>
+            <span class="topprod-name">${name}</span>
+            <div class="topprod-bar-wrap"><div class="topprod-bar" style="width:${(count/maxV*100)}%;background:var(--blue)"></div></div>
+            <span class="topprod-qty">${count}</span>
+          </div>`;
+        }).join('');
+      }
+    }
+  }catch(e){
+    if(elViews) elViews.textContent='—';
+    if(elVisitors) elVisitors.textContent='—';
+  }
 }
 
 // ── UPLOAD FOTO ───────────────────────────────────────────────────────

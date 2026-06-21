@@ -281,12 +281,14 @@ nav{background:#0c090d;padding:0 48px;height:66px;display:flex;align-items:cente
 [data-theme="dark"] .var-section h3{color:rgba(240,232,236,.55)!important}
 
 /* AUTO-GENERATED dark mode white-bg overrides */
-[data-theme="dark"] .btn-fav,
+[data-theme="dark"] .btn-fav:not(.active),
 [data-theme="dark"] .cart-drw,
 [data-theme="dark"] .pcard,
 [data-theme="dark"] .review-card,
 [data-theme="dark"] .share-btn,
 [data-theme="dark"] .sticky-cta{background:#1e1722!important;color:#f0e8ec;border-color:rgba(244,121,154,.15)!important}
+[data-theme="dark"] .var-opt:not(.active){background:#1e1722!important;color:#f0e8ec!important;border-color:rgba(244,121,154,.15)!important}
+[data-theme="dark"] .btn-fav.active{background:rgba(244,121,154,.15)!important}
 
 /* AUTO-GENERATED dark mode override for INLINE styles */
 [data-theme="dark"] [style*="color:rgba(13,9,13,.4)"]{color:rgba(240,232,236,.55)!important}
@@ -1823,6 +1825,25 @@ function addToCart(prod,varTxt,qty){
 let prod=null,variacoes=[],selTam='',selCor='',qty=1,isFav=false;
 const id=new URLSearchParams(location.search).get('id');
 
+// ── TRACKING (visitante anônimo via session_id em localStorage) ───────
+function getSessionId(){
+  let sid=localStorage.getItem('cr_sid');
+  if(!sid){
+    sid=(crypto.randomUUID?crypto.randomUUID():'sid_'+Date.now()+'_'+Math.random().toString(36).slice(2));
+    localStorage.setItem('cr_sid',sid);
+  }
+  return sid;
+}
+function trackView(tipo,produtoId){
+  try{
+    fetch(`${SB}/rest/v1/page_views`,{
+      method:'POST',
+      headers:{...HDR,'Content-Type':'application/json',Prefer:'return=minimal'},
+      body:JSON.stringify({tipo,produto_id:produtoId||null,session_id:getSessionId()})
+    }).catch(()=>{});
+  }catch(e){}
+}
+
 // ── LOAD PRODUCT ──────────────────────────────────────────────────────
 async function loadProduct(){
   if(!id){location.href='loja.html';return;}
@@ -1831,6 +1852,7 @@ async function loadProduct(){
     const d=await r.json();
     if(!d||!d[0]){if(window.self===window.top){location.href='loja.html';}else{document.body.innerHTML='<div style="padding:40px;text-align:center">Produto não encontrado</div>';}return;}
     prod=d[0];
+    trackView('produto',prod.id);
     // Load fotos from table
     try{
       const fr=await fetch(`${SB}/rest/v1/fotos?produto_id=eq.${id}&select=url,ordem&order=ordem`,{headers:HDR});

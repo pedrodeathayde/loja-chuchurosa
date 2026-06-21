@@ -3319,8 +3319,28 @@ async function loadAllFotos(){
   }catch(e){console.log('fotos err:',e);}
 }
 
+// ── TRACKING (visitante anônimo via session_id em localStorage) ───────
+function getSessionId(){
+  let sid=localStorage.getItem('cr_sid');
+  if(!sid){
+    sid=(crypto.randomUUID?crypto.randomUUID():'sid_'+Date.now()+'_'+Math.random().toString(36).slice(2));
+    localStorage.setItem('cr_sid',sid);
+  }
+  return sid;
+}
+function trackView(tipo,produtoId){
+  try{
+    fetch(SB+'/rest/v1/page_views',{
+      method:'POST',
+      headers:{...HDR,'Content-Type':'application/json',Prefer:'return=minimal'},
+      body:JSON.stringify({tipo,produto_id:produtoId||null,session_id:getSessionId()})
+    }).catch(()=>{});
+  }catch(e){}
+}
+
 async function init(){
   showSkeletons();
+  trackView('loja');
   // Fotos e produtos/variações não dependem um do outro — buscar em paralelo
   await Promise.all([loadAllFotos(), loadFromDB(), loadCats()]);
   mergeProducts();
