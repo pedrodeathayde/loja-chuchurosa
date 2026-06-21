@@ -33,7 +33,6 @@
   border-color:rgba(244,121,154,.15)!important;
 }
 [data-theme="dark"] img{filter:brightness(.94)}
-[data-theme="dark"] .toast-rich{background:#1e1722;color:var(--dark);border-color:rgba(244,121,154,.15)}
 [data-theme="dark"] ::-webkit-scrollbar-thumb{background:var(--pink2)}
 [data-theme="dark"] .lb-trigger,
 [data-theme="dark"] .pcard-img,
@@ -2861,7 +2860,7 @@ function renderGrid(){
     const badge=p.destaque?'<span class="pcard-badge badge-destaque">Destaque</span>':'';
 
     const imgFirst=p.url?`<img class="img-primary" src="${p.url}" alt="${p.name}" loading="lazy">`:'';
-    const imgSecond=p.url2?`<img class="img-secondary" src="${p.url2}" alt="${p.name}" loading="lazy">`:'';'';
+    const imgSecond=p.url2?`<img class="img-secondary" src="${p.url2}" alt="${p.name}" loading="lazy">`:'';
     // Swatches from variacoes (colors) — use design tags as fallback
     const colors=(p._cores||[]).slice(0,5);
     const colorMap={
@@ -3305,11 +3304,10 @@ function initTheme(){
 }
 initTheme();
 
-async function init(){
-  showSkeletons();
-  // Load fotos FIRST so mergeProducts has correct URLs and prazo
+async function loadAllFotos(){
+  fotosDB={};
   try{
-    let off=0; fotosDB={};
+    let off=0;
     while(true){
       const r=await fetch(SB+'/rest/v1/fotos?select=produto_id,url,ordem&order=ordem&limit=1000&offset='+off,{headers:HDR});
       const chunk=await r.json();
@@ -3319,8 +3317,12 @@ async function init(){
       off+=1000;
     }
   }catch(e){console.log('fotos err:',e);}
-  await loadFromDB();
-  await loadCats();
+}
+
+async function init(){
+  showSkeletons();
+  // Fotos e produtos/variações não dependem um do outro — buscar em paralelo
+  await Promise.all([loadAllFotos(), loadFromDB(), loadCats()]);
   mergeProducts();
   restoreSavedFilters();
   applyFilters();
@@ -3357,7 +3359,7 @@ function renderFeaturedStrip(){
       ?`<div class="scard-price${p.preco_promocional?' promo':''}">${fmt(p.preco_promocional||p.price)}</div>`
       :`<div class="scard-price" style="color:rgba(12,9,13,.4);font-size:.72rem">Sob consulta</div>`;
     const imgFirst=p.url?`<img class="img-primary" src="${p.url}" alt="${p.name}" loading="lazy">`:'';
-    const imgSecond=p.url2?`<img class="img-secondary" src="${p.url2}" alt="${p.name}" loading="lazy">`:'';'';
+    const imgSecond=p.url2?`<img class="img-secondary" src="${p.url2}" alt="${p.name}" loading="lazy">`:'';
     return `<div class="scard" onclick="goProduct('${p.id}')">
       <div class="scard-img">${img}<div class="scard-img-ph" ${p.url?'style="display:none"':''}>🌸</div><span class="scard-badge-dest">Destaque</span></div>
       <div class="scard-info"><div class="scard-name">${p.name}</div>${priceHtml}</div>
