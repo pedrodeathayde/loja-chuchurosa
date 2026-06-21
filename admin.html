@@ -704,7 +704,8 @@ img{display:block;max-width:100%}
 
 
 /* ── TOUCH DRAG DESIGNS/CATS ── */
-.drag-item{touch-action:none;user-select:none}
+.drag-item{touch-action:pan-y;user-select:none}
+.drag-item.drag-armed{touch-action:none}
 .drag-item.dragging{opacity:.5;background:rgba(229,37,100,.1)}
 .drag-item.drag-over{border-top:2px solid var(--pink)}
 
@@ -6137,7 +6138,7 @@ function initTouchDrag(container, onReorder){
       holdTimer=setTimeout(()=>{
         if(!holding)return; // o dedo já se moveu o suficiente — era scroll, não arrastar
         dragEl=el; origIdx=i;
-        el.classList.add('dragging','drag-hold');
+        el.classList.add('dragging','drag-hold','drag-armed');
       },HOLD_MS);
     },{passive:true});
 
@@ -6163,7 +6164,7 @@ function initTouchDrag(container, onReorder){
     el.addEventListener('touchend',()=>{
       cancelHold();
       if(!dragEl)return;
-      dragEl.classList.remove('dragging','drag-hold');
+      dragEl.classList.remove('dragging','drag-hold','drag-armed');
       const items=[...container.querySelectorAll('.drag-item')];
       const overEl=items.find(it=>it.classList.contains('drag-over'));
       if(overEl){
@@ -6176,7 +6177,7 @@ function initTouchDrag(container, onReorder){
 
     el.addEventListener('touchcancel',()=>{
       cancelHold();
-      if(dragEl) dragEl.classList.remove('dragging','drag-hold');
+      if(dragEl) dragEl.classList.remove('dragging','drag-hold','drag-armed');
       dragEl=null;
     },{passive:true});
   });
