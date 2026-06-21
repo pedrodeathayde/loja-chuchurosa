@@ -2307,8 +2307,6 @@ async function loadReviews(){
   if(!id)return;
   try{
     const r=await fetch(`${SB}/rest/v1/avaliacoes?produto_id=eq.${id}&aprovada=eq.true&select=*&order=created_at.desc`,{headers:HDR});
-    // Also load reviews by pedido that includes this product
-    const r2=await fetch(`${SB}/rest/v1/avaliacoes?aprovada=eq.true&produto_id=is.null&select=avaliacoes.*&pedido_id=in.(select pedido_id from itens_pedido where produto_id=${id})&order=created_at.desc&limit=10`,{headers:HDR});
     let reviews=await r.json();
     if(!Array.isArray(reviews))reviews=[];
 

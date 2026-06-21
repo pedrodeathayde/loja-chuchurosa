@@ -922,15 +922,6 @@ img{display:block;max-width:100%}
         <span class="filter-chip" data-pgto="pendente" onclick="setOrderFilter(this,'','pendente')">💳 Pagto pendente</span>
         <span class="filter-chip" data-pgto="pago" onclick="setOrderFilter(this,'','pago')">💚 Pagos</span>
       </div>
-      <div class="toolbar">
-        <div class="tsearch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input type="text" id="os" placeholder="Buscar..." oninput="filterOrders()"></div>
-        <select class="tfilter" id="ost" onchange="filterOrders()">
-          <option value="">Todos</option>
-          <option value="pendente">Pendente</option><option value="pago">Pago</option>
-          <option value="producao">Em produção</option><option value="enviado">Enviado</option>
-          <option value="entregue">Entregue</option><option value="cancelado">Cancelado</option>
-        </select>
-      </div>
       <div class="tbl-wrap" id="orderTable"><div class="ld"><div class="spin"></div><span>Carregando...</span></div></div>
     </div>
 
@@ -2931,9 +2922,11 @@ async function doLogout(){
 }
 
 async function showAdmin(){
-  // Verify admin role before granting access
+  // Verify admin role before granting access — uses auth.uid(), same check as backend RLS.
+  // (user_metadata is editable by the user themselves, so it's not a trustworthy check on its own.)
+  const ADMIN_UID='d54fff6f-1775-4510-a5d4-405d1ea7ba56';
   const {data:{user}}=await sb.auth.getUser();
-  if(!user||user.user_metadata?.role!=='admin'){
+  if(!user||user.id!==ADMIN_UID){
     await sb.auth.signOut();
     const lerr=document.getElementById('lerr');
     lerr.textContent='Acesso não autorizado.';
@@ -3182,7 +3175,6 @@ function openNewProd(){
   document.getElementById('mNota').value='';
   document.getElementById('designsGrid').innerHTML=buildDesignsGrid([]);
   document.getElementById('colsGrid').innerHTML=buildCols([]);
-  if(document.getElementById('sizesGrid')) document.getElementById('sizesGrid').innerHTML=buildSizes([]);
   document.getElementById('togAtivo').classList.add('on');
   document.getElementById('togDestaque').classList.remove('on');
   document.getElementById('togEsgotado').classList.remove('on');
@@ -3215,11 +3207,6 @@ function editProd(id){
   document.getElementById('prodModal').classList.add('open');
 }
 
-async function loadVars(prodId){
-  const d=await sbGet(`/rest/v1/produto_variacoes?produto_id=eq.${prodId}&order=tamanho`);
-  if(Array.isArray(d)&&d.length&&document.getElementById('sizesGrid')) document.getElementById('sizesGrid').innerHTML=buildSizes(d);
-}
-
 function loadPhotos(nome){
   const slug=slugify(nome);
   const photos=FILES.filter(f=>f.n.startsWith(slug)||f.n.replace(/\.[^.]+$/,'').startsWith(slug)).slice(0,10);
@@ -3243,18 +3230,6 @@ function buildCols(sel=[]){
   if(!COLS||!COLS.length) return '<p style="color:rgba(13,9,13,.4);font-size:.8rem">Carregando coleções...</p>';
   return COLS.map(c=>`<div class="col-ch ${sel.map(s=>s.toLowerCase()).includes(c.toLowerCase())?'checked':''}" onclick="this.classList.toggle('checked')">${c}</div>`).join('');
 }
-const SIZES=['PP','P','M','G','GG','1-2 anos','2-3 anos','3-4 anos','4-5 anos','5-6 anos','6-7 anos','7-8 anos','8-9 anos','9-10 anos','10-12 anos','Único'];
-
-function buildSizes(vars=[]){
-  return SIZES.map(s=>{
-    const v=vars.find(x=>x.tamanho===s);
-    return `<div class="size-card">
-      <label>${s}</label>
-      <input type="number" min="0" value="${v?.estoque||0}" placeholder="Qtd" data-size="${s}" class="size-stock">
-    </div>`;
-  }).join('');
-}
-
 function getSelCols(){return [...document.querySelectorAll('#colsGrid .col-ch.checked')].map(e=>e.textContent.trim()).filter(Boolean);}
 
 function togBtn(btn){btn.classList.toggle('on');}
@@ -3301,17 +3276,6 @@ async function loadOrders(){
   const pendentes=allOrders.filter(p=>p.status==='pendente').length;
   document.getElementById('nb-ped').textContent=pendentes||0;
   if(pendentes>0)document.getElementById('nb-ped').className='ni-badge red';
-  renderOrderTable();
-}
-
-function filterOrders(){
-  const q=document.getElementById('os').value.toLowerCase();
-  const st=document.getElementById('ost').value;
-  filtOrders=allOrders.filter(p=>{
-    const mq=!q||fuzzyMatch(p.name,q)||fuzzyMatch(p.visitante_email||'',q)||String(p.id).includes(q);
-    const ms=!st||p.status===st;
-    return mq&&ms;
-  });
   renderOrderTable();
 }
 
@@ -3414,7 +3378,6 @@ async function saveOrderStatus(){
 }
 function closeOrderModal(){document.getElementById('orderModal').classList.remove('open');selStatus=null;}
 document.getElementById('orderModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeOrderModal();});
-function contactWA(id,nome,tel){window.open(`https://wa.me/55${tel}?text=${encodeURIComponent(`Olá ${decodeURIComponent(nome)}! Atualização sobre seu pedido #${id} 🌸`)}`,'_blank');}
 
 // ── CLIENTS ───────────────────────────────────────────────────────────
 const CLIENTS_BATCH = 50;

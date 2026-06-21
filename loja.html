@@ -491,7 +491,7 @@ nav.elevated{
 .toast-rich .tr-text small{color:rgba(13,9,13,.45);font-weight:500;font-size:.72rem}
 
 /* ── SIDEBAR OVERLAY ── */
-.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:199}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:240}
 .sidebar-overlay.open{display:block}
 
 /* ── MOBILE ── */
@@ -500,7 +500,7 @@ nav.elevated{
   .hamburger{display:flex}
   .sidebar{
     display:none;position:fixed;top:0;left:0;bottom:0;
-    z-index:200;width:280px;background:var(--white);
+    z-index:250;width:280px;background:var(--white);
     transform:translateX(-100%);
     transition:transform .32s cubic-bezier(.25,.46,.45,.94);
     overflow-y:auto;overflow-x:hidden;
@@ -820,53 +820,6 @@ body::before{
 .pcard:nth-child(10){animation-delay:.3s}
 .pcard:nth-child(n+11){animation-delay:.33s}
 
-/* ── PCARD PRICE ── */
-.pcard-price{
-  font-size:.92rem;font-weight:800;color:var(--dark);
-  white-space:nowrap;flex-shrink:0;line-height:1.2;
-  font-feature-settings:"tnum";
-}
-.pcard-price.promo{
-  color:var(--rose);
-}
-.pcard-price-old{
-  font-size:.62rem;color:rgba(12,9,13,.3);
-  text-decoration:line-through;display:block;line-height:1.3;
-}
-
-/* ── BTN ADD — premium ── */
-.btn-add{
-  flex-shrink:0;
-  background:#0c090d;color:#fff;border:none;
-  border-radius:50%;width:36px;height:36px;
-  font-size:1.1rem;font-weight:300;
-  cursor:pointer;transition:all .2s;
-  display:flex;align-items:center;justify-content:center;
-}
-.btn-add:hover{background:var(--pink);transform:scale(1.08)}
-
-/* ── SIDEBAR — premium ── */
-.sidebar{
-  background:var(--white);
-  border-right:1px solid rgba(229,37,100,.08);
-  box-shadow:4px 0 24px rgba(229,37,100,.04);
-}
-.sidebar-label{
-  font-size:.58rem;font-weight:700;letter-spacing:.2em;
-  text-transform:uppercase;color:rgba(12,9,13,.35);
-  margin-bottom:10px;margin-top:24px;padding-bottom:8px;
-  border-bottom:1px solid rgba(229,37,100,.08);
-}
-.cat-item{
-  padding:9px 12px;border-radius:10px;
-  cursor:pointer;transition:all .18s;
-  font-size:.82rem;color:rgba(12,9,13,.55);font-weight:500;
-  display:flex;align-items:center;justify-content:space-between;gap:8px;
-}
-.cat-item:hover,.cat-item.active{
-  background:rgba(229,37,100,.07);color:var(--rose);
-}
-.cat-item.active{font-weight:700}
 
 /* ── DESIGN FILTER CHIPS ── */
 .design-chips{display:flex;flex-direction:column;gap:4px;margin-top:6px}
