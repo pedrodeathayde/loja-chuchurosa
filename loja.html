@@ -234,8 +234,10 @@ nav.elevated{
 [data-theme="dark"] .subtag-empty{color:rgba(240,232,236,.35)}
 .sidebar-title{position:relative;display:flex;align-items:center;gap:6px}
 .active-count{
-  background:var(--rose);color:#fff;font-size:.66rem;font-weight:700;
-  border-radius:20px;padding:1px 7px;line-height:1.4;
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:20px;height:20px;padding:0 6px;
+  background:var(--rose);color:#fff;font-size:.7rem;font-weight:700;
+  border-radius:20px;line-height:1;
 }
 .sort-select,.price-input{
   width:100%;padding:7px 10px;
@@ -3340,15 +3342,14 @@ function updateCatCounts(){
 }
 
 function updateActiveFilterCount(){
-  let n=0;
-  if(selectedCats.length) n++;
+  let n=selectedCats.length;
   if(priceMin!==null) n++;
   if(priceMax!==null) n++;
   if(typeof activeDesigns!=='undefined'&&activeDesigns.length) n++;
   const badge=document.getElementById('activeCount');
   const dot=document.getElementById('filterDot');
   if(badge){
-    if(n>0){ badge.textContent=n; badge.style.display='inline-block'; }
+    if(n>0){ badge.textContent=n; badge.style.display='inline-flex'; }
     else badge.style.display='none';
   }
   if(dot) dot.classList.toggle('visible', n>0);
