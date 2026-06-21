@@ -6117,19 +6117,40 @@ function fecharModalCompartilhar(){
 
 // ── TOUCH DRAG & DROP (mobile) ───────────────────────────────────
 function initTouchDrag(container, onReorder){
-  let dragEl=null, startY=0, origIdx=-1, holdTimer=null;
+  const HOLD_MS=550; // delay antes de armar o drag — dá tempo do scroll normal acontecer
+  const MOVE_TOLERANCE=10; // px de movimento tolerado antes de cancelar o "hold" (= é scroll, não drag)
+  let dragEl=null, startY=0, startX=0, origIdx=-1, holdTimer=null, holding=false;
+
+  function cancelHold(){
+    if(holdTimer){clearTimeout(holdTimer);holdTimer=null;}
+    holding=false;
+  }
+
   container.querySelectorAll('.drag-item').forEach((el,i)=>{
     el.addEventListener('touchstart',e=>{
+      // Não inicia o "hold" de drag se o toque começou num controle interativo
+      // (toggle, botão de excluir, campo de texto) — deixa o clique normal acontecer.
+      if(e.target.closest('button,input,select,textarea,a'))return;
+      startY=e.touches[0].clientY;
+      startX=e.touches[0].clientX;
+      holding=true;
       holdTimer=setTimeout(()=>{
-        dragEl=el; origIdx=i; startY=e.touches[0].clientY;
+        if(!holding)return; // o dedo já se moveu o suficiente — era scroll, não arrastar
+        dragEl=el; origIdx=i;
         el.classList.add('dragging','drag-hold');
-      },400);
+      },HOLD_MS);
     },{passive:true});
-    el.addEventListener('touchend',()=>{if(holdTimer){clearTimeout(holdTimer);holdTimer=null;}},{passive:true});
+
     el.addEventListener('touchmove',e=>{
-      if(!dragEl)return;
+      const y=e.touches[0].clientY, x=e.touches[0].clientX;
+      // Enquanto o drag ainda não foi armado: se o dedo se moveu mais que a tolerância,
+      // é um gesto de scroll — cancela o hold e deixa o navegador rolar normalmente.
+      if(!dragEl){
+        if(Math.abs(y-startY)>MOVE_TOLERANCE||Math.abs(x-startX)>MOVE_TOLERANCE) cancelHold();
+        return; // não chama preventDefault — scroll nativo continua livre
+      }
+      // Drag já armado: agora sim controlamos o gesto.
       e.preventDefault();
-      const y=e.touches[0].clientY;
       const items=[...container.querySelectorAll('.drag-item')];
       items.forEach(it=>it.classList.remove('drag-over'));
       const target=items.find(it=>{
@@ -6138,9 +6159,11 @@ function initTouchDrag(container, onReorder){
       });
       if(target)target.classList.add('drag-over');
     },{passive:false});
-    el.addEventListener('touchend',e=>{
+
+    el.addEventListener('touchend',()=>{
+      cancelHold();
       if(!dragEl)return;
-      dragEl.classList.remove('dragging');
+      dragEl.classList.remove('dragging','drag-hold');
       const items=[...container.querySelectorAll('.drag-item')];
       const overEl=items.find(it=>it.classList.contains('drag-over'));
       if(overEl){
@@ -6148,6 +6171,12 @@ function initTouchDrag(container, onReorder){
         onReorder(origIdx,newIdx);
       }
       items.forEach(it=>it.classList.remove('drag-over'));
+      dragEl=null;
+    },{passive:true});
+
+    el.addEventListener('touchcancel',()=>{
+      cancelHold();
+      if(dragEl) dragEl.classList.remove('dragging','drag-hold');
       dragEl=null;
     },{passive:true});
   });
