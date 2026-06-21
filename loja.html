@@ -194,7 +194,7 @@ nav.elevated{
 .sidebar-label:first-child{margin-top:0}
 .cat-list{list-style:none;display:flex;flex-direction:column;gap:1px}
 .cat-item{
-  display:flex;align-items:center;gap:8px;
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px;
   padding:8px 10px;border-radius:10px;
   cursor:pointer;transition:all .15s;
   font-size:.82rem;color:rgba(12,9,13,.6);font-weight:400;
@@ -203,9 +203,35 @@ nav.elevated{
 .cat-item:focus-visible{outline:2px solid var(--rose);outline-offset:1px}
 .cat-item.active{background:rgba(229,37,100,.1);color:var(--rose);font-weight:600}
 .cat-icon{font-size:.85rem;width:18px;flex-shrink:0}
-.cat-count{margin-left:auto;font-size:.7rem;color:rgba(12,9,13,.35);font-weight:500}
+.cat-name{flex:1;min-width:0}
+.cat-count{font-size:.7rem;color:rgba(12,9,13,.35);font-weight:500;margin-left:4px}
 .cat-item.active .cat-count{color:rgba(196,29,85,.55)}
 [data-theme="dark"] .cat-count{color:rgba(240,232,236,.35)}
+.cat-expand{
+  background:none;border:none;cursor:pointer;color:inherit;opacity:.45;
+  font-size:.7rem;padding:2px 4px;margin-left:2px;flex-shrink:0;
+  transition:transform .2s;
+}
+.cat-expand.open{transform:rotate(180deg)}
+.cat-expand:hover{opacity:.85}
+.subtag-list{
+  display:none;list-style:none;flex-direction:column;gap:1px;
+  width:100%;flex-basis:100%;
+  margin:6px 0 2px 0;padding-left:8px;
+  border-left:1px solid rgba(229,37,100,.12);
+  cursor:default;
+}
+.subtag-list.open{display:flex}
+.subtag-item{
+  display:flex;justify-content:space-between;gap:8px;
+  padding:6px 8px;border-radius:8px;cursor:pointer;
+  font-size:.76rem;color:rgba(12,9,13,.55);transition:background .15s;
+}
+.subtag-item:hover{background:rgba(229,37,100,.06);color:var(--dark)}
+.subtag-empty{padding:6px 8px;font-size:.74rem;color:rgba(12,9,13,.35);font-style:italic}
+[data-theme="dark"] .subtag-list{border-left-color:rgba(244,121,154,.15)}
+[data-theme="dark"] .subtag-item{color:rgba(240,232,236,.55)}
+[data-theme="dark"] .subtag-empty{color:rgba(240,232,236,.35)}
 .sidebar-title{position:relative;display:flex;align-items:center;gap:6px}
 .active-count{
   background:var(--rose);color:#fff;font-size:.66rem;font-weight:700;
@@ -218,6 +244,35 @@ nav.elevated{
   background:var(--cream);color:var(--dark);
   outline:none;margin-top:8px;cursor:pointer;
 }
+.price-slider-wrap{position:relative;height:28px;margin-top:14px}
+.price-slider-track{
+  position:absolute;top:50%;left:0;right:0;height:4px;
+  transform:translateY(-50%);border-radius:4px;
+  background:rgba(229,37,100,.15);
+}
+[data-theme="dark"] .price-slider-track{background:rgba(244,121,154,.18)}
+.price-slider-fill{
+  position:absolute;top:0;height:100%;border-radius:4px;
+  background:var(--rose);
+}
+.price-range{
+  position:absolute;top:0;left:0;width:100%;height:28px;
+  margin:0;appearance:none;background:transparent;pointer-events:none;
+}
+.price-range::-webkit-slider-thumb{
+  appearance:none;pointer-events:auto;
+  width:18px;height:18px;border-radius:50%;
+  background:#fff;border:2.5px solid var(--rose);
+  cursor:pointer;margin-top:-7px;
+  box-shadow:0 1px 4px rgba(0,0,0,.25);
+}
+.price-range::-moz-range-thumb{
+  pointer-events:auto;width:18px;height:18px;border-radius:50%;
+  background:#fff;border:2.5px solid var(--rose);cursor:pointer;
+  box-shadow:0 1px 4px rgba(0,0,0,.25);
+}
+.price-range::-webkit-slider-runnable-track{background:transparent}
+.price-range::-moz-range-track{background:transparent}
 .price-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
 .price-input{margin-top:0}
 
@@ -539,11 +594,11 @@ nav.elevated{
   }
   .sidebar-head{
     display:flex;align-items:center;justify-content:space-between;
-    margin:0 0 18px;padding-bottom:14px;
+    margin:0;padding:22px 4px 14px;
     border-bottom:1px solid rgba(229,37,100,.1);
   }
   .sidebar-title{
-    font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--dark)
+    font-family:var(--fd);font-size:1.15rem;font-weight:700;color:var(--dark)
   }
   .sidebar-close{
     display:flex;align-items:center;justify-content:center;
@@ -552,6 +607,7 @@ nav.elevated{
     border:none;font-size:.95rem;cursor:pointer;
   }
   [data-theme="dark"] .sidebar-close{background:rgba(244,121,154,.12);color:var(--pink2)}
+  .sidebar #catList{margin-top:16px}
   body.sidebar-open{overflow:hidden;position:fixed;width:100%}
   .shop-wrap{display:block}
   .shop-main{padding:12px}
@@ -1244,11 +1300,11 @@ body::before{
 <div class="shop-wrap">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-head">
-      <span class="sidebar-title">Filtrar<span class="active-count" id="activeCount" style="display:none"></span></span>
+      <span class="sidebar-title">Categorias<span class="active-count" id="activeCount" style="display:none"></span></span>
       <button class="sidebar-close" onclick="closeSidebar()" aria-label="Fechar menu">✕</button>
     </div>
     <ul class="cat-list" id="catList">
-      <li class="cat-item active" data-cat="Todas" role="button" tabindex="0"><span class="cat-icon">✨</span> Todos os produtos<span class="cat-count" id="countTodas"></span></li>
+      <li class="cat-item active" data-cat="Todas" role="button" tabindex="0" aria-pressed="true"><span class="cat-icon">✨</span> <span class="cat-name">Todos os produtos</span><span class="cat-count" id="countTodas"></span></li>
     </ul>
     <div class="sidebar-label">Ordenar</div>
     <select class="sort-select" id="sortSelect" onchange="currentSort=this.value;page=1;applyFilters()">
@@ -1258,9 +1314,14 @@ body::before{
       <option value="price-desc">Maior preço</option>
     </select>
     <div class="sidebar-label">Faixa de preço</div>
+    <div class="price-slider-wrap">
+      <div class="price-slider-track"><div class="price-slider-fill" id="priceFill"></div></div>
+      <input class="price-range" type="range" id="priceRangeMin" min="0" max="500" value="0" step="5" oninput="onPriceRangeInput()">
+      <input class="price-range" type="range" id="priceRangeMax" min="0" max="500" value="500" step="5" oninput="onPriceRangeInput()">
+    </div>
     <div class="price-row">
-      <input class="price-input" type="number" id="priceMin" placeholder="Mín" min="0" onchange="priceMin=this.value?+this.value:null;applyFilters()">
-      <input class="price-input" type="number" id="priceMax" placeholder="Máx" min="0" onchange="priceMax=this.value?+this.value:null;applyFilters()">
+      <input class="price-input" type="number" id="priceMin" placeholder="Mín" min="0" onchange="onPriceTextInput()">
+      <input class="price-input" type="number" id="priceMax" placeholder="Máx" min="0" onchange="onPriceTextInput()">
     </div>
 
   <button class="clear-filters-btn" id="clearFiltersBtn" onclick="clearAllFilters()">✕ Limpar filtros</button>
@@ -2669,7 +2730,8 @@ function guessCategories(n){
 // ── STATE ─────────────────────────────────────────────────────────────
 let allProducts=[];
 let filtered=[];
-let currentCat='Todas';
+let currentCat='Todas'; // legado: usado por setCatTab/hero badges, sempre sincronizado com selectedCats
+let selectedCats=[]; // multi-seleção de categorias na sidebar; vazio = Todas
 let currentSort=localStorage.getItem('cr_sort')||'az';
 let priceMin=null;
 let priceMax=null;
@@ -2764,7 +2826,7 @@ function mergeProducts(){
 
 function applyFilters(){
   let res=[...allProducts];
-  if(currentCat!=='Todas') res=res.filter(p=>(p.collections||[]).some(c=>c.toLowerCase()===currentCat.toLowerCase()));
+  if(selectedCats.length) res=res.filter(p=>(p.collections||[]).some(c=>selectedCats.some(sc=>sc.toLowerCase()===c.toLowerCase())));
   if(searchQ){ res=res.filter(p=>fuzzyMatch(p.name,searchQ)); }
   if(typeof activeDesigns!=='undefined'&&activeDesigns.length){
     res=res.filter(p=>{
@@ -2801,7 +2863,7 @@ function applyFilters(){
   updateCatCounts();
   updateActiveFilterCount();
   const lbl=document.getElementById('resultLabel');
-  if(lbl) lbl.textContent=filtered.length+' produto'+(filtered.length!==1?'s':'')+(currentCat&&currentCat!=='Todas'?' em '+currentCat:'')+(searchQ?' para "'+searchQ+'"':'');
+  if(lbl) lbl.textContent=filtered.length+' produto'+(filtered.length!==1?'s':'')+(selectedCats.length?' em '+selectedCats.join(', '):'')+(searchQ?' para "'+searchQ+'"':'');
   document.getElementById('resultCount').textContent=res.length;
 }
 
@@ -2813,7 +2875,7 @@ function renderGrid(){
   const slice=filtered.slice((page-1)*PER_PAGE, page*PER_PAGE);
   if(!slice.length){
     const suggestedCats=['Fantasias','Almofadas','Para bebês','Decoração','Educativo'];
-    const catBtns=suggestedCats.map(c=>'<span class="empty-cat" onclick="currentCat=this.dataset.cat;document.getElementById("searchInput").value="";applyFilters()" data-cat="'+c+'">'+c+'</span>').join('');
+    const catBtns=suggestedCats.map(c=>'<span class="empty-cat" onclick="selectCategoryOnly(\''+c+'\')" data-cat="'+c+'">'+c+'</span>').join('');
     const emptyIcon=activeDesigns.length?'🎨':'🔍';
     const emptyMsg=activeDesigns.length?'Nenhum produto para este design':'Nenhum produto encontrado';
     const emptySub=activeDesigns.length?'Tente outro design ou explore uma coleção:':'Tente outro termo ou explore uma coleção:';
@@ -2978,18 +3040,104 @@ function showToastRich(name,url,subtitle){
   toastRichTimer=setTimeout(()=>t.classList.remove('show'),3200);
 }
 
+// ── PRICE SLIDER ──────────────────────────────────────────────────────
+function setPriceSliderMax(max){
+  const rMin=document.getElementById('priceRangeMin');
+  const rMax=document.getElementById('priceRangeMax');
+  if(!rMin||!rMax)return;
+  const ceil=Math.max(50,Math.ceil(max/10)*10);
+  rMin.max=ceil; rMax.max=ceil;
+  if(priceMax===null) rMax.value=ceil;
+  renderPriceFill();
+}
+function renderPriceFill(){
+  const rMin=document.getElementById('priceRangeMin');
+  const rMax=document.getElementById('priceRangeMax');
+  const fill=document.getElementById('priceFill');
+  if(!rMin||!rMax||!fill)return;
+  const max=+rMin.max||500;
+  const lo=Math.min(+rMin.value,+rMax.value);
+  const hi=Math.max(+rMin.value,+rMax.value);
+  fill.style.left=(lo/max*100)+'%';
+  fill.style.width=((hi-lo)/max*100)+'%';
+}
+function onPriceRangeInput(){
+  const rMin=document.getElementById('priceRangeMin');
+  const rMax=document.getElementById('priceRangeMax');
+  let lo=+rMin.value, hi=+rMax.value;
+  if(lo>hi){ [lo,hi]=[hi,lo]; rMin.value=lo; rMax.value=hi; }
+  priceMin=lo>0?lo:null;
+  priceMax=hi<+rMax.max?hi:null;
+  document.getElementById('priceMin').value=priceMin??'';
+  document.getElementById('priceMax').value=priceMax??'';
+  renderPriceFill();
+  saveFiltersToURL();
+  applyFilters();
+}
+function onPriceTextInput(){
+  const mn=document.getElementById('priceMin').value;
+  const mx=document.getElementById('priceMax').value;
+  priceMin=mn?+mn:null;
+  priceMax=mx?+mx:null;
+  const rMin=document.getElementById('priceRangeMin');
+  const rMax=document.getElementById('priceRangeMax');
+  if(rMin) rMin.value=priceMin??0;
+  if(rMax) rMax.value=priceMax??rMax.max;
+  renderPriceFill();
+  saveFiltersToURL();
+  applyFilters();
+}
+
 // ── NAVIGATION ────────────────────────────────────────────────────────
 function goProduct(id){location.href='produto.html?id='+id;}
 function openWA(nome){ window.open('https://wa.me/5519993041555?text='+encodeURIComponent('Olá! Tenho interesse no produto: '+nome),'_blank'); }
+
+// ── CATEGORY SELECTION (multi-select) ──────────────────────────────────
+function toggleCategory(cat){
+  if(!cat||cat==='Todas'){ selectedCats=[]; }
+  else{
+    const i=selectedCats.findIndex(c=>c.toLowerCase()===cat.toLowerCase());
+    if(i>-1) selectedCats.splice(i,1); else selectedCats.push(cat);
+  }
+  currentCat=selectedCats.length?selectedCats[0]:'Todas';
+  syncCatUI();
+  saveFiltersToURL();
+  applyFilters();
+}
+function selectCategoryOnly(cat){
+  selectedCats=cat&&cat!=='Todas'?[cat]:[];
+  currentCat=selectedCats.length?selectedCats[0]:'Todas';
+  searchQ='';
+  const si=document.getElementById('searchInput'); if(si) si.value='';
+  syncCatUI();
+  saveFiltersToURL();
+  applyFilters();
+}
+function syncCatUI(){
+  document.querySelectorAll('#catList .cat-item').forEach(li=>{
+    const isTodas=li.dataset.cat==='Todas';
+    const active=isTodas?selectedCats.length===0:selectedCats.some(c=>c.toLowerCase()===li.dataset.cat.toLowerCase());
+    li.classList.toggle('active',active);
+    li.setAttribute('aria-pressed',active?'true':'false');
+  });
+  document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+}
+function saveFiltersToURL(){
+  const p=new URLSearchParams(window.location.search);
+  if(selectedCats.length) p.set('cat',selectedCats.join(',')); else p.delete('cat');
+  if(priceMin!==null) p.set('min',priceMin); else p.delete('min');
+  if(priceMax!==null) p.set('max',priceMax); else p.delete('max');
+  if(searchQ) p.set('q',searchQ); else p.delete('q');
+  const newUrl=window.location.pathname+(p.toString()?'?'+p.toString():'');
+  history.replaceState(null,'',newUrl);
+  localStorage.setItem('cr_filters',JSON.stringify({cats:selectedCats,min:priceMin,max:priceMax}));
+}
 
 // ── EVENTS ────────────────────────────────────────────────────────────
 document.getElementById('catList').addEventListener('click',e=>{
   const li=e.target.closest('.cat-item');
   if(!li)return;
-  document.querySelectorAll('.cat-item').forEach(x=>x.classList.remove('active'));
-  li.classList.add('active');
-  currentCat=li.dataset.cat;
-  applyFilters();
+  toggleCategory(li.dataset.cat);
 });
 document.getElementById('catList').addEventListener('keydown',e=>{
   if(e.key!=='Enter'&&e.key!==' ')return;
@@ -3001,11 +3149,9 @@ document.getElementById('catList').addEventListener('keydown',e=>{
 let searchTimer;
 document.getElementById('searchInput').addEventListener('input',e=>{
   clearTimeout(searchTimer);
-  searchTimer=setTimeout(()=>{ searchQ=e.target.value.trim(); applyFilters(); },300);
+  searchTimer=setTimeout(()=>{ searchQ=e.target.value.trim(); saveFiltersToURL(); applyFilters(); },300);
 });
 document.getElementById('sortSelect').addEventListener('change',e=>{ currentSort=e.target.value; localStorage.setItem('cr_sort',currentSort); applyFilters(); });
-document.getElementById('priceMin').addEventListener('change',e=>{ priceMin=e.target.value?+e.target.value:null; applyFilters(); });
-document.getElementById('priceMax').addEventListener('change',e=>{ priceMax=e.target.value?+e.target.value:null; applyFilters(); });
 document.getElementById('gridViewBtn').addEventListener('click',()=>{ viewMode='grid'; document.getElementById('gridViewBtn').classList.add('active'); document.getElementById('listViewBtn').classList.remove('active'); renderGrid(); });
 document.getElementById('listViewBtn').addEventListener('click',()=>{ viewMode='list'; document.getElementById('listViewBtn').classList.add('active'); document.getElementById('gridViewBtn').classList.remove('active'); renderGrid(); });
 
@@ -3017,13 +3163,9 @@ document.getElementById('listViewBtn').addEventListener('click',()=>{ viewMode='
 async function setCatTab(el,cat){
   document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
-  currentCat=cat;
-  searchQ='';
   activeDesigns=[];
-  document.getElementById('searchInput').value='';
   document.querySelectorAll('#heroBadges .hbadge').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.cat-item').forEach(li=>li.classList.toggle('active',li.dataset.cat===(cat||'Todas')));
-  applyFilters();
+  selectCategoryOnly(cat);
 }
 
 async function loadDesignBadges(){
@@ -3074,17 +3216,41 @@ document.getElementById('heroBadges').addEventListener('click',e=>{
     .map(b=>b.dataset.filter).filter(Boolean);
 
   searchQ='';
+  selectedCats=[];
   currentCat='Todas';
   document.getElementById('searchInput').value='';
-  document.querySelectorAll('#catList .cat-item').forEach(li=>li.classList.remove('active'));
-  document.querySelector('#catList .cat-item[data-cat="Todas"]')?.classList.add('active');
+  syncCatUI();
+  saveFiltersToURL();
   applyFilters();
 });
 
 
-const urlParams=new URLSearchParams(window.location.search);
-if(urlParams.get('cat')){ currentCat=urlParams.get('cat'); document.querySelectorAll('.cat-item').forEach(li=>li.classList.toggle('active',li.dataset.cat===currentCat)); }
-if(urlParams.get('q')){ searchQ=urlParams.get('q'); document.getElementById('searchInput').value=searchQ; }
+function restoreSavedFilters(){
+  const urlParams=new URLSearchParams(window.location.search);
+  const hasUrlFilters=urlParams.get('cat')||urlParams.get('min')||urlParams.get('max')||urlParams.get('q');
+  if(hasUrlFilters){
+    if(urlParams.get('cat')) selectedCats=urlParams.get('cat').split(',').map(s=>s.trim()).filter(Boolean);
+    if(urlParams.get('min')) priceMin=+urlParams.get('min');
+    if(urlParams.get('max')) priceMax=+urlParams.get('max');
+    if(urlParams.get('q')) searchQ=urlParams.get('q');
+  }else{
+    try{
+      const saved=JSON.parse(localStorage.getItem('cr_filters')||'null');
+      if(saved){
+        selectedCats=Array.isArray(saved.cats)?saved.cats:[];
+        priceMin=saved.min??null;
+        priceMax=saved.max??null;
+      }
+    }catch(e){}
+  }
+  currentCat=selectedCats.length?selectedCats[0]:'Todas';
+  syncCatUI();
+  const si=document.getElementById('searchInput'); if(si&&searchQ) si.value=searchQ;
+  const pMinEl=document.getElementById('priceMin'); if(pMinEl) pMinEl.value=priceMin??'';
+  const pMaxEl=document.getElementById('priceMax'); if(pMaxEl) pMaxEl.value=priceMax??'';
+  const rMin=document.getElementById('priceRangeMin'); if(rMin&&priceMin!==null) rMin.value=priceMin;
+  const rMax=document.getElementById('priceRangeMax'); if(rMax&&priceMax!==null) rMax.value=priceMax;
+}
 
 // ── INIT ──────────────────────────────────────────────────────────────
 
@@ -3122,23 +3288,44 @@ async function loadCats(){
       li.dataset.cat=c.nome;
       li.setAttribute('role','button');
       li.setAttribute('tabindex','0');
+      li.setAttribute('aria-pressed','false');
       const safeId='count_'+c.nome.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]/g,'');
-      li.innerHTML=`<span class="cat-icon">${c.emoji||'🏷️'}</span> ${c.nome}<span class="cat-count" id="${safeId}"></span>`;
-      const selectCat=()=>{
-        document.querySelectorAll('.cat-item').forEach(x=>x.classList.remove('active'));
-        li.classList.add('active');
-        currentCat=c.nome;
-        searchQ='';
-        activeDesigns=[];
-        document.getElementById('searchInput').value='';
-        document.querySelectorAll('#heroBadges .hbadge').forEach(b=>b.classList.remove('active'));
-        applyFilters();
-      };
-      li.onclick=selectCat;
-      li.onkeydown=(e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); selectCat(); } };
+      li.innerHTML=`<span class="cat-icon">${c.emoji||'🏷️'}</span> <span class="cat-name">${c.nome}</span><span class="cat-count" id="${safeId}"></span><button class="cat-expand" type="button" aria-label="Ver subtemas de ${c.nome}" onclick="event.stopPropagation();toggleSubtags(this,'${c.nome.replace(/'/g,"\\'")}')">▾</button>`;
       ul.appendChild(li);
+      const sub=document.createElement('ul');
+      sub.className='subtag-list';
+      sub.id='subtags_'+safeId;
+      li.appendChild(sub);
     });
   }catch(e){console.warn('loadCats failed',e);}
+}
+
+function toggleSubtags(btn,catName){
+  const safeId='count_'+catName.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]/g,'');
+  const sub=document.getElementById('subtags_'+safeId);
+  if(!sub)return;
+  const opening=!sub.classList.contains('open');
+  sub.classList.toggle('open',opening);
+  btn.classList.toggle('open',opening);
+  if(opening&&!sub.dataset.built){
+    const designsInCat=new Map();
+    allProducts.filter(p=>(p.collections||[]).some(c=>c.toLowerCase()===catName.toLowerCase()))
+      .forEach(p=>{
+        const ds=Array.isArray(p.design)?p.design:(p.design?[p.design]:[]);
+        ds.forEach(d=>designsInCat.set(d,(designsInCat.get(d)||0)+1));
+      });
+    if(!designsInCat.size){
+      sub.innerHTML='<li class="subtag-empty" onclick="event.stopPropagation()">Sem subtemas</li>';
+    }else{
+      sub.innerHTML=[...designsInCat.entries()].sort((a,b)=>b[1]-a[1])
+        .map(([name,n])=>`<li class="subtag-item" onclick="event.stopPropagation();filterByDesignName('${name.replace(/'/g,"\\'")}')">${name}<span class="cat-count">${n}</span></li>`).join('');
+    }
+    sub.dataset.built='1';
+  }
+}
+function filterByDesignName(name){
+  activeDesigns=[name.toLowerCase()];
+  applyFilters();
 }
 
 function updateCatCounts(){
@@ -3154,7 +3341,7 @@ function updateCatCounts(){
 
 function updateActiveFilterCount(){
   let n=0;
-  if(currentCat&&currentCat!=='Todas') n++;
+  if(selectedCats.length) n++;
   if(priceMin!==null) n++;
   if(priceMax!==null) n++;
   if(typeof activeDesigns!=='undefined'&&activeDesigns.length) n++;
@@ -3207,6 +3394,9 @@ async function init(){
   await loadFromDB();
   await loadCats();
   mergeProducts();
+  restoreSavedFilters();
+  const prices=allProducts.map(p=>p.preco_promocional||p.price).filter(Boolean);
+  setPriceSliderMax(prices.length?Math.max(...prices):500);
   applyFilters();
   updateCartUI();
   loadFavsFromDB();
@@ -3272,6 +3462,45 @@ function closeSidebar(){
   document.getElementById('sidebarOverlay').classList.remove('open');
   document.body.classList.remove('sidebar-open');
 }
+
+// ── SWIPE TO CLOSE (mobile) ─────────────────────────────────────────
+(function(){
+  const sb=document.getElementById('sidebar');
+  if(!sb)return;
+  let startX=0,startY=0,deltaX=0,dragging=false,axisLocked=false,horizontal=false;
+  sb.addEventListener('touchstart',e=>{
+    if(!sb.classList.contains('mobile-open'))return;
+    if(e.target.closest('.price-range,input,select,button'))return;
+    startX=e.touches[0].clientX;
+    startY=e.touches[0].clientY;
+    dragging=true;axisLocked=false;horizontal=false;
+  },{passive:true});
+  sb.addEventListener('touchmove',e=>{
+    if(!dragging)return;
+    const dx=e.touches[0].clientX-startX;
+    const dy=e.touches[0].clientY-startY;
+    if(!axisLocked){
+      if(Math.abs(dx)<8&&Math.abs(dy)<8)return;
+      axisLocked=true;
+      horizontal=Math.abs(dx)>Math.abs(dy);
+      if(horizontal) sb.style.transition='none';
+    }
+    if(!horizontal)return;
+    deltaX=dx>0?0:dx; // só permite arrastar pra esquerda
+    sb.style.transform='translateX('+deltaX+'px)';
+  },{passive:true});
+  sb.addEventListener('touchend',()=>{
+    if(!dragging)return;
+    dragging=false;
+    if(horizontal){
+      sb.style.transition='';
+      sb.style.transform='';
+      const width=sb.offsetWidth||280;
+      if(Math.abs(deltaX)>width*0.3) closeSidebar();
+    }
+    deltaX=0;
+  });
+})();
 
 // ── VIEW TOGGLE ──────────────────────────────────────────────────
 document.getElementById('gridViewBtn').addEventListener('click',()=>{
@@ -3432,11 +3661,24 @@ function fecharPopup(){
 document.addEventListener('keydown',e=>{if(e.key==='Escape')fecharPopup();});
 
 function clearAllFilters(){
-  currentCat=null;
+  selectedCats=[];
+  currentCat='Todas';
+  priceMin=null;
+  priceMax=null;
+  searchQ='';
+  activeDesigns=[];
   document.getElementById('priceMin').value='';
   document.getElementById('priceMax').value='';
-  document.getElementById('searchInput')?.value && (document.getElementById('searchInput').value='');
-  document.querySelectorAll('.cat-item').forEach(c=>c.classList.remove('active'));
+  const si=document.getElementById('searchInput'); if(si) si.value='';
+  const rMin=document.getElementById('priceRangeMin'); if(rMin) rMin.value=0;
+  const rMax=document.getElementById('priceRangeMax'); if(rMax) rMax.value=rMax.max;
+  renderPriceFill();
+  document.querySelectorAll('#heroBadges .hbadge').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelector('.cat-tab')?.classList.add('active');
+  syncCatUI();
+  localStorage.removeItem('cr_filters');
+  history.replaceState(null,'',window.location.pathname);
   applyFilters();
 }
 
