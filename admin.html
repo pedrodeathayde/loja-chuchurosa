@@ -413,8 +413,10 @@ img{display:block;max-width:100%}
     display:flex;flex-direction:column;gap:8px;
     padding:12px;border:1.5px solid rgba(244,121,154,.12);border-radius:12px;
     margin-bottom:10px;position:relative;
+    min-width:0;max-width:100%;box-sizing:border-box;
   }
-  .var-row input,.var-estoque-cell{width:100%}
+  .var-row input,.var-estoque-cell{width:100%;min-width:0;box-sizing:border-box}
+  .var-estoque-cell input{flex:1;min-width:0}
   .var-row .del-var{position:absolute;top:10px;right:10px;width:26px;height:26px}
   [data-theme="dark"] .var-row{border-color:rgba(244,121,154,.18)}
 }
