@@ -1486,7 +1486,7 @@ img{display:block;max-width:100%}
       <div class="msec"><h3>Configurações</h3>
         <div class="tog-row"><div><div class="tog-lbl">Produto ativo</div><div class="tog-sub">Visível na loja</div></div><button class="tog on" id="togAtivo" onclick="this.classList.toggle('on')"></button></div>
         <div class="tog-row"><div><div class="tog-lbl">Destaque</div><div class="tog-sub">Aparece primeiro</div></div><button class="tog" id="togDestaque" onclick="this.classList.toggle('on')"></button></div>
-        <div class="tog-row"><div><div class="tog-lbl">Esgotado</div><div class="tog-sub">Mostra aviso na loja</div></div><button class="tog" id="togEsgotado" onclick="this.classList.toggle('on')"></button></div>
+        <div class="tog-row"><div><div class="tog-lbl">Esgotado</div><div class="tog-sub" id="togEsgotadoSub">Mostra aviso na loja</div></div><button class="tog" id="togEsgotado" onclick="this.classList.toggle('on');manualEsgotadoOverride=true;document.getElementById('togEsgotadoSub').textContent='Definido manualmente';document.getElementById('togEsgotadoSub').style.color=''"></button></div>
         <div class="tog-row"><div><div class="tog-lbl">Ocultar da loja</div><div class="tog-sub">Não aparece mas existe</div></div><button class="tog" id="togOculto" onclick="this.classList.toggle('on')"></button></div>
       </div>
     </div>
@@ -3267,6 +3267,8 @@ function openNewProd(){
   document.getElementById('togEsgotado').classList.remove('on');
   document.getElementById('togOculto').classList.remove('on');
   currentVars=[];renderVarsGrid();
+  manualEsgotadoOverride=false;
+  const sub0=document.getElementById('togEsgotadoSub');if(sub0){sub0.textContent='Mostra aviso na loja';sub0.style.color='';}
   currentPhotos=[];document.getElementById('photoGrid').innerHTML='<div style="grid-column:1/-1;font-size:.78rem;color:rgba(13,9,13,.35);padding:8px">Salve o produto para adicionar fotos</div>';
   document.getElementById('prodModal').classList.add('open');
 }
@@ -3286,6 +3288,7 @@ function editProd(id){
   const cols=Array.isArray(p.collections)?p.collections:(p.collections?[p.collections]:[]);
   document.getElementById('colsGrid').innerHTML=buildCols(cols);
   currentVars=[];renderVarsGrid();loadVars(id);
+  manualEsgotadoOverride=false;
   document.getElementById('togAtivo').classList.toggle('on',!!p.ativo);
   document.getElementById('togDestaque').classList.toggle('on',!!p.destaque);
   document.getElementById('togEsgotado').classList.toggle('on',!!p.esgotado);
@@ -3744,19 +3747,21 @@ document.getElementById('bannerModal').addEventListener('click',e=>{if(e.target=
 
 
 // ── CATEGORIES ───────────────────────────────────────────────────────
-let allCats=[...COLS];
+let allCats=COLS.map(nome=>({nome,visivel_loja:true}));
 async function loadCats(){
   try{
-    const d=await sbGet('/rest/v1/categorias?select=nome,emoji&order=ordem');
+    const d=await sbGet('/rest/v1/categorias?select=nome,emoji,visivel_loja&order=ordem');
     if(Array.isArray(d)&&d.length){
       const unique=[...new Map(d.map(c=>[c.nome,c])).values()];
-      allCats=unique.map(c=>c.nome).filter(Boolean);
+      allCats=unique.map(c=>({nome:c.nome,visivel_loja:c.visivel_loja!==false})).filter(c=>c.nome);
       catEmojis=unique.map(c=>c.emoji||'🏷️');
-      COLS=[...allCats];
+      COLS=allCats.filter(c=>c.visivel_loja).map(c=>c.nome);
     }
   }catch{}
   renderCatManager();
 }
+function syncColsFromCats(){COLS=allCats.filter(c=>c.visivel_loja).map(c=>c.nome);}
+
 function renderCatManager(){
   const el=document.getElementById('catManager');
   if(!el)return;
@@ -3766,8 +3771,9 @@ function renderCatManager(){
       ondragover="catDragOver(event,${i})"
       ondrop="catDrop(event,${i})">
       <span style="cursor:grab;color:rgba(13,9,13,.3);font-size:.9rem;flex-shrink:0">⠿</span>
-      <input type="text" value="${typeof c==='object'?c.emoji||'🏷️':catEmojis[i]||'🏷️'}" style="width:40px;text-align:center" oninput="catEmojis[${i}]=this.value">
-      <input type="text" value="${typeof c==='object'?c.nome||c:c}" style="flex:1" onblur="allCats[${i}]=this.value;COLS=[...allCats]">
+      <input type="text" value="${catEmojis[i]||'🏷️'}" style="width:40px;text-align:center" oninput="catEmojis[${i}]=this.value">
+      <input type="text" value="${c.nome}" style="flex:1" onblur="allCats[${i}].nome=this.value;syncColsFromCats()">
+      <button class="tog ${c.visivel_loja?'on':''}" style="transform:scale(.75);flex-shrink:0" title="${c.visivel_loja?'Visível na loja':'Oculta da loja'}" onclick="allCats[${i}].visivel_loja=!allCats[${i}].visivel_loja;this.classList.toggle('on');syncColsFromCats()"></button>
       <button class="ibtn del" onclick="removeCat(${i})">🗑</button>
     </div>`).join('');
   // Touch drag for mobile
@@ -3776,30 +3782,41 @@ function renderCatManager(){
     allCats.splice(to,0,tmpC);
     const tmpE=catEmojis.splice(from,1)[0];
     catEmojis.splice(to,0,tmpE);
-    COLS=[...allCats];
+    syncColsFromCats();
     renderCatManager();
   });
 }
-function addCat(){allCats.push('Nova categoria');
-  catEmojis.push('🏷️');COLS=[...allCats];renderCatManager();
-  setTimeout(()=>{const inputs=document.querySelectorAll('#catManager input');inputs[inputs.length-1]?.focus();inputs[inputs.length-1]?.select();},50);}
+function addCat(){
+  allCats.push({nome:'Nova categoria',visivel_loja:true});
+  catEmojis.push('🏷️');syncColsFromCats();renderCatManager();
+  setTimeout(()=>{const inputs=document.querySelectorAll('#catManager input[type="text"]');inputs[inputs.length-1]?.focus();inputs[inputs.length-1]?.select();},50);
+}
 function removeCat(i){
-  showConfirm({icon:'🏷',title:'Remover categoria?',text:`"${allCats[i]}" será removida da lista de categorias.`,okLabel:'Remover',
-    onConfirm: ()=>{allCats.splice(i,1);COLS=[...allCats];renderCatManager();}
+  showConfirm({icon:'🏷',title:'Remover categoria?',text:`"${allCats[i].nome}" será removida da lista de categorias.`,okLabel:'Remover',
+    onConfirm: ()=>{allCats.splice(i,1);catEmojis.splice(i,1);syncColsFromCats();renderCatManager();}
   });
 }
 async function saveCats(){
   try{
-    // Deduplicate first
-    allCats=[...new Set(allCats.map(c=>c.trim()).filter(Boolean))];
+    // Deduplicate first (por nome)
+    const seen=new Set();
+    const dedup=[];const dedupEmojis=[];
+    allCats.forEach((c,i)=>{
+      const nome=c.nome.trim();
+      if(!nome||seen.has(nome.toLowerCase()))return;
+      seen.add(nome.toLowerCase());
+      dedup.push({nome,visivel_loja:c.visivel_loja!==false});
+      dedupEmojis.push(catEmojis[i]||'🏷️');
+    });
+    allCats=dedup;catEmojis=dedupEmojis;
     renderCatManager();
     // Delete all then reinsert
     await sbDelete('/rest/v1/categorias?id=gte.0');
     for(let i=0;i<allCats.length;i++){
-      await sbPost('/rest/v1/categorias',{nome:allCats[i],emoji:catEmojis[i]||'🏷️',ordem:i});
+      await sbPost('/rest/v1/categorias',{nome:allCats[i].nome,emoji:catEmojis[i]||'🏷️',ordem:i,visivel_loja:allCats[i].visivel_loja!==false});
     }
     toast('Categorias salvas!','ok');
-    COLS=[...allCats];
+    syncColsFromCats();
     // refresh colsGrid if modal open
     const cg=document.getElementById('colsGrid');
     if(cg&&cg.children.length) cg.innerHTML=buildCols(getSelCols());
@@ -3814,7 +3831,9 @@ function catDrop(e,i){
   if(catDragIdx===null||catDragIdx===i)return;
   const tmp=allCats.splice(catDragIdx,1)[0];
   allCats.splice(i,0,tmp);
-  COLS=[...allCats];
+  const tmpE=catEmojis.splice(catDragIdx,1)[0];
+  catEmojis.splice(i,0,tmpE);
+  syncColsFromCats();
   catDragIdx=null;
   renderCatManager();
 }
@@ -3897,11 +3916,26 @@ async function uploadFoto(file,prodNome){
 
 // ── VARIATIONS ────────────────────────────────────────────────────────
 let currentVars=[];
+let manualEsgotadoOverride=false; // true quando o usuário mexeu no toggle "Esgotado" manualmente nesta edição
 
 async function loadVars(prodId){
   const d=await sbGet(`/rest/v1/produto_variacoes?produto_id=eq.${prodId}&order=id`);
   currentVars=Array.isArray(d)?d.map(v=>({...v,_id:v.id})):[];
   renderVarsGrid();
+  updateEsgotadoHint();
+}
+
+function updateEsgotadoHint(){
+  const sub=document.getElementById('togEsgotadoSub');
+  if(!sub)return;
+  const validVars=currentVars.filter(v=>v.tamanho||v.cor||v.estoque);
+  if(validVars.length>0&&validVars.every(v=>!v.estoque)){
+    sub.textContent='⚠️ Todas as variações estão com estoque 0 — será marcado como esgotado ao salvar';
+    sub.style.color='var(--red)';
+  }else{
+    sub.textContent='Mostra aviso na loja';
+    sub.style.color='';
+  }
 }
 
 function renderVarsGrid(){
@@ -3930,10 +3964,13 @@ function removeVar(i){currentVars.splice(i,1);renderVarsGrid();}
 
 async function saveVars(prodId){
   if(!prodId)return;
+  // Filtra só as variações com algum dado preenchido — linhas em branco
+  // (ex: criadas por "Adicionar variação" e nunca preenchidas) não contam
+  // como variação real nem para salvar nem para a checagem de estoque abaixo.
+  const validVars=currentVars.filter(v=>v.tamanho||v.cor||v.estoque);
   // Delete existing then reinsert
   await sbDelete(`/rest/v1/produto_variacoes?produto_id=eq.${prodId}`);
-  for(const v of currentVars){
-    if(!v.tamanho&&!v.cor&&!v.estoque)continue;
+  for(const v of validVars){
     await sbPost('/rest/v1/produto_variacoes',{
       produto_id:prodId,
       tamanho:v.tamanho||null,
@@ -3943,12 +3980,14 @@ async function saveVars(prodId){
       ativo:true
     });
   }
-  // Auto esgotado if all vars have 0 stock
-  if(currentVars.length>0&&currentVars.every(v=>!v.estoque)){
+  // Auto esgotado só se existem variações reais e todas estão zeradas —
+  // e só se o usuário não mexeu manualmente no toggle "Esgotado" nesta edição.
+  // Isso evita que uma escolha manual seja revertida silenciosamente.
+  if(!manualEsgotadoOverride&&validVars.length>0&&validVars.every(v=>!v.estoque)){
     await sbPatch(`/rest/v1/produtos?id=eq.${prodId}`,{esgotado:true});
     const p=allProds.find(x=>x.id==prodId);
     if(p)p.esgotado=true;
-    toast('Produto marcado como esgotado automaticamente','info');
+    toast('Produto marcado como esgotado automaticamente (estoque zerado)','info');
   }
 }
 
@@ -4574,6 +4613,49 @@ async function setOrderStatus(id,status){
   filterOrders();
   toast('Status atualizado','ok');
   const _o=allOrders.find(x=>x.id==id);addHist('Status do pedido alterado',`${status}`,`#${id} ${_o?.visitante_nome||''}`);
+
+  // Notifica o cliente (email + notificação no site) nos eventos relevantes
+  if(_o&&(status==='confirmado'||status==='enviado')){
+    notifyCustomer(_o,status==='enviado'?'pedido_enviado':'pedido_confirmado');
+  }
+}
+
+// Dispara notificação no site (tabela notificacoes) e email (Edge Function),
+// sem bloquear a UI do admin caso algo falhe.
+async function notifyCustomer(pedido,tipo){
+  const titulos={
+    pedido_confirmado:'Pedido confirmado ✅',
+    pedido_enviado:'Pedido enviado 🚚',
+  };
+  const mensagens={
+    pedido_confirmado:`Seu pedido #${pedido.id} foi confirmado e já estamos preparando tudo!`,
+    pedido_enviado:`Seu pedido #${pedido.id} foi enviado${pedido.tracking_code?` — código de rastreio: ${pedido.tracking_code}`:''}.`,
+  };
+  try{
+    await fetch(`${SB}/rest/v1/notificacoes`,{
+      method:'POST',headers:{...HDR,'Content-Type':'application/json',Prefer:'return=minimal'},
+      body:JSON.stringify({
+        pedido_id:pedido.id,
+        user_id:pedido.user_id||null,
+        cliente_email:pedido.visitante_email||null,
+        tipo,
+        titulo:titulos[tipo],
+        mensagem:mensagens[tipo],
+      })
+    }).catch(()=>{});
+  }catch(e){}
+
+  if(!pedido.visitante_email)return;
+  try{
+    await fetch(`${SB}/functions/v1/send-email`,{
+      method:'POST',headers:{...HDR,'Content-Type':'application/json'},
+      body:JSON.stringify({
+        to:pedido.visitante_email,
+        tipo,
+        data:{nome:pedido.visitante_nome,pedido_id:pedido.id,tracking_code:pedido.tracking_code||null}
+      })
+    }).catch(()=>{});
+  }catch(e){}
 }
 
 async function setOrderPgto(id,pgto){
