@@ -552,8 +552,10 @@ function renderSummary(){
     }).join('');
   }
 
-  // Prazo
-  const maxPrazo = cart.length ? Math.max(...cart.map(i=>i.prazo||7)) : 7;
+  // Prazo — itens sob encomenda definem o prazo de produção (o mais lento manda,
+  // já que tudo é despachado junto); itens de pronta entrega não atrasam nada.
+  const sobEncomenda = cart.filter(i=>i.modalidade!=='pronta_entrega');
+  const maxPrazo = sobEncomenda.length ? Math.max(...sobEncomenda.map(i=>i.prazo||7)) : 1;
   document.getElementById('prazoNotice').textContent =
     `Prazo estimado: ${maxPrazo} dias úteis de produção após confirmação do pagamento.`;
 }
@@ -716,7 +718,8 @@ async function placeOrder(){
   const subtotal = cart.reduce((s,i)=>s+(i.price||0)*i.qty,0);
   const desconto = payMethod==='pix' ? subtotal*0.05 : 0;
   const total    = subtotal - desconto;
-  const maxPrazo = Math.max(...cart.map(i=>i.prazo||7));
+  const sobEncomenda = cart.filter(i=>i.modalidade!=='pronta_entrega');
+  const maxPrazo = sobEncomenda.length ? Math.max(...sobEncomenda.map(i=>i.prazo||7)) : 1;
 
   try {
     // 1. Save cliente (visitante or new account)
@@ -794,7 +797,7 @@ async function placeOrder(){
     showLoading('Quase lá…');
     await new Promise(r=>setTimeout(r,800));
     hideLoading();
-    showSuccess({nome,email,total,prazo:maxPrazo,orderId,payMethod});
+    showSuccess({nome,email,total,prazo:maxPrazo,prazoFrete:selectedFrete?.prazo||null,orderId,payMethod});
 
     // Clear cart
     localStorage.removeItem('cr_cart');
@@ -823,18 +826,21 @@ Aguardo confirmação! 😊`;
   }
 }
 
-function showSuccess({nome,email,total,prazo,orderId,payMethod}){
+function showSuccess({nome,email,total,prazo,prazoFrete,orderId,payMethod}){
   document.getElementById('checkoutWrap').style.display='none';
   const ss=document.getElementById('successScreen');
   ss.classList.add('show');
   const pmLabel = payMethod==='pix'?'PIX — aguardando pagamento':payMethod==='cartao'?'Cartão de crédito':'Boleto bancário';
+  const prazoLabel = prazoFrete
+    ? `${prazo}d produção + ${prazoFrete}d entrega = até ${prazo+prazoFrete} dias úteis`
+    : `${prazo} dias úteis após pagamento`;
   document.getElementById('successDetails').innerHTML=`
     <div class="sd-row"><span>Número do pedido</span><strong>#${orderId}</strong></div>
     <div class="sd-row"><span>Nome</span><strong>${nome}</strong></div>
     <div class="sd-row"><span>E-mail de confirmação</span><strong>${email}</strong></div>
     <div class="sd-row"><span>Total</span><strong>${fmt(total)}</strong></div>
     <div class="sd-row"><span>Pagamento</span><strong>${pmLabel}</strong></div>
-    <div class="sd-row"><span>Prazo de produção</span><strong>${prazo} dias úteis após pagamento</strong></div>`;
+    <div class="sd-row"><span>Prazo total estimado</span><strong>${prazoLabel}</strong></div>`;
   // Step indicator
   document.getElementById('step3').classList.add('done');
   document.getElementById('step4').classList.add('done','active');
@@ -958,6 +964,22 @@ function selectFrete(el,data){
   el.classList.add('active');
   selectedFrete=data;
   updateFreteTotal(data.price);
+  updatePrazoComFrete(data.prazo);
+}
+
+// Soma o prazo de produção (maior entre os itens sob encomenda, já que tudo
+// vai despachado junto) com o prazo de entrega da transportadora escolhida.
+function updatePrazoComFrete(prazoFrete){
+  const sobEncomenda=cart.filter(i=>i.modalidade!=='pronta_entrega');
+  const prazoProducao=sobEncomenda.length?Math.max(...sobEncomenda.map(i=>i.prazo||7)):1;
+  const notice=document.getElementById('prazoNotice');
+  if(!notice)return;
+  if(prazoFrete){
+    const total=prazoProducao+prazoFrete;
+    notice.textContent=`Prazo estimado: ${prazoProducao} dias úteis de produção + ${prazoFrete} dias de entrega = até ${total} dias úteis após confirmação do pagamento.`;
+  }else{
+    notice.textContent=`Prazo estimado: ${prazoProducao} dias úteis de produção após confirmação do pagamento.`;
+  }
 }
 
 function updateFreteTotal(freteVal){
@@ -965,7 +987,7 @@ function updateFreteTotal(freteVal){
   const totalEl=document.getElementById('summaryTotal');
   if(freteEl) freteEl.textContent=freteVal?'R$ '+freteVal.toFixed(2).replace('.',','):'A calcular';
   if(totalEl){
-    const subtotal=getCart().reduce((s,i)=>s+(i.price||0)*(i.qty||1),0);
+    const subtotal=cart.reduce((s,i)=>s+(i.price||0)*(i.qty||1),0);
     totalEl.textContent='R$ '+(subtotal+freteVal).toFixed(2).replace('.',',');
   }
 }

@@ -760,6 +760,11 @@ img{display:block;max-width:100%}
 .dash-period-toggle{display:flex;gap:4px;background:rgba(229,37,100,.05);border-radius:10px;padding:3px}
 .dash-period-btn{padding:5px 12px;border-radius:8px;border:none;background:transparent;font-family:var(--fb);font-size:.76rem;font-weight:600;cursor:pointer;color:rgba(13,9,13,.5);transition:all .2s}
 .dash-period-btn.active{background:#fff;color:var(--rose);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.modalidade-toggle{display:flex;gap:4px;background:rgba(229,37,100,.05);border-radius:10px;padding:3px;margin-top:4px}
+.modalidade-btn{flex:1;padding:9px 14px;border-radius:8px;border:none;background:transparent;font-family:var(--fb);font-size:.82rem;font-weight:600;cursor:pointer;color:rgba(13,9,13,.5);transition:all .2s}
+.modalidade-btn.active{background:#fff;color:var(--rose);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+[data-theme="dark"] .modalidade-btn.active{background:#1e1722!important;color:var(--pink2)!important}
+[data-theme="dark"] .modalidade-btn{color:rgba(240,232,236,.5)!important}
 .dash-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
 @media(max-width:768px){.dash-grid-2{grid-template-columns:1fr}}
 .cmp-up{color:var(--green);font-weight:700}
@@ -1461,10 +1466,19 @@ img{display:block;max-width:100%}
       <div class="msec"><h3>Informações básicas</h3>
         <div class="frow"><div class="fg"><label>Nome *</label><input type="text" id="mNome" placeholder="Ex: Fantasia de Flamingo"></div></div>
         <div class="frow"><div class="fg"><label>Descrição</label><textarea id="mDesc" placeholder="Materiais, tamanhos, detalhes..."></textarea></div></div>
+        <div class="frow">
+          <div class="fg">
+            <label>Modalidade</label>
+            <div class="modalidade-toggle">
+              <button type="button" class="modalidade-btn active" id="mModSob" onclick="setModalidade('sob_encomenda')">🧵 Sob encomenda</button>
+              <button type="button" class="modalidade-btn" id="mModPronta" onclick="setModalidade('pronta_entrega')">📦 Pronta entrega</button>
+            </div>
+          </div>
+        </div>
         <div class="frow c3">
           <div class="fg"><label>Preço (R$)</label><input type="number" id="mPreco" placeholder="89.90" min="0" step="0.01"></div>
           <div class="fg"><label>Preço promocional (R$)</label><input type="number" id="mPrecoPromo" placeholder="79.90" min="0" step="0.01"></div>
-          <div class="fg"><label>Prazo produção (dias úteis)</label><input type="number" id="mPrazo" value="7" min="1"></div>
+          <div class="fg" id="mPrazoWrap"><label id="mPrazoLabel">Prazo produção (dias úteis)</label><input type="number" id="mPrazo" value="7" min="1"></div>
         </div>
         <div class="frow"><div class="fg"><label>Nota interna</label><textarea id="mNota" placeholder="Observações internas (não aparece na loja)" style="min-height:56px"></textarea></div></div>
       </div>
@@ -3200,7 +3214,7 @@ function renderProdTable(){
         </div>
         <div class="col-design" style="font-size:.72rem;color:rgba(13,9,13,.45);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${Array.isArray(p.design)?p.design.slice(0,1).join(', '):(p.design||'—')}</div>
         <div class="col-price"><input class="inline-price" value="${p.price||''}" placeholder="Sem preço" data-id="${p.id}" onblur="saveInlinePrice(this)" onkeydown="if(event.key==='Enter')this.blur()"></div>
-        <div class="col-prazo" style="font-size:.82rem">${p.prazo_producao_dias||7}d</div>
+        <div class="col-prazo" style="font-size:.82rem" title="${p.modalidade==='pronta_entrega'?'Pronta entrega':'Sob encomenda'}">${p.modalidade==='pronta_entrega'?'📦':'🧵'} ${p.prazo_producao_dias||7}d</div>
         <div class="col-status">${pill}</div>
         <div class="ibtns">
           <button class="ibtn" data-pid="${p.id}" onclick="event.stopPropagation();var btn=this;abrirFotosById(+btn.dataset.pid)" title="Fotos">📷</button>
@@ -3250,6 +3264,24 @@ async function deleteProd(id,nome){
 let COLS=['Fantasias','Para bebês','Decoração','Almofadas','Tiaras & acessórios','Educativo','Plush & pelúcia','Lembrancinhas','Bolsas & mochilas'];
 // COLS loaded dynamically from DB (table: categorias) or fallback above
 
+let currentModalidade='sob_encomenda';
+function setModalidade(mod){
+  currentModalidade=mod;
+  document.getElementById('mModSob').classList.toggle('active',mod==='sob_encomenda');
+  document.getElementById('mModPronta').classList.toggle('active',mod==='pronta_entrega');
+  const prazoInput=document.getElementById('mPrazo');
+  const prazoLabel=document.getElementById('mPrazoLabel');
+  if(mod==='pronta_entrega'){
+    prazoInput.value='1';
+    prazoInput.disabled=true;
+    prazoLabel.textContent='Postagem (dia útil) — fixo';
+  }else{
+    prazoInput.disabled=false;
+    prazoLabel.textContent='Prazo produção (dias úteis)';
+    if(prazoInput.value==='1') prazoInput.value='7'; // sai do valor fixo da pronta entrega
+  }
+}
+
 function openNewProd(){
   editProdId=null;
   document.getElementById('mProdTitle').textContent='Novo produto';
@@ -3260,6 +3292,7 @@ function openNewProd(){
   document.getElementById('mPrecoPromo').value='';
   document.getElementById('mPrazo').value='7';
   document.getElementById('mNota').value='';
+  setModalidade('sob_encomenda'); // padrão: a maioria dos produtos é sob encomenda
   document.getElementById('designsGrid').innerHTML=buildDesignsGrid([]);
   document.getElementById('colsGrid').innerHTML=buildCols([]);
   document.getElementById('togAtivo').classList.add('on');
@@ -3273,9 +3306,19 @@ function openNewProd(){
   document.getElementById('prodModal').classList.add('open');
 }
 
-function editProd(id){
-  const p=allProds.find(x=>x.id==id);
+async function editProd(id){
+  let p=allProds.find(x=>x.id==id);
   if(!p)return;
+  // Busca o estado mais recente direto do banco — allProds pode estar
+  // desatualizado se o produto foi alterado em outra aba/sessão, ou pela
+  // lógica automática de "esgotado" rodando após o modal ter sido fechado.
+  try{
+    const fresh=await sbGet(`/rest/v1/produtos?id=eq.${id}&select=*`);
+    if(Array.isArray(fresh)&&fresh[0]){
+      Object.assign(p,fresh[0]); // mantém a mesma referência em allProds
+    }
+  }catch(e){/* mantém o que já tinha em cache se a busca falhar */}
+
   editProdId=id;
   document.getElementById('mProdTitle').textContent='Editar produto';
   document.getElementById('mNome').value=p.name||'';
@@ -3284,6 +3327,8 @@ function editProd(id){
   document.getElementById('mPrecoPromo').value=p.preco_promocional||'';
   document.getElementById('mPrazo').value=p.prazo_producao_dias||7;
   document.getElementById('mNota').value=p.nota_interna||'';
+  setModalidade(p.modalidade==='pronta_entrega'?'pronta_entrega':'sob_encomenda');
+  if(p.modalidade==='pronta_entrega') document.getElementById('mPrazo').value=p.prazo_producao_dias||1;
   document.getElementById('designsGrid').innerHTML=buildDesignsGrid(Array.isArray(p.design)?p.design:(p.design?[p.design]:[]));
   const cols=Array.isArray(p.collections)?p.collections:(p.collections?[p.collections]:[]);
   document.getElementById('colsGrid').innerHTML=buildCols(cols);
@@ -3333,6 +3378,7 @@ async function saveProd(){
     price:document.getElementById('mPreco').value?+document.getElementById('mPreco').value:null,
     preco_promocional:document.getElementById('mPrecoPromo').value?+document.getElementById('mPrecoPromo').value:null,
     prazo_producao_dias:+document.getElementById('mPrazo').value||7,
+    modalidade:currentModalidade,
     nota_interna:document.getElementById('mNota').value.trim()||null,
       design:getSelDesigns().length?getSelDesigns():null,
     collections:getSelCols(),

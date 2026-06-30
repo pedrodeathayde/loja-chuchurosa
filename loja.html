@@ -2780,6 +2780,7 @@ function mergeProducts(){
         preco_promocional:p.preco_promocional,
         descricao:p.descricao,
         prazo_producao_dias:p.prazo_producao_dias||7,
+        modalidade:p.modalidade||'sob_encomenda',
         collections:p.collections||[],
         destaque:p.destaque||false,
         esgotado:p.esgotado||false,
@@ -2857,6 +2858,7 @@ function renderGrid(){
     if(isFeatured)featuredUsed=true;
     const cats=(p.collections||[]).slice(0,2).map(catLabel).join(' · ');
     const prazo=p.prazo_producao_dias||7;
+    const prazoTxt=p.modalidade==='pronta_entrega'?'📦 Pronta entrega — postagem em 1 dia útil':`🧵 Sob encomenda — ${prazo} dias úteis`;
     const badge=p.destaque?'<span class="pcard-badge badge-destaque">Destaque</span>':'';
 
     const imgFirst=p.url?`<img class="img-primary" src="${p.url}" alt="${p.name}" loading="lazy">`:'';
@@ -2891,7 +2893,7 @@ ${p.url?`<button class="lb-trigger" onclick="event.stopPropagation();toggleFavLo
         <div class="pcard-cat">${cats}</div>
         <div class="pcard-name">${p.name}</div>
         ${swatchHtml}
-        <div class="pcard-prazo">${prazo} dias úteis</div>
+        <div class="pcard-prazo">${prazoTxt}</div>
         <div class="pcard-footer">${priceHtml}</div>
       </div>
     </div>`;
@@ -2941,7 +2943,7 @@ function addToCart(e,id){
   if(btn&&btn.classList){btn.classList.remove('bounce');void btn.offsetWidth;btn.classList.add('bounce');}
   const ex=cart.find(x=>String(x.id)===String(id));
   if(ex)ex.qty++;
-  else cart.push({id:p.id,name:p.name,price:p.price,url:p.url,prazo:p.prazo_producao_dias||7,qty:1});
+  else cart.push({id:p.id,name:p.name,price:p.price,url:p.url,prazo:p.prazo_producao_dias||7,modalidade:p.modalidade||'sob_encomenda',qty:1});
   saveCart();
   showToastRich(p.name,p.url,`R$ ${(p.price||0).toFixed(2).replace('.',',')} · Adicionado ao carrinho`);
 }
@@ -3539,7 +3541,7 @@ document.getElementById('listViewBtn').addEventListener('click',()=>{
     prods.forEach(function(p){
       var ex=cart.find(function(i){return i.id==p.id;});
       if(ex)ex.qty++;
-      else cart.push({id:p.id,name:p.name||'',price:p.price||0,url:p.url||'',prazo:p.prazo_producao_dias||5,qty:1});
+      else cart.push({id:p.id,name:p.name||'',price:p.price||0,url:p.url||'',prazo:p.prazo_producao_dias||5,modalidade:p.modalidade||'sob_encomenda',qty:1});
     });
     saveCart();updateCartUI();
     var cb=document.getElementById('cartBtn');
