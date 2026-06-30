@@ -552,10 +552,8 @@ function renderSummary(){
     }).join('');
   }
 
-  // Prazo — itens sob encomenda definem o prazo de produção (o mais lento manda,
-  // já que tudo é despachado junto); itens de pronta entrega não atrasam nada.
-  const sobEncomenda = cart.filter(i=>i.modalidade!=='pronta_entrega');
-  const maxPrazo = sobEncomenda.length ? Math.max(...sobEncomenda.map(i=>i.prazo||7)) : 1;
+  // Prazo
+  const maxPrazo = cart.length ? Math.max(...cart.map(i=>i.prazo||7)) : 7;
   document.getElementById('prazoNotice').textContent =
     `Prazo estimado: ${maxPrazo} dias úteis de produção após confirmação do pagamento.`;
 }
@@ -718,8 +716,7 @@ async function placeOrder(){
   const subtotal = cart.reduce((s,i)=>s+(i.price||0)*i.qty,0);
   const desconto = payMethod==='pix' ? subtotal*0.05 : 0;
   const total    = subtotal - desconto;
-  const sobEncomenda = cart.filter(i=>i.modalidade!=='pronta_entrega');
-  const maxPrazo = sobEncomenda.length ? Math.max(...sobEncomenda.map(i=>i.prazo||7)) : 1;
+  const maxPrazo = Math.max(...cart.map(i=>i.prazo||7));
 
   try {
     // 1. Save cliente (visitante or new account)
@@ -913,7 +910,6 @@ async function calcFreteCheckout(cep){
   selectedFrete=null;
   updateFreteTotal(0);
 
-  const cart=getCart();
   if(!cart.length){el.innerHTML='<div class="frete-loading">Carrinho vazio</div>';return;}
   const dims=getDimsCheckout(cart);
   const insurance=cart.reduce((s,i)=>s+(i.price||50)*(i.qty||1),0);
@@ -967,11 +963,10 @@ function selectFrete(el,data){
   updatePrazoComFrete(data.prazo);
 }
 
-// Soma o prazo de produção (maior entre os itens sob encomenda, já que tudo
+// Soma o prazo de produção (maior entre os itens do carrinho, já que tudo
 // vai despachado junto) com o prazo de entrega da transportadora escolhida.
 function updatePrazoComFrete(prazoFrete){
-  const sobEncomenda=cart.filter(i=>i.modalidade!=='pronta_entrega');
-  const prazoProducao=sobEncomenda.length?Math.max(...sobEncomenda.map(i=>i.prazo||7)):1;
+  const prazoProducao=cart.length?Math.max(...cart.map(i=>i.prazo||7)):7;
   const notice=document.getElementById('prazoNotice');
   if(!notice)return;
   if(prazoFrete){

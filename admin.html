@@ -224,9 +224,10 @@ img{display:block;max-width:100%}
 .pill.oculto{background:rgba(13,9,13,.08);color:rgba(13,9,13,.4)}
 .pill.destaque{background:rgba(244,121,154,.12);color:var(--rose)}
 .pill.pendente{background:rgba(245,158,11,.1);color:var(--yellow)}
-.pill.pago{background:rgba(34,197,94,.1);color:var(--green)}
-.pill.producao{background:rgba(244,121,154,.12);color:var(--rose)}
-.pill.enviado{background:rgba(99,102,241,.1);color:var(--blue)}
+.pill.confirmado{background:rgba(34,197,94,.1);color:var(--green)}
+.pill.em_producao{background:rgba(244,121,154,.12);color:var(--rose)}
+.pill.pronto{background:rgba(99,102,241,.1);color:var(--blue)}
+.pill.enviado{background:rgba(99,102,241,.15);color:var(--blue)}
 .pill.entregue{background:rgba(34,197,94,.15);color:var(--green)}
 .pill.cancelado{background:rgba(239,68,68,.08);color:var(--red)}
 .ibtns{display:flex;gap:5px}
@@ -382,15 +383,41 @@ img{display:block;max-width:100%}
 }
 
 /* VARIATION ROWS */
-.var-row{display:grid;grid-template-columns:1fr 1fr 80px 90px 28px;gap:8px;align-items:center;margin-bottom:8px}
+.var-row{display:grid;grid-template-columns:1fr 1fr 1.3fr 90px 28px;gap:8px;align-items:center;margin-bottom:8px}
 .var-row input{padding:8px 10px;border:1.5px solid rgba(244,121,154,.18);border-radius:9px;font-family:var(--fb);font-size:.83rem;outline:none;transition:border-color .2s;width:100%}
 .var-row input:focus{border-color:var(--pink)}
 .var-row .del-var{width:28px;height:28px;border-radius:8px;border:none;background:rgba(239,68,68,.08);color:var(--red);cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .var-row .del-var:hover{background:rgba(239,68,68,.18)}
-.var-header{display:grid;grid-template-columns:1fr 1fr 80px 90px 28px;gap:8px;margin-bottom:4px}
+.var-header{display:grid;grid-template-columns:1fr 1fr 1.3fr 90px 28px;gap:8px;margin-bottom:4px}
 .var-header span{font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:rgba(13,9,13,.38)}
 .btn-add-var{background:rgba(244,121,154,.08);color:var(--rose);border:1.5px dashed rgba(244,121,154,.25);border-radius:10px;padding:8px;font-family:var(--fb);font-size:.8rem;font-weight:600;cursor:pointer;width:100%;margin-top:6px;transition:all .2s}
 .btn-add-var:hover{background:rgba(244,121,154,.14);border-color:var(--pink)}
+
+/* Célula de estoque/sob-encomenda dentro da linha de variação */
+.var-estoque-cell{display:flex;align-items:center;gap:6px;min-width:0}
+.var-mod-btn{
+  flex-shrink:0;width:30px;height:30px;border-radius:8px;border:1.5px solid rgba(244,121,154,.18);
+  background:#fff;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+}
+.var-mod-btn.active{background:rgba(229,37,100,.08);border-color:var(--pink)}
+.var-estoque-cell input{min-width:0}
+.var-sob-label{font-size:.76rem;color:rgba(13,9,13,.45);font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+[data-theme="dark"] .var-mod-btn{background:#1e1722!important;border-color:rgba(244,121,154,.2)!important}
+[data-theme="dark"] .var-sob-label{color:rgba(240,232,236,.45)}
+
+/* Mobile: empilha cada variação como cartão, sem scroll horizontal */
+@media(max-width:640px){
+  .var-header{display:none} /* rótulos de coluna não fazem sentido empilhados */
+  .var-row{
+    display:flex;flex-direction:column;gap:8px;
+    padding:12px;border:1.5px solid rgba(244,121,154,.12);border-radius:12px;
+    margin-bottom:10px;position:relative;
+  }
+  .var-row input,.var-estoque-cell{width:100%}
+  .var-row .del-var{position:absolute;top:10px;right:10px;width:26px;height:26px}
+  [data-theme="dark"] .var-row{border-color:rgba(244,121,154,.18)}
+}
 
 /* PHOTO DRAG */
 .photo-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:4px}
@@ -760,11 +787,6 @@ img{display:block;max-width:100%}
 .dash-period-toggle{display:flex;gap:4px;background:rgba(229,37,100,.05);border-radius:10px;padding:3px}
 .dash-period-btn{padding:5px 12px;border-radius:8px;border:none;background:transparent;font-family:var(--fb);font-size:.76rem;font-weight:600;cursor:pointer;color:rgba(13,9,13,.5);transition:all .2s}
 .dash-period-btn.active{background:#fff;color:var(--rose);box-shadow:0 1px 4px rgba(0,0,0,.08)}
-.modalidade-toggle{display:flex;gap:4px;background:rgba(229,37,100,.05);border-radius:10px;padding:3px;margin-top:4px}
-.modalidade-btn{flex:1;padding:9px 14px;border-radius:8px;border:none;background:transparent;font-family:var(--fb);font-size:.82rem;font-weight:600;cursor:pointer;color:rgba(13,9,13,.5);transition:all .2s}
-.modalidade-btn.active{background:#fff;color:var(--rose);box-shadow:0 1px 4px rgba(0,0,0,.08)}
-[data-theme="dark"] .modalidade-btn.active{background:#1e1722!important;color:var(--pink2)!important}
-[data-theme="dark"] .modalidade-btn{color:rgba(240,232,236,.5)!important}
 .dash-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
 @media(max-width:768px){.dash-grid-2{grid-template-columns:1fr}}
 .cmp-up{color:var(--green);font-weight:700}
@@ -1466,19 +1488,10 @@ img{display:block;max-width:100%}
       <div class="msec"><h3>Informações básicas</h3>
         <div class="frow"><div class="fg"><label>Nome *</label><input type="text" id="mNome" placeholder="Ex: Fantasia de Flamingo"></div></div>
         <div class="frow"><div class="fg"><label>Descrição</label><textarea id="mDesc" placeholder="Materiais, tamanhos, detalhes..."></textarea></div></div>
-        <div class="frow">
-          <div class="fg">
-            <label>Modalidade</label>
-            <div class="modalidade-toggle">
-              <button type="button" class="modalidade-btn active" id="mModSob" onclick="setModalidade('sob_encomenda')">🧵 Sob encomenda</button>
-              <button type="button" class="modalidade-btn" id="mModPronta" onclick="setModalidade('pronta_entrega')">📦 Pronta entrega</button>
-            </div>
-          </div>
-        </div>
         <div class="frow c3">
           <div class="fg"><label>Preço (R$)</label><input type="number" id="mPreco" placeholder="89.90" min="0" step="0.01"></div>
           <div class="fg"><label>Preço promocional (R$)</label><input type="number" id="mPrecoPromo" placeholder="79.90" min="0" step="0.01"></div>
-          <div class="fg" id="mPrazoWrap"><label id="mPrazoLabel">Prazo produção (dias úteis)</label><input type="number" id="mPrazo" value="7" min="1"></div>
+          <div class="fg"><label>Prazo produção (dias úteis)</label><input type="number" id="mPrazo" value="7" min="1"></div>
         </div>
         <div class="frow"><div class="fg"><label>Nota interna</label><textarea id="mNota" placeholder="Observações internas (não aparece na loja)" style="min-height:56px"></textarea></div></div>
       </div>
@@ -3214,7 +3227,7 @@ function renderProdTable(){
         </div>
         <div class="col-design" style="font-size:.72rem;color:rgba(13,9,13,.45);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${Array.isArray(p.design)?p.design.slice(0,1).join(', '):(p.design||'—')}</div>
         <div class="col-price"><input class="inline-price" value="${p.price||''}" placeholder="Sem preço" data-id="${p.id}" onblur="saveInlinePrice(this)" onkeydown="if(event.key==='Enter')this.blur()"></div>
-        <div class="col-prazo" style="font-size:.82rem" title="${p.modalidade==='pronta_entrega'?'Pronta entrega':'Sob encomenda'}">${p.modalidade==='pronta_entrega'?'📦':'🧵'} ${p.prazo_producao_dias||7}d</div>
+        <div class="col-prazo" style="font-size:.82rem">${p.prazo_producao_dias||7}d</div>
         <div class="col-status">${pill}</div>
         <div class="ibtns">
           <button class="ibtn" data-pid="${p.id}" onclick="event.stopPropagation();var btn=this;abrirFotosById(+btn.dataset.pid)" title="Fotos">📷</button>
@@ -3264,24 +3277,6 @@ async function deleteProd(id,nome){
 let COLS=['Fantasias','Para bebês','Decoração','Almofadas','Tiaras & acessórios','Educativo','Plush & pelúcia','Lembrancinhas','Bolsas & mochilas'];
 // COLS loaded dynamically from DB (table: categorias) or fallback above
 
-let currentModalidade='sob_encomenda';
-function setModalidade(mod){
-  currentModalidade=mod;
-  document.getElementById('mModSob').classList.toggle('active',mod==='sob_encomenda');
-  document.getElementById('mModPronta').classList.toggle('active',mod==='pronta_entrega');
-  const prazoInput=document.getElementById('mPrazo');
-  const prazoLabel=document.getElementById('mPrazoLabel');
-  if(mod==='pronta_entrega'){
-    prazoInput.value='1';
-    prazoInput.disabled=true;
-    prazoLabel.textContent='Postagem (dia útil) — fixo';
-  }else{
-    prazoInput.disabled=false;
-    prazoLabel.textContent='Prazo produção (dias úteis)';
-    if(prazoInput.value==='1') prazoInput.value='7'; // sai do valor fixo da pronta entrega
-  }
-}
-
 function openNewProd(){
   editProdId=null;
   document.getElementById('mProdTitle').textContent='Novo produto';
@@ -3292,7 +3287,6 @@ function openNewProd(){
   document.getElementById('mPrecoPromo').value='';
   document.getElementById('mPrazo').value='7';
   document.getElementById('mNota').value='';
-  setModalidade('sob_encomenda'); // padrão: a maioria dos produtos é sob encomenda
   document.getElementById('designsGrid').innerHTML=buildDesignsGrid([]);
   document.getElementById('colsGrid').innerHTML=buildCols([]);
   document.getElementById('togAtivo').classList.add('on');
@@ -3327,8 +3321,6 @@ async function editProd(id){
   document.getElementById('mPrecoPromo').value=p.preco_promocional||'';
   document.getElementById('mPrazo').value=p.prazo_producao_dias||7;
   document.getElementById('mNota').value=p.nota_interna||'';
-  setModalidade(p.modalidade==='pronta_entrega'?'pronta_entrega':'sob_encomenda');
-  if(p.modalidade==='pronta_entrega') document.getElementById('mPrazo').value=p.prazo_producao_dias||1;
   document.getElementById('designsGrid').innerHTML=buildDesignsGrid(Array.isArray(p.design)?p.design:(p.design?[p.design]:[]));
   const cols=Array.isArray(p.collections)?p.collections:(p.collections?[p.collections]:[]);
   document.getElementById('colsGrid').innerHTML=buildCols(cols);
@@ -3378,7 +3370,6 @@ async function saveProd(){
     price:document.getElementById('mPreco').value?+document.getElementById('mPreco').value:null,
     preco_promocional:document.getElementById('mPrecoPromo').value?+document.getElementById('mPrecoPromo').value:null,
     prazo_producao_dias:+document.getElementById('mPrazo').value||7,
-    modalidade:currentModalidade,
     nota_interna:document.getElementById('mNota').value.trim()||null,
       design:getSelDesigns().length?getSelDesigns():null,
     collections:getSelCols(),
@@ -3424,7 +3415,7 @@ function renderOrderTable(){
       <div><div style="font-size:.85rem;font-weight:600">${p.visitante_nome||'—'}</div><div style="font-size:.7rem;color:rgba(13,9,13,.38)">${p.visitante_email||''}</div></div>
       <span style="font-weight:700">${fmt(p.total)}</span>
       <span style="font-size:.75rem">${p.mp_status||'—'}</span>
-      <span><span class="pill ${p.status}">${{pendente:'⏳ Pendente',pago:'✅ Pago',producao:'🔨 Produção',enviado:'🚚 Enviado',entregue:'📬 Entregue',cancelado:'❌ Cancelado'}[p.status]||p.status}</span></span>
+      <span><span class="pill ${p.status}">${{pendente:'⏳ Pendente',confirmado:'✅ Confirmado',em_producao:'🔨 Em produção',pronto:'📦 Pronto',enviado:'🚚 Enviado',entregue:'📬 Entregue',cancelado:'❌ Cancelado'}[p.status]||p.status}</span></span>
       <span style="font-size:.72rem;color:rgba(13,9,13,.38)">${fmtDate(p.created_at)}</span>
     </div>`).join('');
 }
@@ -3966,7 +3957,7 @@ let manualEsgotadoOverride=false; // true quando o usuário mexeu no toggle "Esg
 
 async function loadVars(prodId){
   const d=await sbGet(`/rest/v1/produto_variacoes?produto_id=eq.${prodId}&order=id`);
-  currentVars=Array.isArray(d)?d.map(v=>({...v,_id:v.id})):[];
+  currentVars=Array.isArray(d)?d.map(v=>({...v,_id:v.id,modalidade:v.modalidade||'estoque'})):[];
   renderVarsGrid();
   updateEsgotadoHint();
 }
@@ -3974,9 +3965,9 @@ async function loadVars(prodId){
 function updateEsgotadoHint(){
   const sub=document.getElementById('togEsgotadoSub');
   if(!sub)return;
-  const validVars=currentVars.filter(v=>v.tamanho||v.cor||v.estoque);
-  if(validVars.length>0&&validVars.every(v=>!v.estoque)){
-    sub.textContent='⚠️ Todas as variações estão com estoque 0 — será marcado como esgotado ao salvar';
+  const varsComEstoque=currentVars.filter(v=>(v.tamanho||v.cor||v.estoque)&&v.modalidade!=='sob_encomenda');
+  if(varsComEstoque.length>0&&varsComEstoque.every(v=>!v.estoque)){
+    sub.textContent='⚠️ Todas as variações com estoque estão zeradas — será marcado como esgotado ao salvar';
     sub.style.color='var(--red)';
   }else{
     sub.textContent='Mostra aviso na loja';
@@ -3987,18 +3978,35 @@ function updateEsgotadoHint(){
 function renderVarsGrid(){
   const el=document.getElementById('varsGrid');
   if(!el)return;
-  el.innerHTML=currentVars.map((v,i)=>`
+  el.innerHTML=currentVars.map((v,i)=>{
+    const sob=v.modalidade==='sob_encomenda';
+    return `
     <div class="var-row" data-idx="${i}">
       <input type="text" placeholder="Ex: P, M, G, 4-6 anos..." value="${v.tamanho||''}" oninput="currentVars[${i}].tamanho=this.value">
       <input type="text" placeholder="Ex: Rosa, Azul..." value="${v.cor||''}" oninput="currentVars[${i}].cor=this.value">
-      <input type="number" placeholder="Qtd" min="0" value="${v.estoque||0}" oninput="currentVars[${i}].estoque=+this.value">
+      <div class="var-estoque-cell">
+        <button type="button" class="var-mod-btn ${sob?'active':''}" title="Alternar entre estoque e sob encomenda" onclick="toggleVarModalidade(${i})">${sob?'🧵':'📦'}</button>
+        ${sob
+          ?'<span class="var-sob-label">Sob encomenda</span>'
+          :`<input type="number" placeholder="Qtd" min="0" value="${v.estoque||0}" oninput="currentVars[${i}].estoque=+this.value;updateEsgotadoHint()">`
+        }
+      </div>
       <input type="number" placeholder="R$ extra" min="0" step="0.01" value="${v.preco_extra||''}" oninput="currentVars[${i}].preco_extra=+this.value||0">
       <button class="del-var" onclick="removeVar(${i})">×</button>
-    </div>`).join('');
+    </div>`;
+  }).join('');
+}
+
+function toggleVarModalidade(i){
+  const v=currentVars[i];
+  v.modalidade=v.modalidade==='sob_encomenda'?'estoque':'sob_encomenda';
+  if(v.modalidade==='sob_encomenda') v.estoque=0; // sob encomenda não usa contagem de estoque
+  renderVarsGrid();
+  updateEsgotadoHint();
 }
 
 function addVarRow(){
-  currentVars.push({tamanho:'',cor:'',estoque:0,preco_extra:0,ativo:true});
+  currentVars.push({tamanho:'',cor:'',estoque:0,preco_extra:0,modalidade:'estoque',ativo:true});
   renderVarsGrid();
   setTimeout(()=>{
     const rows=document.querySelectorAll('.var-row');
@@ -4013,7 +4021,7 @@ async function saveVars(prodId){
   // Filtra só as variações com algum dado preenchido — linhas em branco
   // (ex: criadas por "Adicionar variação" e nunca preenchidas) não contam
   // como variação real nem para salvar nem para a checagem de estoque abaixo.
-  const validVars=currentVars.filter(v=>v.tamanho||v.cor||v.estoque);
+  const validVars=currentVars.filter(v=>v.tamanho||v.cor||v.estoque||v.modalidade==='sob_encomenda');
   // Delete existing then reinsert
   await sbDelete(`/rest/v1/produto_variacoes?produto_id=eq.${prodId}`);
   for(const v of validVars){
@@ -4022,14 +4030,17 @@ async function saveVars(prodId){
       tamanho:v.tamanho||null,
       cor:v.cor||null,
       estoque:v.estoque||0,
+      modalidade:v.modalidade||'estoque',
       preco_extra:v.preco_extra||0,
       ativo:true
     });
   }
-  // Auto esgotado só se existem variações reais e todas estão zeradas —
-  // e só se o usuário não mexeu manualmente no toggle "Esgotado" nesta edição.
-  // Isso evita que uma escolha manual seja revertida silenciosamente.
-  if(!manualEsgotadoOverride&&validVars.length>0&&validVars.every(v=>!v.estoque)){
+  // Auto esgotado só considera variações com controle de estoque real — uma
+  // variação "sob encomenda" nunca tem estoque por definição, então não conta
+  // como esgotada. Só se TODAS as variações de estoque estiverem zeradas, e
+  // o usuário não tiver mexido manualmente no toggle "Esgotado" nesta edição.
+  const varsComEstoque=validVars.filter(v=>v.modalidade!=='sob_encomenda');
+  if(!manualEsgotadoOverride&&varsComEstoque.length>0&&varsComEstoque.every(v=>!v.estoque)){
     await sbPatch(`/rest/v1/produtos?id=eq.${prodId}`,{esgotado:true});
     const p=allProds.find(x=>x.id==prodId);
     if(p)p.esgotado=true;
