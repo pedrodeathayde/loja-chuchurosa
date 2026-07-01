@@ -250,7 +250,7 @@ img{display:block;max-width:100%}
 /* MODAL */
 .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-ov.open{display:flex}
-.modal{background:#fff;border-radius:24px;width:100%;max-width:700px;max-height:92vh;overflow-y:auto;overflow-x:hidden;box-shadow:0 32px 80px rgba(0,0,0,.15);min-width:0;box-sizing:border-box}
+.modal{background:#fff;border-radius:24px;width:100%;max-width:700px;max-height:92vh;overflow-y:auto;box-shadow:0 32px 80px rgba(0,0,0,.15);min-width:0;box-sizing:border-box}
 .modal::-webkit-scrollbar{width:4px}
 .modal::-webkit-scrollbar-thumb{background:var(--pink);border-radius:2px}
 .mhead{padding:22px 26px 0;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1;padding-bottom:14px;border-bottom:1px solid rgba(244,121,154,.1)}
@@ -283,7 +283,10 @@ img{display:block;max-width:100%}
 
 /* COLLECTIONS grid */
 .cols-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;min-width:0}
-.col-ch{display:flex;align-items:center;gap:7px;padding:7px 10px;border:1.5px solid rgba(244,121,154,.12);border-radius:9px;cursor:pointer;transition:all .2s;font-size:.8rem;font-weight:500;min-width:0;overflow-wrap:break-word}
+.col-ch{display:flex;align-items:center;gap:7px;padding:7px 10px;border:1.5px solid rgba(244,121,154,.12);border-radius:9px;cursor:pointer;transition:all .2s;font-size:.8rem;font-weight:500;min-width:0;overflow-wrap:break-word;word-break:break-word;line-height:1.25;text-align:center;justify-content:center}
+@media(max-width:640px){
+  .cols-grid{grid-template-columns:repeat(2,1fr)}
+}
 .col-ch:hover{border-color:rgba(244,121,154,.3)}
 .col-ch.checked{border-color:var(--pink);background:rgba(244,121,154,.06);color:var(--rose)}
 .col-ch input{display:none}
@@ -4661,21 +4664,35 @@ function filterOrders(){
 
 // ── STATUS BUTTONS IN ORDER MODAL ────────────────────────────────────
 async function setOrderStatus(id,status){
-  closeOrderModal();
-  await sbPatch(`/rest/v1/pedidos?id=eq.${id}`,{status});
+  // Atualiza o estado local e a lista IMEDIATAMENTE, antes de esperar a rede —
+  // assim o usuário já vê a mudança no instante em que fecha o modal, sem
+  // esperar o PATCH terminar. Se o PATCH falhar, revertemos e avisamos.
   const o=allOrders.find(x=>x.id==id);
+  const statusAnterior=o?.status;
   if(o)o.status=status;
-  // Update buttons
   document.querySelectorAll('.status-btn').forEach(b=>{
     b.classList.toggle('active',b.dataset.s===status);
   });
   filterOrders();
+  closeOrderModal();
   toast('Status atualizado','ok');
-  const _o=allOrders.find(x=>x.id==id);addHist('Status do pedido alterado',`${status}`,`#${id} ${_o?.visitante_nome||''}`);
+
+  try{
+    const r=await sbPatch(`/rest/v1/pedidos?id=eq.${id}`,{status});
+    if(!r){throw new Error('PATCH falhou');}
+  }catch(e){
+    // Reverte se o servidor não confirmou a mudança
+    if(o)o.status=statusAnterior;
+    filterOrders();
+    toast('Erro ao salvar status — tente novamente','err');
+    return;
+  }
+
+  addHist('Status do pedido alterado',`${status}`,`#${id} ${o?.visitante_nome||''}`);
 
   // Notifica o cliente (email + notificação no site) nos eventos relevantes
-  if(_o&&(status==='confirmado'||status==='enviado')){
-    notifyCustomer(_o,status==='enviado'?'pedido_enviado':'pedido_confirmado');
+  if(o&&(status==='confirmado'||status==='enviado')){
+    notifyCustomer(o,status==='enviado'?'pedido_enviado':'pedido_confirmado');
   }
 }
 
