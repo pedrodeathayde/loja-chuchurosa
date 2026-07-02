@@ -396,19 +396,6 @@ img{display:block;max-width:100%}
 .btn-add-var{background:rgba(244,121,154,.08);color:var(--rose);border:1.5px dashed rgba(244,121,154,.25);border-radius:10px;padding:8px;font-family:var(--fb);font-size:.8rem;font-weight:600;cursor:pointer;width:100%;margin-top:6px;transition:all .2s}
 .btn-add-var:hover{background:rgba(244,121,154,.14);border-color:var(--pink)}
 
-/* Célula de estoque/sob-encomenda dentro da linha de variação */
-.var-estoque-cell{display:flex;align-items:center;gap:6px;min-width:0}
-.var-mod-btn{
-  flex-shrink:0;width:30px;height:30px;border-radius:8px;border:1.5px solid rgba(244,121,154,.18);
-  background:#fff;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;
-  transition:all .2s;
-}
-.var-mod-btn.active{background:rgba(229,37,100,.08);border-color:var(--pink)}
-.var-estoque-cell input{min-width:0}
-.var-sob-label{font-size:.76rem;color:rgba(13,9,13,.45);font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-[data-theme="dark"] .var-mod-btn{background:#1e1722!important;border-color:rgba(244,121,154,.2)!important}
-[data-theme="dark"] .var-sob-label{color:rgba(240,232,236,.45)}
-
 /* Mobile: empilha cada variação como cartão, sem scroll horizontal */
 @media(max-width:640px){
   .var-header{display:none} /* rótulos de coluna não fazem sentido empilhados */
@@ -1516,6 +1503,7 @@ img{display:block;max-width:100%}
         <div class="photo-grid" id="photoGrid"></div>
       </div>
       <div class="msec"><h3>Configurações</h3>
+        <div class="tog-row"><div><div class="tog-lbl">Sob encomenda</div><div class="tog-sub">Feito na hora, sem estoque físico</div></div><button class="tog on" id="togModSobEncomenda" onclick="this.classList.toggle('on');updateEsgotadoHint()"></button></div>
         <div class="tog-row"><div><div class="tog-lbl">Produto ativo</div><div class="tog-sub">Visível na loja</div></div><button class="tog on" id="togAtivo" onclick="this.classList.toggle('on')"></button></div>
         <div class="tog-row"><div><div class="tog-lbl">Destaque</div><div class="tog-sub">Aparece primeiro</div></div><button class="tog" id="togDestaque" onclick="this.classList.toggle('on')"></button></div>
         <div class="tog-row"><div><div class="tog-lbl">Esgotado</div><div class="tog-sub" id="togEsgotadoSub">Mostra aviso na loja</div></div><button class="tog" id="togEsgotado" onclick="this.classList.toggle('on');manualEsgotadoOverride=true;document.getElementById('togEsgotadoSub').textContent='Definido manualmente';document.getElementById('togEsgotadoSub').style.color=''"></button></div>
@@ -3294,6 +3282,7 @@ function openNewProd(){
   document.getElementById('mNota').value='';
   document.getElementById('designsGrid').innerHTML=buildDesignsGrid([]);
   document.getElementById('colsGrid').innerHTML=buildCols([]);
+  document.getElementById('togModSobEncomenda').classList.add('on');
   document.getElementById('togAtivo').classList.add('on');
   document.getElementById('togDestaque').classList.remove('on');
   document.getElementById('togEsgotado').classList.remove('on');
@@ -3331,6 +3320,7 @@ async function editProd(id){
   document.getElementById('colsGrid').innerHTML=buildCols(cols);
   currentVars=[];renderVarsGrid();loadVars(id);
   manualEsgotadoOverride=false;
+  document.getElementById('togModSobEncomenda').classList.toggle('on',p.sob_encomenda!==false);
   document.getElementById('togAtivo').classList.toggle('on',!!p.ativo);
   document.getElementById('togDestaque').classList.toggle('on',!!p.destaque);
   document.getElementById('togEsgotado').classList.toggle('on',!!p.esgotado);
@@ -3382,6 +3372,7 @@ async function saveProd(){
     destaque:document.getElementById('togDestaque').classList.contains('on'),
     esgotado:document.getElementById('togEsgotado').classList.contains('on'),
     oculto:document.getElementById('togOculto').classList.contains('on'),
+    sob_encomenda:document.getElementById('togModSobEncomenda').classList.contains('on'),
   };
   try{
     let prodId=editProdId;
@@ -3392,6 +3383,7 @@ async function saveProd(){
     toast('Produto salvo!','ok');
     closeProdModal();
     await loadProds();
+    filterProds();
   }catch(e){toast('Erro ao salvar','err');}
 }
 
@@ -3962,7 +3954,7 @@ let manualEsgotadoOverride=false; // true quando o usuário mexeu no toggle "Esg
 
 async function loadVars(prodId){
   const d=await sbGet(`/rest/v1/produto_variacoes?produto_id=eq.${prodId}&order=id`);
-  currentVars=Array.isArray(d)?d.map(v=>({...v,_id:v.id,modalidade:v.modalidade||'estoque'})):[];
+  currentVars=Array.isArray(d)?d.map(v=>({...v,_id:v.id})):[];
   renderVarsGrid();
   updateEsgotadoHint();
 }
@@ -3970,9 +3962,15 @@ async function loadVars(prodId){
 function updateEsgotadoHint(){
   const sub=document.getElementById('togEsgotadoSub');
   if(!sub)return;
-  const varsComEstoque=currentVars.filter(v=>(v.tamanho||v.cor||v.estoque)&&v.modalidade!=='sob_encomenda');
-  if(varsComEstoque.length>0&&varsComEstoque.every(v=>!v.estoque)){
-    sub.textContent='⚠️ Todas as variações com estoque estão zeradas — será marcado como esgotado ao salvar';
+  const isSobEncomenda=document.getElementById('togModSobEncomenda')?.classList.contains('on');
+  if(isSobEncomenda){
+    sub.textContent='Mostra aviso na loja';
+    sub.style.color='';
+    return;
+  }
+  const validVars=currentVars.filter(v=>v.tamanho||v.cor||v.estoque);
+  if(validVars.length>0&&validVars.every(v=>!v.estoque)){
+    sub.textContent='⚠️ Todas as variações estão com estoque 0 — será marcado como esgotado ao salvar';
     sub.style.color='var(--red)';
   }else{
     sub.textContent='Mostra aviso na loja';
@@ -3983,35 +3981,18 @@ function updateEsgotadoHint(){
 function renderVarsGrid(){
   const el=document.getElementById('varsGrid');
   if(!el)return;
-  el.innerHTML=currentVars.map((v,i)=>{
-    const sob=v.modalidade==='sob_encomenda';
-    return `
+  el.innerHTML=currentVars.map((v,i)=>`
     <div class="var-row" data-idx="${i}">
       <input type="text" placeholder="Ex: P, M, G, 4-6 anos..." value="${v.tamanho||''}" oninput="currentVars[${i}].tamanho=this.value">
       <input type="text" placeholder="Ex: Rosa, Azul..." value="${v.cor||''}" oninput="currentVars[${i}].cor=this.value">
-      <div class="var-estoque-cell">
-        <button type="button" class="var-mod-btn ${sob?'active':''}" title="Alternar entre estoque e sob encomenda" onclick="toggleVarModalidade(${i})">${sob?'🧵':'📦'}</button>
-        ${sob
-          ?'<span class="var-sob-label">Sob encomenda</span>'
-          :`<input type="number" placeholder="Qtd" min="0" value="${v.estoque||0}" oninput="currentVars[${i}].estoque=+this.value;updateEsgotadoHint()">`
-        }
-      </div>
+      <input type="number" placeholder="Qtd" min="0" value="${v.estoque||0}" oninput="currentVars[${i}].estoque=+this.value;updateEsgotadoHint()">
       <input type="number" placeholder="R$ extra" min="0" step="0.01" value="${v.preco_extra||''}" oninput="currentVars[${i}].preco_extra=+this.value||0">
       <button class="del-var" onclick="removeVar(${i})">×</button>
-    </div>`;
-  }).join('');
-}
-
-function toggleVarModalidade(i){
-  const v=currentVars[i];
-  v.modalidade=v.modalidade==='sob_encomenda'?'estoque':'sob_encomenda';
-  if(v.modalidade==='sob_encomenda') v.estoque=0; // sob encomenda não usa contagem de estoque
-  renderVarsGrid();
-  updateEsgotadoHint();
+    </div>`).join('');
 }
 
 function addVarRow(){
-  currentVars.push({tamanho:'',cor:'',estoque:0,preco_extra:0,modalidade:'estoque',ativo:true});
+  currentVars.push({tamanho:'',cor:'',estoque:0,preco_extra:0,ativo:true});
   renderVarsGrid();
   setTimeout(()=>{
     const rows=document.querySelectorAll('.var-row');
@@ -4026,7 +4007,7 @@ async function saveVars(prodId){
   // Filtra só as variações com algum dado preenchido — linhas em branco
   // (ex: criadas por "Adicionar variação" e nunca preenchidas) não contam
   // como variação real nem para salvar nem para a checagem de estoque abaixo.
-  const validVars=currentVars.filter(v=>v.tamanho||v.cor||v.estoque||v.modalidade==='sob_encomenda');
+  const validVars=currentVars.filter(v=>v.tamanho||v.cor||v.estoque);
   // Delete existing then reinsert
   await sbDelete(`/rest/v1/produto_variacoes?produto_id=eq.${prodId}`);
   for(const v of validVars){
@@ -4035,17 +4016,15 @@ async function saveVars(prodId){
       tamanho:v.tamanho||null,
       cor:v.cor||null,
       estoque:v.estoque||0,
-      modalidade:v.modalidade||'estoque',
       preco_extra:v.preco_extra||0,
       ativo:true
     });
   }
-  // Auto esgotado só considera variações com controle de estoque real — uma
-  // variação "sob encomenda" nunca tem estoque por definição, então não conta
-  // como esgotada. Só se TODAS as variações de estoque estiverem zeradas, e
-  // o usuário não tiver mexido manualmente no toggle "Esgotado" nesta edição.
-  const varsComEstoque=validVars.filter(v=>v.modalidade!=='sob_encomenda');
-  if(!manualEsgotadoOverride&&varsComEstoque.length>0&&varsComEstoque.every(v=>!v.estoque)){
+  // Auto esgotado só se o produto é "estoque" (não sob encomenda), existem
+  // variações reais e todas estão zeradas — e só se o usuário não mexeu
+  // manualmente no toggle "Esgotado" nesta edição.
+  const isSobEncomenda=document.getElementById('togModSobEncomenda')?.classList.contains('on');
+  if(!isSobEncomenda&&!manualEsgotadoOverride&&validVars.length>0&&validVars.every(v=>!v.estoque)){
     await sbPatch(`/rest/v1/produtos?id=eq.${prodId}`,{esgotado:true});
     const p=allProds.find(x=>x.id==prodId);
     if(p)p.esgotado=true;
