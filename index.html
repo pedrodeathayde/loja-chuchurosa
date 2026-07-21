@@ -140,15 +140,18 @@ nav.s .logo span{color:var(--pink)}
 .col-info{position:relative;z-index:1;padding:24px;width:100%}
 .col-info small{font-weight:600;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
 .col-info h3{font-family:var(--fd);font-weight:700;font-size:var(--s3);margin-top:4px}
+.col-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.col-tags span{font-size:.68rem;font-weight:600;letter-spacing:.06em;background:rgba(255,255,255,.16);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:.35em .9em}
 
 /* ── CAMPANHA PINK (assinatura da página) ── */
 .pinkband{background:var(--pink);color:#fff;padding:0}
 .pinkband .band-head{max-width:1180px;margin:0 auto;padding:clamp(64px,8vw,100px) var(--pad) 0}
-.pink-rail{display:grid;grid-auto-flow:column;grid-auto-columns:min(72vw,340px);gap:0;overflow-x:auto;scroll-snap-type:x mandatory;padding:clamp(36px,5vw,56px) var(--pad) clamp(64px,8vw,100px);scrollbar-width:none}
+.pink-rail{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;justify-content:safe center;flex-wrap:wrap;max-width:1180px;margin:0 auto;padding:clamp(36px,5vw,56px) var(--pad) clamp(64px,8vw,100px);scrollbar-width:none}
 .pink-rail::-webkit-scrollbar{display:none}
-.pink-item{scroll-snap-align:center}
-.pink-item img{width:100%;aspect-ratio:2/3;object-fit:cover;object-position:top}
-.pink-item figcaption{padding:14px 4px 0;font-weight:600;font-size:.78rem;letter-spacing:.13em;text-transform:uppercase;color:#ffd6e3}
+.pink-item{scroll-snap-align:center;flex:1 1 200px;max-width:220px}
+.pink-item img{width:100%;aspect-ratio:2/3;object-fit:cover;object-position:top;border-radius:10px}
+.pink-item figcaption{padding:14px 4px 0;font-weight:600;font-size:.78rem;letter-spacing:.13em;text-transform:uppercase;color:#ffd6e3;text-align:center}
+@media(max-width:760px){.pink-rail{flex-wrap:nowrap;justify-content:flex-start}.pink-item{flex:0 0 min(66vw,240px)}}
 
 /* ── COMO FUNCIONA ── */
 .how{background:var(--cream)}
@@ -305,7 +308,7 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
     <div class="rv">
       <p class="eyebrow">Nossa história</p>
       <h2>Um estúdio de design para a <em>infância</em></h2>
-      <p style="margin-top:16px;color:#5c4a53">Desde 2009, a Chuchu Rosa cria peças originais que viram memória. Cada fantasia, almofada e ambiente nasce no traço da designer Ellen — do croqui à peça final, com produção própria e acabamento de coleção.</p>
+      <p style="margin-top:16px;color:#5c4a53">Desde 2009, a Chuchu Rosa cria peças originais que viram memória de infância. Cada fantasia, almofada e ambiente nasce no traço da designer Ellen — do croqui à peça final, com produção própria e acabamento de coleção. Nada de catálogo genérico: se está na Chuchu Rosa, foi desenhado por ela.</p>
       <div class="pillars">
         <div class="pillar">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 19l7-7a4.2 4.2 0 0 0-6-6l-7 7v6h6z"/><path d="M14.5 5.5l4 4"/></svg>
@@ -344,30 +347,42 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
     <div class="sec-head rv">
       <p class="eyebrow">Coleções</p>
       <h2>O universo <em>Chuchu Rosa</em></h2>
-      <p>Cinco mundos autorais, desenhados peça a peça. Escolha o seu ponto de partida.</p>
+      <p>Cinco mundos autorais, desenhados peça a peça pela Ellen — cada coleção nasce de um croqui próprio, não de um catálogo genérico. Escolha o seu ponto de partida.</p>
     </div>
     <div class="col-grid">
       <a class="col-card rv" href="loja.html?q=raposa">
         <img src="img/colecao-raposa-480.webp" srcset="img/colecao-raposa-480.webp 480w, img/colecao-raposa-960.webp 960w" sizes="(max-width:820px) 92vw, 48vw" loading="lazy" alt="Criança vestindo fantasia de raposa laranja com touca, luvas de pata e cauda" width="1200" height="968">
-        <div class="col-info"><small>A mais amada</small><h3>Raposas</h3></div>
+        <div class="col-info"><small>A mais amada</small><h3>Raposas</h3><div class="col-tags"><span>Fantasia</span><span>Tiara</span><span>Almofada</span></div></div>
       </a>
       <a class="col-card rv" href="loja.html?q=unicornio">
         <img src="img/colecao-unicornio-480.webp" srcset="img/colecao-unicornio-480.webp 480w, img/colecao-unicornio-960.webp 960w" sizes="(max-width:820px) 92vw, 48vw" loading="lazy" alt="Menina com tiara de unicórnio dourada segurando pelúcia de unicórnio branca e rosa" width="800" height="1200">
-        <div class="col-info"><small>Magia e brilho</small><h3>Unicórnios</h3></div>
+        <div class="col-info"><small>Magia e brilho</small><h3>Unicórnios</h3><div class="col-tags"><span>Fantasia</span><span>Asas</span><span>Pelúcia</span></div></div>
       </a>
       <a class="col-card rv" href="loja.html?q=flamingo">
         <img src="img/colecao-flamingo-480.webp" srcset="img/colecao-flamingo-480.webp 480w, img/colecao-flamingo-960.webp 960w" sizes="(max-width:820px) 92vw, 31vw" loading="lazy" alt="Menina sorrindo com capa de flamingo rosa com capuz de bico preto, sobre fundo pink" width="861" height="1200">
-        <div class="col-info"><small>O símbolo da marca</small><h3>Flamingos</h3></div>
+        <div class="col-info"><small>O símbolo da marca</small><h3>Flamingos</h3><div class="col-tags"><span>Capa</span><span>Touca</span><span>Naninha</span></div></div>
       </a>
       <a class="col-card rv" href="loja.html?q=sereia">
         <img src="img/colecao-fundo-do-mar-480.webp" srcset="img/colecao-fundo-do-mar-480.webp 480w, img/colecao-fundo-do-mar-960.webp 960w" sizes="(max-width:820px) 92vw, 31vw" loading="lazy" alt="Duas meninas com caudas de sereia estampadas abraçando pelúcias de golfinho, polvo e concha" width="1200" height="800">
-        <div class="col-info"><small>Nova onda</small><h3>Fundo do mar</h3></div>
+        <div class="col-info"><small>Nova onda</small><h3>Fundo do mar</h3><div class="col-tags"><span>Sereia</span><span>Pelúcias</span></div></div>
       </a>
       <a class="col-card rv" href="loja.html?cat=Almofadas">
         <img src="img/colecao-almofadas-berco-480.webp" srcset="img/colecao-almofadas-berco-480.webp 480w, img/colecao-almofadas-berco-960.webp 960w" sizes="(max-width:820px) 92vw, 31vw" loading="lazy" alt="Bebê sentado no berço entre almofadas de estrela amarela e nuvens brancas bordadas" width="993" height="1200">
-        <div class="col-info"><small>Esculturas de tecido</small><h3>Almofadas</h3></div>
+        <div class="col-info"><small>Esculturas de tecido</small><h3>Almofadas</h3><div class="col-tags"><span>Quarto</span><span>Presente</span></div></div>
       </a>
     </div>
+  </div>
+</section>
+
+<!-- CATEGORIAS — navegação rápida da loja (recuperado do site anterior) -->
+<section style="background:var(--ink);padding:34px var(--pad)">
+  <div class="wrap" style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center">
+    <a class="btn btn-ghost" style="color:var(--cream);border-color:rgba(255,255,255,.25);font-size:.78rem" href="loja.html?cat=Fantasias">Fantasias · 100+ modelos</a>
+    <a class="btn btn-ghost" style="color:var(--cream);border-color:rgba(255,255,255,.25);font-size:.78rem" href="loja.html?cat=Para+bebês">Para bebês · 74 produtos</a>
+    <a class="btn btn-ghost" style="color:var(--cream);border-color:rgba(255,255,255,.25);font-size:.78rem" href="loja.html?cat=Almofadas">Almofadas · 28 modelos</a>
+    <a class="btn btn-ghost" style="color:var(--cream);border-color:rgba(255,255,255,.25);font-size:.78rem" href="loja.html?cat=Decoração">Decoração</a>
+    <a class="btn btn-ghost" style="color:var(--cream);border-color:rgba(255,255,255,.25);font-size:.78rem" href="loja.html?cat=Educativo">Educativo</a>
+    <a class="btn btn-ghost" style="color:var(--cream);border-color:rgba(255,255,255,.25);font-size:.78rem" href="loja.html?cat=Lembrancinhas">Lembrancinhas</a>
   </div>
 </section>
 
@@ -392,6 +407,7 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
     <div class="sec-head rv">
       <p class="eyebrow">Como funciona</p>
       <h2>Do croqui à sua casa, em <em>quatro</em> passos</h2>
+      <p>Cada peça nasce sob medida — nada sai de prateleira. É simples, é rápido, e o resultado encanta.</p>
     </div>
     <div class="steps">
       <div class="step rv"><h3>Escolha na loja</h3><p>Navegue pelo acervo de 319 peças e encontre o ponto de partida perfeito.</p></div>
