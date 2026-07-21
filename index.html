@@ -194,12 +194,12 @@ nav.s{background:rgba(20,9,15,.94);backdrop-filter:blur(16px);-webkit-backdrop-f
 /* ── TEMAS (showcase) ── */
 /* ── TEMAS (showcase) ── */
 .showcase{padding:0}
-.showcase-item{display:grid;grid-template-columns:1fr 1fr;min-height:520px}
+.showcase-item{display:grid;grid-template-columns:1fr 1fr;min-height:640px}
 .showcase-item.reverse{direction:rtl}
 .showcase-item.reverse>*{direction:ltr}
 @media(max-width:880px){.showcase-item{grid-template-columns:1fr;min-height:auto}.showcase-item.reverse{direction:ltr}}
-.showcase-photos{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px}
-@media(max-width:880px){.showcase-photos{height:78vw;grid-template-rows:1fr 1fr}}
+.showcase-photos{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,1fr);gap:2px}
+@media(max-width:880px){.showcase-photos{height:auto;grid-template-rows:repeat(3,32vw)}}
 .showcase-photos .sp{overflow:hidden;position:relative;background:var(--ink)}
 .showcase-photos .sp img{width:100%;height:100%;object-fit:cover;transition:transform .65s}
 .showcase-photos .sp:hover img{transform:scale(1.05)}
@@ -328,7 +328,7 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
 <nav id="nav" aria-label="Principal">
   <a class="logo" href="#"><img src="img/logo-nav.webp" alt="Chuchu Rosa" style="height:36px;width:auto;display:block"></a>
   <div class="nav-links">
-    <a href="#sobre">Sobre</a><a href="#colecoes">Coleções</a><a href="#como-funciona">Como funciona</a><a href="#ambientes">Ambientes</a><a href="#contato">Contato</a>
+    <a href="#sobre">Sobre</a><a href="#ocasioes">Ocasiões</a><a href="#como-funciona">Como funciona</a><a href="#ambientes">Ambientes</a><a href="#contato">Contato</a>
   </div>
   <a class="nav-cta" href="loja.html">Ver loja →</a>
   <button class="nh" id="nh" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button>
@@ -336,7 +336,7 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
 
 <div class="mob" id="mob">
   <a href="#sobre">Sobre</a>
-  <a href="#colecoes">Coleções</a>
+  <a href="#ocasioes">Ocasiões</a>
   <a href="#como-funciona">Como funciona</a>
   <a href="#ambientes">Ambientes</a>
   <a href="#contato">Contato</a>
@@ -421,33 +421,33 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
 </div>
 
 <!-- COLEÇÕES -->
-<section class="cols" id="colecoes">
+<section class="cols" id="ocasioes">
   <div class="wrap">
     <div class="sec-head rv">
-      <p class="eyebrow">Coleções</p>
-      <h2>O universo <em>Chuchu Rosa</em></h2>
-      <p>Cinco mundos autorais, desenhados peça a peça pelo nosso estúdio — cada coleção nasce de um croqui próprio, não de um catálogo genérico. Escolha o seu ponto de partida.</p>
+      <p class="eyebrow">Para cada ocasião</p>
+      <h2>Um motivo pra <em>encomendar</em></h2>
+      <p>De ensaios fotográficos a festas de aniversário — cada ocasião pede uma peça diferente. Veja onde a Chuchu Rosa entra na sua história.</p>
     </div>
     <div class="col-grid">
-      <a class="col-card rv" href="loja.html?q=raposa">
-        <img src="img/colecao-raposa-480.webp" srcset="img/colecao-raposa-480.webp 480w, img/colecao-raposa-960.webp 960w" sizes="(max-width:820px) 92vw, 48vw" loading="lazy" alt="Criança vestindo fantasia de raposa laranja com touca, luvas de pata e cauda" width="480" height="387">
-        <div class="col-info"><small>A mais amada</small><h3>Raposas</h3><div class="col-tags"><span>Fantasia</span><span>Tiara</span><span>Almofada</span></div></div>
+      <a class="col-card rv" href="loja.html?cat=Fantasias">
+        <img src="img/ocasiao-ensaio-maternidade-480.webp" srcset="img/ocasiao-ensaio-maternidade-480.webp 480w, img/ocasiao-ensaio-maternidade-960.webp 960w" sizes="(max-width:820px) 92vw, 48vw" loading="lazy" alt="Placa de maternidade em feltro com nuvens e ovelhinhas para ensaio newborn" width="480" height="360">
+        <div class="col-info"><small>Para brilhar</small><h3>Ensaios fotográficos</h3><div class="col-tags"><span>Newborn</span><span>Aniversário</span><span>Family</span></div></div>
       </a>
-      <a class="col-card rv" href="loja.html?q=unicornio">
-        <img src="img/colecao-unicornio-480.webp" style="object-position:center 8%" sizes="(max-width:820px) 92vw, 48vw" loading="lazy" alt="Menina com tiara de unicórnio dourada segurando pelúcia de unicórnio branca e rosa" width="480" height="720">
-        <div class="col-info"><small>Magia e brilho</small><h3>Unicórnios</h3><div class="col-tags"><span>Fantasia</span><span>Asas</span><span>Pelúcia</span></div></div>
+      <a class="col-card rv" href="loja.html?cat=Fantasias">
+        <img src="img/ocasiao-festa-bandeirola-480.webp" srcset="img/ocasiao-festa-bandeirola-480.webp 480w, img/ocasiao-festa-bandeirola-960.webp 960w" sizes="(max-width:820px) 92vw, 48vw" loading="lazy" alt="Bandeirola de flamingos decorando festa infantil" width="480" height="360">
+        <div class="col-info"><small>Comemore com estilo</small><h3>Festas & aniversários</h3><div class="col-tags"><span>Temáticas</span><span>Mesa posta</span><span>Fantasia</span></div></div>
       </a>
-      <a class="col-card rv" href="loja.html?q=flamingo">
+      <a class="col-card rv" href="loja.html?cat=Fantasias">
         <img src="img/colecao-flamingo-480.webp" sizes="(max-width:820px) 92vw, 31vw" loading="lazy" alt="Menina sorrindo com capa de flamingo rosa com capuz de bico preto, sobre fundo pink" width="480" height="669">
-        <div class="col-info"><small>O símbolo da marca</small><h3>Flamingos</h3><div class="col-tags"><span>Capa</span><span>Touca</span><span>Naninha</span></div></div>
+        <div class="col-info"><small>O clássico</small><h3>Fantasias</h3><div class="col-tags"><span>Carnaval</span><span>Halloween</span><span>Faz de conta</span></div></div>
       </a>
-      <a class="col-card rv" href="loja.html?q=sereia">
+      <a class="col-card rv" href="loja.html?cat=Para+bebês">
         <img src="img/colecao-fundo-do-mar-480.webp" srcset="img/colecao-fundo-do-mar-480.webp 480w, img/colecao-fundo-do-mar-960.webp 960w" sizes="(max-width:820px) 92vw, 31vw" loading="lazy" alt="Duas meninas com caudas de sereia estampadas abraçando pelúcias de golfinho, polvo e concha" width="480" height="320">
-        <div class="col-info"><small>Nova onda</small><h3>Fundo do mar</h3><div class="col-tags"><span>Sereia</span><span>Pelúcias</span></div></div>
+        <div class="col-info"><small>Amigos de todo dia</small><h3>Brinquedos & pelúcias</h3><div class="col-tags"><span>Naninhas</span><span>Pelúcias</span></div></div>
       </a>
-      <a class="col-card rv" href="loja.html?cat=Almofadas">
+      <a class="col-card rv" href="loja.html?cat=Decoração">
         <img src="img/colecao-almofadas-berco-480.webp" srcset="img/colecao-almofadas-berco-480.webp 480w, img/colecao-almofadas-berco-960.webp 960w" sizes="(max-width:820px) 92vw, 31vw" loading="lazy" alt="Bebê sentado no berço entre almofadas de estrela amarela e nuvens brancas bordadas" width="480" height="580">
-        <div class="col-info"><small>Esculturas de tecido</small><h3>Almofadas</h3><div class="col-tags"><span>Quarto</span><span>Presente</span></div></div>
+        <div class="col-info"><small>Para o quarto</small><h3>Decoração</h3><div class="col-tags"><span>Almofadas</span><span>Mobiles</span><span>Enxoval</span></div></div>
       </a>
     </div>
   </div>
@@ -530,6 +530,8 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
       <div class="sp"><img src="img/colecao-raposa-480.webp" srcset="img/colecao-raposa-480.webp 480w, img/colecao-raposa-960.webp 960w" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Criança vestindo fantasia de raposa laranja com touca, luvas de pata e cauda"></div>
       <div class="sp"><img src="img/editorial-raposa-rose-480.webp" srcset="img/editorial-raposa-rose-480.webp 480w, img/editorial-raposa-rose-960.webp 960w" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Menina com máscara e tiara de raposa e saia de tutu laranja, sobre fundo rosé"></div>
       <div class="sp"><img src="img/bebe-raposa-tutu-480.webp" srcset="img/bebe-raposa-tutu-480.webp 480w, img/bebe-raposa-tutu-960.webp 960w" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Bebê com coroa de raposa em feltro, saia de tutu e cauda de raposa"></div>
+      <div class="sp"><img src="img/tema-raposa-naninha-480.webp" srcset="img/tema-raposa-naninha-480.webp 480w, img/tema-raposa-naninha-960.webp 960w" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Naninha de raposa em feltro laranja para bebê"></div>
+      <div class="sp"><img src="img/tema-raposa-pelucia-480.webp" srcset="img/tema-raposa-pelucia-480.webp 480w, img/tema-raposa-pelucia-960.webp 960w" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Pelúcia de raposa estilo woodland"></div>
     </div>
     <div class="showcase-text">
       <p class="sc-eyebrow">Coleção</p>
@@ -549,8 +551,9 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
   <div class="showcase-item dark reverse rv">
     <div class="showcase-photos">
       <div class="sp"><img src="img/colecao-unicornio-480.webp" style="object-position:center 8%" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Menina com tiara de unicórnio dourada segurando pelúcia de unicórnio branca e rosa"></div>
-      <div class="sp"><img src="img/colecao-fundo-do-mar-480.webp" srcset="img/colecao-fundo-do-mar-480.webp 480w, img/colecao-fundo-do-mar-960.webp 960w" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Duas meninas com caudas de sereia estampadas abraçando pelúcias de golfinho, polvo e concha"></div>
-      <div class="sp"><img src="img/colecao-almofadas-berco-480.webp" srcset="img/colecao-almofadas-berco-480.webp 480w, img/colecao-almofadas-berco-960.webp 960w" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Almofadas bordadas para berço em tons pastel"></div>
+      <div class="sp"><img src="img/tema-unicornio-asas-480.webp" srcset="img/tema-unicornio-asas-480.webp 480w, img/tema-unicornio-asas-960.webp 960w" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Fantasia de unicórnio com asas e saia de tule"></div>
+      <div class="sp"><img src="img/tema-unicornio-tiara-480.webp" srcset="img/tema-unicornio-tiara-480.webp 480w, img/tema-unicornio-tiara-960.webp 960w" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Tiara de unicórnio rosa com flores artificiais"></div>
+      <div class="sp"><img src="img/tema-unicornio-naninha-480.webp" srcset="img/tema-unicornio-naninha-480.webp 480w, img/tema-unicornio-naninha-960.webp 960w" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Naninha de unicórnio para bebê"></div>
     </div>
     <div class="showcase-text">
       <p class="sc-eyebrow">Coleção</p>
@@ -570,8 +573,9 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
   <div class="showcase-item light rv">
     <div class="showcase-photos">
       <div class="sp"><img src="img/colecao-flamingo-480.webp" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Menina sorrindo com capa de flamingo rosa com capuz de bico preto, sobre fundo pink"></div>
-      <div class="sp"><img src="img/hero-sushi-480.webp" srcset="img/hero-sushi-480.webp 480w, img/hero-sushi-960.webp 960w" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Criança com fantasia de sushi"></div>
-      <div class="sp"><img src="img/ambiente-mesa-raposa-480.webp" srcset="img/ambiente-mesa-raposa-480.webp 480w, img/ambiente-mesa-raposa-960.webp 960w" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Mesa de festa tema floresta com boneca de raposa de laço xadrez"></div>
+      <div class="sp"><img src="img/tema-flamingo-touca-480.webp" srcset="img/tema-flamingo-touca-480.webp 480w, img/tema-flamingo-touca-960.webp 960w" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Touca de flamingo para festa infantil"></div>
+      <div class="sp"><img src="img/tema-flamingo-naninha-480.webp" srcset="img/tema-flamingo-naninha-480.webp 480w, img/tema-flamingo-naninha-960.webp 960w" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Naninha de flamingo para bebê"></div>
+      <div class="sp"><img src="img/tema-flamingo-asas-480.webp" srcset="img/tema-flamingo-asas-480.webp 480w, img/tema-flamingo-asas-960.webp 960w" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Fantasia de flamingo com asas para carnaval"></div>
     </div>
     <div class="showcase-text">
       <p class="sc-eyebrow">Coleção</p>
