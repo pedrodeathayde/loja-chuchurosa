@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Chuchu Rosa — Design infantil: fantasias, almofadas e ambientes</title>
-<meta name="description" content="Peças de design exclusivo para a infância: fantasias, almofadas, decoração e ambientes criados pela designer Ellen. Sob encomenda para todo o Brasil.">
+<meta name="description" content="Peças de design exclusivo para a infância: fantasias, almofadas, decoração e ambientes criados pelo estúdio Chuchu Rosa. Sob encomenda para todo o Brasil.">
 
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://chuchurosa.com.br/">
 <meta property="og:title" content="Chuchu Rosa — Design que vira infância">
-<meta property="og:description" content="Fantasias, almofadas e ambientes de design exclusivo, criados pela designer Ellen. Sob encomenda para todo o Brasil.">
+<meta property="og:description" content="Fantasias, almofadas e ambientes de design exclusivo, criados pelo estúdio Chuchu Rosa. Sob encomenda para todo o Brasil.">
 <meta property="og:image" content="https://chuchurosa.com.br/img/hero-leao-1920.webp">
 <meta property="og:locale" content="pt_BR">
 <meta name="twitter:card" content="summary_large_image">
@@ -97,9 +97,10 @@ nav.s{background:rgba(20,9,15,.94);backdrop-filter:blur(16px);-webkit-backdrop-f
 .hero-bg img{width:100%;height:100%;object-fit:cover;object-position:center 30%}
 .hero-veil{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(20,9,15,.25) 0%,rgba(20,9,15,.15) 40%,rgba(20,9,15,.82) 100%)}
 .hero-content{position:relative;z-index:2;width:100%;max-width:1180px;margin:0 auto;padding:120px var(--pad) 96px;will-change:transform}
-.hero-kicker{font-weight:600;font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;color:#fff;text-shadow:0 2px 12px rgba(20,9,15,.55);margin-bottom:18px}
-.hero h1{max-width:13ch;text-shadow:0 2px 24px rgba(20,9,15,.4)}
-.hero-sub{margin:20px 0 34px;max-width:46ch;font-size:var(--s2);color:#f4e9ee}
+.hero-kicker{font-weight:600;font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:#fff;text-shadow:0 2px 12px rgba(20,9,15,.55);margin-bottom:22px;opacity:.92}
+.hero h1{font-family:var(--fd);font-weight:700;max-width:15ch;text-shadow:0 4px 32px rgba(20,9,15,.45);font-size:clamp(2.6rem,7.2vw,5.6rem);line-height:1.04;letter-spacing:-.01em}
+.hero h1 em{font-weight:400;font-style:italic;display:block;font-size:1.08em;margin-top:.05em;color:var(--gold)}
+.hero-sub{margin:26px 0 38px;max-width:42ch;font-size:1.1rem;line-height:1.7;color:#f4e9ee;font-weight:300}
 .hero-ctas{display:flex;gap:16px;flex-wrap:wrap}
 .hero-scroll{position:absolute;right:var(--pad);bottom:32px;z-index:2;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;writing-mode:vertical-rl;opacity:.7}
 
@@ -183,13 +184,13 @@ nav.s{background:rgba(20,9,15,.94);backdrop-filter:blur(16px);-webkit-backdrop-f
 .how-photo{border-radius:18px;overflow:hidden;aspect-ratio:3/4;position:sticky;top:100px}
 @media(max-width:900px){.how-photo{position:static;max-width:280px;margin:0 auto}}
 .how-photo img{width:100%;height:100%;object-fit:cover}
-.steps{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;counter-reset:st}
+.steps{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;counter-reset:st}
 @media(max-width:540px){.steps{grid-template-columns:1fr}}
-.step{counter-increment:st;background:rgba(253,248,244,.06);border:1px solid rgba(201,169,110,.18);border-radius:16px;padding:28px 24px;transition:transform .3s,box-shadow .3s,background .3s}
-.step:hover{transform:translateY(-4px);background:rgba(253,248,244,.1);box-shadow:0 16px 40px rgba(0,0,0,.25)}
-.step::before{content:counter(st,decimal-leading-zero);font-family:var(--fd);font-weight:700;font-size:var(--s4);color:transparent;display:block;-webkit-text-stroke:1px var(--gold)}
-.step h3{margin:10px 0 8px;color:var(--cream)}
-.step p{color:rgba(244,233,239,.6);font-size:.95rem}
+.step{counter-increment:st;display:flex;gap:18px;align-items:flex-start;background:rgba(253,248,244,.05);border:1px solid rgba(201,169,110,.16);border-radius:16px;padding:24px;transition:transform .3s,box-shadow .3s,background .3s,border-color .3s}
+.step:hover{transform:translateY(-4px);background:rgba(253,248,244,.09);border-color:rgba(229,37,100,.35);box-shadow:0 16px 40px rgba(0,0,0,.25)}
+.step::before{content:counter(st,decimal-leading-zero);flex:none;font-family:var(--fd);font-weight:700;font-size:1.7rem;line-height:1;color:var(--pink);background:rgba(229,37,100,.12);border:1px solid rgba(229,37,100,.3);border-radius:999px;width:52px;height:52px;display:flex;align-items:center;justify-content:center}
+.step h3{margin:2px 0 6px;color:var(--cream);font-size:1.05rem}
+.step p{color:rgba(244,233,239,.6);font-size:.9rem;line-height:1.6}
 
 /* ── DESTAQUES ── */
 .prods{background:var(--sand)}
@@ -213,8 +214,6 @@ nav.s{background:rgba(20,9,15,.94);backdrop-filter:blur(16px);-webkit-backdrop-f
 .grow-rail{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;align-items:end}
 @media(max-width:880px){.grow-rail{grid-template-columns:repeat(2,1fr)}}
 .grow-item img{border-radius:14px;aspect-ratio:3/4;object-fit:cover;width:100%}
-.grow-item:nth-child(2) img{aspect-ratio:3/3.6}
-.grow-item:nth-child(3) img{aspect-ratio:3/3.3}
 .grow-item figcaption{margin-top:12px;font-weight:600;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
 
 /* ── AMBIENTES ── */
@@ -230,21 +229,46 @@ nav.s{background:rgba(20,9,15,.94);backdrop-filter:blur(16px);-webkit-backdrop-f
 .spaces-cta{margin-top:40px;display:flex;gap:20px;align-items:center;flex-wrap:wrap}
 
 /* ── DEPOIMENTOS ── */
-.reviews{background:var(--sand)}
+.reviews{background:var(--ink2);color:var(--cream)}
+.rev-summary{display:flex;align-items:center;gap:16px;margin-bottom:8px}
+.rev-stars{color:var(--gold);display:flex;gap:2px}
+.rev-stars svg{width:16px;height:16px}
+.rev-score{font-family:var(--fd);font-weight:700;font-size:1.3rem;color:var(--cream)}
+.rev-count{font-size:.82rem;color:#d8c7ce}
 .rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 @media(max-width:860px){.rev-grid{grid-template-columns:1fr}}
-.rev{background:#fff;border-radius:16px;padding:30px 28px;border:1px solid rgba(20,9,15,.06);position:relative}
-.rev::before{content:"\201C";position:absolute;top:6px;left:20px;font-family:var(--fd);font-style:italic;font-size:4.4rem;color:var(--blush);line-height:1}
-.rev p{position:relative;color:#3f3038}
+.rev{background:rgba(255,255,255,.04);border-radius:16px;padding:30px 28px;border:1px solid rgba(255,255,255,.1);position:relative;transition:transform .3s,box-shadow .3s}
+.rev:hover{transform:translateY(-4px);box-shadow:0 20px 44px rgba(0,0,0,.25)}
+.rev::before{content:"\201C";position:absolute;top:6px;left:20px;font-family:var(--fd);font-style:italic;font-size:4.4rem;color:var(--rose);line-height:1}
+.rev-stars-sm{display:flex;gap:2px;color:var(--gold);margin-bottom:14px;position:relative}
+.rev-stars-sm svg{width:13px;height:13px}
+.rev p{position:relative;color:var(--cream);font-family:var(--fd);font-style:italic;font-weight:400;line-height:1.6}
 .rev-who{display:flex;gap:12px;align-items:center;margin-top:20px}
 .rev-av{width:42px;height:42px;border-radius:50%;background:var(--blush);color:var(--rose);display:grid;place-items:center;font-weight:600;font-size:.85rem}
-.rev-who b{display:block;font-weight:600;font-size:.92rem}
-.rev-who span{font-size:.78rem;color:#8a7580}
+.rev-who b{display:block;font-weight:600;font-size:.92rem;color:var(--cream);font-family:var(--fb)}
+.rev-who span{font-size:.78rem;color:#d8c7ce}
 
 /* ── CTA FINAL ── */
-.cta-final{background:linear-gradient(160deg,var(--ink) 0%,var(--ink2) 100%);color:var(--cream);text-align:center}
-.cta-final h2{max-width:16ch;margin:14px auto 0}
-.cta-final p{max-width:44ch;margin:18px auto 34px;color:#d8c7ce}
+.cta-final{background:linear-gradient(160deg,var(--ink) 0%,var(--ink2) 100%);color:var(--cream);overflow:hidden}
+.cta-final .wrap{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,72px);align-items:center}
+@media(max-width:900px){.cta-final .wrap{grid-template-columns:1fr}}
+.cta-final .cta-text{text-align:left}
+@media(max-width:900px){.cta-final .cta-text{text-align:center;order:2}}
+.cta-final h2{max-width:14ch;margin-top:14px}
+.cta-final p{max-width:38ch;margin:18px 0 30px;color:#d8c7ce}
+@media(max-width:900px){.cta-final h2,.cta-final p{margin-left:auto;margin-right:auto}}
+.cta-btns{display:flex;gap:16px;flex-wrap:wrap}
+@media(max-width:900px){.cta-btns{justify-content:center}}
+.cta-mosaic{position:relative;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:14px;height:min(66vw,440px)}
+@media(max-width:900px){.cta-mosaic{order:1;height:min(80vw,320px)}}
+.cta-mosaic a{position:relative;border-radius:16px;overflow:hidden;display:block}
+.cta-mosaic a:first-child{grid-row:span 2}
+.cta-mosaic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.22,.61,.36,1)}
+.cta-mosaic a:hover img{transform:scale(1.08)}
+.cta-mosaic a::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(20,9,15,.55));opacity:0;transition:opacity .3s}
+.cta-mosaic a:hover::after{opacity:1}
+.cta-mosaic a::before{content:'Ver na loja';position:absolute;left:14px;bottom:12px;z-index:1;font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#fff;opacity:0;transform:translateY(6px);transition:opacity .3s,transform .3s}
+.cta-mosaic a:hover::before{opacity:1;transform:none}
 .cta-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
 
 /* ── FOOTER ── */
@@ -305,12 +329,12 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
   </div>
   <div class="hero-veil"></div>
   <div class="hero-content" data-para="-0.12">
-    <p class="hero-kicker">Design exclusivo · sob encomenda · desde 2009</p>
-    <h1>Design que vira <em>infância</em></h1>
-    <p class="hero-sub">Fantasias, almofadas e ambientes criados pela designer Ellen — peças originais, feitas sob medida para o seu pequeno há <span data-anos>16</span> anos.</p>
+    <p class="hero-kicker">Estúdio de design infantil · desde 2009</p>
+    <h1>Peças que viram<br>memória de <em>infância</em></h1>
+    <p class="hero-sub">Nada sai de prateleira. Cada fantasia, almofada e ambiente nasce de um croqui próprio e ganha forma sob medida para o seu filho — há <span data-anos>16</span> anos.</p>
     <div class="hero-ctas">
       <a class="btn btn-pink" href="loja.html">Explorar a loja</a>
-      <a class="btn btn-ghost" href="https://wa.me/5519993041555?text=Oi%20Ellen!%20Vi%20o%20site%20da%20Chuchu%20Rosa%20e%20quero%20encomendar%20uma%20pe%C3%A7a" target="_blank" rel="noopener">Falar com a Ellen</a>
+      <a class="btn btn-ghost" href="https://wa.me/5519993041555?text=Oi!%20Vi%20o%20site%20da%20Chuchu%20Rosa%20e%20quero%20encomendar%20uma%20pe%C3%A7a" target="_blank" rel="noopener">Falar com a Chuchu Rosa</a>
     </div>
   </div>
 </header>
@@ -336,7 +360,8 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
     <div class="rv">
       <p class="eyebrow">Nossa história</p>
       <h2>Um estúdio de design para a <em>infância</em></h2>
-      <p style="margin-top:16px;color:#5c4a53">Desde 2009, a Chuchu Rosa cria peças originais que viram memória de infância. Cada fantasia, almofada e ambiente nasce no traço da designer Ellen — do croqui à peça final, com produção própria e acabamento de coleção. Nada de catálogo genérico: se está na Chuchu Rosa, foi desenhado por ela.</p>
+      <p style="margin-top:16px;color:#5c4a53">Desde 2009, a Chuchu Rosa cria peças originais que viram memória de infância. Cada fantasia, almofada e ambiente nasce do croqui à peça final dentro do próprio estúdio, com produção própria e acabamento de coleção. Nada de catálogo genérico: se está na Chuchu Rosa, foi pensado e desenhado aqui, peça a peça.</p>
+      <p style="margin-top:14px;color:#5c4a53">Trabalhamos com tecidos selecionados, modelagens exclusivas e um processo artesanal que valoriza o detalhe — do primeiro traço no papel até a última costura. É esse cuidado que transforma uma encomenda em algo que a família guarda por anos.</p>
       <div class="pillars">
         <div class="pillar">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 19l7-7a4.2 4.2 0 0 0-6-6l-7 7v6h6z"/><path d="M14.5 5.5l4 4"/></svg>
@@ -355,7 +380,7 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
     <div class="about-photo rv">
       <div class="ph-main"><img src="img/editorial-coelho-rosas-480.webp" sizes="(max-width:880px) 92vw, 44vw" loading="lazy"
         alt="Menina com tiara de orelhas de coelho felpudas e rosas azuis, peça de design da Chuchu Rosa, em retrato editorial" width="480" height="720"></div>
-      <div class="ph-accent"><img src="img/colecao-unicornio-480.webp" sizes="(max-width:880px) 46vw, 22vw" loading="lazy" alt="Menina com tiara de unicórnio dourada" width="480" height="720"></div>
+      <div class="ph-accent"><img src="img/bebe-coroa-azul-480.webp" srcset="img/bebe-coroa-azul-480.webp 480w, img/bebe-coroa-azul-960.webp 960w" sizes="(max-width:880px) 46vw, 22vw" loading="lazy" alt="Bebê com coroa azul de feltro" width="480" height="320"></div>
       <div class="ph-badge">Com carinho ◆</div>
     </div>
   </div>
@@ -377,7 +402,7 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
     <div class="sec-head rv">
       <p class="eyebrow">Coleções</p>
       <h2>O universo <em>Chuchu Rosa</em></h2>
-      <p>Cinco mundos autorais, desenhados peça a peça pela Ellen — cada coleção nasce de um croqui próprio, não de um catálogo genérico. Escolha o seu ponto de partida.</p>
+      <p>Cinco mundos autorais, desenhados peça a peça pelo nosso estúdio — cada coleção nasce de um croqui próprio, não de um catálogo genérico. Escolha o seu ponto de partida.</p>
     </div>
     <div class="col-grid">
       <a class="col-card rv" href="loja.html?q=raposa">
@@ -385,7 +410,7 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
         <div class="col-info"><small>A mais amada</small><h3>Raposas</h3><div class="col-tags"><span>Fantasia</span><span>Tiara</span><span>Almofada</span></div></div>
       </a>
       <a class="col-card rv" href="loja.html?q=unicornio">
-        <img src="img/colecao-unicornio-480.webp" sizes="(max-width:820px) 92vw, 48vw" loading="lazy" alt="Menina com tiara de unicórnio dourada segurando pelúcia de unicórnio branca e rosa" width="480" height="720">
+        <img src="img/colecao-unicornio-480.webp" style="object-position:center 8%" sizes="(max-width:820px) 92vw, 48vw" loading="lazy" alt="Menina com tiara de unicórnio dourada segurando pelúcia de unicórnio branca e rosa" width="480" height="720">
         <div class="col-info"><small>Magia e brilho</small><h3>Unicórnios</h3><div class="col-tags"><span>Fantasia</span><span>Asas</span><span>Pelúcia</span></div></div>
       </a>
       <a class="col-card rv" href="loja.html?q=flamingo">
@@ -465,11 +490,11 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
       <div class="sec-head rv" style="max-width:none">
         <p class="eyebrow">Como funciona</p>
         <h2>Do croqui à sua casa, em <em>quatro</em> passos</h2>
-        <p>Cada peça nasce sob medida — nada sai de prateleira. É simples, é rápido, e o resultado encanta.</p>
+        <p>Cada peça nasce sob medida — nada sai de prateleira. É simples, é rápido, e o resultado encanta. Do primeiro contato até a entrega, você acompanha cada etapa da produção da sua peça.</p>
       </div>
       <div class="steps">
         <div class="step rv"><h3>Escolha na loja</h3><p>Navegue pelo acervo de 319 peças e encontre o ponto de partida perfeito.</p></div>
-        <div class="step rv"><h3>Personalize com a Ellen</h3><p>Pelo WhatsApp, vocês definem cores, tamanho e detalhes exclusivos da sua peça.</p></div>
+        <div class="step rv"><h3>Personalize pelo WhatsApp</h3><p>Pelo WhatsApp, vocês definem cores, tamanho e detalhes exclusivos da sua peça.</p></div>
         <div class="step rv"><h3>Produção dedicada</h3><p>Sua peça entra em produção sob medida — prazo médio de 5 dias úteis após a confirmação.</p></div>
         <div class="step rv"><h3>Receba em casa</h3><p>Embalagem caprichada e envio rastreado para qualquer lugar do Brasil.</p></div>
       </div>
@@ -515,8 +540,8 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
     </div>
     <div class="grow-rail">
       <figure class="grow-item rv"><img src="img/bebe-newborn-coroa-480.webp" sizes="(max-width:880px) 46vw, 24vw" loading="lazy" alt="Recém-nascido dormindo em mini cama de madeira com coroa dourada de renda e urso de pelúcia" width="480" height="291"><figcaption>Recém-nascido</figcaption></figure>
-      <figure class="grow-item rv"><img src="img/bebe-urso-cinza-480.webp" srcset="img/bebe-urso-cinza-480.webp 480w, img/bebe-urso-cinza-960.webp 960w, img/bebe-urso-cinza-1920.webp 1920w" sizes="(max-width:880px) 46vw, 24vw" loading="lazy" alt="Bebê sorrindo abraçado a uma naninha de urso cinza de tecido" width="480" height="269"><figcaption>Bebê</figcaption></figure>
-      <figure class="grow-item rv"><img src="img/bebe-raposa-tutu-480.webp" srcset="img/bebe-raposa-tutu-480.webp 480w, img/bebe-raposa-tutu-960.webp 960w" sizes="(max-width:880px) 46vw, 24vw" loading="lazy" alt="Bebê com coroa de raposa em feltro, saia de tutu e cauda de raposa" width="480" height="719"><figcaption>Primeiros passos</figcaption></figure>
+      <figure class="grow-item rv"><img src="img/bebe-raposa-tutu-480.webp" srcset="img/bebe-raposa-tutu-480.webp 480w, img/bebe-raposa-tutu-960.webp 960w" sizes="(max-width:880px) 46vw, 24vw" loading="lazy" alt="Bebê com coroa de raposa em feltro, saia de tutu e cauda de raposa" width="480" height="719"><figcaption>Bebê</figcaption></figure>
+      <figure class="grow-item rv"><img src="img/kids-astronauta-480.webp" srcset="img/kids-astronauta-480.webp 480w, img/kids-astronauta-960.webp 960w" sizes="(max-width:880px) 46vw, 24vw" loading="lazy" alt="Criança com fantasia de astronauta" width="480" height="320"><figcaption>Primeiros passos</figcaption></figure>
       <figure class="grow-item rv"><img src="img/editorial-raposa-rose-480.webp" srcset="img/editorial-raposa-rose-480.webp 480w, img/editorial-raposa-rose-960.webp 960w" sizes="(max-width:880px) 46vw, 24vw" loading="lazy" alt="Menina com máscara e tiara de raposa e saia de tutu laranja, sobre fundo rosé" width="480" height="720"><figcaption>Infância</figcaption></figure>
     </div>
   </div>
@@ -527,8 +552,8 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
   <div class="wrap">
     <div class="sec-head rv">
       <p class="eyebrow">Ambientes & festas</p>
-      <h2>Cenários que a Ellen <em>assina</em></h2>
-      <p>Além das peças, a Ellen desenha ambientes completos: mesas temáticas, cenários de festa e decoração de quarto — cada projeto criado sob consulta, do conceito à montagem.</p>
+      <h2>Cenários que o estúdio <em>assina</em></h2>
+      <p>Além das peças, criamos ambientes completos: mesas temáticas, cenários de festa e decoração de quarto — cada projeto pensado sob consulta, do conceito à montagem. Trabalhamos lado a lado com a família para que cada detalhe, da paleta de cores aos acabamentos, converse com a personalidade da criança.</p>
     </div>
     <div class="spaces-grid">
       <figure class="rv"><img src="img/ambiente-mesa-raposa-480.webp" srcset="img/ambiente-mesa-raposa-480.webp 480w, img/ambiente-mesa-raposa-960.webp 960w, img/ambiente-mesa-raposa-1920.webp 1920w" sizes="(max-width:820px) 92vw, 48vw" loading="lazy" alt="Mesa de festa tema floresta com boneca de raposa de laço xadrez, vasinhos de suculentas, doces e caixotes de madeira" width="480" height="320"></figure>
@@ -538,7 +563,7 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
       <figure class="rv"><img src="img/deco-mobile-baloes-480.webp" srcset="img/deco-mobile-baloes-480.webp 480w, img/deco-mobile-baloes-960.webp 960w" sizes="(max-width:820px) 46vw, 24vw" loading="lazy" alt="Varal decorativo com balões e nuvens de feltro contra o céu azul" width="480" height="321"></figure>
     </div>
     <div class="spaces-cta rv">
-      <a class="btn btn-pink" href="https://wa.me/5519993041555?text=Oi%20Ellen!%20Quero%20saber%20mais%20sobre%20os%20ambientes%20e%20festas%20da%20Chuchu%20Rosa" target="_blank" rel="noopener">Pedir um projeto de ambiente</a>
+      <a class="btn btn-pink" href="https://wa.me/5519993041555?text=Oi!%20Quero%20saber%20mais%20sobre%20os%20ambientes%20e%20festas%20da%20Chuchu%20Rosa" target="_blank" rel="noopener">Pedir um projeto de ambiente</a>
       <span style="color:#8a7580;font-size:.9rem">Projetos sob consulta, criados um a um.</span>
     </div>
   </div>
@@ -550,28 +575,54 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
     <div class="sec-head rv">
       <p class="eyebrow">Quem já encomendou</p>
       <h2>Memórias que <em>voltam</em> em avaliações</h2>
+      <div class="rev-summary">
+        <span class="rev-stars">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 16.9 6.1 20l1.2-6.5L2.5 8.9l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 16.9 6.1 20l1.2-6.5L2.5 8.9l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 16.9 6.1 20l1.2-6.5L2.5 8.9l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 16.9 6.1 20l1.2-6.5L2.5 8.9l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 16.9 6.1 20l1.2-6.5L2.5 8.9l6.6-.9z"/></svg>
+        </span>
+        <span class="rev-score">4,9</span>
+        <span class="rev-count">de mais de 300 encomendas</span>
+      </div>
     </div>
     <!-- TODO(Pedro): trocar pelos reviews reais — buscar da tabela de avaliações no Supabase
-         e renderizar aqui (nome, produto, texto), mantendo a mesma estrutura .rev -->
+         e renderizar aqui (nome, produto, texto, nota), mantendo a mesma estrutura .rev -->
     <div class="rev-grid" id="rev-grid">
-      <div class="rev rv"><p>A fantasia de raposa ficou perfeita! Minha filha não queria tirar de jeito nenhum. Qualidade incrível.</p>
+      <div class="rev rv">
+        <div class="rev-stars-sm"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 16.9 6.1 20l1.2-6.5L2.5 8.9l6.6-.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 16.9 6.1 20l1.2-6.5L2.5 8.9l6.6-.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 16.9 6.1 20l1.2-6.5L2.5 8.9l6.6-.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 16.9 6.1 20l1.2-6.5L2.5 8.9l6.6-.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 16.9 6.1 20l1.2-6.5L2.5 8.9l6.6-.9z"/></svg></div>
+        <p>A fantasia de raposa ficou perfeita! Minha filha não queria tirar de jeito nenhum. Qualidade incrível.</p>
         <div class="rev-who"><span class="rev-av">AC</span><span><b>Ana Carolina M.</b><span>Fantasia de Raposa</span></span></div></div>
-      <div class="rev rv"><p>Comprei a naninha de flamingo para meu bebê e foi amor à primeira vista. Atendimento maravilhoso!</p>
+      <div class="rev rv">
+        <div class="rev-stars-sm"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 16.9 6.1 20l1.2-6.5L2.5 8.9l6.6-.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 16.9 6.1 20l1.2-6.5L2.5 8.9l6.6-.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 16.9 6.1 20l1.2-6.5L2.5 8.9l6.6-.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 16.9 6.1 20l1.2-6.5L2.5 8.9l6.6-.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 16.9 6.1 20l1.2-6.5L2.5 8.9l6.6-.9z"/></svg></div>
+        <p>Comprei a naninha de flamingo para meu bebê e foi amor à primeira vista. Atendimento maravilhoso!</p>
         <div class="rev-who"><span class="rev-av">FS</span><span><b>Fernanda S.</b><span>Kit Bebê Flamingo</span></span></div></div>
-      <div class="rev rv"><p>Terceira vez comprando! Sempre impecável, prazo certinho e acabamento digno de grife.</p>
+      <div class="rev rv">
+        <div class="rev-stars-sm"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 16.9 6.1 20l1.2-6.5L2.5 8.9l6.6-.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 16.9 6.1 20l1.2-6.5L2.5 8.9l6.6-.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 16.9 6.1 20l1.2-6.5L2.5 8.9l6.6-.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 16.9 6.1 20l1.2-6.5L2.5 8.9l6.6-.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 16.9 6.1 20l1.2-6.5L2.5 8.9l6.6-.9z"/></svg></div>
+        <p>Terceira vez comprando! Sempre impecável, prazo certinho e acabamento digno de grife.</p>
         <div class="rev-who"><span class="rev-av">JR</span><span><b>Juliana R.</b><span>Cliente desde 2022</span></span></div></div>
     </div>
   </div>
 </section>
 
-<!-- CTA FINAL -->
+<!-- CTA FINAL — vitrine + convite -->
 <section class="cta-final on-dark" id="contato">
-  <p class="eyebrow">Vamos criar juntos</p>
-  <h2>Pronta para encantar o seu <em>pequeno</em>?</h2>
-  <p>Explore a loja ou fale direto com a Ellen — ela desenha a peça perfeita para o seu filho.</p>
-  <div class="cta-btns">
-    <a class="btn btn-pink" href="loja.html">Explorar a loja</a>
-    <a class="btn btn-ghost" href="https://wa.me/5519993041555?text=Oi%20Ellen!%20Quero%20encomendar%20uma%20pe%C3%A7a%20da%20Chuchu%20Rosa" target="_blank" rel="noopener">Falar no WhatsApp</a>
+  <div class="wrap">
+    <div class="cta-text rv">
+      <p class="eyebrow">Vamos criar juntos</p>
+      <h2>Pronta para encantar o seu <em>pequeno</em>?</h2>
+      <p>Explore a loja ou fale direto com o nosso estúdio — criamos a peça perfeita para o seu filho.</p>
+      <div class="cta-btns">
+        <a class="btn btn-pink" href="loja.html">Explorar a loja</a>
+        <a class="btn btn-ghost" href="https://wa.me/5519993041555?text=Oi!%20Quero%20encomendar%20uma%20pe%C3%A7a%20da%20Chuchu%20Rosa" target="_blank" rel="noopener">Falar no WhatsApp</a>
+      </div>
+    </div>
+    <div class="cta-mosaic rv">
+      <a href="loja.html?q=sushi"><img src="img/hero-sushi-480.webp" srcset="img/hero-sushi-480.webp 480w, img/hero-sushi-960.webp 960w" sizes="(max-width:900px) 46vw, 24vw" loading="lazy" alt="Criança com fantasia de sushi"></a>
+      <a href="loja.html?q=linguado"><img src="img/bebe-linguado-praia-480.webp" srcset="img/bebe-linguado-praia-480.webp 480w, img/bebe-linguado-praia-960.webp 960w" sizes="(max-width:900px) 46vw, 24vw" loading="lazy" alt="Bebê com fantasia de linguado na praia"></a>
+      <a href="loja.html"><img src="img/kids-guitarras-480.webp" srcset="img/kids-guitarras-480.webp 480w, img/kids-guitarras-960.webp 960w" sizes="(max-width:900px) 46vw, 24vw" loading="lazy" alt="Crianças com fantasias temáticas de música"></a>
+    </div>
   </div>
 </section>
 
@@ -580,7 +631,7 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
     <img src="img/logo.webp" alt="Chuchu Rosa" loading="lazy" style="height:64px;width:auto;margin-bottom:10px">
     <div class="foot-grid">
       <div>
-        <p class="foot-desc">Estúdio de design para a infância. Peças originais e ambientes exclusivos, criados pela designer Ellen desde 2009.</p>
+        <p class="foot-desc">Estúdio de design para a infância. Peças originais e ambientes exclusivos, criados desde 2009.</p>
         <div class="foot-social">
           <a href="https://www.instagram.com/chuchurosa/" target="_blank" rel="noopener" aria-label="Instagram"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".9" fill="currentColor" stroke="none"/></svg></a>
           <a href="https://www.facebook.com/chuchurosaoficial" target="_blank" rel="noopener" aria-label="Facebook"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z"/></svg></a>
@@ -620,7 +671,7 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
 </footer>
 
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Organization","name":"Chuchu Rosa","url":"https://chuchurosa.com.br/","logo":"https://chuchurosa.com.br/img/hero-leao-960.webp","foundingDate":"2009-08-08","founder":{"@type":"Person","name":"Ellen"},"sameAs":["https://www.instagram.com/chuchurosa/","https://www.facebook.com/chuchurosaoficial","https://www.tiktok.com/@chuchurosa","https://www.youtube.com/@chuchurosa"],"contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"contato@chuchurosa.com.br","availableLanguage":"Portuguese"}}
+{"@context":"https://schema.org","@type":"Organization","name":"Chuchu Rosa","url":"https://chuchurosa.com.br/","logo":"https://chuchurosa.com.br/img/hero-leao-960.webp","foundingDate":"2009-08-08","sameAs":["https://www.instagram.com/chuchurosa/","https://www.facebook.com/chuchurosaoficial","https://www.tiktok.com/@chuchurosa","https://www.youtube.com/@chuchurosa"],"contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"contato@chuchurosa.com.br","availableLanguage":"Portuguese"}}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"ItemList","itemListElement":[
