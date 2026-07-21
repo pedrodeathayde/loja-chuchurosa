@@ -113,9 +113,13 @@ nav.s .logo span{color:var(--pink)}
 .about{background:var(--cream)}
 .about-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(36px,6vw,80px);align-items:center}
 @media(max-width:880px){.about-grid{grid-template-columns:1fr}}
-.about-photo{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:4/5}
-.about-photo img{width:100%;height:100%;object-fit:cover}
-.about-photo::after{content:"";position:absolute;inset:0;border:1px solid rgba(20,9,15,.08);border-radius:18px}
+.about-photo{position:relative;height:520px}
+.about-photo .ph-main{position:absolute;top:0;left:0;right:56px;bottom:56px;border-radius:18px;overflow:hidden;box-shadow:0 32px 64px rgba(20,9,15,.14)}
+.about-photo .ph-main img{width:100%;height:100%;object-fit:cover}
+.about-photo .ph-accent{position:absolute;bottom:0;right:0;width:52%;height:50%;border-radius:14px;overflow:hidden;border:5px solid var(--cream);box-shadow:0 16px 40px rgba(20,9,15,.16)}
+.about-photo .ph-accent img{width:100%;height:100%;object-fit:cover}
+.about-photo .ph-badge{position:absolute;top:18px;left:18px;z-index:2;background:rgba(253,248,244,.92);backdrop-filter:blur(6px);padding:8px 16px;border-radius:999px;font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--rose);box-shadow:0 8px 20px rgba(20,9,15,.1)}
+@media(max-width:880px){.about-photo{height:420px}}
 .pillars{display:grid;gap:26px;margin-top:36px}
 .pillar{display:flex;gap:18px;align-items:flex-start}
 .pillar svg{flex:none;color:var(--pink);margin-top:3px}
@@ -129,7 +133,22 @@ nav.s .logo span{color:var(--pink)}
 .stat span{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;opacity:.8}
 
 /* ── COLEÇÕES ── */
-.cols{background:var(--sand)}
+.catgrid{background:var(--cream)}
+.catgrid-list{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+@media(max-width:900px){.catgrid-list{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:520px){.catgrid-list{grid-template-columns:repeat(2,1fr)}}
+.catcard{display:block;border-radius:14px;overflow:hidden;position:relative;aspect-ratio:3/4;background:var(--sand)}
+.catcard img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.22,.61,.36,1)}
+.catcard:hover img{transform:scale(1.08)}
+.catcard::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(20,9,15,.82))}
+.catcard span{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:14px 12px;color:#fff}
+.catcard b{display:block;font-family:var(--fd);font-weight:700;font-size:1.02rem}
+.catcard small{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.cols{background:var(--ink2);color:var(--cream);position:relative;overflow:hidden}
+.cols::before{content:'';position:absolute;right:-150px;top:-150px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(229,37,100,.08),transparent 70%);pointer-events:none}
+.cols .eyebrow{color:var(--gold)}
+.cols h2{color:var(--cream)}
+.cols .sec-head p{color:rgba(244,233,239,.65)}
 .col-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:18px}
 .col-card{position:relative;border-radius:16px;overflow:hidden;grid-column:span 2;aspect-ratio:3/4;color:#fff;display:flex;align-items:flex-end}
 .col-card:nth-child(1),.col-card:nth-child(2){grid-column:span 3;aspect-ratio:4/3.4}
@@ -155,8 +174,12 @@ nav.s .logo span{color:var(--pink)}
 
 /* ── COMO FUNCIONA ── */
 .how{background:var(--cream)}
-.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;counter-reset:st}
-@media(max-width:900px){.steps{grid-template-columns:repeat(2,1fr)}}
+.how-grid{display:grid;grid-template-columns:.8fr 1.5fr;gap:clamp(32px,5vw,64px);align-items:start}
+@media(max-width:900px){.how-grid{grid-template-columns:1fr}}
+.how-photo{border-radius:18px;overflow:hidden;aspect-ratio:3/4;position:sticky;top:100px}
+@media(max-width:900px){.how-photo{position:static;max-width:280px;margin:0 auto}}
+.how-photo img{width:100%;height:100%;object-fit:cover}
+.steps{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;counter-reset:st}
 @media(max-width:540px){.steps{grid-template-columns:1fr}}
 .step{counter-increment:st;background:#fff;border:1px solid rgba(20,9,15,.07);border-radius:16px;padding:28px 24px;transition:transform .3s,box-shadow .3s}
 .step:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(20,9,15,.08)}
@@ -324,10 +347,12 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
         </div>
       </div>
     </div>
-    <figure class="about-photo rv">
-      <img src="img/editorial-coelho-rosas-480.webp" srcset="img/editorial-coelho-rosas-480.webp 480w, img/editorial-coelho-rosas-960.webp 960w" sizes="(max-width:880px) 92vw, 44vw" loading="lazy"
-        alt="Menina com tiara de orelhas de coelho felpudas e rosas azuis, peça de design da Chuchu Rosa, em retrato editorial" width="800" height="1200">
-    </figure>
+    <div class="about-photo rv">
+      <div class="ph-main"><img src="img/editorial-coelho-rosas-480.webp" srcset="img/editorial-coelho-rosas-480.webp 480w, img/editorial-coelho-rosas-960.webp 960w" sizes="(max-width:880px) 92vw, 44vw" loading="lazy"
+        alt="Menina com tiara de orelhas de coelho felpudas e rosas azuis, peça de design da Chuchu Rosa, em retrato editorial" width="800" height="1200"></div>
+      <div class="ph-accent"><img src="img/colecao-unicornio-480.webp" srcset="img/colecao-unicornio-480.webp 480w, img/colecao-unicornio-960.webp 960w" sizes="(max-width:880px) 46vw, 22vw" loading="lazy" alt="Menina com tiara de unicórnio dourada"></div>
+      <div class="ph-badge">Com carinho ◆</div>
+    </div>
   </div>
 </section>
 
@@ -374,15 +399,39 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
   </div>
 </section>
 
-<!-- CATEGORIAS — navegação rápida da loja (recuperado do site anterior) -->
-<section style="background:var(--ink);padding:34px var(--pad)">
-  <div class="wrap" style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center">
-    <a class="btn btn-ghost" style="color:var(--cream);border-color:rgba(255,255,255,.25);font-size:.78rem" href="loja.html?cat=Fantasias">Fantasias · 100+ modelos</a>
-    <a class="btn btn-ghost" style="color:var(--cream);border-color:rgba(255,255,255,.25);font-size:.78rem" href="loja.html?cat=Para+bebês">Para bebês · 74 produtos</a>
-    <a class="btn btn-ghost" style="color:var(--cream);border-color:rgba(255,255,255,.25);font-size:.78rem" href="loja.html?cat=Almofadas">Almofadas · 28 modelos</a>
-    <a class="btn btn-ghost" style="color:var(--cream);border-color:rgba(255,255,255,.25);font-size:.78rem" href="loja.html?cat=Decoração">Decoração</a>
-    <a class="btn btn-ghost" style="color:var(--cream);border-color:rgba(255,255,255,.25);font-size:.78rem" href="loja.html?cat=Educativo">Educativo</a>
-    <a class="btn btn-ghost" style="color:var(--cream);border-color:rgba(255,255,255,.25);font-size:.78rem" href="loja.html?cat=Lembrancinhas">Lembrancinhas</a>
+<!-- CATEGORIAS — grid fotográfico de navegação da loja -->
+<section class="catgrid" aria-label="Categorias da loja">
+  <div class="wrap">
+    <div class="sec-head rv" style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;max-width:none;margin-bottom:32px">
+      <div><p class="eyebrow">Navegue pela loja</p><h2 style="font-size:var(--s5)">O catálogo <em>completo</em></h2></div>
+      <a class="btn btn-ghost" style="color:var(--ink)" href="loja.html">Ver tudo</a>
+    </div>
+    <div class="catgrid-list">
+      <a class="catcard rv" href="loja.html?cat=Fantasias">
+        <img src="img/cat-fantasias-360.webp" srcset="img/cat-fantasias-360.webp 360w, img/cat-fantasias-720.webp 720w" sizes="(max-width:700px) 45vw, 220px" loading="lazy" alt="Fantasia infantil de flor com capuz de pétalas" width="800" height="1200">
+        <span><b>Fantasias</b><small>100+ modelos</small></span>
+      </a>
+      <a class="catcard rv" href="loja.html?cat=Para+bebês">
+        <img src="img/cat-bebes-360.webp" srcset="img/cat-bebes-360.webp 360w, img/cat-bebes-720.webp 720w" sizes="(max-width:700px) 45vw, 220px" loading="lazy" alt="Ursos de pelúcia com roupinhas para bebê" width="832" height="552">
+        <span><b>Para bebês</b><small>74 produtos</small></span>
+      </a>
+      <a class="catcard rv" href="loja.html?cat=Almofadas">
+        <img src="img/cat-almofadas-360.webp" srcset="img/cat-almofadas-360.webp 360w, img/cat-almofadas-720.webp 720w" sizes="(max-width:700px) 45vw, 220px" loading="lazy" alt="Almofada de cogumelo vermelho com bolinhas brancas" width="1200" height="900">
+        <span><b>Almofadas</b><small>28 modelos</small></span>
+      </a>
+      <a class="catcard rv" href="loja.html?cat=Decoração">
+        <img src="img/cat-decoracao-360.webp" srcset="img/cat-decoracao-360.webp 360w, img/cat-decoracao-720.webp 720w" sizes="(max-width:700px) 45vw, 220px" loading="lazy" alt="Mobile decorativo de balões e nuvens em feltro" width="1200" height="803">
+        <span><b>Decoração</b><small>Para o quarto</small></span>
+      </a>
+      <a class="catcard rv" href="loja.html?cat=Educativo">
+        <img src="img/cat-educativo-360.webp" srcset="img/cat-educativo-360.webp 360w, img/cat-educativo-720.webp 720w" sizes="(max-width:700px) 45vw, 220px" loading="lazy" alt="Bolo educativo em tecido colorido" width="1200" height="800">
+        <span><b>Educativo</b><small>Aprender brincando</small></span>
+      </a>
+      <a class="catcard rv" href="loja.html?cat=Lembrancinhas">
+        <img src="img/cat-lembrancinhas-360.webp" srcset="img/cat-lembrancinhas-360.webp 360w, img/cat-lembrancinhas-720.webp 720w" sizes="(max-width:700px) 45vw, 220px" loading="lazy" alt="Chocalho de argola artesanal para bebê" width="1200" height="800">
+        <span><b>Lembrancinhas</b><small>Para presentear</small></span>
+      </a>
+    </div>
   </div>
 </section>
 
@@ -403,17 +452,22 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
 
 <!-- COMO FUNCIONA -->
 <section class="how" id="como-funciona">
-  <div class="wrap">
-    <div class="sec-head rv">
-      <p class="eyebrow">Como funciona</p>
-      <h2>Do croqui à sua casa, em <em>quatro</em> passos</h2>
-      <p>Cada peça nasce sob medida — nada sai de prateleira. É simples, é rápido, e o resultado encanta.</p>
-    </div>
-    <div class="steps">
-      <div class="step rv"><h3>Escolha na loja</h3><p>Navegue pelo acervo de 319 peças e encontre o ponto de partida perfeito.</p></div>
-      <div class="step rv"><h3>Personalize com a Ellen</h3><p>Pelo WhatsApp, vocês definem cores, tamanho e detalhes exclusivos da sua peça.</p></div>
-      <div class="step rv"><h3>Produção dedicada</h3><p>Sua peça entra em produção sob medida — prazo médio de 5 dias úteis após a confirmação.</p></div>
-      <div class="step rv"><h3>Receba em casa</h3><p>Embalagem caprichada e envio rastreado para qualquer lugar do Brasil.</p></div>
+  <div class="wrap how-grid">
+    <figure class="how-photo rv">
+      <img src="img/how-processo-480.webp" srcset="img/how-processo-480.webp 480w, img/how-processo-960.webp 960w" sizes="(max-width:900px) 90vw, 34vw" loading="lazy" alt="Criança com fantasia de jacaré verde em tecido, cauda com espinhos e máscara" width="800" height="1200">
+    </figure>
+    <div>
+      <div class="sec-head rv" style="max-width:none">
+        <p class="eyebrow">Como funciona</p>
+        <h2>Do croqui à sua casa, em <em>quatro</em> passos</h2>
+        <p>Cada peça nasce sob medida — nada sai de prateleira. É simples, é rápido, e o resultado encanta.</p>
+      </div>
+      <div class="steps">
+        <div class="step rv"><h3>Escolha na loja</h3><p>Navegue pelo acervo de 319 peças e encontre o ponto de partida perfeito.</p></div>
+        <div class="step rv"><h3>Personalize com a Ellen</h3><p>Pelo WhatsApp, vocês definem cores, tamanho e detalhes exclusivos da sua peça.</p></div>
+        <div class="step rv"><h3>Produção dedicada</h3><p>Sua peça entra em produção sob medida — prazo médio de 5 dias úteis após a confirmação.</p></div>
+        <div class="step rv"><h3>Receba em casa</h3><p>Embalagem caprichada e envio rastreado para qualquer lugar do Brasil.</p></div>
+      </div>
     </div>
   </div>
 </section>
