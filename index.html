@@ -179,52 +179,76 @@ nav.s{background:rgba(20,9,15,.94);backdrop-filter:blur(16px);-webkit-backdrop-f
 .how{background:var(--ink2);color:var(--cream)}
 .how .sec-head p{color:rgba(244,233,239,.65)}
 .how h3{color:var(--cream)}
-.how-grid{display:grid;grid-template-columns:.8fr 1.5fr;gap:clamp(32px,5vw,64px);align-items:start}
-@media(max-width:900px){.how-grid{grid-template-columns:1fr}}
-.how-photo{border-radius:18px;overflow:hidden;aspect-ratio:3/4;position:sticky;top:100px}
-@media(max-width:900px){.how-photo{position:static;max-width:280px;margin:0 auto}}
-.how-photo img{width:100%;height:100%;object-fit:cover}
-.steps{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;counter-reset:st}
+.how-grid{display:grid;grid-template-columns:1fr;gap:clamp(28px,4vw,44px)}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);counter-reset:st;gap:0;border-top:1px solid rgba(201,169,110,.22)}
+@media(max-width:880px){.steps{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:540px){.steps{grid-template-columns:1fr}}
-.step{counter-increment:st;display:flex;gap:18px;align-items:flex-start;background:rgba(253,248,244,.05);border:1px solid rgba(201,169,110,.16);border-radius:16px;padding:24px;transition:transform .3s,box-shadow .3s,background .3s,border-color .3s}
-.step:hover{transform:translateY(-4px);background:rgba(253,248,244,.09);border-color:rgba(229,37,100,.35);box-shadow:0 16px 40px rgba(0,0,0,.25)}
-.step::before{content:counter(st,decimal-leading-zero);flex:none;font-family:var(--fd);font-weight:700;font-size:1.7rem;line-height:1;color:var(--pink);background:rgba(229,37,100,.12);border:1px solid rgba(229,37,100,.3);border-radius:999px;width:52px;height:52px;display:flex;align-items:center;justify-content:center}
-.step h3{margin:2px 0 6px;color:var(--cream);font-size:1.05rem}
-.step p{color:rgba(244,233,239,.6);font-size:.9rem;line-height:1.6}
+.step{counter-increment:st;padding:34px 26px 8px;border-right:1px solid rgba(201,169,110,.22);position:relative;transition:background .3s}
+.step:last-child{border-right:none}
+@media(max-width:880px){.step:nth-child(2n){border-right:none}.step{border-bottom:1px solid rgba(201,169,110,.22)}}
+.step:hover{background:rgba(253,248,244,.04)}
+.step::before{content:counter(st,decimal-leading-zero);display:block;font-family:var(--fd);font-style:italic;font-weight:400;font-size:2.8rem;line-height:1;color:var(--gold);opacity:.85;margin-bottom:18px}
+.step h3{margin:0 0 8px;color:var(--cream);font-size:1.05rem}
+.step p{color:rgba(244,233,239,.62);font-size:.9rem;line-height:1.6}
 
-/* ── DESTAQUES ── */
-.prods{background:var(--sand)}
-.prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
-@media(max-width:960px){.prod-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:520px){.prod-grid{grid-template-columns:1fr}}
-.prod{background:#fff;border-radius:16px;overflow:hidden;border:1px solid rgba(20,9,15,.06);transition:transform .4s cubic-bezier(.22,.61,.36,1),box-shadow .4s;position:relative}
-.prod::after{content:'';position:absolute;inset:0;border-radius:16px;padding:1px;background:linear-gradient(135deg,var(--gold),transparent 40%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .4s;pointer-events:none}
-.prod:hover{transform:translateY(-6px);box-shadow:0 22px 50px rgba(20,9,15,.14)}
-.prod:hover::after{opacity:1}
-.prod-img{aspect-ratio:1;overflow:hidden}
-.prod-img img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.22,.61,.36,1)}
-.prod:hover .prod-img img{transform:scale(1.05)}
-.prod-body{padding:18px 20px 22px}
-.prod-body small{font-weight:600;font-size:.7rem;letter-spacing:.13em;text-transform:uppercase;color:var(--pink)}
-.prod-body h3{font-size:1.05rem;margin:6px 0 4px}
-.prod-body data{color:#5c4a53;font-size:.92rem}
+/* ── TEMAS (showcase) ── */
+/* ── TEMAS (showcase) ── */
+.showcase{padding:0}
+.showcase-item{display:grid;grid-template-columns:1fr 1fr;min-height:520px}
+.showcase-item.reverse{direction:rtl}
+.showcase-item.reverse>*{direction:ltr}
+@media(max-width:880px){.showcase-item{grid-template-columns:1fr;min-height:auto}.showcase-item.reverse{direction:ltr}}
+.showcase-photos{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px}
+@media(max-width:880px){.showcase-photos{height:78vw;grid-template-rows:1fr 1fr}}
+.showcase-photos .sp{overflow:hidden;position:relative;background:var(--ink)}
+.showcase-photos .sp img{width:100%;height:100%;object-fit:cover;transition:transform .65s}
+.showcase-photos .sp:hover img{transform:scale(1.05)}
+.showcase-photos .sp:first-child{grid-row:span 2}
+.showcase-text{padding:clamp(40px,5vw,72px);display:flex;flex-direction:column;justify-content:center}
+.showcase-item.light .showcase-text{background:var(--cream)}
+.showcase-item.light .sc-title{color:var(--ink)}
+.showcase-item.light .sc-body{color:#5c4a53}
+.showcase-item.dark .showcase-text{background:var(--ink2)}
+.showcase-item.dark .sc-title{color:var(--cream)}
+.showcase-item.dark .sc-body{color:rgba(244,233,239,.68)}
+.sc-eyebrow{font-size:.72rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.sc-eyebrow::before{content:'';width:20px;height:1px;display:block}
+.light .sc-eyebrow{color:var(--pink)}.light .sc-eyebrow::before{background:var(--pink)}
+.dark .sc-eyebrow{color:var(--gold)}.dark .sc-eyebrow::before{background:var(--gold)}
+.sc-title{font-family:var(--fd);font-weight:700;font-size:clamp(2rem,3.4vw,3.1rem);line-height:1.05;letter-spacing:-.01em;margin-bottom:18px}
+.sc-title em{font-style:italic;font-weight:400;color:var(--pink)}
+.dark .sc-title em{color:var(--gold)}
+.sc-body{font-size:.98rem;line-height:1.8;max-width:400px;margin-bottom:26px}
+.sc-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.sc-tag{font-size:.7rem;font-weight:600;letter-spacing:.06em;padding:.5em 1em;border-radius:999px}
+.light .sc-tag{background:rgba(229,37,100,.08);color:var(--rose)}
+.dark .sc-tag{background:rgba(253,248,244,.08);color:rgba(244,233,239,.82)}
+.sc-link{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:.85rem;letter-spacing:.06em;transition:gap .3s}
+.light .sc-link{color:var(--pink)}
+.dark .sc-link{color:var(--gold)}
+.sc-link:hover{gap:14px}
 
 /* ── BEBÊS — régua que cresce ── */
-.grow{background:var(--ink);color:var(--cream)}
+.grow{background:var(--ink);color:var(--cream);padding-top:clamp(48px,6vw,72px)}
 .grow-rail{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;align-items:end}
 @media(max-width:880px){.grow-rail{grid-template-columns:repeat(2,1fr)}}
 .grow-item img{border-radius:14px;aspect-ratio:3/4;object-fit:cover;width:100%}
-.grow-item figcaption{margin-top:12px;font-weight:600;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.grow-item figcaption{margin-top:12px;font-weight:600;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase}
+.grow-item:nth-child(1) figcaption{color:var(--gold)}
+.grow-item:nth-child(2) figcaption{color:#e8a8bf}
+.grow-item:nth-child(3) figcaption{color:#9fb8c9}
+.grow-item:nth-child(4) figcaption{color:var(--pink)}
 
 /* ── AMBIENTES ── */
 .spaces{background:var(--cream)}
-.spaces-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;grid-template-rows:auto auto;gap:16px}
+.spaces-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;grid-auto-rows:1fr;gap:16px}
 @media(max-width:820px){.spaces-grid{grid-template-columns:1fr 1fr}}
-.spaces-grid figure{position:relative;border-radius:16px;overflow:hidden}
+.spaces-grid figure{position:relative;border-radius:16px;overflow:hidden;height:100%}
 .spaces-grid figure:first-child{grid-row:span 2}
 @media(max-width:820px){.spaces-grid figure:first-child{grid-column:span 2;grid-row:auto}}
-.spaces-grid img{width:100%;height:100%;object-fit:cover;aspect-ratio:4/3;transition:transform 1.2s cubic-bezier(.22,.61,.36,1)}
-.spaces-grid figure:first-child img{aspect-ratio:4/4.1}
+.spaces-grid img{width:100%;height:100%;object-fit:cover;aspect-ratio:1/1;transition:transform 1.2s cubic-bezier(.22,.61,.36,1)}
+.spaces-grid figure:first-child img{aspect-ratio:1/2.08}
+@media(max-width:820px){.spaces-grid figure:first-child img{aspect-ratio:2/1}}
 .spaces-grid figure:hover img{transform:scale(1.05)}
 .spaces-cta{margin-top:40px;display:flex;gap:20px;align-items:center;flex-wrap:wrap}
 
@@ -237,9 +261,9 @@ nav.s{background:rgba(20,9,15,.94);backdrop-filter:blur(16px);-webkit-backdrop-f
 .rev-count{font-size:.82rem;color:#d8c7ce}
 .rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 @media(max-width:860px){.rev-grid{grid-template-columns:1fr}}
-.rev{background:rgba(255,255,255,.04);border-radius:16px;padding:30px 28px;border:1px solid rgba(255,255,255,.1);position:relative;transition:transform .3s,box-shadow .3s}
+.rev{background:rgba(255,255,255,.04);border-radius:16px;padding:38px 28px 30px;border:1px solid rgba(255,255,255,.1);position:relative;transition:transform .3s,box-shadow .3s}
 .rev:hover{transform:translateY(-4px);box-shadow:0 20px 44px rgba(0,0,0,.25)}
-.rev::before{content:"\201C";position:absolute;top:6px;left:20px;font-family:var(--fd);font-style:italic;font-size:4.4rem;color:var(--rose);line-height:1}
+.rev::before{content:"\201C";position:absolute;top:-6px;left:28px;font-family:var(--fd);font-style:normal;font-weight:700;font-size:3.6rem;color:var(--gold);opacity:.55;line-height:1}
 .rev-stars-sm{display:flex;gap:2px;color:var(--gold);margin-bottom:14px;position:relative}
 .rev-stars-sm svg{width:13px;height:13px}
 .rev p{position:relative;color:var(--cream);font-family:var(--fd);font-style:italic;font-weight:400;line-height:1.6}
@@ -483,52 +507,88 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
 <!-- COMO FUNCIONA -->
 <section class="how" id="como-funciona">
   <div class="wrap how-grid">
-    <figure class="how-photo rv">
-      <img src="img/editorial-coelho-capa-480.webp" sizes="(max-width:900px) 90vw, 34vw" loading="lazy" alt="Menina com fantasia de coelho em retrato editorial, peça de design da Chuchu Rosa" width="480" height="720">
-    </figure>
-    <div>
-      <div class="sec-head rv" style="max-width:none">
-        <p class="eyebrow">Como funciona</p>
-        <h2>Do croqui à sua casa, em <em>quatro</em> passos</h2>
-        <p>Cada peça nasce sob medida — nada sai de prateleira. É simples, é rápido, e o resultado encanta. Do primeiro contato até a entrega, você acompanha cada etapa da produção da sua peça.</p>
-      </div>
-      <div class="steps">
-        <div class="step rv"><h3>Escolha na loja</h3><p>Navegue pelo acervo de 319 peças e encontre o ponto de partida perfeito.</p></div>
-        <div class="step rv"><h3>Personalize pelo WhatsApp</h3><p>Pelo WhatsApp, vocês definem cores, tamanho e detalhes exclusivos da sua peça.</p></div>
-        <div class="step rv"><h3>Produção dedicada</h3><p>Sua peça entra em produção sob medida — prazo médio de 5 dias úteis após a confirmação.</p></div>
-        <div class="step rv"><h3>Receba em casa</h3><p>Embalagem caprichada e envio rastreado para qualquer lugar do Brasil.</p></div>
-      </div>
+    <div class="sec-head rv" style="max-width:640px">
+      <p class="eyebrow">Como funciona</p>
+      <h2>Do croqui à sua casa, em <em>quatro</em> passos</h2>
+      <p>Cada peça nasce sob medida — nada sai de prateleira. É simples, é rápido, e o resultado encanta. Do primeiro contato até a entrega, você acompanha cada etapa da produção da sua peça.</p>
+    </div>
+    <div class="steps">
+      <div class="step rv"><h3>Escolha na loja</h3><p>Navegue pelo acervo de 319 peças e encontre o ponto de partida perfeito.</p></div>
+      <div class="step rv"><h3>Personalize pelo WhatsApp</h3><p>Pelo WhatsApp, vocês definem cores, tamanho e detalhes exclusivos da sua peça.</p></div>
+      <div class="step rv"><h3>Produção dedicada</h3><p>Sua peça entra em produção sob medida — prazo médio de 5 dias úteis após a confirmação.</p></div>
+      <div class="step rv"><h3>Receba em casa</h3><p>Embalagem caprichada e envio rastreado para qualquer lugar do Brasil.</p></div>
     </div>
   </div>
 </section>
 
-<!-- DESTAQUES -->
-<section class="prods" id="produtos">
-  <div class="wrap">
-    <div class="sec-head rv" style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;max-width:none">
-      <div><p class="eyebrow">Destaques</p><h2>As peças que todo mundo <em>ama</em></h2></div>
-      <a class="btn btn-ghost" style="color:var(--ink)" href="loja.html">Ver todos</a>
+<!-- TEMAS — showcase por coleção -->
+<div class="showcase" id="produtos">
+
+  <!-- RAPOSAS — CLARO -->
+  <div class="showcase-item light rv">
+    <div class="showcase-photos">
+      <div class="sp"><img src="img/colecao-raposa-480.webp" srcset="img/colecao-raposa-480.webp 480w, img/colecao-raposa-960.webp 960w" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Criança vestindo fantasia de raposa laranja com touca, luvas de pata e cauda"></div>
+      <div class="sp"><img src="img/editorial-raposa-rose-480.webp" srcset="img/editorial-raposa-rose-480.webp 480w, img/editorial-raposa-rose-960.webp 960w" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Menina com máscara e tiara de raposa e saia de tutu laranja, sobre fundo rosé"></div>
+      <div class="sp"><img src="img/bebe-raposa-tutu-480.webp" srcset="img/bebe-raposa-tutu-480.webp 480w, img/bebe-raposa-tutu-960.webp 960w" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Bebê com coroa de raposa em feltro, saia de tutu e cauda de raposa"></div>
     </div>
-    <div class="prod-grid" id="prodGrid" data-loading="true">
-      <a class="prod rv" href="loja.html?q=raposa">
-        <div class="prod-img"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/fantasia-de-raposa-com-tiara-e-saia-menina.jpg" loading="lazy" alt="Fantasia de raposa com tiara e saia" width="600" height="600"></div>
-        <div class="prod-body"><small>Fantasias</small><h3>Fantasia de Raposa com Tiara</h3><data value="89.90">a partir de R$ 89,90</data></div>
-      </a>
-      <a class="prod rv" href="loja.html?q=linguado">
-        <div class="prod-img"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/fantasia-de-linguado-pequena-sereia-infantil.jpg" loading="lazy" alt="Fantasia de linguado inspirada na Pequena Sereia" width="600" height="600"></div>
-        <div class="prod-body"><small>Fantasias</small><h3>Fantasia Linguado Pequena Sereia</h3><data value="99.90">a partir de R$ 99,90</data></div>
-      </a>
-      <a class="prod rv" href="loja.html?cat=Almofadas">
-        <div class="prod-img"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/almofada-raposa-almofada.jpg" loading="lazy" alt="Almofada de raposa em tecido" width="600" height="600"></div>
-        <div class="prod-body"><small>Almofadas</small><h3>Almofada Raposa</h3><data value="79.90">a partir de R$ 79,90</data></div>
-      </a>
-      <a class="prod rv" href="loja.html?q=sushi">
-        <div class="prod-img"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/fantasia-de-sushi-tamanho-grande-carnaval.jpg" loading="lazy" alt="Fantasia de sushi com rolos de almofada" width="600" height="600"></div>
-        <div class="prod-body"><small>Fantasias</small><h3>Fantasia de Sushi</h3><data value="89.90">a partir de R$ 89,90</data></div>
-      </a>
+    <div class="showcase-text">
+      <p class="sc-eyebrow">Coleção</p>
+      <h2 class="sc-title">O charme<br>das <em>raposas</em></h2>
+      <div class="sc-tags">
+        <span class="sc-tag">Fantasia</span>
+        <span class="sc-tag">Tiara</span>
+        <span class="sc-tag">Almofada</span>
+        <span class="sc-tag">Saia</span>
+      </div>
+      <p class="sc-body">Laranja vibrante, detalhes delicados e aquele jeitinho esperto que só a raposa tem. Uma das coleções mais amadas da Chuchu Rosa — e a favorita de quem ama o estilo woodland.</p>
+      <a href="loja.html?q=raposa" class="sc-link">Ver coleção raposa →</a>
     </div>
   </div>
-</section>
+
+  <!-- UNICÓRNIOS — ESCURO / INVERTIDO -->
+  <div class="showcase-item dark reverse rv">
+    <div class="showcase-photos">
+      <div class="sp"><img src="img/colecao-unicornio-480.webp" style="object-position:center 8%" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Menina com tiara de unicórnio dourada segurando pelúcia de unicórnio branca e rosa"></div>
+      <div class="sp"><img src="img/colecao-fundo-do-mar-480.webp" srcset="img/colecao-fundo-do-mar-480.webp 480w, img/colecao-fundo-do-mar-960.webp 960w" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Duas meninas com caudas de sereia estampadas abraçando pelúcias de golfinho, polvo e concha"></div>
+      <div class="sp"><img src="img/colecao-almofadas-berco-480.webp" srcset="img/colecao-almofadas-berco-480.webp 480w, img/colecao-almofadas-berco-960.webp 960w" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Almofadas bordadas para berço em tons pastel"></div>
+    </div>
+    <div class="showcase-text">
+      <p class="sc-eyebrow">Coleção</p>
+      <h2 class="sc-title">O encanto dos<br><em>unicórnios</em></h2>
+      <div class="sc-tags">
+        <span class="sc-tag">Fantasia</span>
+        <span class="sc-tag">Asas</span>
+        <span class="sc-tag">Tiara</span>
+        <span class="sc-tag">Almofada</span>
+      </div>
+      <p class="sc-body">Magia, cor e brilho em cada detalhe. A coleção unicórnio transforma qualquer criança numa princesa de conto de fadas — com asas, chifre e tudo que a imaginação pede.</p>
+      <a href="loja.html?q=unicornio" class="sc-link">Ver coleção unicórnio →</a>
+    </div>
+  </div>
+
+  <!-- FLAMINGO — CLARO -->
+  <div class="showcase-item light rv">
+    <div class="showcase-photos">
+      <div class="sp"><img src="img/colecao-flamingo-480.webp" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Menina sorrindo com capa de flamingo rosa com capuz de bico preto, sobre fundo pink"></div>
+      <div class="sp"><img src="img/hero-sushi-480.webp" srcset="img/hero-sushi-480.webp 480w, img/hero-sushi-960.webp 960w" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Criança com fantasia de sushi"></div>
+      <div class="sp"><img src="img/ambiente-mesa-raposa-480.webp" srcset="img/ambiente-mesa-raposa-480.webp 480w, img/ambiente-mesa-raposa-960.webp 960w" sizes="(max-width:880px) 50vw, 25vw" loading="lazy" alt="Mesa de festa tema floresta com boneca de raposa de laço xadrez"></div>
+    </div>
+    <div class="showcase-text">
+      <p class="sc-eyebrow">Coleção</p>
+      <h2 class="sc-title">A elegância<br>do <em>flamingo</em></h2>
+      <div class="sc-tags">
+        <span class="sc-tag">Fantasia</span>
+        <span class="sc-tag">Capa</span>
+        <span class="sc-tag">Touca</span>
+        <span class="sc-tag">Naninha</span>
+      </div>
+      <p class="sc-body">Rosa intenso, asas abertas e aquela pose inconfundível. O flamingo é o símbolo da Chuchu Rosa — aparece em fantasias, naninhas, almofadas e muito mais.</p>
+      <a href="loja.html?q=flamingo" class="sc-link">Ver coleção flamingo →</a>
+    </div>
+  </div>
+
+</div>
+
 
 <!-- CRESCE COM A CHUCHU ROSA -->
 <section class="grow on-dark">
@@ -540,9 +600,9 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
     </div>
     <div class="grow-rail">
       <figure class="grow-item rv"><img src="img/bebe-newborn-coroa-480.webp" sizes="(max-width:880px) 46vw, 24vw" loading="lazy" alt="Recém-nascido dormindo em mini cama de madeira com coroa dourada de renda e urso de pelúcia" width="480" height="291"><figcaption>Recém-nascido</figcaption></figure>
-      <figure class="grow-item rv"><img src="img/bebe-raposa-tutu-480.webp" srcset="img/bebe-raposa-tutu-480.webp 480w, img/bebe-raposa-tutu-960.webp 960w" sizes="(max-width:880px) 46vw, 24vw" loading="lazy" alt="Bebê com coroa de raposa em feltro, saia de tutu e cauda de raposa" width="480" height="719"><figcaption>Bebê</figcaption></figure>
-      <figure class="grow-item rv"><img src="img/kids-astronauta-480.webp" srcset="img/kids-astronauta-480.webp 480w, img/kids-astronauta-960.webp 960w" sizes="(max-width:880px) 46vw, 24vw" loading="lazy" alt="Criança com fantasia de astronauta" width="480" height="320"><figcaption>Primeiros passos</figcaption></figure>
-      <figure class="grow-item rv"><img src="img/editorial-raposa-rose-480.webp" srcset="img/editorial-raposa-rose-480.webp 480w, img/editorial-raposa-rose-960.webp 960w" sizes="(max-width:880px) 46vw, 24vw" loading="lazy" alt="Menina com máscara e tiara de raposa e saia de tutu laranja, sobre fundo rosé" width="480" height="720"><figcaption>Infância</figcaption></figure>
+      <figure class="grow-item rv"><img src="img/bebe-linguado-praia-480.webp" srcset="img/bebe-linguado-praia-480.webp 480w, img/bebe-linguado-praia-960.webp 960w" sizes="(max-width:880px) 46vw, 24vw" loading="lazy" alt="Bebê com fantasia de linguado na praia" width="480" height="480"><figcaption>Bebê</figcaption></figure>
+      <figure class="grow-item rv"><img src="img/bebe-coroa-azul-480.webp" srcset="img/bebe-coroa-azul-480.webp 480w, img/bebe-coroa-azul-960.webp 960w" sizes="(max-width:880px) 46vw, 24vw" loading="lazy" alt="Bebê com coroa azul de feltro" width="480" height="320"><figcaption>Primeiros passos</figcaption></figure>
+      <figure class="grow-item rv"><img src="img/kids-astronauta-480.webp" srcset="img/kids-astronauta-480.webp 480w, img/kids-astronauta-960.webp 960w" sizes="(max-width:880px) 46vw, 24vw" loading="lazy" alt="Criança com fantasia de astronauta" width="480" height="320"><figcaption>Infância</figcaption></figure>
     </div>
   </div>
 </section>
@@ -747,37 +807,6 @@ footer{background:var(--ink);color:#cdb9c2;padding:clamp(64px,8vw,96px) var(--pa
     }
     addEventListener('scroll', function(){ if(!ticking){ requestAnimationFrame(para); ticking = true; } }, {passive:true});
   }
-
-  /* ── DESTAQUES DINÂMICOS ──
-     Puxa produtos reais da mesma base do contador (Supabase).
-     Se a chamada falhar por qualquer motivo, o HTML estático já no ar
-     (4 produtos fixos) permanece intocado — nunca fica em branco. */
-  (function(){
-    var grid = document.getElementById('prodGrid');
-    if (!grid) return;
-    var SB = 'https://oznpfqsgurztffwfyfec.supabase.co';
-    var KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA';
-    // select cobre apenas colunas confirmadas (id, nome, preco, imagem, collections);
-    // ordena por id desc como aproximação de "mais recentes" sem depender de coluna de data
-    var url = SB + '/rest/v1/produtos?select=id,nome,preco,imagem,collections'
-             + '&ativo=eq.true&oculto=eq.false&order=id.desc&limit=4';
-
-    fetch(url, { headers: { apikey: KEY, Authorization: 'Bearer ' + KEY } })
-      .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
-      .then(function(produtos){
-        if (!Array.isArray(produtos) || !produtos.length) return; // mantém fallback estático
-        grid.innerHTML = produtos.map(function(p){
-          var cat = (p.collections && p.collections[0]) || '';
-          var preco = (+p.preco).toFixed(2).replace('.', ',');
-          var href = 'loja.html?p=' + encodeURIComponent(p.id);
-          return '<a class="prod rv on" href="' + href + '">' +
-            '<div class="prod-img"><img src="' + p.imagem + '" loading="lazy" alt="' + (p.nome||'').replace(/"/g,'&quot;') + '" width="600" height="600"></div>' +
-            '<div class="prod-body"><small>' + cat + '</small><h3>' + p.nome + '</h3><data value="' + p.preco + '">a partir de R$ ' + preco + '</data></div>' +
-          '</a>';
-        }).join('');
-      })
-      .catch(function(){ /* mantém o HTML estático já renderizado */ });
-  })();
 
   /* ── TICKER SEM SALTO ──
      -50% via CSS assume que o grupo duplicado tem exatamente a mesma
