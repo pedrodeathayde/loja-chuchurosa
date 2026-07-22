@@ -22,7 +22,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="img/editorial-coelho-capa-480.webp" imagesrcset="img/editorial-coelho-capa-480.webp 480w, img/editorial-coelho-capa-960.webp 960w" fetchpriority="high">
 <style>
 :root{
   --ink:#0f0a0f;--ink2:#1a1020;
@@ -114,71 +113,7 @@ nav.s{
   box-shadow:0 4px 18px rgba(229,37,100,.3);
 }
 
-/* ── HERO ── */
-.hero{
-  position:relative;height:100vh;min-height:600px;
-  overflow:hidden;
-  display:flex;align-items:flex-end;
-}
-.hero-bg{
-  position:absolute;inset:0;
-  display:grid;grid-template-columns:1.2fr 1fr 1fr;
-  gap:3px;
-}
-.hbp{overflow:hidden;position:relative}
-.hbp img{width:100%;height:100%;object-fit:cover;object-position:center 15%;transform:scale(1.05);animation:kz 12s ease-in-out infinite alternate}
-.hbp:nth-child(2) img{animation-delay:-4s;object-position:center 20%}
-.hbp:nth-child(3) img{animation-delay:-8s;object-position:center 10%}
-@keyframes kz{0%{transform:scale(1.05)}100%{transform:scale(1)}}
-.hero-overlay{
-  position:absolute;inset:0;
-  background:
-    linear-gradient(to top, rgba(15,10,15,.92) 0%, rgba(15,10,15,.5) 35%, rgba(15,10,15,.1) 70%, transparent 100%),
-    linear-gradient(to right, rgba(15,10,15,.55) 0%, rgba(15,10,15,.15) 55%, transparent 100%);
-}
-/* Nvidia-style scan line */
-.hero-scan{
-  position:absolute;bottom:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--pink),var(--gold),var(--pink),transparent);
-  opacity:.6;
-}
-.hero-content{
-  position:relative;z-index:2;
-  padding:0 52px 72px;
-  max-width:760px;
-}
-.hero-eyebrow{
-  display:inline-flex;align-items:center;gap:10px;
-  font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--gold);margin-bottom:18px;
-  text-shadow:0 1px 8px rgba(15,10,15,.8);
-  opacity:0;animation:fu .8s .3s forwards;
-}
-.hero-eyebrow::before{content:'';display:block;width:24px;height:1px;background:var(--gold)}
-.hero-h1{
-  font-family:var(--fd);
-  font-size:clamp(3rem,6vw,5.5rem);
-  font-weight:600;line-height:.95;letter-spacing:-.03em;
-  color:#fff;margin-bottom:18px;
-  text-shadow:0 2px 20px rgba(15,10,15,.5);
-  opacity:0;animation:fu .9s .48s forwards;
-}
-.hero-h1 em{
-  font-style:italic;font-weight:400;
-  background:linear-gradient(135deg,#ffd89b,var(--gold));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.hero-sub{
-  font-size:.95rem;line-height:1.75;
-  color:rgba(255,255,255,.9);
-  max-width:480px;margin-bottom:32px;
-  text-shadow:0 1px 12px rgba(15,10,15,.8);
-  opacity:0;animation:fu .9s .64s forwards;
-}
-.hero-actions{
-  display:flex;gap:12px;flex-wrap:wrap;
-  opacity:0;animation:fu .9s .8s forwards;
-}
+/* ── SHARED BUTTON (used across hero, spaces, cta-final) ── */
 .btn-p{
   background:var(--pink);color:#fff;
   padding:13px 28px;border-radius:100px;
@@ -187,23 +122,94 @@ nav.s{
   transition:all .2s;display:inline-flex;align-items:center;gap:7px;
 }
 .btn-p:hover{background:var(--rose);transform:translateY(-2px);box-shadow:0 8px 30px rgba(229,37,100,.5)}
+
+/* ── HERO ── */
+.hero{
+  position:relative;
+  min-height:100vh;
+  background:var(--cream);
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  align-items:stretch;
+  overflow:hidden;
+}
+.hero-left{
+  position:relative;
+  padding:132px 0 56px 52px;
+  display:flex;flex-direction:column;justify-content:center;
+  z-index:2;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:.65rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--pink);margin-bottom:22px;
+  opacity:0;animation:fu .8s .3s forwards;
+}
+.hero-eyebrow::before{content:'';display:block;width:24px;height:1px;background:var(--pink)}
+.hero-h1{
+  font-family:var(--fd);
+  font-size:clamp(2.8rem,5.6vw,5rem);
+  font-weight:600;line-height:.96;letter-spacing:-.02em;
+  color:var(--ink);margin-bottom:24px;
+  opacity:0;animation:fu .9s .48s forwards;
+}
+.hero-h1 em{
+  font-style:italic;font-weight:400;
+  color:var(--pink);
+}
+.hero-sub{
+  font-size:.98rem;line-height:1.75;
+  color:rgba(15,10,15,.62);
+  max-width:420px;margin-bottom:32px;
+  opacity:0;animation:fu .9s .64s forwards;
+}
+.hero-actions{
+  display:flex;gap:12px;flex-wrap:wrap;margin-bottom:44px;
+  opacity:0;animation:fu .9s .8s forwards;
+}
 .btn-g{
-  color:rgba(255,255,255,.65);
+  color:var(--ink);
   padding:13px 22px;border-radius:100px;
   font-size:.85rem;font-weight:500;
-  border:1px solid rgba(255,255,255,.2);
+  border:1px solid rgba(15,10,15,.18);
   transition:all .2s;display:inline-flex;align-items:center;gap:7px;
 }
-.btn-g:hover{color:#fff;border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.06)}
-/* Scroll hint */
-.scroll-hint{
-  position:absolute;bottom:24px;right:52px;z-index:2;
-  display:flex;flex-direction:column;align-items:center;gap:6px;
-  opacity:0;animation:fu .9s 1.2s forwards;
+.btn-g:hover{border-color:var(--ink);background:rgba(15,10,15,.04)}
+.hero-meta{
+  display:flex;gap:32px;
+  padding-top:24px;border-top:1px solid rgba(15,10,15,.1);
+  max-width:460px;
+  opacity:0;animation:fu .9s .95s forwards;
 }
-.scroll-hint span{font-size:.62rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.3)}
-.scroll-dot{width:1px;height:40px;background:linear-gradient(to bottom,rgba(255,255,255,.3),transparent);animation:sdot 2s ease-in-out infinite}
-@keyframes sdot{0%,100%{opacity:.3;transform:scaleY(1)}50%{opacity:.7;transform:scaleY(1.2)}}
+.hm-n{font-family:var(--fd);font-size:1.6rem;font-weight:600;color:var(--ink);line-height:1}
+.hm-n sup{color:var(--pink);font-size:.9rem;font-style:normal}
+.hm-l{font-size:.65rem;color:rgba(15,10,15,.5);margin-top:5px;text-transform:uppercase;letter-spacing:.05em}
+
+/* RIGHT: rotating photo panel */
+.hero-right{position:relative;overflow:hidden;min-height:460px}
+.hero-right .hp{position:absolute;inset:0;opacity:0;transition:opacity 1.6s ease}
+.hero-right .hp.active{opacity:1}
+.hero-right .hp img{width:100%;height:100%;object-fit:cover;object-position:center 20%}
+.hero-tag{
+  position:absolute;bottom:28px;left:28px;z-index:3;
+  background:var(--cream);
+  padding:13px 18px;
+  display:flex;align-items:center;gap:11px;
+  box-shadow:0 20px 50px rgba(15,10,15,.18);
+  max-width:220px;
+}
+.hero-tag-dot{width:7px;height:7px;border-radius:50%;background:var(--pink);flex:none}
+.hero-tag-txt{font-size:.7rem;line-height:1.4;color:var(--ink)}
+.hero-tag-txt b{font-weight:700}
+
+@media(prefers-reduced-motion:reduce){.hero-right .hp{transition:none}}
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;min-height:auto}
+  .hero-left{padding:112px 20px 40px;order:2}
+  .hero-h1{font-size:clamp(2.2rem,8.5vw,3rem)}
+  .hero-right{order:1;min-height:64vh}
+  .hero-meta{gap:22px}
+}
 
 @keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
 
@@ -233,7 +239,7 @@ nav.s{
 .st-light em{font-style:italic;background:linear-gradient(135deg,#ffd89b,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 
 /* ── ABOUT — LIGHT ── */
-.about{background:var(--cream);padding:120px 0}
+.about{background:var(--cream);padding:88px 0}
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
 .about-text .sl-pink{margin-bottom:14px}
 .about-body{font-size:1rem;line-height:1.9;color:rgba(15,10,15,.72);max-width:440px;margin-top:16px}
@@ -263,7 +269,7 @@ nav.s{
 @keyframes mqa{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
 /* ── OCASIÕES — LIGHT ── */
-.occ{background:var(--cream);padding:100px 0}
+.occ{background:var(--cream);padding:80px 0}
 .occ-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:44px}
 @media(max-width:860px){.occ-grid{grid-template-columns:1fr}}
 .occ-card{position:relative;border-radius:18px;overflow:hidden;cursor:pointer;aspect-ratio:4/5;box-shadow:0 20px 44px rgba(15,10,15,.08);transition:transform .35s,box-shadow .35s}
@@ -278,7 +284,7 @@ nav.s{
 .occ-info h3{font-family:var(--fd);font-weight:700;font-size:1.3rem;margin-top:5px;color:#fff}
 
 /* ── CATEGORIES — DARK ── */
-.cats{background:var(--ink2);padding:120px 0;position:relative;overflow:hidden}
+.cats{background:var(--ink2);padding:88px 0;position:relative;overflow:hidden}
 .cats::before{content:'';position:absolute;right:-150px;top:-150px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(229,37,100,.07),transparent 70%);pointer-events:none}
 .ch{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:40px;flex-wrap:wrap;gap:16px}
 .more{font-size:.82rem;font-weight:600;color:var(--pink);display:flex;align-items:center;gap:5px;transition:gap .2s;margin-bottom:4px}
@@ -306,7 +312,7 @@ nav.s{
 .stat-l{font-size:.75rem;color:rgba(15,10,15,.6);margin-top:5px;letter-spacing:.04em;text-transform:uppercase}
 
 /* ── HOW — DARK ── */
-.how{background:var(--ink);padding:120px 0;position:relative;overflow:hidden}
+.how{background:var(--ink);padding:88px 0;position:relative;overflow:hidden}
 .how::after{content:'';position:absolute;bottom:-280px;left:50%;transform:translateX(-50%);width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(229,37,100,.06),transparent 65%);pointer-events:none}
 .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;margin-top:64px;position:relative}
 .steps::before{content:'';position:absolute;top:34px;left:calc(12.5% + 4px);right:calc(12.5% + 4px);height:1px;background:linear-gradient(90deg,rgba(201,169,110,.05),rgba(201,169,110,.35) 15%,rgba(201,169,110,.35) 85%,rgba(201,169,110,.05));z-index:0}
@@ -332,7 +338,7 @@ nav.s{
 @media(max-width:540px){.steps{grid-template-columns:1fr}}
 
 /* ── CATÁLOGO COMPLETO — LIGHT ── */
-.catgrid2{background:var(--cream);padding:120px 0}
+.catgrid2{background:var(--cream);padding:88px 0}
 .catgrid2-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:32px;flex-wrap:wrap}
 .catgrid2-list{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
 @media(max-width:900px){.catgrid2-list{grid-template-columns:repeat(3,1fr)}}
@@ -348,7 +354,7 @@ nav.s{
 .catcard2 small{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);font-weight:600}
 
 /* ── TESTIMONIALS — DARK ── */
-.testi{background:var(--ink2);padding:120px 0}
+.testi{background:var(--ink2);padding:88px 0}
 .tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px}
 .tc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:26px;position:relative;transition:border-color .28s,background .28s}
 .tc:hover{border-color:rgba(229,37,100,.25);background:rgba(229,37,100,.03)}
@@ -377,12 +383,13 @@ nav.s{
 .showcase-photos .sp img{width:100%;height:100%;object-fit:cover;transition:transform .65s;opacity:.88;filter:saturate(1.1)}
 .showcase-photos .sp:hover img{transform:scale(1.05);opacity:1}
 .showcase-photos .sp:nth-child(1){grid-row:span 2}
+.showcase-photos.single{grid-template-columns:1fr;grid-template-rows:1fr}
 /* accent line */
 .showcase-photos .sp::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--pink),var(--gold));transform:scaleX(0);transform-origin:left;transition:transform .4s}
 .showcase-photos .sp:hover::after{transform:scaleX(1)}
 .showcase-text{
   display:flex;flex-direction:column;justify-content:center;
-  padding:64px 60px;
+  padding:56px 60px;
 }
 /* Light variant */
 .showcase-item.light .showcase-text{background:var(--cream)}
@@ -417,7 +424,7 @@ nav.s{
 }
 .light .sc-tag{background:rgba(229,37,100,.08);color:var(--rose)}
 .dark .sc-tag{background:rgba(255,255,255,.06);color:rgba(255,255,255,.75)}
-.cta-final{background:var(--cream2);padding:120px 0;text-align:center;position:relative;overflow:hidden}
+.cta-final{background:var(--cream2);padding:88px 0;text-align:center;position:relative;overflow:hidden}
 .cta-final::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(229,37,100,.08),transparent 60%);pointer-events:none}
 .cta-final .c{position:relative;z-index:2}
 .cta-actions{display:flex;gap:12px;justify-content:center;margin-top:32px;flex-wrap:wrap}
@@ -427,24 +434,24 @@ nav.s{
 /* ── EM ESTÚDIO — CAMPANHA ROSA ── */
 .pinkband{background:var(--pink);color:#fff;padding:0;position:relative;overflow:hidden}
 .pinkband::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 15% 20%,rgba(255,255,255,.12),transparent 45%),radial-gradient(circle at 85% 80%,rgba(201,169,110,.16),transparent 50%);pointer-events:none}
-.band-head{max-width:1180px;margin:0 auto;padding:84px 48px 0;position:relative;z-index:1}
+.band-head{max-width:1180px;margin:0 auto;padding:64px 48px 0;position:relative;z-index:1}
 .band-head .sl{color:#ffd6e3}
 .band-head .sl::before{background:#ffd6e3}
 .band-head h2{font-family:var(--fd);font-weight:600;font-size:clamp(2rem,3.5vw,3.1rem);line-height:1.08;letter-spacing:-.03em;color:#fff}
 .band-head h2 em{font-style:italic;font-weight:400;background:linear-gradient(135deg,#ffd89b,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.pink-rail{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;max-width:1180px;margin:0 auto;padding:40px 48px 88px;scrollbar-width:none;position:relative;z-index:1}
+.pink-rail{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;max-width:1180px;margin:0 auto;padding:32px 48px 64px;scrollbar-width:none;position:relative;z-index:1}
 .pink-rail::-webkit-scrollbar{display:none}
-.pink-item{scroll-snap-align:start;flex:0 0 auto;width:min(21%,220px);position:relative;border-radius:14px;overflow:hidden;box-shadow:0 20px 44px rgba(15,10,15,.18);transition:transform .35s}
+.pink-item{scroll-snap-align:start;flex:0 0 auto;width:min(21%,220px);display:flex;flex-direction:column;gap:12px;transition:transform .35s}
 .pink-item:hover{transform:translateY(-6px)}
+.pink-item .pi-photo{position:relative;border-radius:14px;overflow:hidden;box-shadow:0 20px 44px rgba(15,10,15,.18)}
 .pink-item img{width:100%;aspect-ratio:2/3;object-fit:cover;object-position:center 15%;display:block;transition:transform .7s cubic-bezier(.22,.61,.36,1)}
 .pink-item:hover img{transform:scale(1.06)}
-.pink-item::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(15,10,15,.68))}
-.pink-item figcaption{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:14px 4px 12px;font-family:var(--ft);font-style:italic;font-weight:400;font-size:1.15rem;text-align:center;color:#fff}
+.pink-item figcaption{font-family:var(--fb);font-style:normal;font-weight:700;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;text-align:left;color:#fff}
 @media(max-width:900px){.pink-item{width:min(38%,220px)}.band-head{padding:64px 20px 0}.pink-rail{padding:32px 20px 64px}}
 @media(max-width:600px){.pink-rail{justify-content:flex-start}.pink-item{flex:0 0 min(58vw,220px);width:auto}}
 
 /* ── CRESCE COM A CHUCHU ROSA — ESCURO ── */
-.grow{background:var(--ink);padding:76px 0 100px;position:relative}
+.grow{background:var(--ink);padding:88px 0;position:relative}
 .grow-rail{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;align-items:end;margin-top:36px}
 @media(max-width:880px){.grow-rail{grid-template-columns:repeat(2,1fr)}}
 .grow-item img{border-radius:14px;aspect-ratio:4/3;object-fit:cover;width:100%;transition:transform .5s}
@@ -456,7 +463,7 @@ nav.s{
 .grow-item:nth-child(4) figcaption{color:var(--pink)}
 
 /* ── AMBIENTES & FESTAS — CLARO ── */
-.spaces{background:var(--cream);padding:120px 0}
+.spaces{background:var(--cream);padding:88px 0}
 .spaces-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
 .spaces-grid figure{position:relative;border-radius:16px;overflow:hidden;grid-column:span 2;margin:0}
 .spaces-grid figure:nth-child(1),.spaces-grid figure:nth-child(2){grid-column:span 3}
@@ -499,11 +506,6 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
   .nl,.nc{display:none}
   .nh{display:flex}
   .mob-menu{display:block}
-  .hero-content{padding:0 20px 56px}
-  .hero-h1{font-size:clamp(2.2rem,8.5vw,3rem)}
-  .hero-bg{grid-template-columns:1fr}
-  .hbp:nth-child(2),.hbp:nth-child(3){display:none}
-  .scroll-hint{display:none}
   .about-grid{grid-template-columns:1fr;gap:40px}
   .about-imgs{height:360px}
   .cgrid{grid-template-columns:1fr 1fr;grid-template-rows:auto;height:auto;gap:4px}
@@ -516,11 +518,13 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
   .fg{grid-template-columns:1fr;gap:24px}
   .fbot{flex-direction:column;gap:10px;text-align:center}
   .c{padding:0 16px}
-  .about,.cats,.how,.prods,.testi,.cta-final{padding:76px 0}
+  .about,.cats,.how,.prods,.testi,.cta-final,.grow,.spaces,.occ,.catgrid2{padding:52px 0}
+  .band-head{padding:44px 20px 0}
+  .pink-rail{padding:24px 20px 44px}
   .showcase-item{grid-template-columns:1fr;min-height:auto}
   .showcase-item.reverse{direction:ltr}
   .showcase-photos{height:72vw;grid-template-rows:1fr 1fr}
-  .showcase-text{padding:40px 20px}
+  .showcase-text{padding:36px 20px}
 }
 @media(max-width:480px){
   .cgrid{grid-template-columns:1fr}
@@ -583,29 +587,86 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
   <a href="loja.html" class="mob-cta">Ver loja →</a>
 </div>
 
-<!-- HERO — foto ocupando tela toda -->
+<!-- HERO — editorial claro, foto rotativa -->
 <section class="hero">
-  <div class="hero-bg">
-    <div class="hbp"><img src="img/editorial-coelho-capa-480.webp" srcset="img/editorial-coelho-capa-480.webp 480w, img/editorial-coelho-capa-960.webp 960w" sizes="34vw" fetchpriority="high" alt="Menina com capa e capuz de coelho em feltro cinza, orelhas rosa, sorrindo em pose editorial" loading="eager"></div>
-    <div class="hbp"><img src="img/editorial-raposa-rose-480.webp" srcset="img/editorial-raposa-rose-480.webp 480w, img/editorial-raposa-rose-960.webp 960w" sizes="34vw" alt="Menino com fantasia de raposa em tecido laranja, capuz e patas, sobre fundo claro" loading="eager"></div>
-    <div class="hbp"><img src="img/editorial-coelho-rosas-480.webp" srcset="img/editorial-coelho-rosas-480.webp 480w, img/editorial-coelho-rosas-960.webp 960w" sizes="34vw" alt="Menina com tiara de orelhas de coelho felpudas e rosas azuis, retrato editorial" loading="eager"></div>
-  </div>
-  <div class="hero-overlay"></div>
-  <div class="hero-scan"></div>
-  <div class="hero-content">
+  <div class="hero-left">
     <div class="hero-eyebrow">Estúdio de design infantil · desde 2009</div>
-    <h1 class="hero-h1">Peças que viram<br>memória de<br><em>infância</em></h1>
+    <h1 class="hero-h1">Peças que<br>viram <em>memória</em><br>de infância</h1>
     <p class="hero-sub">Nada sai de prateleira. Cada fantasia, almofada e ambiente nasce de um croqui próprio e ganha forma sob medida para o seu filho — há <span data-anos>16</span> anos.</p>
     <div class="hero-actions">
       <a href="loja.html" class="btn-p">Explorar a loja →</a>
       <a href="https://wa.me/5519993041555?text=Oi!%20Vi%20o%20site%20da%20Chuchu%20Rosa%20e%20quero%20encomendar%20uma%20pe%C3%A7a" target="_blank" class="btn-g"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> Falar com a Chuchu Rosa</a>
     </div>
+    <div class="hero-meta">
+      <div>
+        <div class="hm-n"><span data-anos>16</span><sup>anos</sup></div>
+        <div class="hm-l">De história</div>
+      </div>
+      <div>
+        <div class="hm-n">100<sup>%</sup></div>
+        <div class="hm-l">Design original</div>
+      </div>
+      <div>
+        <div class="hm-n">5<sup>dias</sup></div>
+        <div class="hm-l">Prazo médio</div>
+      </div>
+    </div>
   </div>
-  <div class="scroll-hint">
-    <span>scroll</span>
-    <div class="scroll-dot"></div>
+  <div class="hero-right" id="heroRight">
+    <div class="hp active" data-src="img/ambiente-mae-filha-960.webp"><img alt="Mãe e filha com coroas de feltro Chuchu Rosa"></div>
+    <div class="hp" data-src="img/ambiente-trio-mascaras-960.webp"><img alt="Crianças com máscaras e fantasias de feltro Chuchu Rosa"></div>
+    <div class="hp" data-src="img/hero-leao-960.webp"><img alt="Criança com fantasia de leão Chuchu Rosa"></div>
+    <div class="hp" data-src="img/hero-sushi-960.webp"><img alt="Bebê com fantasia de sushi Chuchu Rosa"></div>
+    <div class="hp" data-src="img/editorial-raposa-rose-960.webp"><img alt="Menino com fantasia de raposa Chuchu Rosa"></div>
+    <div class="hero-tag">
+      <div class="hero-tag-dot"></div>
+      <div class="hero-tag-txt"><b>Croqui à peça.</b> Cada detalhe desenhado no estúdio antes de ganhar forma.</div>
+    </div>
   </div>
 </section>
+
+<script>
+(function(){
+  var root = document.getElementById('heroRight');
+  var panels = Array.prototype.slice.call(root.querySelectorAll('.hp'));
+
+  function loadPanel(p, eager){
+    var img = p.querySelector('img');
+    if(!img.src){
+      img.src = p.getAttribute('data-src');
+      if(eager) img.setAttribute('fetchpriority','high');
+    }
+  }
+
+  var order = panels.slice();
+  for(var i=order.length-1;i>0;i--){
+    var j = Math.floor(Math.random()*(i+1));
+    var tmp = order[i]; order[i]=order[j]; order[j]=tmp;
+  }
+
+  panels.forEach(function(p){p.classList.remove('active');});
+  var idx = 0;
+  loadPanel(order[0], true);
+  order[0].classList.add('active');
+
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduceMotion || order.length < 2) return;
+
+  setTimeout(function(){ loadPanel(order[1], false); }, 1200);
+
+  setInterval(function(){
+    var current = order[idx];
+    var nextIdx = (idx+1) % order.length;
+    var next = order[nextIdx];
+    loadPanel(next, false);
+    next.classList.add('active');
+    current.classList.remove('active');
+    idx = nextIdx;
+    var after = order[(idx+1)%order.length];
+    loadPanel(after, false);
+  }, 6500);
+})();
+</script>
 
 <!-- TICKER -->
 <div class="ticker"><div class="ticker-t">
@@ -701,11 +762,11 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
     <h2>Cor que se veste,<br><em>alegria</em> que se usa</h2>
   </div>
   <div class="pink-rail rv" tabindex="0" aria-label="Fotos da campanha — role para o lado">
-    <figure class="pink-item"><img src="img/pink-abelha-480.webp" loading="lazy" alt="Criança com fantasia de abelha em colete listrado amarelo e preto e capuz com antenas"><figcaption>Abelha</figcaption></figure>
-    <figure class="pink-item"><img src="img/pink-flor-480.webp" loading="lazy" alt="Menina sorrindo com fantasia de flor: capuz de pétalas rosa e vestido verde com folhas"><figcaption>Flor</figcaption></figure>
-    <figure class="pink-item"><img src="img/pink-pavao-480.webp" loading="lazy" alt="Menina com máscara e asas de pavão azul-turquesa com penas bordadas"><figcaption>Pavão</figcaption></figure>
-    <figure class="pink-item"><img src="img/pink-morango-480.webp" loading="lazy" alt="Criança sentada com fantasia de morango: capa vermelha com sementes e flor branca"><figcaption>Morango</figcaption></figure>
-    <figure class="pink-item"><img src="img/pink-sorvete-480.webp" srcset="img/pink-sorvete-480.webp 480w, img/pink-sorvete-960.webp 960w" loading="lazy" alt="Criança mostrando a língua com touca de sorvete rosa com chantilly e cereja"><figcaption>Sorvete</figcaption></figure>
+    <figure class="pink-item"><div class="pi-photo"><img src="img/pink-abelha-480.webp" loading="lazy" alt="Criança com fantasia de abelha em colete listrado amarelo e preto e capuz com antenas"></div><figcaption>Abelha</figcaption></figure>
+    <figure class="pink-item"><div class="pi-photo"><img src="img/pink-flor-480.webp" loading="lazy" alt="Menina sorrindo com fantasia de flor: capuz de pétalas rosa e vestido verde com folhas"></div><figcaption>Flor</figcaption></figure>
+    <figure class="pink-item"><div class="pi-photo"><img src="img/pink-pavao-480.webp" loading="lazy" alt="Menina com máscara e asas de pavão azul-turquesa com penas bordadas"></div><figcaption>Pavão</figcaption></figure>
+    <figure class="pink-item"><div class="pi-photo"><img src="img/pink-morango-480.webp" loading="lazy" alt="Criança sentada com fantasia de morango: capa vermelha com sementes e flor branca"></div><figcaption>Morango</figcaption></figure>
+    <figure class="pink-item"><div class="pi-photo"><img src="img/pink-sorvete-480.webp" srcset="img/pink-sorvete-480.webp 480w, img/pink-sorvete-960.webp 960w" loading="lazy" alt="Criança mostrando a língua com touca de sorvete rosa com chantilly e cereja"></div><figcaption>Sorvete</figcaption></figure>
   </div>
 </section>
 
@@ -890,10 +951,8 @@ footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.05);padding:
 
   <!-- FUNDO DO MAR — CLARO -->
   <div class="showcase-item light rv">
-    <div class="showcase-photos">
+    <div class="showcase-photos single">
       <div class="sp"><img src="img/colecao-fundo-do-mar-480.webp" srcset="img/colecao-fundo-do-mar-480.webp 480w, img/colecao-fundo-do-mar-960.webp 960w" alt="Criança com fantasia de fundo do mar, entre peixinhos e conchas em feltro" loading="lazy"></div>
-      <div class="sp"><img src="img/bebe-urso-cinza-480.webp" srcset="img/bebe-urso-cinza-480.webp 480w, img/bebe-urso-cinza-960.webp 960w" alt="Bebê com naninha de urso cinza em feltro" loading="lazy"></div>
-      <div class="sp"><img src="img/colecao-unicornio-480.webp" alt="Criança com fantasia de unicórnio colorida" loading="lazy"></div>
     </div>
     <div class="showcase-text">
       <div class="sc-eyebrow">Coleção</div>
