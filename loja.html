@@ -35,6 +35,9 @@
 [data-theme="dark"] nav{
   border-color:rgba(244,121,154,.15)!important;
 }
+[data-theme="dark"] nav{
+  background:rgba(21,16,26,.92)!important;
+}
 [data-theme="dark"] img{filter:brightness(.94)}
 [data-theme="dark"] ::-webkit-scrollbar-thumb{background:var(--pink2)}
 [data-theme="dark"] .lb-trigger,
@@ -80,6 +83,9 @@ nav{
 nav.elevated{
   border-color:rgba(15,10,15,.1);
   box-shadow:0 4px 24px rgba(15,10,15,.06);
+}
+[data-theme="dark"] nav.elevated{
+  box-shadow:0 4px 24px rgba(0,0,0,.35);
 }
 .nav-logo{flex-shrink:0;display:flex;align-items:center}
 .nav-logo canvas,.nav-logo img{height:34px;width:auto}
@@ -1163,19 +1169,31 @@ body::before{
   <div class="hero-photo">
     <div class="hero-slides" id="heroSlides">
       <div class="hero-slide active">
-        <img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/fantasia-de-raposa-com-tiara-e-saia-menina.jpg" alt="Fantasia de Raposa" loading="eager">
+        <img src="img/hero-leao-960.webp" srcset="img/hero-leao-480.webp 480w, img/hero-leao-960.webp 960w, img/hero-leao-1920.webp 1920w" sizes="(max-width:768px) 100vw, 45vw" alt="Fantasia de leão, editorial Chuchu Rosa" loading="eager">
       </div>
       <div class="hero-slide">
-        <img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/fantasia-de-flamingo-com-asas-carnaval.jpg" alt="Fantasia de Flamingo" loading="lazy">
+        <img src="img/ambiente-mae-filha-960.webp" srcset="img/ambiente-mae-filha-480.webp 480w, img/ambiente-mae-filha-960.webp 960w, img/ambiente-mae-filha-1920.webp 1920w" sizes="(max-width:768px) 100vw, 45vw" alt="Mãe e filha usando peças Chuchu Rosa" loading="lazy">
       </div>
       <div class="hero-slide">
-        <img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/fantasia-de-borboleta-crianca.jpg" alt="Fantasia de Borboleta" loading="lazy">
+        <img src="img/colecao-raposa-960.webp" srcset="img/colecao-raposa-480.webp 480w, img/colecao-raposa-960.webp 960w" sizes="(max-width:768px) 100vw, 45vw" alt="Coleção temática de raposa" loading="lazy">
+      </div>
+      <div class="hero-slide">
+        <img src="img/bebe-urso-cinza-960.webp" srcset="img/bebe-urso-cinza-480.webp 480w, img/bebe-urso-cinza-960.webp 960w, img/bebe-urso-cinza-1920.webp 1920w" sizes="(max-width:768px) 100vw, 45vw" alt="Bebê com fantasia de urso" loading="lazy">
+      </div>
+      <div class="hero-slide">
+        <img src="img/ambiente-mesa-raposa-960.webp" srcset="img/ambiente-mesa-raposa-480.webp 480w, img/ambiente-mesa-raposa-960.webp 960w, img/ambiente-mesa-raposa-1920.webp 1920w" sizes="(max-width:768px) 100vw, 45vw" alt="Ambiente de festa com tema de raposa" loading="lazy">
+      </div>
+      <div class="hero-slide">
+        <img src="img/hero-sushi-480.webp" alt="Almofada de sushi decorativa" loading="lazy">
       </div>
     </div>
     <div class="hero-dots" id="heroDots">
       <button class="hero-dot active" data-idx="0" aria-label="Slide 1"></button>
       <button class="hero-dot" data-idx="1" aria-label="Slide 2"></button>
       <button class="hero-dot" data-idx="2" aria-label="Slide 3"></button>
+      <button class="hero-dot" data-idx="3" aria-label="Slide 4"></button>
+      <button class="hero-dot" data-idx="4" aria-label="Slide 5"></button>
+      <button class="hero-dot" data-idx="5" aria-label="Slide 6"></button>
     </div>
   </div>
 </div>
@@ -3399,7 +3417,7 @@ document.getElementById('listViewBtn').addEventListener('click',()=>{
     dots[cur].classList.add('active');
   }
   function next(){goTo(cur+1)}
-  function start(){timer=setInterval(next,4500)}
+  function start(){timer=setInterval(next,4000)}
   function stop(){clearInterval(timer)}
   start();
   dots.forEach(d=>d.addEventListener('click',()=>{stop();goTo(+d.dataset.idx);start()}));
