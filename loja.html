@@ -71,14 +71,17 @@ img{display:block;max-width:100%;height:auto}
 
 /* ── NAV ── */
 nav{
-  position:sticky;top:0;left:0;right:0;z-index:200;
+  position:fixed;top:0;left:0;right:0;z-index:200;
   background:rgba(253,248,244,.92);
   backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
   border-bottom:1px solid rgba(15,10,15,.07);
-  height:76px;padding:0 32px;
-  display:flex;align-items:center;gap:16px;
-  width:100%;
+  height:76px;
   transition:border-color .3s,box-shadow .3s;
+}
+.nav-inner{
+  max-width:1320px;margin:0 auto;height:100%;
+  padding:0 32px;
+  display:flex;align-items:center;gap:16px;
 }
 nav::after{
   content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;
@@ -98,19 +101,23 @@ nav.elevated{
 .nav-search{
   flex:1;position:relative;
   min-width:0;
-  max-width:560px;
+  max-width:640px;
 }
 .nav-search input{
   width:100%;padding:9px 16px 9px 38px;
   border:1.5px solid transparent;border-radius:100px;
   font-family:var(--fb);font-size:.84rem;
-  background:rgba(15,10,15,.035);color:var(--dark);
+  background:rgba(15,10,15,.05);color:var(--dark);
   outline:none;transition:all .25s;
 }
 .nav-search input:focus{border-color:var(--pink);background:var(--white);box-shadow:0 0 0 3px rgba(229,37,100,.1)}
-.nav-search input::placeholder{color:rgba(15,10,15,.38)}
-.nav-search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:rgba(15,10,15,.35);transition:color .2s}
+.nav-search input::placeholder{color:rgba(15,10,15,.4)}
+.nav-search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:rgba(15,10,15,.4);transition:color .2s}
 .nav-search input:focus ~ svg{color:var(--pink)}
+[data-theme="dark"] .nav-search input{background:rgba(0,0,0,.28);color:var(--dark);border-color:rgba(240,232,236,.1)}
+[data-theme="dark"] .nav-search input:focus{background:var(--white);border-color:var(--pink)}
+[data-theme="dark"] .nav-search input::placeholder{color:rgba(240,232,236,.4)}
+[data-theme="dark"] .nav-search svg{color:rgba(240,232,236,.4)}
 .nav-cart{
   flex-shrink:0;
   background:var(--pink);color:#fff;border:none;
@@ -182,9 +189,15 @@ nav.elevated{
   padding:14px 48px;
   overflow-x:auto;
   scrollbar-width:none;
+  position:relative;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 32px,#000 calc(100% - 32px),transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 32px,#000 calc(100% - 32px),transparent 100%);
 }
 .hero-shortcuts-wrap::-webkit-scrollbar{display:none}
-@media(max-width:768px){.hero-shortcuts-wrap{padding:12px 20px}}
+@media(max-width:768px){
+  .hero-shortcuts-wrap{padding:12px 20px}
+  .hero-shortcuts-wrap{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 16px,#000 calc(100% - 16px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 16px,#000 calc(100% - 16px),transparent 100%)}
+}
 .hero-badges{
   display:flex;gap:10px;
   width:max-content;
@@ -1202,6 +1215,7 @@ body::before{
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
 <nav>
+<div class="nav-inner">
   <button class="hamburger" onclick="toggleSidebar()" aria-label="Menu"><span class="filter-dot" id="filterDot"></span>
     <span></span><span></span><span></span>
   </button>
@@ -1222,7 +1236,9 @@ body::before{
   <a href="minha-conta.html" class="nav-account" title="Minha conta" style="color:rgba(15,10,15,.72);display:flex;align-items:center;padding:6px;border-radius:50%;transition:background .2s" onmouseover="this.style.background='rgba(15,10,15,.08)'" onmouseout="this.style.background='none'">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
   </a>
+</div>
 </nav>
+<div style="height:76px"></div>
 
 <div id="sugestaoBanner" style="display:none"></div>
 <div id="sugestaoSection" style="display:none"></div>
@@ -1291,6 +1307,8 @@ body::before{
     <ul class="cat-list" id="catList">
       <li class="cat-item active" data-cat="Todas" role="button" tabindex="0" aria-pressed="true"><span class="cat-name">Todos os produtos</span><span class="cat-count" id="countTodas"></span></li>
     </ul>
+    <div class="sidebar-label">Designs</div>
+    <ul class="cat-list" id="designList"></ul>
     <div class="sidebar-label">Ordenar</div>
     <select class="sort-select" id="sortSelect" onchange="currentSort=this.value;page=1;applyFilters()">
       <option value="az">Nome A–Z</option>
@@ -3155,6 +3173,7 @@ async function setCatTab(el,cat){
 
 async function loadDesignBadges(){
   const badgeRow=document.getElementById('heroBadges');
+  const designList=document.getElementById('designList');
   if(!badgeRow)return;
   // Fallback designs if DB not available
   const fallback=[
@@ -3182,8 +3201,54 @@ async function loadDesignBadges(){
   badgeRow.innerHTML=designs.map(d=>
     `<span class="hbadge" data-filter="${toSlug(d.nome)}" data-type="search">${d.emoji||''} ${d.nome}</span>`
   ).join('');
+
+  // Mesma lista, como itens de navegação na sidebar
+  if(designList){
+    designList.innerHTML=designs.map(d=>
+      `<li class="cat-item design-item" data-filter="${toSlug(d.nome)}" role="button" tabindex="0"><span class="cat-icon">${d.emoji||''}</span><span class="cat-name">${d.nome}</span></li>`
+    ).join('');
+  }
 }
 loadDesignBadges();
+
+document.getElementById('designList')?.addEventListener('click',e=>{
+  const item=e.target.closest('.design-item');
+  if(!item)return;
+  const filter=item.dataset.filter;
+  const heroBadge=document.querySelector(`#heroBadges .hbadge[data-filter="${filter}"]`);
+  if(heroBadge)heroBadge.click();
+});
+function syncDesignSidebarUI(){
+  const activeFilters=[...document.querySelectorAll('#heroBadges .hbadge.active')].map(b=>b.dataset.filter);
+  document.querySelectorAll('#designList .design-item').forEach(li=>{
+    li.classList.toggle('active',activeFilters.includes(li.dataset.filter));
+  });
+}
+
+// Drag-to-scroll com mouse (desktop) na faixa de atalhos do hero
+(function(){
+  const wrap=document.querySelector('.hero-shortcuts-wrap');
+  if(!wrap)return;
+  let isDown=false,startX=0,scrollStart=0,moved=false;
+  wrap.style.cursor='grab';
+  wrap.addEventListener('mousedown',e=>{
+    isDown=true;moved=false;
+    startX=e.pageX;
+    scrollStart=wrap.scrollLeft;
+    wrap.style.cursor='grabbing';
+  });
+  window.addEventListener('mouseup',()=>{isDown=false;wrap.style.cursor='grab';});
+  window.addEventListener('mousemove',e=>{
+    if(!isDown)return;
+    const dx=e.pageX-startX;
+    if(Math.abs(dx)>4)moved=true;
+    wrap.scrollLeft=scrollStart-dx;
+  });
+  // Evita disparar o clique do badge se o usuário estava arrastando
+  wrap.addEventListener('click',e=>{
+    if(moved){e.stopPropagation();e.preventDefault();}
+  },true);
+})();
 
 document.getElementById('heroBadges').addEventListener('click',e=>{
   const badge=e.target.closest('.hbadge');
@@ -3199,6 +3264,7 @@ document.getElementById('heroBadges').addEventListener('click',e=>{
   }
   activeDesigns=[...document.querySelectorAll('#heroBadges .hbadge.active')]
     .map(b=>b.dataset.filter).filter(Boolean);
+  syncDesignSidebarUI();
 
   searchQ='';
   selectedCats=[];
