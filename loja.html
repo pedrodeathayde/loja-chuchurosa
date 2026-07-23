@@ -243,18 +243,18 @@ nav.elevated{
    fim da página pra percorrer. Sem essa altura no pai, sticky encolhe
    pro tamanho do próprio conteúdo e "solta" antes do fim ao rolar. */
 .sidebar{width:282px;flex-shrink:0}
+/* Sem max-height nem overflow aqui: isso cortava reto ao rolar (viewport
+   menos 112px), como se houvesse uma borda invisível no meio da tela.
+   O sticky só precisa acompanhar o scroll — não precisa ter rolagem
+   PRÓPRIA. O conteúdo (categorias + designs + preço) é curto o
+   suficiente pra caber numa tela normal; se um catálogo futuro tiver
+   dezenas de categorias, a solução correta é limitar cada LISTA
+   individualmente (com seu próprio scroll interno), não a sidebar
+   inteira. */
 .sidebar-inner{
   position:sticky;top:92px;
-  max-height:calc(100vh - 112px);
-  overflow-y:auto;overscroll-behavior:contain;
   padding:30px 26px 32px 26px;
-  scrollbar-width:thin;
-  scrollbar-color:rgba(229,37,100,.2) transparent;
 }
-.sidebar-inner::-webkit-scrollbar{width:4px}
-.sidebar-inner::-webkit-scrollbar-track{background:transparent}
-.sidebar-inner::-webkit-scrollbar-thumb{background:rgba(229,37,100,.16);border-radius:2px}
-.sidebar-inner:hover::-webkit-scrollbar-thumb{background:rgba(229,37,100,.32)}
 .sidebar-head{display:none}
 .sidebar-close{display:none}
 
