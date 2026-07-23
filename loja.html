@@ -211,11 +211,21 @@ nav.elevated{
 
 
 /* ── LAYOUT ── */
-/* Flex com stretch: as duas colunas ficam SEMPRE da mesma altura, então o
-   filete divisor (que mora na .shop-main) nunca sobra nem falta. A sidebar
-   não pinta fundo nenhum — é o mesmo papel da página. Sem cor de painel,
-   não existe vão de cor pra descasar. */
-.shop-wrap{display:flex;align-items:stretch;min-height:70vh}
+/* A linha divisória é um BACKGROUND do próprio .shop-wrap, não borda de
+   filho nenhum. Um container sempre tem a altura de tudo que está dentro
+   dele — não depende de flex-stretch se comportar, e por isso a linha
+   nunca para antes do fim da página, seja lá qual for a altura da
+   sidebar ou da grade de produtos. */
+.shop-wrap{
+  display:flex;align-items:flex-start;min-height:70vh;
+  background-image:linear-gradient(rgba(15,10,15,.09),rgba(15,10,15,.09));
+  background-repeat:no-repeat;
+  background-size:1px 100%;
+  background-position:282px 0;
+}
+[data-theme="dark"] .shop-wrap{
+  background-image:linear-gradient(rgba(240,232,236,.1),rgba(240,232,236,.1));
+}
 
 /* ── SIDEBAR ── */
 .sidebar{width:282px;flex-shrink:0}
@@ -414,14 +424,9 @@ nav.elevated{
 .sidebar-footer .clear-filters-btn{width:100%;margin:18px 0 0}
 
 /* ── MAIN ── */
-/* O filete divisor vive AQUI, não na sidebar: com align-items:stretch as
-   duas colunas têm a mesma altura, então a linha acompanha a página
-   inteira sem depender da altura dos filtros. */
 .shop-main{
   flex:1;min-width:0;padding:28px 0 28px 32px;
-  border-left:1px solid rgba(15,10,15,.09);
 }
-[data-theme="dark"] .shop-main{border-left-color:rgba(240,232,236,.1)}
 
 /* ── TOPBAR ── */
 .topbar{
@@ -742,8 +747,8 @@ nav.elevated{
   [data-theme="dark"] .sidebar-close{background:rgba(244,121,154,.12);color:var(--pink2)}
   .sidebar #catList{margin-top:16px}
   body.sidebar-open{overflow:hidden;position:fixed;width:100%}
-  .shop-wrap{display:block}
-  .shop-main{padding:12px;border-left:none}
+  .shop-wrap{display:block;background-image:none}
+  .shop-main{padding:12px}
   .topbar-tools{gap:8px}
   .sort-inline label{display:none}
   .topbar .sort-select{min-width:0;font-size:.76rem;padding:7px 26px 7px 10px}
