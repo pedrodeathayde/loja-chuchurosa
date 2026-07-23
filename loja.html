@@ -222,22 +222,19 @@ nav.elevated{
    1) um tom sutil preenchendo a faixa de 0 a 282px (a sidebar precisa de
       contraste com a página, senão vira "vazio" no dark mode);
    2) a linha de 1px bem na borda dos 282px. */
-/* A área pintada da sidebar só cobre a altura do CONTEÚDO real
-   (.sidebar-inner), não a coluna inteira — a coluna acompanha
-   .shop-main (correto, é assim que o gap até o footer fica igual dos
-   dois lados), mas o conteúdo da sidebar é bem mais curto, então pintar
-   a coluna toda sobrava parede vazia atrás do nada. A linha divisória
-   continua indo até o fim (ela é fina, não incomoda vazia), só a
-   camada de tom de fundo foi tirada. */
 .shop-wrap{
   display:flex;align-items:stretch;min-height:70vh;
-  background-image:linear-gradient(rgba(15,10,15,.09),rgba(15,10,15,.09));
-  background-repeat:no-repeat;
-  background-size:1px 100%;
-  background-position:282px 0;
+  background-image:
+    linear-gradient(rgba(15,10,15,.09),rgba(15,10,15,.09)),
+    linear-gradient(rgba(15,10,15,.025),rgba(15,10,15,.025));
+  background-repeat:no-repeat,no-repeat;
+  background-size:1px 100%,282px 100%;
+  background-position:282px 0,0 0;
 }
 [data-theme="dark"] .shop-wrap{
-  background-image:linear-gradient(rgba(240,232,236,.1),rgba(240,232,236,.1));
+  background-image:
+    linear-gradient(rgba(240,232,236,.1),rgba(240,232,236,.1)),
+    linear-gradient(rgba(240,232,236,.035),rgba(240,232,236,.035));
 }
 
 /* ── SIDEBAR ── */
@@ -1287,7 +1284,7 @@ body::before{
 
 
 /* ── SHOP FOOTER ── */
-.shop-footer{background:var(--ink);position:relative;margin-top:64px;padding:56px 0 28px}
+.shop-footer{background:var(--ink);position:relative;margin-top:0;padding:56px 0 28px}
 .shop-footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--pink),var(--gold),transparent)}
 .shop-footer-inner{max-width:1200px;margin:0 auto;padding:0 24px}
 .shop-footer-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
