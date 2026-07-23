@@ -216,15 +216,25 @@ nav.elevated{
    dele — não depende de flex-stretch se comportar, e por isso a linha
    nunca para antes do fim da página, seja lá qual for a altura da
    sidebar ou da grade de produtos. */
+/* Duas camadas de background, ambas no CONTAINER (nunca em filho), então
+   nenhuma das duas depende da altura relativa entre sidebar e grade de
+   produtos — um container sempre tem a altura de tudo que está dentro:
+   1) um tom sutil preenchendo a faixa de 0 a 282px (a sidebar precisa de
+      contraste com a página, senão vira "vazio" no dark mode);
+   2) a linha de 1px bem na borda dos 282px. */
 .shop-wrap{
   display:flex;align-items:flex-start;min-height:70vh;
-  background-image:linear-gradient(rgba(15,10,15,.09),rgba(15,10,15,.09));
-  background-repeat:no-repeat;
-  background-size:1px 100%;
-  background-position:282px 0;
+  background-image:
+    linear-gradient(rgba(15,10,15,.09),rgba(15,10,15,.09)),
+    linear-gradient(rgba(15,10,15,.025),rgba(15,10,15,.025));
+  background-repeat:no-repeat,no-repeat;
+  background-size:1px 100%,282px 100%;
+  background-position:282px 0,0 0;
 }
 [data-theme="dark"] .shop-wrap{
-  background-image:linear-gradient(rgba(240,232,236,.1),rgba(240,232,236,.1));
+  background-image:
+    linear-gradient(rgba(240,232,236,.1),rgba(240,232,236,.1)),
+    linear-gradient(rgba(240,232,236,.035),rgba(240,232,236,.035));
 }
 
 /* ── SIDEBAR ── */
