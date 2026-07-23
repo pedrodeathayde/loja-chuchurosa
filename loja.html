@@ -215,30 +215,32 @@ nav.elevated{
    borda da sidebar acompanham a altura da página (antes o painel cortava
    no meio, porque a altura era a do conteúdo). */
 .shop-wrap{
-  display:grid;
-  grid-template-columns:288px minmax(0,1fr);
-  align-items:stretch;
+  display:flex;
+  align-items:flex-start;
+  gap:0;
   min-height:70vh;
 }
 
 /* ── SIDEBAR ── */
+/* Um cartão sticky do tamanho do próprio conteúdo — não tenta acompanhar
+   a altura da coluna de produtos, então não sobra vão de cor diferente
+   nem falta preencher até o fim da página. */
 .sidebar{
-  grid-column:1;
-  align-self:start;
+  width:288px;flex-shrink:0;
+  position:sticky;top:76px;
+  align-self:flex-start;
 }
-/* Fundo e borda vivem aqui, do tamanho do CONTEÚDO — não da coluna
-   inteira. É isso que tira a barra vazia esticando até o fim da página. */
 .sidebar-inner{
   background:var(--white);
-  border-right:1px solid rgba(229,37,100,.08);
-  position:sticky;top:76px;
-  max-height:calc(100vh - 76px);
+  border:1px solid rgba(229,37,100,.08);
+  border-radius:var(--r-lg);
+  max-height:calc(100vh - 96px);
   overflow-y:auto;overscroll-behavior:contain;
   padding:0 0 24px;
   scrollbar-width:thin;
   scrollbar-color:rgba(229,37,100,.22) transparent;
 }
-[data-theme="dark"] .sidebar-inner{border-right-color:rgba(244,121,154,.12)}
+[data-theme="dark"] .sidebar-inner{border-color:rgba(244,121,154,.12)}
 .sidebar-inner::-webkit-scrollbar{width:5px}
 .sidebar-inner::-webkit-scrollbar-track{background:transparent}
 .sidebar-inner::-webkit-scrollbar-thumb{background:rgba(229,37,100,.18);border-radius:3px}
@@ -426,7 +428,7 @@ nav.elevated{
 }
 
 /* ── MAIN ── */
-.shop-main{min-width:0;padding:28px 32px}
+.shop-main{flex:1;min-width:0;padding:28px 32px}
 
 /* ── TOPBAR ── */
 .topbar{
@@ -716,6 +718,7 @@ nav.elevated{
   .sidebar-inner{
     position:static;max-height:none;overflow:visible;
     padding:0 0 28px;
+    background:none;border:none;border-radius:0;
   }
   .sidebar-section{padding:0 20px}
   .sidebar-hero{padding:18px 20px}
