@@ -320,17 +320,27 @@ nav.s{
 
 /* ── HOW STEPS: artistic timeline ── */
 .steps-wrap{margin-top:64px;position:relative}
-.steps-svg{display:block;width:100%;height:158px;position:absolute;top:0;left:0;z-index:0;pointer-events:none}
 .steps{
   display:grid;grid-template-columns:repeat(4,1fr);
-  position:relative;z-index:1;padding-top:158px;
+  position:relative;padding-top:76px;
 }
+.steps-road{
+  position:absolute;top:114px;left:12.5%;right:12.5%;height:2px;
+  background:linear-gradient(90deg,#e52564,#f0995a 35%,#c9a96e 65%,#7fb88f);
+  border-radius:2px;z-index:0;
+}
+.steps-road::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.08);border-radius:2px;z-index:-1}
 .step{
-  position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;
+  position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;
   cursor:default;
   opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s;
 }
 .step.on{opacity:1;transform:translateY(0)}
+.s-halo{
+  position:absolute;top:38px;left:50%;transform:translate(-50%,-50%);
+  width:170px;height:170px;border-radius:50%;pointer-events:none;z-index:-1;
+  background:radial-gradient(circle,color-mix(in srgb,var(--step-c,var(--gold)) 16%,transparent),transparent 68%);
+}
 .s-num{
   position:relative;flex:none;width:76px;height:76px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
@@ -360,7 +370,7 @@ nav.s{
 }
 .s-desc{font-size:.86rem;line-height:1.7;color:rgba(255,255,255,.62);max-width:210px}
 @media(max-width:880px){
-  .steps-svg{display:none}
+  .steps-road,.s-halo{display:none}
   .steps{grid-template-columns:1fr 1fr;row-gap:40px;padding-top:0}
 }
 @media(max-width:540px){.steps{grid-template-columns:1fr}}
@@ -822,39 +832,28 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
       <p style="font-size:.88rem;line-height:1.8;color:rgba(255,255,255,.65);max-width:420px;margin-top:12px">Cada peça nasce sob medida — nada sai de prateleira. É simples, é rápido, e o resultado encanta.</p>
     </div>
     <div class="steps-wrap rv" id="stepsTrack">
-      <svg class="steps-svg" viewBox="0 0 1040 158" aria-hidden="true">
-        <defs>
-          <linearGradient id="roadGrad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stop-color="#e52564"/><stop offset="35%" stop-color="#f0995a"/><stop offset="65%" stop-color="#c9a96e"/><stop offset="100%" stop-color="#7fb88f"/>
-          </linearGradient>
-          <radialGradient id="hg1" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#e52564" stop-opacity=".14"/><stop offset="100%" stop-color="#e52564" stop-opacity="0"/></radialGradient>
-          <radialGradient id="hg2" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#f0995a" stop-opacity=".14"/><stop offset="100%" stop-color="#f0995a" stop-opacity="0"/></radialGradient>
-          <radialGradient id="hg3" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#c9a96e" stop-opacity=".14"/><stop offset="100%" stop-color="#c9a96e" stop-opacity="0"/></radialGradient>
-          <radialGradient id="hg4" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#7fb88f" stop-opacity=".14"/><stop offset="100%" stop-color="#7fb88f" stop-opacity="0"/></radialGradient>
-        </defs>
-        <circle cx="130" cy="90" r="85" fill="url(#hg1)"/>
-        <circle cx="390" cy="90" r="85" fill="url(#hg2)"/>
-        <circle cx="650" cy="90" r="85" fill="url(#hg3)"/>
-        <circle cx="910" cy="90" r="85" fill="url(#hg4)"/>
-        <line x1="130" y1="90" x2="910" y2="90" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
-        <line x1="130" y1="90" x2="910" y2="90" stroke="url(#roadGrad)" stroke-width="2" stroke-linecap="round"/>      </svg>
       <div class="steps" id="stepsGrid">
+        <div class="steps-road" aria-hidden="true"></div>
         <div class="step" style="--step-c:#e52564">
+          <div class="s-halo" aria-hidden="true"></div>
           <div class="s-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6L4.5 3H2"/><circle cx="9.5" cy="19.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="17.5" cy="19.5" r="1.5" fill="currentColor" stroke="none"/></svg></div>
           <div class="s-title">Escolha</div>
           <div class="s-desc">Navegue pelo acervo de 319 peças e encontre o ponto de partida perfeito.</div>
         </div>
         <div class="step" style="--step-c:#f0995a">
+          <div class="s-halo" aria-hidden="true"></div>
           <div class="s-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 11.5a8.4 8.4 0 01-1 4 8.5 8.5 0 01-7.5 4.5A8.4 8.4 0 018 19l-5 1 1-5a8.4 8.4 0 01-1-4A8.5 8.5 0 0111.5 3a8.5 8.5 0 019.5 8.5z"/></svg></div>
           <div class="s-title">Personalize</div>
           <div class="s-desc">Pelo WhatsApp, vocês definem cores, tamanho e detalhes exclusivos da sua peça.</div>
         </div>
         <div class="step" style="--step-c:#c9a96e">
+          <div class="s-halo" aria-hidden="true"></div>
           <div class="s-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.5 15.5M14.5 14.5L20 20M8.5 8.5L11 11"/></svg></div>
           <div class="s-title">Produção</div>
           <div class="s-desc">Sua peça entra em produção sob medida — prazo médio de 5 dias úteis após a confirmação.</div>
         </div>
         <div class="step" style="--step-c:#7fb88f">
+          <div class="s-halo" aria-hidden="true"></div>
           <div class="s-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 8l9-5 9 5-9 5-9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div>
           <div class="s-title">Receba</div>
           <div class="s-desc">Embalagem caprichada e envio rastreado para qualquer lugar do Brasil.</div>
