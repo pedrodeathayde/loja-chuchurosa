@@ -211,128 +211,113 @@ nav.elevated{
 
 
 /* ── LAYOUT ── */
-/* Grid: a COLUNA da esquerda existe de cima a baixo, então o fundo e a
-   borda da sidebar acompanham a altura da página (antes o painel cortava
-   no meio, porque a altura era a do conteúdo). */
-.shop-wrap{
-  display:flex;
-  align-items:flex-start;
-  gap:0;
-  min-height:70vh;
-}
+/* Flex com stretch: as duas colunas ficam SEMPRE da mesma altura, então o
+   filete divisor (que mora na .shop-main) nunca sobra nem falta. A sidebar
+   não pinta fundo nenhum — é o mesmo papel da página. Sem cor de painel,
+   não existe vão de cor pra descasar. */
+.shop-wrap{display:flex;align-items:stretch;min-height:70vh}
 
 /* ── SIDEBAR ── */
-/* Um cartão sticky do tamanho do próprio conteúdo — não tenta acompanhar
-   a altura da coluna de produtos, então não sobra vão de cor diferente
-   nem falta preencher até o fim da página. */
-.sidebar{
-  width:288px;flex-shrink:0;
-  position:sticky;top:76px;
-  align-self:flex-start;
-}
+.sidebar{width:282px;flex-shrink:0}
 .sidebar-inner{
-  background:var(--white);
-  border:1px solid rgba(229,37,100,.08);
-  border-radius:var(--r-lg);
-  max-height:calc(100vh - 96px);
+  position:sticky;top:92px;
+  max-height:calc(100vh - 112px);
   overflow-y:auto;overscroll-behavior:contain;
-  padding:0 0 24px;
+  padding:30px 26px 32px 0;
   scrollbar-width:thin;
-  scrollbar-color:rgba(229,37,100,.22) transparent;
+  scrollbar-color:rgba(229,37,100,.2) transparent;
 }
-[data-theme="dark"] .sidebar-inner{border-color:rgba(244,121,154,.12)}
-.sidebar-inner::-webkit-scrollbar{width:5px}
+.sidebar-inner::-webkit-scrollbar{width:4px}
 .sidebar-inner::-webkit-scrollbar-track{background:transparent}
-.sidebar-inner::-webkit-scrollbar-thumb{background:rgba(229,37,100,.18);border-radius:3px}
-.sidebar-inner:hover::-webkit-scrollbar-thumb{background:rgba(229,37,100,.35)}
+.sidebar-inner::-webkit-scrollbar-thumb{background:rgba(229,37,100,.16);border-radius:2px}
+.sidebar-inner:hover::-webkit-scrollbar-thumb{background:rgba(229,37,100,.32)}
 .sidebar-head{display:none}
 .sidebar-close{display:none}
 
-/* ── Bloco "Todos os produtos" — destaque fixo no topo ── */
-.sidebar-hero{
-  padding:24px 22px 20px;
-  border-bottom:1px solid rgba(229,37,100,.07);
-  margin-bottom:0;
-}
-.sidebar-hero-eyebrow{
-  font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--pink);margin-bottom:6px;
-}
+/* ── "Todos os produtos" — primeira linha do índice, não um cartão ── */
+.sidebar-hero{margin-bottom:30px}
+.sidebar-hero-eyebrow{display:none}
 .sidebar-all-btn{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:12px 14px;border-radius:14px;
-  background:linear-gradient(135deg,rgba(229,37,100,.08),rgba(201,169,110,.08));
-  border:1.5px solid rgba(229,37,100,.14);
-  cursor:pointer;transition:all .2s;
-  font-family:var(--fd);font-size:.98rem;font-weight:700;color:var(--dark);
+  display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  cursor:pointer;transition:color .18s;
+  font-family:var(--fd);
+  font-size:1.28rem;font-weight:600;letter-spacing:-.015em;
+  line-height:1.15;color:var(--dark);
 }
-.sidebar-all-btn:hover{border-color:rgba(229,37,100,.3)}
-.sidebar-all-btn.active{background:linear-gradient(135deg,var(--pink),var(--rose));color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(229,37,100,.28)}
-.sidebar-all-btn .cnt{font-family:var(--fb);font-size:.76rem;font-weight:600;opacity:.7}
+.sidebar-all-btn:hover{color:var(--rose)}
+.sidebar-all-btn:focus-visible{outline:2px solid var(--rose);outline-offset:3px;border-radius:4px}
+.sidebar-all-btn.active{color:var(--pink)}
+.sidebar-all-btn .cnt{
+  font-family:var(--fb);font-size:.72rem;font-weight:600;
+  color:rgba(15,10,15,.3);flex-shrink:0;
+  font-variant-numeric:tabular-nums;
+}
+[data-theme="dark"] .sidebar-all-btn .cnt{color:rgba(240,232,236,.3)}
+.sidebar-all-btn.active .cnt{color:rgba(229,37,100,.55)}
 
-/* ── Seções colapsáveis ── */
-.sidebar-section{
-  padding:0 22px;
-  border-bottom:1px solid rgba(229,37,100,.06);
-}
-[data-theme="dark"] .sidebar-section{border-bottom-color:rgba(244,121,154,.09)}
-.sidebar-section:last-of-type{border-bottom:none}
+/* ── Seções ── */
+.sidebar-section{padding:0;margin-bottom:4px}
 .sidebar-label{
   width:100%;background:none;border:none;text-align:left;cursor:pointer;
   font-family:var(--fb);
-  font-size:.66rem;font-weight:700;letter-spacing:.13em;
-  text-transform:uppercase;color:rgba(15,10,15,.34);
-  margin-bottom:0;padding:17px 0 15px;
+  font-size:.63rem;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:rgba(15,10,15,.32);
+  margin:0;padding:12px 0;
   display:flex;align-items:center;justify-content:space-between;gap:8px;
   transition:color .18s;
 }
 .sidebar-label:hover{color:var(--rose)}
-.sidebar-label:focus-visible{outline:2px solid var(--rose);outline-offset:2px;border-radius:4px}
+.sidebar-label:focus-visible{outline:2px solid var(--rose);outline-offset:2px;border-radius:3px}
 .sidebar-label .chev{
-  width:11px;height:11px;flex-shrink:0;opacity:.45;
+  width:10px;height:10px;flex-shrink:0;opacity:.4;
   transition:transform .22s ease,opacity .18s;
 }
-.sidebar-label:hover .chev{opacity:.9}
+.sidebar-label:hover .chev{opacity:.85}
 .sidebar-section.collapsed .chev{transform:rotate(-90deg)}
-.sidebar-body{padding-bottom:20px}
+.sidebar-body{padding-bottom:22px}
 .sidebar-section.collapsed .sidebar-body{display:none}
-[data-theme="dark"] .sidebar-label{color:rgba(240,232,236,.34)}
+[data-theme="dark"] .sidebar-label{color:rgba(240,232,236,.32)}
 [data-theme="dark"] .sidebar-label:hover{color:var(--pink2)!important}
 
 /* ── Categorias: lista rica ── */
-/* Trilho de índice: a lista é um sumário, o marcador ativo é o lugar
-   onde você está dentro dele. */
+/* Trilho de índice: uma linha contínua, e o item ativo acende o próprio
+   trecho dela. Sem retângulo de fundo — a marca de posição é a régua. */
 .cat-list{
-  list-style:none;display:flex;flex-direction:column;gap:1px;
-  position:relative;padding-left:15px;
+  list-style:none;display:flex;flex-direction:column;gap:0;
+  position:relative;padding-left:14px;
 }
 .cat-list::before{
-  content:'';position:absolute;left:3px;top:8px;bottom:8px;
-  width:1px;background:rgba(229,37,100,.13);
+  content:'';position:absolute;left:0;top:4px;bottom:4px;
+  width:1px;background:rgba(15,10,15,.1);
 }
-[data-theme="dark"] .cat-list::before{background:rgba(244,121,154,.16)}
+[data-theme="dark"] .cat-list::before{background:rgba(240,232,236,.13)}
 .cat-item{
-  display:flex;flex-wrap:wrap;align-items:center;gap:9px;
-  padding:8px 10px;border-radius:9px;
-  cursor:pointer;transition:background .16s,color .16s;
-  font-family:var(--fd);font-size:.85rem;color:rgba(15,10,15,.7);font-weight:600;
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;
+  padding:7px 0;
+  cursor:pointer;transition:color .16s;
+  font-family:var(--fd);font-size:.875rem;font-weight:600;
+  color:rgba(15,10,15,.68);
   position:relative;
 }
 .cat-item::before{
-  content:'';position:absolute;left:-12px;top:50%;transform:translateY(-50%);
-  width:3px;height:0;border-radius:2px;background:var(--pink);
-  transition:height .18s;
+  content:'';position:absolute;left:-14px;top:4px;bottom:4px;
+  width:2px;background:var(--pink);
+  transform:scaleY(0);transform-origin:center;
+  transition:transform .2s ease;
 }
-[data-theme="dark"] .cat-item{color:rgba(240,232,236,.7)}
-.cat-item:hover{background:rgba(229,37,100,.06);color:var(--dark)}
-.cat-item:focus-visible{outline:2px solid var(--rose);outline-offset:1px}
-.cat-item.active{background:rgba(229,37,100,.09);color:var(--rose)}
-.cat-item.active::before{height:calc(100% - 10px)}
-.cat-icon{font-size:.85rem;width:18px;flex-shrink:0;opacity:.75}
+[data-theme="dark"] .cat-item{color:rgba(240,232,236,.68)}
+.cat-item:hover{color:var(--dark)}
+.cat-item:focus-visible{outline:2px solid var(--rose);outline-offset:2px;border-radius:3px}
+.cat-item.active{color:var(--pink);font-weight:700}
+.cat-item.active::before{transform:scaleY(1)}
+.cat-icon{font-size:.82rem;width:17px;flex-shrink:0;opacity:.7}
 .cat-name{flex:1;min-width:0}
-.cat-count{font-size:.68rem;color:rgba(15,10,15,.34);font-weight:500;margin-left:4px;font-family:var(--fb)}
-.cat-item.active .cat-count{color:rgba(196,29,85,.6)}
-[data-theme="dark"] .cat-count{color:rgba(240,232,236,.34)}
+.cat-count{
+  font-size:.68rem;color:rgba(15,10,15,.3);font-weight:500;
+  font-family:var(--fb);flex-shrink:0;font-variant-numeric:tabular-nums;
+}
+.cat-item.active .cat-count{color:rgba(229,37,100,.55)}
+[data-theme="dark"] .cat-count{color:rgba(240,232,236,.3)}
 .cat-expand{
   background:none;border:none;cursor:pointer;color:inherit;opacity:.45;
   font-size:.7rem;padding:2px 4px;margin-left:2px;flex-shrink:0;
@@ -340,11 +325,11 @@ nav.elevated{
 }
 .cat-expand.open{transform:rotate(180deg)}
 .cat-expand:hover{opacity:.85}
-.subtag-list{
+".subtag-list{
   display:none;list-style:none;flex-direction:column;gap:1px;
   width:100%;flex-basis:100%;
-  margin:6px 0 2px 0;padding-left:8px;
-  border-left:1px solid rgba(229,37,100,.12);
+  margin:4px 0 6px 0;padding-left:10px;
+  border-left:1px solid rgba(15,10,15,.09);
   cursor:default;
 }
 .subtag-list.open{display:flex}
@@ -355,32 +340,51 @@ nav.elevated{
 }
 .subtag-item:hover{background:rgba(229,37,100,.06);color:var(--dark)}
 .subtag-empty{padding:6px 8px;font-size:.74rem;color:rgba(15,10,15,.35);font-style:italic}
-[data-theme="dark"] .subtag-list{border-left-color:rgba(244,121,154,.15)}
+[data-theme="dark"] .subtag-list{border-left-color:rgba(240,232,236,.12)}
 [data-theme="dark"] .subtag-item{color:rgba(240,232,236,.55)}
 [data-theme="dark"] .subtag-empty{color:rgba(240,232,236,.35)}
 
-/* ── Designs: grid compacto de chips, não lista vertical ── */
+/* ── Designs: mesma lista das categorias, não pílulas. A sidebar inteira
+   fala uma língua visual só — era a mistura de lista + chips que dava a
+   sensação de duas interfaces coladas. ── */
 .design-grid{
-  display:flex;flex-wrap:wrap;gap:6px;
+  display:flex;flex-direction:column;gap:0;
+  position:relative;padding-left:14px;
 }
-#designListMore{margin-top:6px}
+.design-grid::before{
+  content:'';position:absolute;left:0;top:4px;bottom:4px;
+  width:1px;background:rgba(15,10,15,.1);
+}
+[data-theme="dark"] .design-grid::before{background:rgba(240,232,236,.13)}
+/* injetado por JS com display:flex — precisa herdar a direção da lista */
+#designListMore{margin-top:0;padding-top:0;flex-direction:column}
+#designListMore::before{top:0;bottom:0}
 .design-chip-item{
-  display:inline-flex;align-items:center;gap:5px;
-  padding:6px 11px;border-radius:100px;
-  border:1.5px solid rgba(15,10,15,.09);background:var(--cream);
-  font-family:var(--fb);font-size:.74rem;font-weight:600;
-  color:rgba(15,10,15,.6);cursor:pointer;transition:all .16s;
-  white-space:nowrap;
+  display:flex;align-items:baseline;gap:8px;
+  padding:7px 0;
+  font-family:var(--fd);font-size:.875rem;font-weight:600;
+  color:rgba(15,10,15,.68);cursor:pointer;transition:color .16s;
+  position:relative;
 }
-[data-theme="dark"] .design-chip-item{background:var(--cream2);color:rgba(240,232,236,.6);border-color:rgba(240,232,236,.1)}
-.design-chip-item:hover{border-color:rgba(229,37,100,.35);color:var(--dark)}
-.design-chip-item.active{background:var(--pink);color:#fff;border-color:var(--pink)}
+.design-chip-item::before{
+  content:'';position:absolute;left:-14px;top:4px;bottom:4px;
+  width:2px;background:var(--pink);
+  transform:scaleY(0);transform-origin:center;
+  transition:transform .2s ease;
+}
+[data-theme="dark"] .design-chip-item{color:rgba(240,232,236,.68)}
+.design-chip-item:hover{color:var(--dark)}
+.design-chip-item:focus-visible{outline:2px solid var(--rose);outline-offset:2px;border-radius:3px}
+.design-chip-item.active{color:var(--pink);font-weight:700}
+.design-chip-item.active::before{transform:scaleY(1)}
 .sidebar-toggle-more{
   background:none;border:none;cursor:pointer;
-  font-family:var(--fb);font-size:.74rem;font-weight:600;color:var(--rose);
-  padding:6px 2px;margin-top:8px;display:flex;align-items:center;gap:4px;
+  font-family:var(--fb);font-size:.7rem;font-weight:600;
+  letter-spacing:.04em;color:var(--rose);
+  padding:9px 0 2px 14px;margin:0;display:flex;align-items:center;gap:4px;
 }
 .sidebar-toggle-more:hover{text-decoration:underline}
+.sidebar-toggle-more:focus-visible{outline:2px solid var(--rose);outline-offset:2px;border-radius:3px}
 
 .sidebar-title{position:relative;display:flex;align-items:center;gap:6px}
 .active-count{
@@ -393,42 +397,31 @@ nav.elevated{
 }
 .sort-select,.price-input{
   width:100%;padding:9px 12px;
-  border:1.5px solid rgba(229,37,100,.13);border-radius:10px;
-  font-family:var(--fb);font-size:.82rem;
-  background:var(--cream);color:var(--dark);
-  outline:none;cursor:pointer;transition:border-color .15s;
+  border:1px solid rgba(15,10,15,.13);border-radius:9px;
+  font-family:var(--fb);font-size:.8rem;
+  background:transparent;color:var(--dark);
+  outline:none;transition:border-color .15s;
 }
-.sort-select:focus,.price-input:focus{border-color:rgba(229,37,100,.4)}
-.price-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+[data-theme="dark"] .sort-select,
+[data-theme="dark"] .price-input{border-color:rgba(240,232,236,.15)}
 .price-input{cursor:text}
+.sort-select{cursor:pointer}
+.sort-select:focus,.price-input:focus{border-color:var(--pink)}
+.price-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-left:14px}
 
-/* Atalhos de faixa — dois campos vazios não sugerem nada ao cliente. */
-.price-quick{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
-.price-chip{
-  padding:5px 11px;border-radius:100px;
-  border:1.5px solid rgba(15,10,15,.09);background:transparent;
-  font-family:var(--fb);font-size:.72rem;font-weight:600;
-  color:rgba(15,10,15,.55);cursor:pointer;transition:all .16s;
-}
-[data-theme="dark"] .price-chip{border-color:rgba(240,232,236,.12);color:rgba(240,232,236,.55)}
-.price-chip:hover{border-color:rgba(229,37,100,.35);color:var(--rose)}
-.price-chip.active{background:var(--pink);border-color:var(--pink);color:#fff}
-
-/* Rodapé sem filtro ativo = zero altura. A faixa vazia com linha
-   divisória vinha daqui. */
-.sidebar-footer{
-  padding:0 22px;
-}
-.sidebar-footer:has(.clear-filters-btn.visible){
-  padding-top:16px;margin-top:14px;
-  border-top:1px solid rgba(229,37,100,.07);
-}
-.sidebar-footer .clear-filters-btn{
-  width:100%;margin-top:0;
-}
+/* Sem filtro ativo o rodapé não existe — nada de faixa vazia com linha. */
+.sidebar-footer{padding:0}
+.sidebar-footer .clear-filters-btn{width:100%;margin:18px 0 0}
 
 /* ── MAIN ── */
-.shop-main{flex:1;min-width:0;padding:28px 32px}
+/* O filete divisor vive AQUI, não na sidebar: com align-items:stretch as
+   duas colunas têm a mesma altura, então a linha acompanha a página
+   inteira sem depender da altura dos filtros. */
+.shop-main{
+  flex:1;min-width:0;padding:28px 0 28px 32px;
+  border-left:1px solid rgba(15,10,15,.09);
+}
+[data-theme="dark"] .shop-main{border-left-color:rgba(240,232,236,.1)}
 
 /* ── TOPBAR ── */
 .topbar{
@@ -441,26 +434,27 @@ nav.elevated{
 .topbar-count{font-family:var(--fd);font-size:.92rem;color:rgba(15,10,15,.55);font-weight:500}
 .topbar-count b{color:var(--dark);font-weight:700}
 .topbar-tools{display:flex;align-items:center;gap:12px;margin-left:auto}
-/* Ordenar mora aqui, e não dentro do drawer de filtros. */
+/* Ordenar reorganiza o que já está na tela — não é filtro, não mora no
+   drawer de filtros. */
 .sort-inline{display:flex;align-items:center;gap:8px}
 .sort-inline label{
-  font-family:var(--fb);font-size:.64rem;font-weight:700;
-  letter-spacing:.13em;text-transform:uppercase;
-  color:rgba(15,10,15,.34);white-space:nowrap;
+  font-family:var(--fb);font-size:.62rem;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(15,10,15,.32);white-space:nowrap;
 }
-[data-theme="dark"] .sort-inline label{color:rgba(240,232,236,.34)}
+[data-theme="dark"] .sort-inline label{color:rgba(240,232,236,.32)}
 .topbar .sort-select{
-  width:auto;min-width:158px;
-  padding:8px 32px 8px 13px;
+  width:auto;min-width:152px;
+  padding:8px 30px 8px 12px;
   appearance:none;-webkit-appearance:none;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%23a08e99' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 11px center;background-size:11px;
+  background-repeat:no-repeat;background-position:right 10px center;background-size:11px;
 }
 [data-theme="dark"] .topbar .sort-select{
-  background-color:#1e1722!important;
+  background-color:transparent!important;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%23948892' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5'/%3E%3C/svg%3E")!important;
   background-repeat:no-repeat!important;
-  background-position:right 11px center!important;
+  background-position:right 10px center!important;
   background-size:11px!important;
 }
 .view-btns{display:flex;gap:4px}
@@ -714,15 +708,13 @@ nav.elevated{
     border-right:1px solid rgba(244,121,154,.15);
   }
   .sidebar.mobile-open{display:block;transform:translateX(0)}
-  /* No drawer quem rola é a própria sidebar. */
+  /* No drawer quem rola é a sidebar; o -inner volta a ser conteúdo comum. */
   .sidebar-inner{
     position:static;max-height:none;overflow:visible;
-    padding:0 0 28px;
-    background:none;border:none;border-radius:0;
+    padding:0 20px 28px;
   }
-  .sidebar-section{padding:0 20px}
-  .sidebar-hero{padding:18px 20px}
-  .sidebar-footer{padding:0 20px}
+  .cat-list,.design-grid{padding-left:13px}
+  .price-row{margin-left:13px}
   .clear-filters-btn.visible{
     position:sticky;bottom:0;
     margin-top:24px;
@@ -735,7 +727,7 @@ nav.elevated{
   }
   .sidebar-head{
     display:flex;align-items:center;justify-content:space-between;
-    margin:0;padding:20px 20px 14px;
+    margin:0 0 6px;padding:20px 0 14px;
     border-bottom:1px solid rgba(229,37,100,.1);
   }
   .sidebar-title{
@@ -751,10 +743,10 @@ nav.elevated{
   .sidebar #catList{margin-top:16px}
   body.sidebar-open{overflow:hidden;position:fixed;width:100%}
   .shop-wrap{display:block}
-  .shop-main{padding:12px}
+  .shop-main{padding:12px;border-left:none}
   .topbar-tools{gap:8px}
   .sort-inline label{display:none}
-  .topbar .sort-select{min-width:0;font-size:.78rem;padding:7px 28px 7px 11px}
+  .topbar .sort-select{min-width:0;font-size:.76rem;padding:7px 26px 7px 10px}
   .cat-tabs{display:flex}
   .topbar{margin-bottom:10px;padding-bottom:10px}
   .featured-strip{padding:16px}
@@ -1454,7 +1446,6 @@ body::before{
     </div>
 
     <div class="sidebar-hero">
-      <div class="sidebar-hero-eyebrow">Catálogo</div>
       <div class="sidebar-all-btn active" data-cat="Todas" role="button" tabindex="0" aria-pressed="true" id="allProductsBtn">
         <span>Todos os produtos</span>
         <span class="cnt" id="countTodas"></span>
@@ -1462,31 +1453,25 @@ body::before{
     </div>
 
     <section class="sidebar-section" data-sec="cats">
-      <button class="sidebar-label" type="button" aria-expanded="true" aria-controls="secCats">Categorias <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></button>
+      <button class="sidebar-label" type="button" aria-expanded="true" aria-controls="secCats">Categorias <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></button>
       <div class="sidebar-body" id="secCats">
         <ul class="cat-list" id="catList"></ul>
       </div>
     </section>
 
     <section class="sidebar-section" data-sec="designs">
-      <button class="sidebar-label" type="button" aria-expanded="true" aria-controls="secDesigns">Designs <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></button>
+      <button class="sidebar-label" type="button" aria-expanded="true" aria-controls="secDesigns">Designs <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></button>
       <div class="sidebar-body" id="secDesigns">
         <div class="design-grid" id="designList"></div>
       </div>
     </section>
 
     <section class="sidebar-section" data-sec="preco">
-      <button class="sidebar-label" type="button" aria-expanded="true" aria-controls="secPreco">Faixa de preço <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></button>
+      <button class="sidebar-label" type="button" aria-expanded="true" aria-controls="secPreco">Faixa de preço <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></button>
       <div class="sidebar-body" id="secPreco">
         <div class="price-row">
           <input class="price-input" type="number" id="priceMin" placeholder="Mín" min="0" inputmode="numeric">
           <input class="price-input" type="number" id="priceMax" placeholder="Máx" min="0" inputmode="numeric">
-        </div>
-        <div class="price-quick" id="priceQuick">
-          <button class="price-chip" type="button" data-min="" data-max="50">Até R$ 50</button>
-          <button class="price-chip" type="button" data-min="50" data-max="100">R$ 50–100</button>
-          <button class="price-chip" type="button" data-min="100" data-max="200">R$ 100–200</button>
-          <button class="price-chip" type="button" data-min="200" data-max="">R$ 200+</button>
         </div>
       </div>
     </section>
@@ -1503,7 +1488,7 @@ body::before{
       <div class="topbar-tools">
         <div class="sort-inline">
           <label for="sortSelect">Ordenar</label>
-          <select class="sort-select" id="sortSelect" onchange="currentSort=this.value;page=1;applyFilters()">
+          <select class="sort-select" id="sortSelect">
             <option value="az">Nome A–Z</option>
             <option value="za">Nome Z–A</option>
             <option value="price-asc">Menor preço</option>
@@ -3460,17 +3445,17 @@ document.getElementById('heroBadges').addEventListener('click',e=>{
 });
 
 
-// ── SIDEBAR: seções colapsáveis (estado salvo) ────────────────────────
+// ── SIDEBAR: seções colapsáveis, estado salvo ─────────────────────────
 (function(){
   const KEY='cr_sidebar_secs';
   let state={};
   try{state=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){}
   document.querySelectorAll('.sidebar-section[data-sec]').forEach(sec=>{
-    const id=sec.dataset.sec;
-    const btn=sec.querySelector('.sidebar-label');
+    const id=sec.dataset.sec, btn=sec.querySelector('.sidebar-label');
+    if(!btn)return;
     if(state[id]===false){sec.classList.add('collapsed');btn.setAttribute('aria-expanded','false');}
     btn.addEventListener('click',()=>{
-      const open=sec.classList.toggle('collapsed')===false;
+      const open=!sec.classList.toggle('collapsed');
       btn.setAttribute('aria-expanded',open?'true':'false');
       state[id]=open;
       try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}
@@ -3478,49 +3463,18 @@ document.getElementById('heroBadges').addEventListener('click',e=>{
   });
 })();
 
-// ── PREÇO: atalhos de faixa + guarda min/max invertido ────────────────
+// ── PREÇO: mín maior que máx não retorna nada e parece catálogo vazio ──
 (function(){
-  const mn=document.getElementById('priceMin');
-  const mx=document.getElementById('priceMax');
-  const quick=document.getElementById('priceQuick');
+  const mn=document.getElementById('priceMin'), mx=document.getElementById('priceMax');
   if(!mn||!mx)return;
-
   function commit(){
-    // min maior que max não retorna nada e parece produto esgotado
     if(mn.value!==''&&mx.value!==''&&+mn.value>+mx.value){
       const t=mn.value;mn.value=mx.value;mx.value=t;
     }
     onPriceTextInput();
-    syncPriceChips();
   }
   mn.addEventListener('change',commit);
   mx.addEventListener('change',commit);
-
-  window.syncPriceChips=function(){
-    if(!quick)return;
-    quick.querySelectorAll('.price-chip').forEach(c=>{
-      c.classList.toggle('active',
-        (c.dataset.min||'')===(mn.value||'') && (c.dataset.max||'')===(mx.value||''));
-    });
-  };
-
-  if(quick){
-    quick.addEventListener('click',e=>{
-      const chip=e.target.closest('.price-chip');
-      if(!chip)return;
-      const on=chip.classList.contains('active');
-      mn.value=on?'':(chip.dataset.min||'');
-      mx.value=on?'':(chip.dataset.max||'');
-      onPriceTextInput();
-      syncPriceChips();
-    });
-  }
-
-  // mantém os chips coerentes quando o filtro muda por outro caminho
-  if(typeof updateActiveFilterCount==='function'){
-    const _prev=updateActiveFilterCount;
-    updateActiveFilterCount=function(){_prev.apply(this,arguments);syncPriceChips();};
-  }
 })();
 
 function restoreSavedFilters(){
