@@ -223,7 +223,7 @@ nav.elevated{
       contraste com a página, senão vira "vazio" no dark mode);
    2) a linha de 1px bem na borda dos 282px. */
 .shop-wrap{
-  display:flex;align-items:flex-start;min-height:70vh;
+  display:flex;align-items:stretch;min-height:70vh;
   background-image:
     linear-gradient(rgba(15,10,15,.09),rgba(15,10,15,.09)),
     linear-gradient(rgba(15,10,15,.025),rgba(15,10,15,.025));
@@ -238,12 +238,16 @@ nav.elevated{
 }
 
 /* ── SIDEBAR ── */
+/* align-items:stretch no pai (.shop-wrap) faz .sidebar ter a altura da
+   LINHA inteira do flex — é isso que dá ao filho sticky um trilho até o
+   fim da página pra percorrer. Sem essa altura no pai, sticky encolhe
+   pro tamanho do próprio conteúdo e "solta" antes do fim ao rolar. */
 .sidebar{width:282px;flex-shrink:0}
 .sidebar-inner{
   position:sticky;top:92px;
   max-height:calc(100vh - 112px);
   overflow-y:auto;overscroll-behavior:contain;
-  padding:30px 26px 32px 0;
+  padding:30px 26px 32px 26px;
   scrollbar-width:thin;
   scrollbar-color:rgba(229,37,100,.2) transparent;
 }
@@ -427,7 +431,7 @@ nav.elevated{
 .price-input{cursor:text}
 .sort-select{cursor:pointer}
 .sort-select:focus,.price-input:focus{border-color:var(--pink)}
-.price-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-left:14px}
+.price-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 
 /* Sem filtro ativo o rodapé não existe — nada de faixa vazia com linha. */
 .sidebar-footer{padding:0}
@@ -728,7 +732,7 @@ nav.elevated{
     padding:0 20px 28px;
   }
   .cat-list,.design-grid{padding-left:13px}
-  .price-row{margin-left:13px}
+  .price-row{margin-left:0}
   .clear-filters-btn.visible{
     position:sticky;bottom:0;
     margin-top:24px;
