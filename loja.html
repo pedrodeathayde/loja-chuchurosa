@@ -224,12 +224,13 @@ nav.elevated{
 /* ── SIDEBAR ── */
 .sidebar{
   grid-column:1;
+  align-self:start;
+}
+/* Fundo e borda vivem aqui, do tamanho do CONTEÚDO — não da coluna
+   inteira. É isso que tira a barra vazia esticando até o fim da página. */
+.sidebar-inner{
   background:var(--white);
   border-right:1px solid rgba(229,37,100,.08);
-}
-[data-theme="dark"] .sidebar{border-right-color:rgba(244,121,154,.12)}
-/* O conteúdo é que gruda — não a coluna. */
-.sidebar-inner{
   position:sticky;top:76px;
   max-height:calc(100vh - 76px);
   overflow-y:auto;overscroll-behavior:contain;
@@ -237,6 +238,7 @@ nav.elevated{
   scrollbar-width:thin;
   scrollbar-color:rgba(229,37,100,.22) transparent;
 }
+[data-theme="dark"] .sidebar-inner{border-right-color:rgba(244,121,154,.12)}
 .sidebar-inner::-webkit-scrollbar{width:5px}
 .sidebar-inner::-webkit-scrollbar-track{background:transparent}
 .sidebar-inner::-webkit-scrollbar-thumb{background:rgba(229,37,100,.18);border-radius:3px}
