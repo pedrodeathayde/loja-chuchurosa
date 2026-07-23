@@ -30,7 +30,6 @@
   --gold:#c9a96e;
   --fd:'Fraunces','Playfair Display',Georgia,serif;
   --fb:'Outfit',sans-serif;
-  --ft:'Fraunces','Playfair Display',Georgia,serif;
 }
 *{margin:0;padding:0;box-sizing:border-box;font-optical-sizing:auto}
 body::after{
@@ -215,15 +214,18 @@ nav.s{
 
 /* ── TICKER ── */
 .ticker{
-  background:var(--pink);
-  padding:13px 0;overflow:hidden;
+  background:linear-gradient(90deg,var(--rose),var(--pink) 50%,var(--rose));
+  padding:15px 0;overflow:hidden;position:relative;
   border-top:1px solid rgba(255,255,255,.15);
   border-bottom:1px solid rgba(255,255,255,.15);
 }
-.ticker-t{display:flex;width:max-content;animation:tick 26s linear infinite}
-.ti{display:inline-flex;align-items:center;gap:18px;padding:0 28px;font-family:var(--ft);font-style:italic;font-weight:400;font-size:1.05rem;letter-spacing:.01em;color:#fff;line-height:1}
-.ti::after{content:'✦';opacity:.5;margin-left:18px;font-size:.6rem;color:var(--gold)}
+.ticker-t{display:flex;width:max-content;animation:tick 30s linear infinite}
+.ti{display:inline-flex;align-items:center;gap:18px;padding:0 28px;font-family:var(--fd);font-style:italic;font-weight:400;font-size:1.05rem;letter-spacing:.01em;color:#fff;line-height:1;transition:opacity .3s}
+.ticker:hover .ti{opacity:.55}
+.ticker:hover .ti:hover{opacity:1}
+.ti::after{content:'✦';opacity:.55;margin-left:18px;font-size:.6rem;color:var(--gold)}
 @keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.ticker-t,.mq-t{animation:none}}
 
 /* ── CONTAINER ── */
 .c{max-width:1180px;margin:0 auto;padding:0 48px}
@@ -262,10 +264,11 @@ nav.s{
 }
 
 /* ── MARQUEE ── */
-.mq{padding:16px 0;background:#eef2e2;border-top:1px solid rgba(120,140,60,.15);border-bottom:1px solid rgba(120,140,60,.15);overflow:hidden}
+.mq{padding:16px 0;background:var(--ink2);border-top:1px solid rgba(201,169,110,.15);border-bottom:1px solid rgba(201,169,110,.15);overflow:hidden;position:relative}
 .mq-t{display:flex;width:max-content;animation:mqa 34s linear infinite;white-space:nowrap}
-.mq-i{display:inline-flex;align-items:center;gap:14px;padding:0 26px;font-family:var(--fb);font-style:normal;font-weight:700;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:#5c6b3f}
-.mq-i b{color:#8ba33e;font-style:normal;font-weight:700}
+.mq-i{display:inline-flex;align-items:center;gap:14px;padding:0 26px;font-family:var(--fb);font-style:normal;font-weight:600;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);text-decoration:none;transition:color .25s}
+.mq-i:hover{color:var(--gold)}
+.mq-i b{color:var(--gold);font-style:normal;font-weight:700}
 @keyframes mqa{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
 /* ── OCASIÕES — LIGHT ── */
@@ -314,32 +317,51 @@ nav.s{
 /* ── HOW — DARK ── */
 .how{background:var(--ink);padding:96px 0;position:relative;overflow:hidden}
 .how::after{content:'';position:absolute;bottom:-280px;left:50%;transform:translateX(-50%);width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(229,37,100,.06),transparent 65%);pointer-events:none}
-.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;margin-top:64px;position:relative}
-.steps-track{position:absolute;top:38px;left:calc(12.5% + 4px);right:calc(12.5% + 4px);height:1px;background:rgba(255,255,255,.08);z-index:0}
-.steps-track-fill{position:absolute;top:0;left:0;height:100%;width:0%;background:linear-gradient(90deg,var(--pink),var(--gold));transition:width 1.1s cubic-bezier(.22,.61,.36,1)}
-.step{position:relative;z-index:1;opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s}
+
+/* ── HOW STEPS: artistic timeline ── */
+.steps-wrap{margin-top:64px;position:relative}
+.steps-svg{display:block;width:100%;height:158px;position:absolute;top:0;left:0;z-index:0;pointer-events:none}
+.steps{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  position:relative;z-index:1;padding-top:158px;
+}
+.step{
+  position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;
+  cursor:default;
+  opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s;
+}
 .step.on{opacity:1;transform:translateY(0)}
-.step:hover{transform:translateY(-4px)}
-.step-top{display:flex;align-items:center;margin-bottom:22px}
 .s-num{
   position:relative;flex:none;width:76px;height:76px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  background:var(--ink2);border:1px solid rgba(201,169,110,.3);
-  transition:border-color .3s,background .3s,box-shadow .3s;
+  background:var(--ink2);border:1.5px solid var(--step-c,var(--gold));
+  transition:box-shadow .35s,transform .2s;
 }
-.step:hover .s-num,.step.on .s-num{border-color:var(--gold);background:rgba(229,37,100,.1);box-shadow:0 0 0 6px rgba(201,169,110,.07)}
-.s-num svg{width:24px;height:24px;color:var(--gold);transition:transform .3s;position:relative;z-index:1}
-.step:hover .s-num svg{transform:scale(1.12)}
-.s-idx{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  font-family:var(--fd);font-weight:700;font-size:1.9rem;color:rgba(255,255,255,.06);
-  line-height:1;z-index:0;user-select:none;
+.s-num::before{
+  content:'';position:absolute;inset:-8px;border-radius:50%;
+  border:1px dashed var(--step-c,var(--gold));opacity:.45;
+  transition:transform .5s ease,opacity .35s;
 }
-.s-title{font-size:1.04rem;font-weight:600;color:#fff;margin-bottom:9px;line-height:1.3}
-.s-desc{font-size:.86rem;line-height:1.75;color:rgba(255,255,255,.6)}
+.step:hover .s-num,.step.on .s-num{box-shadow:0 0 0 6px rgba(201,169,110,.12)}
+.step:hover .s-num,.step.on .s-num{box-shadow:0 0 0 6px color-mix(in srgb,var(--step-c,var(--gold)) 10%,transparent)}
+.step:hover .s-num::before{transform:rotate(50deg);opacity:.8}
+.step:active .s-num{transform:scale(.94)}
+.step:active .s-num::after{
+  content:'';position:absolute;inset:-2px;border-radius:50%;
+  border:1.5px solid var(--step-c,var(--gold));
+  animation:sPulse .5s ease-out;
+}
+@keyframes sPulse{from{opacity:.9;transform:scale(1)}to{opacity:0;transform:scale(1.55)}}
+.s-num svg{width:26px;height:26px;color:var(--step-c,var(--gold));transition:transform .3s;position:relative;z-index:1}
+.step:hover .s-num svg{transform:scale(1.1)}
+.s-title{
+  font-family:var(--fd);font-style:italic;font-weight:600;
+  font-size:1.28rem;color:#fff;margin:20px 0 6px;line-height:1.2;
+}
+.s-desc{font-size:.86rem;line-height:1.7;color:rgba(255,255,255,.62);max-width:210px}
 @media(max-width:880px){
-  .steps{grid-template-columns:1fr 1fr;row-gap:40px}
-  .steps-track{display:none}
+  .steps-svg{display:none}
+  .steps{grid-template-columns:1fr 1fr;row-gap:40px;padding-top:0}
 }
 @media(max-width:540px){.steps{grid-template-columns:1fr}}
 
@@ -720,8 +742,8 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 
 <!-- MARQUEE -->
 <div class="mq"><div class="mq-t">
-  <span class="mq-i">Fantasias <b>·</b></span><span class="mq-i">Para Bebês <b>·</b></span><span class="mq-i">Almofadas <b>·</b></span><span class="mq-i">Decoração <b>·</b></span><span class="mq-i">Plush & Pelúcia <b>·</b></span><span class="mq-i">Pássaros <b>·</b></span><span class="mq-i">Educativo <b>·</b></span><span class="mq-i">Raposas <b>·</b></span><span class="mq-i">Lembrancinhas <b>·</b></span>
-  <span class="mq-i">Fantasias <b>·</b></span><span class="mq-i">Para Bebês <b>·</b></span><span class="mq-i">Almofadas <b>·</b></span><span class="mq-i">Decoração <b>·</b></span><span class="mq-i">Plush & Pelúcia <b>·</b></span><span class="mq-i">Pássaros <b>·</b></span><span class="mq-i">Educativo <b>·</b></span><span class="mq-i">Raposas <b>·</b></span><span class="mq-i">Lembrancinhas <b>·</b></span>
+  <a href="loja.html?cat=Fantasias" class="mq-i">Fantasias <b>·</b></a><a href="loja.html?cat=Para+bebês" class="mq-i">Para Bebês <b>·</b></a><a href="loja.html?cat=Almofadas" class="mq-i">Almofadas <b>·</b></a><a href="loja.html?cat=Decoração" class="mq-i">Decoração <b>·</b></a><a href="loja.html?cat=Plush+%26+Pelúcia" class="mq-i">Plush &amp; Pelúcia <b>·</b></a><a href="loja.html?cat=Pássaros" class="mq-i">Pássaros <b>·</b></a><a href="loja.html?cat=Educativo" class="mq-i">Educativo <b>·</b></a><a href="loja.html?cat=Raposas" class="mq-i">Raposas <b>·</b></a><a href="loja.html?cat=Lembrancinhas" class="mq-i">Lembrancinhas <b>·</b></a>
+  <a href="loja.html?cat=Fantasias" class="mq-i">Fantasias <b>·</b></a><a href="loja.html?cat=Para+bebês" class="mq-i">Para Bebês <b>·</b></a><a href="loja.html?cat=Almofadas" class="mq-i">Almofadas <b>·</b></a><a href="loja.html?cat=Decoração" class="mq-i">Decoração <b>·</b></a><a href="loja.html?cat=Plush+%26+Pelúcia" class="mq-i">Plush &amp; Pelúcia <b>·</b></a><a href="loja.html?cat=Pássaros" class="mq-i">Pássaros <b>·</b></a><a href="loja.html?cat=Educativo" class="mq-i">Educativo <b>·</b></a><a href="loja.html?cat=Raposas" class="mq-i">Raposas <b>·</b></a><a href="loja.html?cat=Lembrancinhas" class="mq-i">Lembrancinhas <b>·</b></a>
 </div></div>
 
 <!-- OCASIÕES — CLARO -->
@@ -799,35 +821,44 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
       <h2 class="st-light">Do croqui à sua casa,<br>em <em>quatro passos</em></h2>
       <p style="font-size:.88rem;line-height:1.8;color:rgba(255,255,255,.65);max-width:420px;margin-top:12px">Cada peça nasce sob medida — nada sai de prateleira. É simples, é rápido, e o resultado encanta.</p>
     </div>
-    <div class="steps rv" id="stepsTrack">
-      <div class="steps-track"><div class="steps-track-fill" id="stepsTrackFill"></div></div>
-      <div class="step">
-        <div class="step-top">
-          <div class="s-num"><span class="s-idx">01</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6L4.5 3H2"/><circle cx="9.5" cy="19.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="17.5" cy="19.5" r="1.5" fill="currentColor" stroke="none"/></svg></div>
+    <div class="steps-wrap rv" id="stepsTrack">
+      <svg class="steps-svg" viewBox="0 0 1040 158" aria-hidden="true">
+        <defs>
+          <linearGradient id="roadGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#e52564"/><stop offset="35%" stop-color="#f0995a"/><stop offset="65%" stop-color="#c9a96e"/><stop offset="100%" stop-color="#7fb88f"/>
+          </linearGradient>
+          <radialGradient id="hg1" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#e52564" stop-opacity=".14"/><stop offset="100%" stop-color="#e52564" stop-opacity="0"/></radialGradient>
+          <radialGradient id="hg2" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#f0995a" stop-opacity=".14"/><stop offset="100%" stop-color="#f0995a" stop-opacity="0"/></radialGradient>
+          <radialGradient id="hg3" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#c9a96e" stop-opacity=".14"/><stop offset="100%" stop-color="#c9a96e" stop-opacity="0"/></radialGradient>
+          <radialGradient id="hg4" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#7fb88f" stop-opacity=".14"/><stop offset="100%" stop-color="#7fb88f" stop-opacity="0"/></radialGradient>
+        </defs>
+        <circle cx="130" cy="90" r="85" fill="url(#hg1)"/>
+        <circle cx="390" cy="90" r="85" fill="url(#hg2)"/>
+        <circle cx="650" cy="90" r="85" fill="url(#hg3)"/>
+        <circle cx="910" cy="90" r="85" fill="url(#hg4)"/>
+        <line x1="130" y1="90" x2="910" y2="90" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+        <line x1="130" y1="90" x2="910" y2="90" stroke="url(#roadGrad)" stroke-width="2" stroke-linecap="round"/>      </svg>
+      <div class="steps" id="stepsGrid">
+        <div class="step" style="--step-c:#e52564">
+          <div class="s-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6L4.5 3H2"/><circle cx="9.5" cy="19.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="17.5" cy="19.5" r="1.5" fill="currentColor" stroke="none"/></svg></div>
+          <div class="s-title">Escolha</div>
+          <div class="s-desc">Navegue pelo acervo de 319 peças e encontre o ponto de partida perfeito.</div>
         </div>
-        <div class="s-title">Escolha na loja</div>
-        <div class="s-desc">Navegue pelo acervo de 319 peças e encontre o ponto de partida perfeito.</div>
-      </div>
-      <div class="step">
-        <div class="step-top">
-          <div class="s-num"><span class="s-idx">02</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 11.5a8.4 8.4 0 01-1 4 8.5 8.5 0 01-7.5 4.5A8.4 8.4 0 018 19l-5 1 1-5a8.4 8.4 0 01-1-4A8.5 8.5 0 0111.5 3a8.5 8.5 0 019.5 8.5z"/></svg></div>
+        <div class="step" style="--step-c:#f0995a">
+          <div class="s-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 11.5a8.4 8.4 0 01-1 4 8.5 8.5 0 01-7.5 4.5A8.4 8.4 0 018 19l-5 1 1-5a8.4 8.4 0 01-1-4A8.5 8.5 0 0111.5 3a8.5 8.5 0 019.5 8.5z"/></svg></div>
+          <div class="s-title">Personalize</div>
+          <div class="s-desc">Pelo WhatsApp, vocês definem cores, tamanho e detalhes exclusivos da sua peça.</div>
         </div>
-        <div class="s-title">Personalize pelo WhatsApp</div>
-        <div class="s-desc">Pelo WhatsApp, vocês definem cores, tamanho e detalhes exclusivos da sua peça.</div>
-      </div>
-      <div class="step">
-        <div class="step-top">
-          <div class="s-num"><span class="s-idx">03</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.5 15.5M14.5 14.5L20 20M8.5 8.5L11 11"/></svg></div>
+        <div class="step" style="--step-c:#c9a96e">
+          <div class="s-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.5 15.5M14.5 14.5L20 20M8.5 8.5L11 11"/></svg></div>
+          <div class="s-title">Produção</div>
+          <div class="s-desc">Sua peça entra em produção sob medida — prazo médio de 5 dias úteis após a confirmação.</div>
         </div>
-        <div class="s-title">Produção dedicada</div>
-        <div class="s-desc">Sua peça entra em produção sob medida — prazo médio de 5 dias úteis após a confirmação.</div>
-      </div>
-      <div class="step">
-        <div class="step-top">
-          <div class="s-num"><span class="s-idx">04</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 8l9-5 9 5-9 5-9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div>
+        <div class="step" style="--step-c:#7fb88f">
+          <div class="s-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 8l9-5 9 5-9 5-9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div>
+          <div class="s-title">Receba</div>
+          <div class="s-desc">Embalagem caprichada e envio rastreado para qualquer lugar do Brasil.</div>
         </div>
-        <div class="s-title">Receba em casa</div>
-        <div class="s-desc">Embalagem caprichada e envio rastreado para qualquer lugar do Brasil.</div>
       </div>
     </div>
   </div>
@@ -1174,22 +1205,18 @@ const statObserver = new IntersectionObserver(es=>{
 },{threshold:.4});
 document.querySelectorAll('.stat-n[data-count-to]').forEach(el=>statObserver.observe(el));
 
-// ── HOW STEPS: staggered reveal + progress track ──
+// ── HOW STEPS: staggered reveal ──
 (function(){
-  const stepsWrap = document.getElementById('stepsTrack');
+  const stepsWrap = document.getElementById('stepsGrid');
   if(!stepsWrap) return;
   const steps = Array.prototype.slice.call(stepsWrap.querySelectorAll('.step'));
-  const fill = document.getElementById('stepsTrackFill');
   let done = false;
   const io = new IntersectionObserver(es=>{
     es.forEach(e=>{
       if(e.isIntersecting && !done){
         done = true;
         steps.forEach((s,i)=>{
-          setTimeout(()=>{
-            s.classList.add('on');
-            if(fill) fill.style.width = ((i+1)/steps.length*100)+'%';
-          }, reduceMotion ? 0 : i*180);
+          setTimeout(()=>{ s.classList.add('on'); }, reduceMotion ? 0 : i*140);
         });
       }
     });
