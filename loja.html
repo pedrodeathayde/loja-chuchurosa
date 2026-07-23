@@ -79,9 +79,10 @@ nav{
   transition:border-color .3s,box-shadow .3s;
 }
 .nav-inner{
-  max-width:1320px;margin:0 auto;height:100%;
+  max-width:1400px;margin:0 auto;height:100%;
   padding:0 32px;
   display:flex;align-items:center;gap:16px;
+  width:100%;
 }
 nav::after{
   content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;
@@ -99,9 +100,9 @@ nav.elevated{
 .nav-logo{flex-shrink:0;display:flex;align-items:center}
 .nav-logo canvas,.nav-logo img{height:32px;width:auto}
 .nav-search{
-  flex:1;position:relative;
-  min-width:0;
-  max-width:640px;
+  flex:1 1 auto;position:relative;
+  min-width:0;max-width:680px;
+  margin:0 auto;
 }
 .nav-search input{
   width:100%;padding:9px 16px 9px 38px;
@@ -182,40 +183,30 @@ nav.elevated{
 .hero-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.5);cursor:pointer;transition:all .3s;border:none;padding:0}
 .hero-dot.active{background:#fff;transform:scale(1.3)}
 
-/* ── HERO SHORTCUTS — faixa discreta de categorias, fora do hero ── */
+/* ── HERO SHORTCUTS — barra de pills de designs, quebra em linhas ── */
 .hero-shortcuts-wrap{
   background:var(--cream);
   border-bottom:1px solid rgba(229,37,100,.07);
-  padding:14px 48px;
-  overflow-x:auto;
-  scrollbar-width:none;
-  position:relative;
-  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 32px,#000 calc(100% - 32px),transparent 100%);
-  mask-image:linear-gradient(90deg,transparent 0,#000 32px,#000 calc(100% - 32px),transparent 100%);
+  padding:16px 48px;
 }
-.hero-shortcuts-wrap::-webkit-scrollbar{display:none}
-@media(max-width:768px){
-  .hero-shortcuts-wrap{padding:12px 20px}
-  .hero-shortcuts-wrap{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 16px,#000 calc(100% - 16px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 16px,#000 calc(100% - 16px),transparent 100%)}
-}
+@media(max-width:768px){.hero-shortcuts-wrap{padding:14px 20px}}
 .hero-badges{
-  display:flex;gap:10px;
-  width:max-content;
+  display:flex;flex-wrap:wrap;gap:8px;
 }
 .hbadge{
-  padding:5px 4px;border:none;background:transparent;
-  font-family:var(--fb);font-size:.88rem;font-weight:500;
-  color:rgba(15,10,15,.5);
-  cursor:pointer;transition:color .2s;
+  padding:7px 16px;border-radius:100px;
+  border:1.5px solid rgba(15,10,15,.1);background:var(--white);
+  font-family:var(--fb);font-size:.82rem;font-weight:600;
+  color:rgba(15,10,15,.6);
+  cursor:pointer;transition:all .18s;
   white-space:nowrap;
-  border-bottom:1px solid transparent;
   display:inline-flex;align-items:center;gap:6px;
 }
 .hbadge svg{opacity:.7;flex-shrink:0}
-[data-theme="dark"] .hbadge{color:rgba(240,232,236,.5)}
-.hbadge:hover{color:var(--dark)}
+[data-theme="dark"] .hbadge{color:rgba(240,232,236,.6);background:var(--cream2);border-color:rgba(240,232,236,.12)}
+.hbadge:hover{color:var(--dark);border-color:rgba(229,37,100,.3);background:rgba(229,37,100,.04)}
 [data-theme="dark"] .hbadge:hover{color:var(--dark)}
-.hbadge.active{color:var(--pink);border-bottom-color:var(--pink);font-weight:600}
+.hbadge.active{background:var(--pink);color:#fff;border-color:var(--pink);box-shadow:0 4px 14px rgba(229,37,100,.22)}
 .hbadge.active svg{opacity:1}
 
 
@@ -224,54 +215,75 @@ nav.elevated{
 
 /* ── SIDEBAR ── */
 .sidebar{
-  width:252px;flex-shrink:0;
+  width:276px;flex-shrink:0;
   background:var(--white);
   border-right:1px solid rgba(229,37,100,.08);
-  padding:36px 22px 40px;
+  padding:0 0 32px;
   position:sticky;top:76px;
   height:calc(100vh - 76px);
   overflow-y:auto;
   scrollbar-width:none;
+  display:flex;flex-direction:column;
 }
 .sidebar-head{display:none}
 .sidebar-close{display:none}
 .sidebar::-webkit-scrollbar{display:none}
-.sidebar::-webkit-scrollbar{width:2px}
-.sidebar::-webkit-scrollbar-thumb{background:rgba(229,37,100,.2)}
-.sidebar-label{
-  font-size:.64rem;font-weight:700;letter-spacing:.12em;
-  text-transform:uppercase;color:rgba(15,10,15,.35);
-  margin-bottom:16px;margin-top:36px;
-  display:flex;align-items:center;gap:8px;
+
+/* ── Bloco "Todos os produtos" — destaque fixo no topo ── */
+.sidebar-hero{
+  padding:26px 24px 20px;
+  border-bottom:1px solid rgba(229,37,100,.07);
+  margin-bottom:22px;
 }
-.sidebar-label::after{content:'';flex:1;height:1px;background:rgba(229,37,100,.1)}
-[data-theme="dark"] .sidebar-label{color:rgba(240,232,236,.35)}
-[data-theme="dark"] .sidebar-label::after{background:rgba(244,121,154,.12)}
-.sidebar-label:first-child{margin-top:0}
-.cat-list{list-style:none;display:flex;flex-direction:column;gap:3px}
+.sidebar-hero-eyebrow{
+  font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--pink);margin-bottom:6px;
+}
+.sidebar-all-btn{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 14px;border-radius:14px;
+  background:linear-gradient(135deg,rgba(229,37,100,.08),rgba(201,169,110,.08));
+  border:1.5px solid rgba(229,37,100,.14);
+  cursor:pointer;transition:all .2s;
+  font-family:var(--fd);font-size:.98rem;font-weight:700;color:var(--dark);
+}
+.sidebar-all-btn:hover{border-color:rgba(229,37,100,.3)}
+.sidebar-all-btn.active{background:linear-gradient(135deg,var(--pink),var(--rose));color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(229,37,100,.28)}
+.sidebar-all-btn .cnt{font-family:var(--fb);font-size:.76rem;font-weight:600;opacity:.7}
+
+.sidebar-section{padding:0 24px;margin-bottom:26px}
+.sidebar-label{
+  font-size:.66rem;font-weight:700;letter-spacing:.13em;
+  text-transform:uppercase;color:rgba(15,10,15,.34);
+  margin-bottom:14px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+[data-theme="dark"] .sidebar-label{color:rgba(240,232,236,.34)}
+
+/* ── Categorias: lista rica ── */
+.cat-list{list-style:none;display:flex;flex-direction:column;gap:2px}
 .cat-item{
-  display:flex;flex-wrap:wrap;align-items:center;gap:9px;
-  padding:10px 12px;border-radius:10px;
-  cursor:pointer;transition:background .18s,color .18s;
-  font-family:var(--fd);font-size:.82rem;color:rgba(15,10,15,.68);font-weight:600;
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px;
+  padding:9px 10px;border-radius:10px;
+  cursor:pointer;transition:background .16s,color .16s;
+  font-family:var(--fd);font-size:.85rem;color:rgba(15,10,15,.7);font-weight:600;
   position:relative;
 }
 .cat-item::before{
-  content:'';position:absolute;left:-22px;top:50%;transform:translateY(-50%);
+  content:'';position:absolute;left:-24px;top:50%;transform:translateY(-50%);
   width:3px;height:0;border-radius:2px;background:var(--pink);
   transition:height .18s;
 }
-[data-theme="dark"] .cat-item{color:rgba(240,232,236,.68)}
+[data-theme="dark"] .cat-item{color:rgba(240,232,236,.7)}
 .cat-item:hover{background:rgba(229,37,100,.06);color:var(--dark)}
 .cat-item:focus-visible{outline:2px solid var(--rose);outline-offset:1px}
-.cat-item.active{background:rgba(229,37,100,.09);color:var(--rose);font-weight:600}
+.cat-item.active{background:rgba(229,37,100,.09);color:var(--rose)}
 .cat-item.active::before{height:60%}
 .cat-icon{font-size:.85rem;width:18px;flex-shrink:0;opacity:.75}
 .cat-name{flex:1;min-width:0}
-.cat-count{font-size:.66rem;color:rgba(15,10,15,.32);font-weight:500;margin-left:4px;font-family:var(--fb);opacity:0;transition:opacity .2s}
-.cat-item:hover .cat-count,.cat-item.active .cat-count{opacity:1}
-.cat-item.active .cat-count{color:rgba(196,29,85,.55)}
-[data-theme="dark"] .cat-count{color:rgba(240,232,236,.32)}
+.cat-count{font-size:.68rem;color:rgba(15,10,15,.34);font-weight:500;margin-left:4px;font-family:var(--fb)}
+.cat-item.active .cat-count{color:rgba(196,29,85,.6)}
+[data-theme="dark"] .cat-count{color:rgba(240,232,236,.34)}
 .cat-expand{
   background:none;border:none;cursor:pointer;color:inherit;opacity:.45;
   font-size:.7rem;padding:2px 4px;margin-left:2px;flex-shrink:0;
@@ -297,6 +309,29 @@ nav.elevated{
 [data-theme="dark"] .subtag-list{border-left-color:rgba(244,121,154,.15)}
 [data-theme="dark"] .subtag-item{color:rgba(240,232,236,.55)}
 [data-theme="dark"] .subtag-empty{color:rgba(240,232,236,.35)}
+
+/* ── Designs: grid compacto de chips, não lista vertical ── */
+.design-grid{
+  display:flex;flex-wrap:wrap;gap:6px;
+}
+.design-chip-item{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:6px 11px;border-radius:100px;
+  border:1.5px solid rgba(15,10,15,.09);background:var(--cream);
+  font-family:var(--fb);font-size:.74rem;font-weight:600;
+  color:rgba(15,10,15,.6);cursor:pointer;transition:all .16s;
+  white-space:nowrap;
+}
+[data-theme="dark"] .design-chip-item{background:var(--cream2);color:rgba(240,232,236,.6);border-color:rgba(240,232,236,.1)}
+.design-chip-item:hover{border-color:rgba(229,37,100,.35);color:var(--dark)}
+.design-chip-item.active{background:var(--pink);color:#fff;border-color:var(--pink)}
+.sidebar-toggle-more{
+  background:none;border:none;cursor:pointer;
+  font-family:var(--fb);font-size:.74rem;font-weight:600;color:var(--rose);
+  padding:6px 2px;margin-top:8px;display:flex;align-items:center;gap:4px;
+}
+.sidebar-toggle-more:hover{text-decoration:underline}
+
 .sidebar-title{position:relative;display:flex;align-items:center;gap:6px}
 .active-count{
   display:inline-flex;align-items:center;justify-content:center;
@@ -307,14 +342,22 @@ nav.elevated{
   font-variant-numeric:tabular-nums;
 }
 .sort-select,.price-input{
-  width:100%;padding:7px 10px;
-  border:1.5px solid rgba(229,37,100,.15);border-radius:8px;
-  font-family:var(--fb);font-size:.8rem;
+  width:100%;padding:9px 12px;
+  border:1.5px solid rgba(229,37,100,.13);border-radius:10px;
+  font-family:var(--fb);font-size:.82rem;
   background:var(--cream);color:var(--dark);
-  outline:none;margin-top:8px;cursor:pointer;
+  outline:none;cursor:pointer;transition:border-color .15s;
 }
-.price-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
-.price-input{margin-top:0}
+.sort-select:focus,.price-input:focus{border-color:rgba(229,37,100,.4)}
+.price-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+.sidebar-footer{
+  padding:18px 24px 0;margin-top:auto;
+  border-top:1px solid rgba(229,37,100,.07);
+}
+.clear-filters-btn{
+  width:100%;
+}
 
 /* ── MAIN ── */
 .shop-main{flex:1;min-width:0;padding:28px 32px}
@@ -1304,25 +1347,46 @@ body::before{
       <span class="sidebar-title">Categorias<span class="active-count" id="activeCount" style="display:none"></span></span>
       <button class="sidebar-close" onclick="closeSidebar()" aria-label="Fechar menu">✕</button>
     </div>
-    <ul class="cat-list" id="catList">
-      <li class="cat-item active" data-cat="Todas" role="button" tabindex="0" aria-pressed="true"><span class="cat-name">Todos os produtos</span><span class="cat-count" id="countTodas"></span></li>
-    </ul>
-    <div class="sidebar-label">Designs</div>
-    <ul class="cat-list" id="designList"></ul>
-    <div class="sidebar-label">Ordenar</div>
-    <select class="sort-select" id="sortSelect" onchange="currentSort=this.value;page=1;applyFilters()">
-      <option value="az">Nome A–Z</option>
-      <option value="za">Nome Z–A</option>
-      <option value="price-asc">Menor preço</option>
-      <option value="price-desc">Maior preço</option>
-    </select>
-    <div class="sidebar-label">Faixa de preço</div>
-    <div class="price-row">
-      <input class="price-input" type="number" id="priceMin" placeholder="Mín" min="0" onchange="onPriceTextInput()">
-      <input class="price-input" type="number" id="priceMax" placeholder="Máx" min="0" onchange="onPriceTextInput()">
+
+    <div class="sidebar-hero">
+      <div class="sidebar-hero-eyebrow">Catálogo</div>
+      <div class="sidebar-all-btn active" data-cat="Todas" role="button" tabindex="0" aria-pressed="true" id="allProductsBtn">
+        <span>Todos os produtos</span>
+        <span class="cnt" id="countTodas"></span>
+      </div>
     </div>
 
-  <button class="clear-filters-btn" id="clearFiltersBtn" onclick="clearAllFilters()">✕ Limpar filtros</button>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Categorias</div>
+      <ul class="cat-list" id="catList"></ul>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Designs</div>
+      <div class="design-grid" id="designList"></div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Ordenar</div>
+      <select class="sort-select" id="sortSelect" onchange="currentSort=this.value;page=1;applyFilters()">
+        <option value="az">Nome A–Z</option>
+        <option value="za">Nome Z–A</option>
+        <option value="price-asc">Menor preço</option>
+        <option value="price-desc">Maior preço</option>
+      </select>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Faixa de preço</div>
+      <div class="price-row">
+        <input class="price-input" type="number" id="priceMin" placeholder="Mín" min="0" onchange="onPriceTextInput()">
+        <input class="price-input" type="number" id="priceMax" placeholder="Máx" min="0" onchange="onPriceTextInput()">
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="clear-filters-btn" id="clearFiltersBtn" onclick="clearAllFilters()">✕ Limpar filtros</button>
+    </div>
   </aside>
 
   <main class="shop-main">
@@ -3118,11 +3182,16 @@ function selectCategoryOnly(cat){
 }
 function syncCatUI(){
   document.querySelectorAll('#catList .cat-item').forEach(li=>{
-    const isTodas=li.dataset.cat==='Todas';
-    const active=isTodas?selectedCats.length===0:selectedCats.some(c=>c.toLowerCase()===li.dataset.cat.toLowerCase());
+    const active=selectedCats.some(c=>c.toLowerCase()===li.dataset.cat.toLowerCase());
     li.classList.toggle('active',active);
     li.setAttribute('aria-pressed',active?'true':'false');
   });
+  const allBtn=document.getElementById('allProductsBtn');
+  if(allBtn){
+    const isAllActive=selectedCats.length===0;
+    allBtn.classList.toggle('active',isAllActive);
+    allBtn.setAttribute('aria-pressed',isAllActive?'true':'false');
+  }
   document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
 }
 function saveFiltersToURL(){
@@ -3148,6 +3217,12 @@ document.getElementById('catList').addEventListener('keydown',e=>{
   if(!li)return;
   e.preventDefault();
   li.click();
+});
+document.getElementById('allProductsBtn')?.addEventListener('click',()=>selectCategoryOnly(null));
+document.getElementById('allProductsBtn')?.addEventListener('keydown',e=>{
+  if(e.key!=='Enter'&&e.key!==' ')return;
+  e.preventDefault();
+  selectCategoryOnly(null);
 });
 let searchTimer;
 document.getElementById('searchInput').addEventListener('input',e=>{
@@ -3202,17 +3277,29 @@ async function loadDesignBadges(){
     `<span class="hbadge" data-filter="${toSlug(d.nome)}" data-type="search">${d.emoji||''} ${d.nome}</span>`
   ).join('');
 
-  // Mesma lista, como itens de navegação na sidebar
+  // Mesma lista, como grid compacto de chips na sidebar (limita a 8, com "mostrar mais")
   if(designList){
-    designList.innerHTML=designs.map(d=>
-      `<li class="cat-item design-item" data-filter="${toSlug(d.nome)}" role="button" tabindex="0"><span class="cat-icon">${d.emoji||''}</span><span class="cat-name">${d.nome}</span></li>`
-    ).join('');
+    const DESIGN_LIMIT=8;
+    const chipHtml=d=>`<span class="design-chip-item" data-filter="${toSlug(d.nome)}" role="button" tabindex="0">${d.emoji||''} ${d.nome}</span>`;
+    designList.innerHTML=designs.slice(0,DESIGN_LIMIT).map(chipHtml).join('');
+    if(designs.length>DESIGN_LIMIT){
+      const hiddenHtml=designs.slice(DESIGN_LIMIT).map(chipHtml).join('');
+      designList.insertAdjacentHTML('afterend',
+        `<div class="design-grid" id="designListMore" style="display:none;margin-top:6px">${hiddenHtml}</div>
+         <button class="sidebar-toggle-more" id="designMoreBtn">+ ${designs.length-DESIGN_LIMIT} designs</button>`);
+      document.getElementById('designMoreBtn').addEventListener('click',function(){
+        const more=document.getElementById('designListMore');
+        const isOpen=more.style.display!=='none';
+        more.style.display=isOpen?'none':'flex';
+        this.textContent=isOpen?`+ ${designs.length-DESIGN_LIMIT} designs`:'− Mostrar menos';
+      });
+    }
   }
 }
 loadDesignBadges();
 
-document.getElementById('designList')?.addEventListener('click',e=>{
-  const item=e.target.closest('.design-item');
+document.addEventListener('click',e=>{
+  const item=e.target.closest('.design-chip-item');
   if(!item)return;
   const filter=item.dataset.filter;
   const heroBadge=document.querySelector(`#heroBadges .hbadge[data-filter="${filter}"]`);
@@ -3220,35 +3307,10 @@ document.getElementById('designList')?.addEventListener('click',e=>{
 });
 function syncDesignSidebarUI(){
   const activeFilters=[...document.querySelectorAll('#heroBadges .hbadge.active')].map(b=>b.dataset.filter);
-  document.querySelectorAll('#designList .design-item').forEach(li=>{
-    li.classList.toggle('active',activeFilters.includes(li.dataset.filter));
+  document.querySelectorAll('.design-chip-item').forEach(chip=>{
+    chip.classList.toggle('active',activeFilters.includes(chip.dataset.filter));
   });
 }
-
-// Drag-to-scroll com mouse (desktop) na faixa de atalhos do hero
-(function(){
-  const wrap=document.querySelector('.hero-shortcuts-wrap');
-  if(!wrap)return;
-  let isDown=false,startX=0,scrollStart=0,moved=false;
-  wrap.style.cursor='grab';
-  wrap.addEventListener('mousedown',e=>{
-    isDown=true;moved=false;
-    startX=e.pageX;
-    scrollStart=wrap.scrollLeft;
-    wrap.style.cursor='grabbing';
-  });
-  window.addEventListener('mouseup',()=>{isDown=false;wrap.style.cursor='grab';});
-  window.addEventListener('mousemove',e=>{
-    if(!isDown)return;
-    const dx=e.pageX-startX;
-    if(Math.abs(dx)>4)moved=true;
-    wrap.scrollLeft=scrollStart-dx;
-  });
-  // Evita disparar o clique do badge se o usuário estava arrastando
-  wrap.addEventListener('click',e=>{
-    if(moved){e.stopPropagation();e.preventDefault();}
-  },true);
-})();
 
 document.getElementById('heroBadges').addEventListener('click',e=>{
   const badge=e.target.closest('.hbadge');
