@@ -220,10 +220,11 @@ nav.elevated{
   border-right:1px solid rgba(229,37,100,.08);
   padding:0 0 32px;
   position:sticky;top:76px;
-  height:calc(100vh - 76px);
+  max-height:calc(100vh - 76px);
   overflow-y:auto;
   scrollbar-width:none;
   display:flex;flex-direction:column;
+  align-self:flex-start;
 }
 .sidebar-head{display:none}
 .sidebar-close{display:none}
@@ -3175,6 +3176,9 @@ function selectCategoryOnly(cat){
   selectedCats=cat&&cat!=='Todas'?[cat]:[];
   currentCat=selectedCats.length?selectedCats[0]:'Todas';
   searchQ='';
+  activeDesigns=[];
+  document.querySelectorAll('#heroBadges .hbadge').forEach(b=>b.classList.remove('active'));
+  syncDesignSidebarUI();
   const si=document.getElementById('searchInput'); if(si) si.value='';
   syncCatUI();
   saveFiltersToURL();
