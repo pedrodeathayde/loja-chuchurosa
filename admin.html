@@ -878,12 +878,14 @@ img{display:block;max-width:100%}
       <button class="ni" data-page="produtos" onclick="goPage('produtos')"><span class="ni-icon">🌸</span>Produtos<span class="ni-badge" id="nb-prods">0</span></button>
       <button class="ni" data-page="pedidos" onclick="goPage('pedidos')"><span class="ni-icon">📦</span>Pedidos<span class="ni-badge" id="nb-ped">0</span></button>
       <button class="ni" data-page="clientes" onclick="goPage('clientes')"><span class="ni-icon">👥</span>Clientes</button>
+      <button class="ni" data-page="relatorio" onclick="goPage('relatorio');renderRelatorio()"><span class="ni-icon">📈</span>Relatórios</button>
+      <button class="ni" data-page="email" onclick="goPage('email');renderEmailList()"><span class="ni-icon">📧</span>Lista de e-mail</button>
       <div class="ng-label" style="margin-top:8px">Configurações</div>
       <button class="ni" data-page="categorias" onclick="goPage('categorias')"><span class="ni-icon">🏷️</span>Categorias</button>
       <button class="ni" data-page="designs" onclick="goPage('designs')"><span class="ni-icon">🎨</span>Designs</button>
       <button class="ni" data-page="cupons" onclick="goPage('cupons')"><span class="ni-icon">🎟️</span>Cupons</button>
       <button class="ni" data-page="agenda" onclick="goPage('agenda');loadAgenda()"><span class="ni-icon">📋</span>Agenda</button>
-      <button class="ni" data-page="lista-compras" onclick="goPage('lista-compras');renderListaCompras()"><span class="ni-icon">🛒</span>Lista de compras</button>
+      <button class="ni" data-page="lista-compras" onclick="goPage('lista-compras');loadListaCompras()"><span class="ni-icon">🛒</span>Lista de compras</button>
       <button class="ni" data-page="sugerir" onclick="goPage('sugerir');renderSugerir()"><span class="ni-icon">💌</span>Sugerir produtos</button>
       <button class="ni" data-page="frete" onclick="goPage('frete');loadFreteConfig()"><span class="ni-icon">🚚</span>Frete</button>
       <button class="ni" data-page="ticker" onclick="goPage('ticker');loadTicker()"><span class="ni-icon">📢</span>Ticker</button>
@@ -1248,9 +1250,9 @@ img{display:block;max-width:100%}
         <div class="modal" style="max-width:500px">
           <div class="mhead"><h2>⚙️ Melhor Envio</h2><button class="mclose" onclick="document.getElementById('meConfigModal').classList.remove('open')">✕</button></div>
           <div class="mbody">
-            <div class="msec"><h3>Token de acesso</h3>
-              <textarea id="meToken" rows="4" style="width:100%;padding:10px;border:1.5px solid rgba(229,37,100,.18);border-radius:10px;font-family:monospace;font-size:.7rem;resize:none"></textarea>
-              <button class="btn-s" style="margin-top:8px" onclick="loadMeUser()">🔄 Verificar conta</button>
+            <div class="msec"><h3>Conexão</h3>
+              <p style="font-size:.78rem;color:rgba(13,9,13,.45);margin:0 0 8px">O token de acesso fica salvo no servidor (Edge Function), não neste painel.</p>
+              <button class="btn-s" onclick="loadMeUser()">🔄 Verificar conta</button>
             </div>
             <div class="msec"><h3>Dados da conta</h3>
               <div id="meUserInfo" style="font-size:.84rem;line-height:2;color:rgba(13,9,13,.55)">—</div>
@@ -1260,8 +1262,7 @@ img{display:block;max-width:100%}
             </div>
           </div>
           <div class="mfoot">
-            <button class="btn-s" onclick="document.getElementById('meConfigModal').classList.remove('open')">Fechar</button>
-            <button class="btn-p" onclick="saveFreteCfg();document.getElementById('meConfigModal').classList.remove('open')">💾 Salvar token</button>
+            <button class="btn-p" onclick="document.getElementById('meConfigModal').classList.remove('open')">Fechar</button>
           </div>
         </div>
       </div>
@@ -1279,6 +1280,18 @@ img{display:block;max-width:100%}
         </div>
         <div id="freteDimensoes"></div>
         <button class="btn-add-cat" style="margin-top:8px" onclick="addFreteCat()">+ Adicionar categoria</button>
+      </div>
+
+      <!-- Regras de frete por região (tabela frete_regras) -->
+      <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:24px;margin-top:20px">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px">
+          <div style="flex:1;min-width:200px">
+            <h3 style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(13,9,13,.38);margin-bottom:4px">Regras por Região</h3>
+            <p style="font-size:.78rem;color:rgba(13,9,13,.38);margin:0">Valores fixos de entrega, usados como alternativa ao cálculo do Melhor Envio</p>
+          </div>
+          <button class="btn-s" style="flex-shrink:0" onclick="addFrete()">+ Nova região</button>
+        </div>
+        <div class="tbl-wrap" id="freteList"></div>
       </div>
     </div>
 
@@ -1314,24 +1327,6 @@ img{display:block;max-width:100%}
       </div>
     </div>
 
-    <!-- EMAIL LIST (inside clientes) -->
-    <div id="emailSection" style="display:none">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin:32px 0 16px;flex-wrap:wrap;gap:10px">
-        <h2 style="font-family:var(--fd);font-size:1.1rem">📧 Lista de E-mails</h2>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn-s" onclick="exportEmailCSV()">⬇️ Exportar CSV</button>
-          <button class="btn-s" onclick="copyAllEmails()">📋 Copiar todos</button>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-        <button class="filter-btn active" id="efAll" onclick="emailFilter='todos';renderEmailList()">Todos</button>
-        <button class="filter-btn" id="efBuy" onclick="emailFilter='compradores';renderEmailList()">Compradores</button>
-        <button class="filter-btn" id="efNo" onclick="emailFilter='naocompraram';renderEmailList()">Nunca compraram</button>
-        <button class="filter-btn" id="efPaid" onclick="emailFilter='pagos';renderEmailList()">Só pagos</button>
-      </div>
-      <input type="text" id="emailSearch" class="finp" placeholder="Buscar por nome, email ou cidade..." style="margin-bottom:12px" oninput="renderEmailList()">
-      <div id="emailListEl"></div>
-    </div>
 
     <!-- CUPONS -->
     <div class="page" id="page-cupons">
@@ -1343,84 +1338,6 @@ img{display:block;max-width:100%}
     </div>
 
 
-    <!-- LISTA DE COMPRAS -->
-    <div class="page" id="page-lista-compras">
-      <div class="page-header" style="flex-wrap:wrap;gap:12px">
-        <div style="flex:1;min-width:200px"><h1>Lista de Compras 🛒</h1><p>Itens para repor ou comprar</p></div>
-        <div style="display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap">
-          <button class="btn-s" onclick="enviarListaWA()">💬 Enviar pelo WhatsApp</button>
-          <button class="btn-p" onclick="adicionarItemLista()">+ Adicionar item</button>
-        </div>
-      </div>
-      <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:20px">
-        <div id="listaComprasItems"></div>
-        <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(229,37,100,.08)">
-          <div style="display:flex;gap:8px">
-            <input id="novoItemInput" type="text" class="finp" placeholder="Novo item..." 
-              style="flex:1;min-width:0" onkeydown="if(event.key==='Enter')adicionarItemLista()">
-            <select id="novoItemCat" class="finp" style="width:140px">
-              <option value="material">🧵 Material</option>
-              <option value="embalagem">📦 Embalagem</option>
-              <option value="ferramenta">🔧 Ferramenta</option>
-              <option value="outro">📌 Outro</option>
-            </select>
-            <button class="btn-p" onclick="adicionarItemLista()">Adicionar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    
-
-    <!-- TICKER -->
-    <div class="page" id="page-ticker">
-      <div class="page-header">
-        <div><h1>Barra de Texto 📢</h1><p>Barra rosa rolante na loja</p></div>
-        <button class="btn-p" onclick="saveTicker()">💾 Salvar</button>
-      </div>
-      <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:24px;max-width:700px">
-        <div class="fg" style="margin-bottom:20px">
-          <label style="display:flex;align-items:center;gap:12px;cursor:pointer">
-            <button id="tickerToggle" class="tog" onclick="this.classList.toggle('on')"></button>
-            <span>Ativar barra na loja</span>
-          </label>
-        </div>
-        <div class="fg">
-          <label>Texto da barra</label>
-          <textarea id="tickerTexto" class="finp" rows="3" placeholder="🌸 Entrega em todo o Brasil · Feito com carinho · Prazo: 5 dias úteis 🌸" style="resize:vertical"></textarea>
-          <p style="font-size:.75rem;color:rgba(13,9,13,.4);margin-top:6px">Use · para separar os itens. O texto vai repetir automaticamente.</p>
-        </div>
-        <div style="margin-top:20px;background:var(--pink);border-radius:10px;padding:10px 0;overflow:hidden">
-          <div id="tickerPreview" style="white-space:nowrap;color:#fff;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:0 20px;opacity:.9">Preview do ticker...</div>
-        </div>
-      </div>
-    </div>
-
-
-    <!-- AVALIAÇÕES -->
-    <div class="page" id="page-avaliacoes">
-      <div class="page-header">
-        <div><h1>Avaliações ⭐</h1><p>Modere as avaliações antes de publicar na loja</p></div>
-        <div style="display:flex;gap:8px">
-          <select id="avalFilter" class="tfilter" onchange="renderAvaliacoes()">
-            <option value="pendentes">Pendentes</option>
-            <option value="aprovadas">Aprovadas</option>
-            <option value="todas">Todas</option>
-          </select>
-        </div>
-      </div>
-      <div id="avalList"></div>
-    </div>
-
-    <!-- FRETE -->
-    <div class="page" id="page-frete">
-      <div class="page-header">
-        <div><h1>Frete 🚚</h1><p>Regras de entrega por região</p></div>
-        <button class="btn-p" onclick="addFrete()">+ Nova região</button>
-      </div>
-      <div class="tbl-wrap" id="freteList"></div>
-    </div>
 
 
     <!-- NOTIFICAÇÕES -->
@@ -2989,12 +2906,72 @@ function showConfirm({icon='⚠️',title='Tem certeza?',text='Esta ação não 
 }
 function closeConfirm(){document.getElementById('confirmOv').classList.remove('show');}
 
-async function sbGet(path){try{const r=await fetch(SB+path,{headers:HDR});return r.ok?r.json():[];}catch{return[];}}
-async function sbPost(path,body){try{const r=await fetch(SB+path,{method:'POST',headers:{...HDR,'Prefer':'return=representation'},body:JSON.stringify(body)});if(!r.ok){const t=await r.text().catch(()=>'');console.error('sbPost failed',path,r.status,t);return null;}return r.json();}catch(e){console.error('sbPost error',path,e);return null;}}
-async function sbPatch(path,body){try{const r=await fetch(SB+path,{method:'PATCH',headers:{...HDR,'Prefer':'return=representation'},body:JSON.stringify(body)});return r.ok?r.json():null;}catch{return null;}}
-async function sbDelete(path){try{const r=await fetch(SB+path,{method:'DELETE',headers:HDR});return r.ok;}catch{return false;}}
+// sbErr(): tudo que falha passa por aqui. Antes, sbGet devolvia [] em
+// qualquer erro (o painel mostrava "nenhum pedido" como se o banco
+// estivesse vazio) e sbPatch devolvia null em silêncio, com o toast de
+// "salvo!" disparando de qualquer forma. Agora falha faz barulho.
+let _sbErrT=0;
+function sbErr(op,path,status,detail){
+  const tab=(path.match(/\/rest\/v1\/([a-z_]+)/)||[])[1]||'dados';
+  let msg;
+  if(status===401||status===403) msg='Sessão expirada ou sem permissão. Recarregue a página e entre de novo.';
+  else if(status===0) msg='Sem conexão com o servidor.';
+  else msg=`Erro ao ${op} ${tab}`+(status?` (${status})`:'');
+  console.error('[Supabase]',op,path,status,detail||'');
+  // evita empilhar 10 toasts iguais quando várias chamadas falham juntas
+  const now=Date.now();
+  if(now-_sbErrT>1200){_sbErrT=now;try{toast(msg,'err');}catch{}}
+  return msg;
+}
+
+async function sbGet(path){
+  try{
+    const r=await fetch(SB+path,{headers:HDR});
+    if(!r.ok){sbErr('carregar',path,r.status,await r.text().catch(()=>''));return null;}
+    return r.json();
+  }catch(e){sbErr('carregar',path,0,e);return null;}
+}
+async function sbPost(path,body){
+  try{
+    const r=await fetch(SB+path,{method:'POST',headers:{...HDR,'Prefer':'return=representation'},body:JSON.stringify(body)});
+    if(!r.ok){sbErr('criar',path,r.status,await r.text().catch(()=>''));return null;}
+    return r.json();
+  }catch(e){sbErr('criar',path,0,e);return null;}
+}
+async function sbPatch(path,body){
+  try{
+    const r=await fetch(SB+path,{method:'PATCH',headers:{...HDR,'Prefer':'return=representation'},body:JSON.stringify(body)});
+    if(!r.ok){sbErr('salvar',path,r.status,await r.text().catch(()=>''));return null;}
+    return r.json();
+  }catch(e){sbErr('salvar',path,0,e);return null;}
+}
+async function sbDelete(path){
+  try{
+    const r=await fetch(SB+path,{headers:HDR,method:'DELETE'});
+    if(!r.ok){sbErr('excluir',path,r.status,await r.text().catch(()=>''));return false;}
+    return true;
+  }catch(e){sbErr('excluir',path,0,e);return false;}
+}
+// sbOk(): usar quando o resultado precisa ser confirmado antes de dizer "salvo"
+function sbOk(res){return res!==null&&res!==false;}
+
 
 // ── HELPERS ───────────────────────────────────────────────────────────
+// esc(): escapa qualquer valor vindo do banco antes de entrar em innerHTML.
+// Sem isso, um cliente que escreve <img onerror=...> num comentário de
+// avaliação executa código dentro do painel, com o JWT do admin em memória.
+function esc(v){
+  if(v==null)return '';
+  return String(v)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+// escJs(): para valores interpolados dentro de onclick="...('AQUI')"
+function escJs(v){
+  if(v==null)return '';
+  return String(v).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;')
+    .replace(/</g,'\\u003c').replace(/\r?\n/g,' ');
+}
 function fmt(v){return v!=null?'R$ '+parseFloat(v).toFixed(2).replace('.',','):'—';}
 function fmtDate(d){return d?new Date(d).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';}
 function slugify(s){return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
@@ -3215,7 +3192,7 @@ function renderProdTable(){
           <div style="position:absolute;inset:0;background:rgba(229,37,100,.0);transition:background .2s;border-radius:8px;display:flex;align-items:center;justify-content:center" class="img-hover-ov"></div>
         </div>
         <div class="col-name">
-          <div class="tr-name" onclick="event.stopPropagation();previewProdLoja(${p.id})" style="cursor:pointer" title="Ver na loja">${p.name||p.nome||'(sem nome)'}</div>
+          <div class="tr-name" onclick="event.stopPropagation();previewProdLoja(${p.id})" style="cursor:pointer" title="Ver na loja">${esc(p.name)||p.nome||'(sem nome)'}</div>
           <div class="tr-cat">${cats||'—'}</div>
         </div>
         <div class="col-design" style="font-size:.72rem;color:rgba(13,9,13,.45);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${Array.isArray(p.design)?p.design.slice(0,1).join(', '):(p.design||'—')}</div>
@@ -3227,7 +3204,7 @@ function renderProdTable(){
           <button class="ibtn edit" onclick="editProd(${p.id})" title="Editar">✏️</button>
           <button class="ibtn eye" onclick="toggleField(${p.id},'oculto',${!p.oculto})" title="${p.oculto?'Mostrar':'Ocultar'}">${p.oculto?'👁':'🙈'}</button>
           <button class="ibtn ${p.esgotado?'edit':'del'}" onclick="toggleField(${p.id},'esgotado',${!p.esgotado})" title="${p.esgotado?'Disponível':'Esgotado'}">${p.esgotado?'✅':'⊘'}</button>
-          <button class="ibtn del" onclick="deleteProd(${p.id},'${(p.name||'').replace(/'/g,"\\'")}')" title="Excluir">🗑</button>
+          <button class="ibtn del" onclick="deleteProd(${Number(p.id)},'${escJs(p.name)}')" title="Excluir">🗑</button>
           <button class="ibtn ${p.destaque?'edit':''}" onclick="toggleField(${p.id},'destaque',${!p.destaque})" title="${p.destaque?'Remover destaque':'Destacar'}">⭐</button>
         </div>
       </div>`;
@@ -3354,8 +3331,6 @@ function buildCols(sel=[]){
 }
 function getSelCols(){return [...document.querySelectorAll('#colsGrid .col-ch.checked')].map(e=>e.textContent.trim()).filter(Boolean);}
 
-function togBtn(btn){btn.classList.toggle('on');}
-
 async function saveProd(){
   const nome=document.getElementById('mNome').value.trim();
   if(!nome){toast('Informe o nome','err');return;}
@@ -3376,15 +3351,25 @@ async function saveProd(){
   };
   try{
     let prodId=editProdId;
-    if(editProdId){await saveSnapshot(editProdId);await sbPatch(`/rest/v1/produtos?id=eq.${editProdId}`,payload);}
-    else{const r=await sbPost('/rest/v1/produtos',payload);prodId=r?.[0]?.id;}
+    if(editProdId){
+      await saveSnapshot(editProdId);
+      const r=await sbPatch(`/rest/v1/produtos?id=eq.${editProdId}`,payload);
+      // se o PATCH falhou, sbPatch já mostrou o erro real: não dizer "salvo"
+      // e não fechar o modal, para o trabalho digitado não ser perdido
+      if(!sbOk(r))return;
+    } else {
+      const r=await sbPost('/rest/v1/produtos',payload);
+      if(!sbOk(r))return;
+      prodId=r?.[0]?.id;
+      if(!prodId){toast('Produto criado mas sem ID retornado','err');return;}
+    }
     // Save variations
     if(prodId) await saveVars(prodId);
     toast('Produto salvo!','ok');
     closeProdModal();
     await loadProds();
     filterProds();
-  }catch(e){toast('Erro ao salvar','err');}
+  }catch(e){console.error('saveProd',e);toast('Erro ao salvar','err');}
 }
 
 function closeProdModal(){document.getElementById('prodModal').classList.remove('open');}
@@ -3409,7 +3394,7 @@ function renderOrderTable(){
   el.innerHTML=`<div class="tbl-head order-cols"><span>#</span><span>Cliente</span><span>Total</span><span>Pgto</span><span>Status</span><span>Data</span></div>`
     +filtOrders.map(p=>`<div class="tbl-row order-cols" style="cursor:pointer" onclick="openOrder(${p.id})">
       <span style="font-weight:700;color:rgba(13,9,13,.4)">#${p.id}</span>
-      <div><div style="font-size:.85rem;font-weight:600">${p.visitante_nome||'—'}</div><div style="font-size:.7rem;color:rgba(13,9,13,.38)">${p.visitante_email||''}</div></div>
+      <div><div style="font-size:.85rem;font-weight:600">${esc(p.visitante_nome)||'—'}</div><div style="font-size:.7rem;color:rgba(13,9,13,.38)">${esc(p.visitante_email)||''}</div></div>
       <span style="font-weight:700">${fmt(p.total)}</span>
       <span style="font-size:.75rem">${p.mp_status||'—'}</span>
       <span><span class="pill ${p.status}">${{pendente:'⏳ Pendente',confirmado:'✅ Confirmado',em_producao:'🔨 Em produção',pronto:'📦 Pronto',enviado:'🚚 Enviado',entregue:'📬 Entregue',cancelado:'❌ Cancelado'}[p.status]||p.status}</span></span>
@@ -3428,8 +3413,8 @@ async function openOrder(id){
   document.getElementById('orderModalBody').innerHTML=`
     <div class="msec"><h3>Cliente</h3>
       <div style="font-size:.88rem;line-height:2">
-        <b>${p.visitante_nome||'—'}</b><br>
-        📧 ${p.visitante_email||'—'} &nbsp; 📱 ${p.visitante_telefone||'—'}<br>
+        <b>${esc(p.visitante_nome)||'—'}</b><br>
+        📧 ${esc(p.visitante_email)||'—'} &nbsp; 📱 ${p.visitante_telefone||'—'}<br>
         📦 ${[p.endereco_logradouro,p.endereco_numero,p.endereco_bairro,p.endereco_cidade,p.endereco_estado].filter(Boolean).join(', ')||'—'}
       </div>
       ${clientOrders.length?`<div style="margin-top:10px;font-size:.75rem;color:rgba(13,9,13,.45)">Outros pedidos: ${clientOrders.map(o=>`<span onclick="closeOrderModal();setTimeout(()=>openOrder(${o.id}),100)" style="cursor:pointer;color:var(--rose);text-decoration:underline">#${o.id}</span>`).join(', ')}</div>`:''}
@@ -3437,7 +3422,7 @@ async function openOrder(id){
     <div class="msec"><h3>Itens</h3>
       ${itens.length?itens.map(i=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(244,121,154,.08);font-size:.86rem"><span>${i.nome_produto} <span style="color:rgba(13,9,13,.38)">×${i.quantidade}</span></span><b>${fmt(i.subtotal)}</b></div>`).join('')+'<div style="display:flex;justify-content:space-between;margin-top:10px;font-weight:700"><span>Total</span><span style="color:var(--rose)">${fmt(p.total)}</span></div>'
       :`<p style="font-size:.82rem;color:rgba(13,9,13,.38)">Itens sem registro</p>`}
-      ${p.observacoes?`<div style="margin-top:10px;background:rgba(244,121,154,.06);border-radius:8px;padding:10px;font-size:.82rem;color:rgba(13,9,13,.55)"><b>Obs:</b> ${p.observacoes}</div>`:''}
+      ${p.observacoes?`<div style="margin-top:10px;background:rgba(244,121,154,.06);border-radius:8px;padding:10px;font-size:.82rem;color:rgba(13,9,13,.55)"><b>Obs:</b> ${esc(p.observacoes)}</div>`:''}
     </div>
     <div class="msec"><h3>Status do pedido</h3>
       <div class="status-btns">
@@ -3483,13 +3468,6 @@ async function openOrder(id){
 }
 
 let selStatus=null;
-function selOrderStatus(el,s){
-  selStatus=s;
-  document.querySelectorAll('#orderModalBody [onclick^="selOrderStatus"]').forEach(e=>{
-    e.style.borderColor='rgba(244,121,154,.1)';e.style.background='transparent';
-  });
-  el.style.borderColor='rgba(244,121,154,.4)';el.style.background='rgba(244,121,154,.07)';
-}
 async function saveOrderStatus(){
   if(!selStatus||!editOrderId)return;
   await sbPatch(`/rest/v1/pedidos?id=eq.${editOrderId}`,{status:selStatus});
@@ -3553,18 +3531,18 @@ function renderClients(){
       <div class="cc-top">
         <div class="cc-avatar">${(c.nome||c.name||'?')[0].toUpperCase()}</div>
         <div class="cc-info">
-          <div class="cc-name">${c.nome||c.name||'—'}</div>
-          <div class="cc-email">${c.email}</div>
+          <div class="cc-name">${esc(c.nome)||c.name||'—'}</div>
+          <div class="cc-email">${esc(c.email)}</div>
         </div>
         <div class="cc-actions" onclick="event.stopPropagation()">
           ${c.telefone?`<a href="https://wa.me/55${c.telefone.replace(/\D/g,'')}" target="_blank" class="cc-wa" title="WhatsApp">💬</a>`:''}
-          <button onclick="event.stopPropagation();deleteCliente(${c.id},'${(c.nome||c.name||'').replace(/'/g,"\'")}')" style="width:30px;height:30px;border-radius:50%;background:rgba(239,68,68,.1);border:none;color:#ef4444;cursor:pointer;font-size:.8rem;transition:background .2s" title="Excluir">🗑</button>
+          <button onclick="event.stopPropagation();deleteCliente(${Number(c.id)},'${escJs(c.nome||c.name)}')" style="width:30px;height:30px;border-radius:50%;background:rgba(239,68,68,.1);border:none;color:#ef4444;cursor:pointer;font-size:.8rem;transition:background .2s" title="Excluir">🗑</button>
         </div>
       </div>
       <div class="cc-meta">
-        <span>📍 ${c.cidade||'—'}</span>
+        <span>📍 ${esc(c.cidade)||'—'}</span>
         <span>🛒 ${c._pedidos||0} pedidos</span>
-        ${c.telefone?`<span>📱 ${c.telefone}</span>`:''}
+        ${c.telefone?`<span>📱 ${esc(c.telefone)}</span>`:''}
       </div>
     </div>`).join('');
 
@@ -3606,9 +3584,9 @@ function renderCupons(){
   if(!allCupons.length){el.innerHTML='<div class="empty"><div class="empty-icon">🎟️</div><p>Nenhum cupom criado</p></div>';return;}
   el.innerHTML=allCupons.map(c=>`
     <div class="coupon-card">
-      <div class="coupon-code">${c.codigo}</div>
+      <div class="coupon-code">${esc(c.codigo)}</div>
       <div class="coupon-info">
-        <h4>${c.descricao||'Cupom de desconto'}</h4>
+        <h4>${esc(c.descricao)||'Cupom de desconto'}</h4>
         <p>
           ${c.valor_minimo?`Mínimo ${fmt(c.valor_minimo)} • `:''}
           ${c.limite_usos?`${c.usos}/${c.limite_usos} usos`:'Ilimitado'} •
@@ -3666,10 +3644,15 @@ async function saveCupom(){
   closeCupomModal();
   await loadCupons();
 }
-async function toggleCupom(id,val){await sbPatch(`/rest/v1/cupons?id=eq.${id}`,{ativo:val});const c=allCupons.find(x=>x.id==id);if(c)c.ativo=val;renderCupons();toast(val?'Cupom ativado':'Cupom desativado','ok');}
+async function toggleCupom(id,val){
+  const r=await sbPatch(`/rest/v1/cupons?id=eq.${id}`,{ativo:val});
+  if(!sbOk(r)){renderCupons();return;} // re-render volta o toggle ao estado real
+  const c=allCupons.find(x=>x.id==id);if(c)c.ativo=val;
+  renderCupons();toast(val?'Cupom ativado':'Cupom desativado','ok');
+}
 async function deleteCupom(id){
   showConfirm({icon:'🏷',title:'Excluir cupom?',text:'Clientes não poderão mais usar este cupom.',okLabel:'Excluir',
-    onConfirm: async ()=>{await sbDelete(`/rest/v1/cupons?id=eq.${id}`);allCupons=allCupons.filter(x=>x.id!=id);renderCupons();toast('Cupom excluído','ok');}
+    onConfirm: async ()=>{if(!await sbDelete(`/rest/v1/cupons?id=eq.${id}`))return;allCupons=allCupons.filter(x=>x.id!=id);renderCupons();toast('Cupom excluído','ok');}
   });
 }
 function closeCupomModal(){document.getElementById('cupomModal').classList.remove('open');}
@@ -3689,7 +3672,7 @@ function renderFrete(){
   +allFrete.map(f=>`
     <div class="frete-row">
       <div>
-        <input style="border:none;background:transparent;font-family:var(--fb);font-size:.88rem;font-weight:600;width:100%;outline:none" value="${f.name}" onblur="saveFrete(${f.id},{name:this.value})">
+        <input style="border:none;background:transparent;font-family:var(--fb);font-size:.88rem;font-weight:600;width:100%;outline:none" value="${esc(f.name)}" onblur="saveFrete(${f.id},{name:this.value})">
         <div style="font-size:.7rem;color:rgba(13,9,13,.35)">${(f.estados||[]).join(', ')||'Todos os estados'}</div>
       </div>
       <input type="number" style="border:1.5px solid rgba(244,121,154,.18);border-radius:8px;padding:5px 8px;font-family:var(--fb);font-size:.85rem;width:90px" value="${f.valor||0}" onblur="saveFrete(${f.id},{valor:+this.value})">
@@ -3698,7 +3681,7 @@ function renderFrete(){
       <button class="tog ${f.ativo?'on':''}" onclick="this.classList.toggle('on');saveFrete(${f.id},{ativo:this.classList.contains('on')})"></button>
     </div>`).join('');
 }
-async function saveFrete(id,payload){await sbPatch(`/rest/v1/frete_regras?id=eq.${id}`,payload);toast('Frete salvo','ok');}
+async function saveFrete(id,payload){const r=await sbPatch(`/rest/v1/frete_regras?id=eq.${id}`,payload);if(sbOk(r))toast('Frete salvo','ok');}
 async function addFrete(){
   const r=await sbPost('/rest/v1/frete_regras',{name:'Nova região',valor:20,prazo_dias:7,ativo:true});
   if(r)allFrete.push(r[0]);
@@ -3719,14 +3702,14 @@ function renderBannerStrip(){
   strip.style.display='flex';
   strip.style.background=b.cor_fundo;
   strip.style.color=b.cor_texto;
-  strip.innerHTML=`<span>${b.texto}</span>${b.link?`<a href="${b.link}" style="color:inherit">${b.texto_link||'Ver mais'}</a>`:''}`;
+  strip.innerHTML=`<span>${esc(b.texto)}</span>${b.link?`<a href="${b.link}" style="color:inherit">${b.texto_link||'Ver mais'}</a>`:''}`;
 }
 function renderBanners(){
   const el=document.getElementById('bannerList');
   if(!allBanners.length){el.innerHTML='<div class="empty"><div class="empty-icon">📢</div><p>Nenhum banner criado</p></div>';return;}
   el.innerHTML=allBanners.map(b=>`
     <div class="banner-card">
-      <div class="banner-preview" style="background:${b.cor_fundo};color:${b.cor_texto}">${b.texto}</div>
+      <div class="banner-preview" style="background:${b.cor_fundo};color:${b.cor_texto}">${esc(b.texto)}</div>
       <div class="banner-actions">
         <button class="tog ${b.ativo?'on':''}" onclick="this.classList.toggle('on');toggleBanner(${b.id},this.classList.contains('on'))"></button>
         <button class="ibtn edit" onclick="editBanner(${b.id})">&#9999;</button>
@@ -3773,7 +3756,7 @@ async function saveBanner(){
 async function toggleBanner(id,val){await sbPatch(`/rest/v1/banners?id=eq.${id}`,{ativo:val});const b=allBanners.find(x=>x.id==id);if(b)b.ativo=val;renderBannerStrip();}
 async function deleteBanner(id){
   showConfirm({icon:'🖼','title':'Excluir banner?',text:'Ele deixará de aparecer no pop-up da loja.',okLabel:'Excluir',
-    onConfirm: async ()=>{await sbDelete(`/rest/v1/banners?id=eq.${id}`);allBanners=allBanners.filter(x=>x.id!=id);renderBanners();renderBannerStrip();toast('Banner excluído','ok');}
+    onConfirm: async ()=>{if(!await sbDelete(`/rest/v1/banners?id=eq.${id}`))return;allBanners=allBanners.filter(x=>x.id!=id);renderBanners();renderBannerStrip();toast('Banner excluído','ok');}
   });
 }
 function closeBannerModal(){document.getElementById('bannerModal').classList.remove('open');}
@@ -3806,7 +3789,7 @@ function renderCatManager(){
       ondrop="catDrop(event,${i})">
       <span style="cursor:grab;color:rgba(13,9,13,.3);font-size:.9rem;flex-shrink:0">⠿</span>
       <input type="text" value="${catEmojis[i]||'🏷️'}" style="width:40px;text-align:center" oninput="catEmojis[${i}]=this.value">
-      <input type="text" value="${c.nome}" style="flex:1" onblur="allCats[${i}].nome=this.value;syncColsFromCats()">
+      <input type="text" value="${esc(c.nome)}" style="flex:1" onblur="allCats[${i}].nome=this.value;syncColsFromCats()">
       <button class="tog ${c.visivel_loja?'on':''}" style="transform:scale(.75);flex-shrink:0" title="${c.visivel_loja?'Visível na loja':'Oculta da loja'}" onclick="allCats[${i}].visivel_loja=!allCats[${i}].visivel_loja;this.classList.toggle('on');syncColsFromCats()"></button>
       <button class="ibtn del" onclick="removeCat(${i})">🗑</button>
     </div>`).join('');
@@ -3936,7 +3919,9 @@ async function uploadFoto(file,prodNome){
   try{
     const r=await fetch(`${SB}/storage/v1/object/Fotos/${path}`,{
       method:'POST',
-      headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':file.type,'x-upsert':'true'},
+      // usa o JWT da sessão (HDR), não a anon key: assim a policy do bucket
+      // pode exigir admin autenticado em vez de permitir escrita anônima
+      headers:{...HDR,'Content-Type':file.type,'x-upsert':'true'},
       body:file
     });
     if(r.ok){
@@ -4121,7 +4106,7 @@ function openBulkModal(action){
       <div style="font-size:.78rem;color:rgba(13,9,13,.45);margin-top:8px">A categoria selecionada será adicionada às coleções existentes.</div>`;
   }else if(action==='design'){
     title.textContent=`Alterar design (${n} produtos)`;
-    const grid=allDesigns.map(d=>`<div class="col-ch" onclick="this.classList.toggle('checked')" style="cursor:pointer">${d.emoji||''} ${d.nome}</div>`).join('');
+    const grid=allDesigns.map(d=>`<div class="col-ch" onclick="this.classList.toggle('checked')" style="cursor:pointer">${d.emoji||''} ${esc(d.nome)}</div>`).join('');
     body.innerHTML=`
       <div class="fg"><label style="margin-bottom:8px;display:block">Selecione os designs a aplicar</label>
         <div class="cols-grid" id="bulkDesignGrid">${grid}</div>
@@ -4304,7 +4289,7 @@ function globalSearchFn(q){
     });
     // Orders
     allOrders.filter(o=>fuzzyMatch(o.visitante_nome||'',ql)||String(o.id).includes(ql)).slice(0,3).forEach(o=>{
-      results.push({type:'ped',label:`#${o.id} — ${o.visitante_nome||'—'}`,sub:fmt(o.total),action:`goPage('pedidos');setTimeout(()=>openOrder(${o.id}),300)`});
+      results.push({type:'ped',label:`#${o.id} — ${esc(o.visitante_nome)||'—'}`,sub:fmt(o.total),action:`goPage('pedidos');setTimeout(()=>openOrder(${o.id}),300)`});
     });
     // Clients
     allClients.filter(c=>fuzzyMatch(c.nome||'',ql)||fuzzyMatch(c.email||'',ql)).slice(0,2).forEach(c=>{
@@ -4434,7 +4419,7 @@ function renderDesignManager(){
       ondrop="desDrop(event,${i})">
       <span style="cursor:grab;color:rgba(13,9,13,.3);flex-shrink:0">⠿</span>
       <input type="text" value="${d.emoji||'🌸'}" style="width:40px;text-align:center" oninput="allDesigns[${i}].emoji=this.value">
-      <input type="text" value="${d.nome}" style="flex:1" oninput="allDesigns[${i}].nome=this.value;populateDesignSelect()">
+      <input type="text" value="${esc(d.nome)}" style="flex:1" oninput="allDesigns[${i}].nome=this.value;populateDesignSelect()">
       <span style="font-size:.72rem;color:rgba(13,9,13,.4);white-space:nowrap;flex-shrink:0">Na loja</span>
       <button class="tog ${d.visivel_loja!==false?'on':''}" style="transform:scale(.75);flex-shrink:0" onclick="allDesigns[${i}].visivel_loja=!allDesigns[${i}].visivel_loja;this.classList.toggle('on')"></button>
       <button class="ibtn del" onclick="removeDesign(${i})">🗑</button>
@@ -4495,7 +4480,7 @@ function populateDesignSelect(){
 }
 
 function buildDesignsGrid(sel=[]){
-  return allDesigns.map(d=>`<div class="col-ch ${sel.includes(d.nome)?'checked':''}" onclick="this.classList.toggle('checked')">${d.emoji||''} ${d.nome}</div>`).join('');
+  return allDesigns.map(d=>`<div class="col-ch ${sel.includes(d.nome)?'checked':''}" onclick="this.classList.toggle('checked')">${d.emoji||''} ${esc(d.nome)}</div>`).join('');
 }
 
 function getSelDesigns(){
@@ -4580,7 +4565,7 @@ async function loadAgenda(){
     out+=`<div class="agenda-section"><h2>📦 Prontos para envio (${prontos.length})</h2>`;
     prontos.forEach(o=>{
       out+=`<div class="agenda-item">
-        <div><div class="agenda-item-name">#${o.id} — ${o.visitante_nome||'Cliente'}</div>
+        <div><div class="agenda-item-name">#${o.id} — ${esc(o.visitante_nome)||'Cliente'}</div>
         <div class="agenda-item-meta">${fmt(o.total)} · ${o.visitante_whatsapp||o.visitante_email||''}</div></div>
         <button class="btn-s" onclick="openOrder(${o.id})">Ver pedido</button>
       </div>`;
@@ -4592,7 +4577,7 @@ async function loadAgenda(){
     out+=`<div class="agenda-section"><h2>🔨 Em produção (${emProd.length} pedidos)</h2>`;
     sorted.filter(p=>p.qty>0).forEach(p=>{
       out+=`<div class="agenda-item">
-        <div><div class="agenda-item-name">${p.name||"(sem nome)"}</div>
+        <div><div class="agenda-item-name">${esc(p.name)||"(sem nome)"}</div>
         <div class="agenda-item-meta">${p.orders.length} pedido${p.orders.length>1?'s':''}</div>
         <div class="agenda-item-prazo ${prazoClass(p.prazo)}">${prazoLabel(p.prazo)}</div></div>
         <div class="agenda-item-qty">${p.qty}×</div>
@@ -4605,7 +4590,7 @@ async function loadAgenda(){
     out+=`<div class="agenda-section"><h2>✅ Confirmados — aguardando produção (${confirmados.length})</h2>`;
     confirmados.forEach(o=>{
       out+=`<div class="agenda-item">
-        <div><div class="agenda-item-name">#${o.id} — ${o.visitante_nome||'Cliente'}</div>
+        <div><div class="agenda-item-name">#${o.id} — ${esc(o.visitante_nome)||'Cliente'}</div>
         <div class="agenda-item-meta">${fmt(o.total)} · ${new Date(o.created_at).toLocaleDateString('pt-BR')}</div></div>
         <button class="btn-s" onclick="openOrder(${o.id})">Ver pedido</button>
       </div>`;
@@ -4633,7 +4618,7 @@ function filterOrders(){
     if(orderStatusFilter&&o.status!==orderStatusFilter)return false;
     if(orderPgtoFilter&&o.pagamento_status!==orderPgtoFilter)return false;
     if(q){
-      const hay=`#${o.id} ${o.visitante_nome||''} ${o.visitante_email||''} ${o.visitante_whatsapp||''}`.toLowerCase();
+      const hay=`#${o.id} ${esc(o.visitante_nome)||''} ${esc(o.visitante_email)||''} ${o.visitante_whatsapp||''}`.toLowerCase();
       if(!hay.includes(q))return false;
     }
     return true;
@@ -4732,7 +4717,7 @@ function contactWA(id){
   if(!p)return;
   const tel=(p.visitante_telefone||'').replace(/\D/g,'');
   if(!tel){toast('Sem telefone cadastrado','err');return;}
-  const msg=`Olá ${p.visitante_nome||''}! 😊 Tudo bem?`;
+  const msg=`Olá ${esc(p.visitante_nome)||''}! 😊 Tudo bem?`;
   window.open(`https://wa.me/55${tel}?text=${encodeURIComponent(msg)}`,'_blank');
 }
 function waTemplate(id,tipo){
@@ -4768,40 +4753,36 @@ function exportOrdersCSV(){
 }
 
 
-function previewProduct(id){
-  window.open(`produto.html?id=${id}`,'_blank');
-}
-
-
-// ── HISTÓRICO DE ALTERAÇÕES ───────────────────────────────────────────
+// ── HISTÓRICO DE ALTERAÇÕES ── agora na tabela admin_hist (era localStorage:
+// não aparecia em outro dispositivo, e limpar o navegador apagava o registro)
 const MAX_HIST=200;
-function getHist(){try{return JSON.parse(localStorage.getItem('cr_hist')||'[]');}catch{return[];}}
-function addHist(action,detail,entity=''){
-  const hist=getHist();
-  hist.unshift({ts:new Date().toISOString(),action,detail,entity});
-  if(hist.length>MAX_HIST)hist.pop();
-  localStorage.setItem('cr_hist',JSON.stringify(hist));
+async function addHist(action,detail,entity=''){
+  // fire-and-forget: uma falha aqui não deve travar a ação principal que a chamou
+  sbPost('/rest/v1/admin_hist',{action,detail,entity}).catch(()=>{});
 }
-function renderHist(){
+async function renderHist(){
   const el=document.getElementById('histList');
   if(!el)return;
-  const hist=getHist();
-  if(!hist.length){el.innerHTML='<div class="empty"><div class="empty-icon">📋</div><p>Nenhuma alteração registrada</p></div>';return;}
-  el.innerHTML='<div class="hist-list">'+hist.map(h=>`
+  el.innerHTML='<div class="ld"><div class="spin"></div><span>Carregando...</span></div>';
+  const hist=await sbGet(`/rest/v1/admin_hist?select=*&order=ts.desc&limit=${MAX_HIST}`);
+  const list=Array.isArray(hist)?hist:[];
+  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">\u{1F4CB}</div><p>Nenhuma altera\u00e7\u00e3o registrada</p></div>';return;}
+  el.innerHTML='<div class="hist-list">'+list.map(h=>`
     <div class="hist-item">
       <div class="hist-time">${new Date(h.ts).toLocaleString('pt-BR')}</div>
-      <div class="hist-action">${h.action}${h.entity?' — '+h.entity:''}</div>
-      ${h.detail?`<div class="hist-detail">${h.detail}</div>`:''}
+      <div class="hist-action">${esc(h.action)}${h.entity?' \u2014 '+esc(h.entity):''}</div>
+      ${h.detail?`<div class="hist-detail">${esc(h.detail)}</div>`:''}
     </div>`).join('')+'</div>';
 }
 function clearHist(){
-  showConfirm({icon:'🗑',title:'Limpar todo o histórico?',text:'Todo o histórico de navegação será apagado.',okLabel:'Limpar',
-    onConfirm: ()=>{
-      localStorage.removeItem('cr_hist');
+  showConfirm({icon:'\u{1F5D1}',title:'Limpar todo o hist\u00f3rico?',text:'Todo o hist\u00f3rico de a\u00e7\u00f5es ser\u00e1 apagado do banco.',okLabel:'Limpar',
+    onConfirm: async ()=>{
+      if(!await sbDelete('/rest/v1/admin_hist?id=gt.0'))return;
       renderHist();
     }
   });
 }
+
 
 
 async function openClient(idOrEmail){
@@ -4816,16 +4797,16 @@ async function openClient(idOrEmail){
   modal.style.zIndex=800;
   modal.innerHTML=`<div class="modal" style="max-width:560px">
     <div class="mhead">
-      <h2>${c.nome||c.email} ${blocked?'<span class="badge-blocked">Bloqueado</span>':''}</h2>
+      <h2>${esc(c.nome)||c.email} ${blocked?'<span class="badge-blocked">Bloqueado</span>':''}</h2>
       <button class="mclose" onclick="this.closest('.modal-ov').remove()">✕</button>
     </div>
     <div class="mbody">
       <div class="msec"><h3>Dados</h3>
         <div class="client-detail">
-          📧 ${c.email||'—'}<br>
+          📧 ${esc(c.email)||'—'}<br>
           📱 ${c.phone||c.telefone||'—'}<br>
           📍 ${[c.logradouro,c.numero,c.complemento,c.bairro,c.cidade,c.estado].filter(Boolean).join(', ')||'Endereço não cadastrado'}<br>
-          ${c.cep?`CEP: ${c.cep}<br>`:''}
+          ${c.cep?`CEP: ${esc(c.cep)}<br>`:''}
           📅 Cadastro: ${c.created_at?new Date(c.created_at).toLocaleDateString('pt-BR'):'—'}<br>
           💰 Total gasto: <b style="color:var(--rose)">${fmt(total)}</b><br>
           📦 Pedidos: <b>${clientOrders.length}</b>
@@ -4848,7 +4829,7 @@ async function openClient(idOrEmail){
       <div class="msec"><h3>Ações</h3>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           ${c.phone||c.telefone?`<button class="btn-s" onclick="window.open('https://wa.me/55${(c.phone||c.telefone||'').replace(/\D/g,'')}','_blank')">💬 WhatsApp</button>`:''}
-          <button class="btn-s ${blocked?'':'btn-danger'}" onclick="toggleBlockClient('${c.email}',this)">
+          <button class="btn-s ${blocked?'':'btn-danger'}" onclick="toggleBlockClient('${escJs(c.email)}',this)">
             ${blocked?'✅ Desbloquear':'🚫 Bloquear cliente'}
           </button>
         </div>
@@ -4862,14 +4843,8 @@ async function openClient(idOrEmail){
 // toggleBlockClient moved to block_js above
 
 
-// ── LOG DE ACESSOS ────────────────────────────────────────────────────
-(function(){
-  const key='cr_access_log';
-  const logs=JSON.parse(localStorage.getItem(key)||'[]');
-  logs.unshift({ts:new Date().toISOString(),ua:navigator.userAgent.slice(0,80),ref:document.referrer||'direto'});
-  if(logs.length>100)logs.pop();
-  localStorage.setItem(key,JSON.stringify(logs));
-})();
+// registro de acesso: feito no servidor / admin_logins (não mais duplicado
+// em localStorage — a tabela já é a única fonte usada por renderAccessLog)
 
 async function renderAccessLog(){
   const el=document.getElementById('accessLog');
@@ -4882,11 +4857,6 @@ async function renderAccessLog(){
     const r=await fetch(SB+'/rest/v1/admin_logins?select=*&order=ts.desc&limit=200',{headers:HDR});
     if(r.ok) logs=await r.json();
   }catch(e){}
-
-  // Fallback to localStorage
-  if(!logs.length){
-    logs=JSON.parse(localStorage.getItem('cr_access_log')||'[]');
-  }
 
   if(!logs.length){el.innerHTML='<div class="empty"><div class="empty-icon">🔒</div><p>Nenhum acesso registrado</p></div>';return;}
 
@@ -4932,39 +4902,6 @@ async function renderAccessLog(){
 }
 
 // Fetch IP and location on login
-async function fetchAndLogAccess(){
-  let ip='', city='', region='', country='';
-  // Try multiple IP APIs
-  const ipApis=['https://ipapi.co/json/','https://api.ipify.org?format=json'];
-  for(const api of ipApis){
-    try{
-      const r=await fetch(api,{signal:AbortSignal.timeout(3000)});
-      const d=await r.json();
-      ip=d.ip||''; city=d.city||''; region=d.region||''; country=d.country_name||d.country||'';
-      if(ip)break;
-    }catch(e){}
-  }
-  const entry={
-    ts:new Date().toISOString(),
-    ua:navigator.userAgent,
-    ref:document.referrer||'direto',
-    ip, city, region, country,
-  };
-  // Save to Supabase
-  try{
-    await fetch(SB+'/rest/v1/admin_logins',{
-      method:'POST',
-      headers:{...HDR,'Prefer':'return=minimal'},
-      body:JSON.stringify(entry)
-    });
-  }catch(e){}
-  // Also localStorage fallback
-  const logs=JSON.parse(localStorage.getItem('cr_access_log')||'[]');
-  logs.unshift(entry);
-  localStorage.setItem('cr_access_log',JSON.stringify(logs.slice(0,100)));
-}
-
-
 // ── RELATÓRIOS ────────────────────────────────────────────────────────
 function renderRelatorio(){
   const el=document.getElementById('relatorioContent');
@@ -5111,29 +5048,29 @@ function getEmailList(){
 }
 
 function renderEmailList(){
-  const el=document.getElementById('emailListEl')||document.getElementById('emailList');
+  const el=document.getElementById('emailList');
   if(!el)return;
   const list=getEmailList();
   const label=document.getElementById('emailCountLabel');
   if(label) label.textContent=list.length+' contatos';
-  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">📧</div><p>Nenhum e-mail encontrado</p></div>';return;}
+  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">\u{1F4E7}</div><p>Nenhum e-mail encontrado</p></div>';return;}
   el.innerHTML=list.map(c=>`
     <div class="client-card" style="margin-bottom:8px">
       <div class="cc-top">
-        <div class="cc-avatar" style="width:36px;height:36px;font-size:.9rem">${(c.nome||'?')[0].toUpperCase()}</div>
+        <div class="cc-avatar" style="width:36px;height:36px;font-size:.9rem">${esc((c.nome||'?')[0].toUpperCase())}</div>
         <div class="cc-info">
-          <div class="cc-name">${c.nome||'—'}</div>
-          <div class="cc-email">${c.email}</div>
+          <div class="cc-name">${esc(c.nome)||'\u2014'}</div>
+          <div class="cc-email">${esc(c.email)}</div>
         </div>
         <div class="cc-actions" style="display:flex;gap:6px">
-          ${c.tel?`<a href="https://wa.me/55${c.tel.replace(/\D/g,'')}" target="_blank" class="cc-wa">💬</a>`:''}
-          <button class="btn-s" style="padding:4px 10px;font-size:.7rem;border-radius:8px" onclick="navigator.clipboard.writeText('${c.email}').then(()=>toast('Copiado!','ok'))">📋</button>
-          <button onclick="event.stopPropagation();deleteEmailContato('${c.email}','${(c.nome||'').replace(/'/g,"\'")}')" style="width:28px;height:28px;border-radius:50%;background:rgba(239,68,68,.1);border:none;color:#ef4444;cursor:pointer;font-size:.75rem" title="Excluir">🗑</button>
+          ${c.tel?`<a href="https://wa.me/55${esc(String(c.tel).replace(/\D/g,''))}" target="_blank" class="cc-wa">\u{1F4AC}</a>`:''}
+          <button class="btn-s" style="padding:4px 10px;font-size:.7rem;border-radius:8px" onclick="navigator.clipboard.writeText('${escJs(c.email)}').then(()=>toast('Copiado!','ok'))">\u{1F4CB}</button>
+          <button onclick="event.stopPropagation();deleteEmailContato('${escJs(c.email)}','${escJs(c.nome)}')" style="width:28px;height:28px;border-radius:50%;background:rgba(239,68,68,.1);border:none;color:#ef4444;cursor:pointer;font-size:.75rem" title="Excluir">\u{1F5D1}</button>
         </div>
       </div>
       <div class="cc-meta">
-        ${c.cidade?`<span>📍 ${c.cidade}</span>`:''}
-        <span>🛒 ${c.pedidos} pedidos</span>
+        ${c.cidade?`<span>\u{1F4CD} ${esc(c.cidade)}</span>`:''}
+        <span>\u{1F6D2} ${Number(c.pedidos)||0} pedidos</span>
         ${c.total>0?`<span style="color:var(--rose);font-weight:600">${fmt(c.total)}</span>`:''}
       </div>
     </div>`).join('');
@@ -5242,27 +5179,14 @@ async function toggleBlockClient(email, btn){
       addHist('Cliente bloqueado','',email);
     }
   }catch(e){
-    // Fallback to localStorage if table doesn't exist yet
-    const key='blocked_'+email;
-    if(localStorage.getItem(key)){
-      localStorage.removeItem(key);
-      toast('Cliente desbloqueado (local)','ok');
-      if(btn)btn.textContent='🚫 Bloquear cliente';
-    }else{
-      localStorage.setItem(key,'1');
-      toast('Cliente bloqueado (local — rode o SQL para persistir no banco)','info');
-      if(btn)btn.textContent='✅ Desbloquear';
-    }
+    console.error('toggleBlockClient',e);
+    toast('Erro ao atualizar bloqueio — tente novamente','err');
   }
 }
 
 async function isClientBlocked(email){
-  try{
-    const d=await sbGet(`/rest/v1/clientes_bloqueados?email=eq.${encodeURIComponent(email)}`);
-    return Array.isArray(d)&&d.length>0;
-  }catch{
-    return !!localStorage.getItem('blocked_'+email);
-  }
+  const d=await sbGet(`/rest/v1/clientes_bloqueados?email=eq.${encodeURIComponent(email)}`);
+  return Array.isArray(d)&&d.length>0;
 }
 
 function getToken(){
@@ -5270,27 +5194,35 @@ function getToken(){
 }
 
 
-// ── MELHOR ENVIO ──────────────────────────────────────────────────────
+// ── MELHOR ENVIO ──
+// O token de acesso do ME NÃO fica mais no HTML nem em localStorage: a
+// Edge Function 'melhor-envio' usa o secret do lado do servidor. Antes
+// havia um JWT do ME hardcoded aqui como fallback (válido até 2027, com
+// escopos de escrita completos) — qualquer um que abrisse a página tinha
+// esse token em mãos. Foi removido; revogue o token antigo no painel do ME.
 const ME_BASE='https://oznpfqsgurztffwfyfec.supabase.co/functions/v1/melhor-envio';
-let meToken=localStorage.getItem('me_token')||'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZDNiNjU4ZjhiYjY2ZTRiMmIyZjE3ZTJhZjkyYmYyYjRmMGE1ZDYxYmU2ZmVjNGNlYmI1NzNlYTQ2N2Y0MDJjNGY1NTljNmJlODdmYjVlZGYiLCJpYXQiOjE3ODA2ODQ5NjQuNzc4MTc3LCJuYmYiOjE3ODA2ODQ5NjQuNzc4MTc5LCJleHAiOjE4MTIyMjA5NjQuNzY2OTE1LCJzdWIiOiIyYjVhMTc0My1hMjMwLTQyNzctYWJiNC1mZGI4OTE4MjlkZDIiLCJzY29wZXMiOlsiY2FydC1yZWFkIiwiY2FydC13cml0ZSIsImNvbXBhbmllcy1yZWFkIiwiY29tcGFuaWVzLXdyaXRlIiwiY291cG9ucy1yZWFkIiwiY291cG9ucy13cml0ZSIsIm5vdGlmaWNhdGlvbnMtcmVhZCIsIm9yZGVycy1yZWFkIiwicHJvZHVjdHMtcmVhZCIsInByb2R1Y3RzLWRlc3Ryb3kiLCJwcm9kdWN0cy13cml0ZSIsInB1cmNoYXNlcy1yZWFkIiwic2hpcHBpbmctY2FsY3VsYXRlIiwic2hpcHBpbmctY2FuY2VsIiwic2hpcHBpbmctY2hlY2tvdXQiLCJzaGlwcGluZy1jb21wYW5pZXMiLCJzaGlwcGluZy1nZW5lcmF0ZSIsInNoaXBwaW5nLXByZXZpZXciLCJzaGlwcGluZy1wcmludCIsInNoaXBwaW5nLXNoYXJlIiwic2hpcHBpbmctdHJhY2tpbmciLCJlY29tbWVyY2Utc2hpcHBpbmciLCJ0cmFuc2FjdGlvbnMtcmVhZCIsInVzZXJzLXJlYWQiLCJ1c2Vycy13cml0ZSIsIndlYmhvb2tzLXJlYWQiLCJ3ZWJob29rcy13cml0ZSIsIndlYmhvb2tzLWRlbGV0ZSIsInRkZWFsZXItd2ViaG9vayJdfQ.b_Bsv4Ee2BbS02NQuH8VKytnxYlgkUw5uLpF2JcRqjCJnQD05xmN_wfF6xw1Q4HND7qPp7IY6iGiFWFGq5bEu_gxoCUsN4yFKx0nlcQeF9oeyhi_5-14UQ76rjVvf5ocPtFVa44iUbkG81Ij_Gdqi65fW7M7tg246Ex_qnOXbfePd3K-9Yyig0TIEQt4ecp0BFgVkoayuX2Ds67NvdC---TDkJd-jBNLaujGLkcPpnApVt509ykluyV2TuaMJx8-YQ6Gtij2ioVwrb7tS3rMepFtK6pG_2JEaWckpm9UzP5xPhkeZ0xYHPLvCxjIUGYoVcH4E1VcSqCMBzGkJINqc-1pBTv5MK5AmnQL1K9QNTUP2gDsxz9cHDVfFMtGt2uYb_NzVK6wjswU1DmuA7KFPoGJ4p0RPC-Z26ES_x73gv1zaxUl8ZGGWxhwEX1-_MepLPqxI9TRXnR4a6pWgzoVyzAFFM1oCdLZ9TC1jGwLG3qgBNCHQJY2Yl_5UwYTlXwiDfKjBzLddSeK2sCSyNSZr03t33WjmoGlz0RoGqSfvmcVviiz2O9mW0X7huphQrkAVCJrn3ogNZMaZ-X7F3tGKXgFAeBDGBTiaB2XXxmqs14d-QHnACKZTDyaUdc6mjlT6keoyP0DuxaxDixN9zX4YQZd_gqYYJiGKbDlPDOZsRg';
 let meUser=null;
-let freteDims=JSON.parse(localStorage.getItem('frete_dims')||'[]');
-if(!freteDims.length) freteDims=[
+
+// freteDims agora vive na tabela configuracoes (chave 'frete_dims', valor
+// JSON) em vez de localStorage — assim some do navegador e volta a valer
+// para todos que abrirem o admin, não só quem configurou.
+const FRETE_DIMS_PADRAO=[
   {cat:'Fantasias',peso:.5,altura:30,largura:30,comprimento:30},
   {cat:'Almofadas',peso:.6,altura:40,largura:40,comprimento:15},
-  {cat:'Decoração',peso:.4,altura:25,largura:25,comprimento:20},
-  {cat:'Para bebês',peso:.3,altura:20,largura:20,comprimento:15},
+  {cat:'Decora\u00e7\u00e3o',peso:.4,altura:25,largura:25,comprimento:20},
+  {cat:'Para beb\u00eas',peso:.3,altura:20,largura:20,comprimento:15},
   {cat:'Educativo',peso:.4,altura:25,largura:25,comprimento:20},
   {cat:'Bolsas & mochilas',peso:.5,altura:35,largura:30,comprimento:15},
-  {cat:'Padrão',peso:.5,altura:30,largura:30,comprimento:20},
+  {cat:'Padr\u00e3o',peso:.5,altura:30,largura:30,comprimento:20},
 ];
+let freteDims=[...FRETE_DIMS_PADRAO];
 
-const ME_HDR={
-  'Authorization':'Bearer '+meToken,
-  'Accept':'application/json',
-  'Content-Type':'application/json',
-  'User-Agent':'Chuchu Rosa (contato@chuchurosa.com.br)'
-};
+async function loadFreteDims(){
+  const d=await sbGet("/rest/v1/configuracoes?chave=eq.frete_dims&select=valor");
+  if(Array.isArray(d)&&d[0]?.valor){
+    try{ const parsed=JSON.parse(d[0].valor); if(Array.isArray(parsed)&&parsed.length) freteDims=parsed; }catch{}
+  }
+}
 
 async function meGet(path){
   const r=await fetch(ME_BASE,{
@@ -5315,7 +5247,6 @@ async function mePost(path,body){
 function openMeConfig(){
   const modal=document.getElementById('meConfigModal');
   if(!modal)return;
-  document.getElementById('meToken').value=meToken;
   modal.classList.add('open');
 }
 
@@ -5323,43 +5254,38 @@ async function loadMeUser(){
   const el=document.getElementById('meUserInfo');
   const elO=document.getElementById('meOrigemInfo');
   try{
-    meToken=document.getElementById('meToken')?.value||meToken;
-    ME_HDR['Authorization']='Bearer '+meToken;
-    localStorage.setItem('me_token',meToken);
     meUser=await meGet('/me');
     if(el) el.innerHTML=`
-      <b>${meUser.firstname} ${meUser.lastname}</b><br>
-      📧 ${meUser.email}<br>
-      📄 CPF/CNPJ: ${meUser.document||'—'}<br>
-      ✅ Conta verificada
+      <b>${esc(meUser.firstname)} ${esc(meUser.lastname)}</b><br>
+      \u{1F4E7} ${esc(meUser.email)}<br>
+      \u{1F4C4} CPF/CNPJ: ${esc(meUser.document)||'\u2014'}<br>
+      \u2705 Conta verificada
     `;
-    // Show address
     const addr=meUser.address;
     if(elO&&addr) elO.innerHTML=`
-      <b>CEP:</b> ${addr.postal_code}<br>
-      <b>Endereço:</b> ${addr.address}, ${addr.number}<br>
-      <b>Bairro:</b> ${addr.district}<br>
-      <b>Cidade:</b> <span style="white-space:nowrap">${addr.city?.city||addr.city} — ${addr.city?.state?.state_abbr||addr.state_abbr||'SP'}</span>
+      <b>CEP:</b> ${esc(addr.postal_code)}<br>
+      <b>Endere\u00e7o:</b> ${esc(addr.address)}, ${esc(addr.number)}<br>
+      <b>Bairro:</b> ${esc(addr.district)}<br>
+      <b>Cidade:</b> <span style="white-space:nowrap">${esc(addr.city?.city||addr.city)} \u2014 ${esc(addr.city?.state?.state_abbr||addr.state_abbr||'SP')}</span>
     `;
-    else if(elO) elO.innerHTML='<span style="color:rgba(13,9,13,.35)">Endereço não cadastrado no ME</span>';
+    else if(elO) elO.innerHTML='<span style="color:rgba(13,9,13,.35)">Endere\u00e7o n\u00e3o cadastrado no ME</span>';
     toast('Conta ME verificada!','ok');
     const dot=document.getElementById('meStatusDot');
     const txt=document.getElementById('meStatusText');
     if(dot)dot.style.background='#10b981';
-    if(txt)txt.textContent=`✅ ${meUser.firstname} ${meUser.lastname} — ${meUser.address?.city?.city||''} / ${meUser.address?.postal_code||''}`;
+    if(txt)txt.textContent=`\u2705 ${meUser.firstname} ${meUser.lastname} \u2014 ${meUser.address?.city?.city||''} / ${meUser.address?.postal_code||''}`;
   }catch(e){
-    if(el) el.innerHTML=`<span style="color:#ef4444">Erro: ${e.message.slice(0,100)}</span>`;
+    if(el) el.innerHTML=`<span style="color:#ef4444">Erro: ${esc(e.message.slice(0,100))}</span>`;
     toast('Erro ao conectar com Melhor Envio','err');
     const dot2=document.getElementById('meStatusDot');
     const txt2=document.getElementById('meStatusText');
     if(dot2)dot2.style.background='#ef4444';
-    if(txt2)txt2.textContent='❌ Erro ao conectar com Melhor Envio';
+    if(txt2)txt2.textContent='\u274c Erro ao conectar com Melhor Envio';
   }
 }
 
-function loadFreteConfig(){
-  const ta=document.getElementById('meToken');
-  if(ta)ta.value=meToken;
+async function loadFreteConfig(){
+  await loadFreteDims();
   loadMeUser();
   renderFreteDims();
 }
@@ -5369,7 +5295,7 @@ function renderFreteDims(){
   if(!el)return;
   el.innerHTML=freteDims.map((d,i)=>`
     <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:6px;margin-bottom:6px;align-items:center">
-      <input type="text" value="${d.cat}" style="padding:5px 7px;border:1.5px solid rgba(229,37,100,.15);border-radius:8px;font-family:var(--fb);font-size:.76rem;outline:none;min-width:0;width:100%" oninput="freteDims[${i}].cat=this.value">
+      <input type="text" value="${esc(d.cat)}" style="padding:5px 7px;border:1.5px solid rgba(229,37,100,.15);border-radius:8px;font-family:var(--fb);font-size:.76rem;outline:none;min-width:0;width:100%" oninput="freteDims[${i}].cat=this.value">
       <input type="number" value="${d.peso}" min="0.1" step="0.1" style="padding:5px 7px;border:1.5px solid rgba(229,37,100,.15);border-radius:8px;font-family:var(--fb);font-size:.76rem;outline:none;min-width:0;width:100%" oninput="freteDims[${i}].peso=+this.value">
       <input type="number" value="${d.altura}" min="1" style="padding:5px 7px;border:1.5px solid rgba(229,37,100,.15);border-radius:8px;font-family:var(--fb);font-size:.76rem;outline:none;min-width:0;width:100%" oninput="freteDims[${i}].altura=+this.value">
       <input type="number" value="${d.largura}" min="1" style="padding:5px 7px;border:1.5px solid rgba(229,37,100,.15);border-radius:8px;font-family:var(--fb);font-size:.76rem;outline:none;min-width:0;width:100%" oninput="freteDims[${i}].largura=+this.value">
@@ -5382,11 +5308,15 @@ function addFreteCat(){
   renderFreteDims();
 }
 
-function saveFreteCfg(){
-  meToken=document.getElementById('meToken')?.value||meToken;
-  localStorage.setItem('me_token',meToken);
-  localStorage.setItem('frete_dims',JSON.stringify(freteDims));
-  ME_HDR['Authorization']='Bearer '+meToken;
+async function saveFreteCfg(){
+  const r=await sbPost('/rest/v1/configuracoes',{
+    chave:'frete_dims',
+    valor:JSON.stringify(freteDims),
+    descricao:'Dimensões padrão de pacote por categoria (admin.html)'
+  }).catch(()=>null);
+  // se já existir a chave, o POST falha por unique constraint: tenta PATCH
+  const ok = sbOk(r) || sbOk(await sbPatch('/rest/v1/configuracoes?chave=eq.frete_dims',{valor:JSON.stringify(freteDims)}));
+  if(!ok)return;
   toast('Configurações salvas!','ok');
   addHist('Configurações de frete salvas','','');
 }
@@ -5473,7 +5403,7 @@ async function gerarEtiqueta(pedidoId){
           onmouseover="this.style.borderColor='var(--pink)'" onmouseout="this.style.borderColor='rgba(229,37,100,.1)'"
           onclick="confirmarEtiqueta(${pedidoId},${s.id},this.closest('.modal-ov'))">
           <div>
-            <div style="font-weight:700;font-size:.88rem">${s.name} — ${s.company?.name||''}</div>
+            <div style="font-weight:700;font-size:.88rem">${esc(s.name)} — ${s.company?.name||''}</div>
             <div style="font-size:.75rem;color:rgba(13,9,13,.45)">Prazo: ${s.delivery_time} dias úteis</div>
           </div>
           <div style="font-weight:900;color:var(--rose);font-size:1rem">R$ ${parseFloat(s.price).toFixed(2).replace('.',',')}</div>
@@ -5586,8 +5516,10 @@ function renderDash(){
 
   const pedHoje=allOrders.filter(p=>new Date(p.created_at).toDateString()===hoje).length;
 
-  const receitaMes=allOrders.filter(p=>p.pagamento_status==='pago'&&new Date(p.created_at)>=startOfMonth).reduce((s,p)=>s+(p.total||0),0);
-  const receitaMesAnterior=allOrders.filter(p=>p.pagamento_status==='pago'&&new Date(p.created_at)>=startOfPrevMonth&&new Date(p.created_at)<startOfMonth).reduce((s,p)=>s+(p.total||0),0);
+  // pedido pago e depois cancelado/estornado não é faturamento
+  const faturou=p=>p.pagamento_status==='pago'&&p.status!=='cancelado';
+  const receitaMes=allOrders.filter(p=>faturou(p)&&new Date(p.created_at)>=startOfMonth).reduce((s,p)=>s+(p.total||0),0);
+  const receitaMesAnterior=allOrders.filter(p=>faturou(p)&&new Date(p.created_at)>=startOfPrevMonth&&new Date(p.created_at)<startOfMonth).reduce((s,p)=>s+(p.total||0),0);
   const receitaCmp=pctChange(receitaMes,receitaMesAnterior);
 
   const pedidosMes=allOrders.filter(p=>new Date(p.created_at)>=startOfMonth).length;
@@ -5676,7 +5608,7 @@ function renderRecentOrders(){
   el.innerHTML=recent.map(p=>`
     <div class="tbl-row order-cols" style="cursor:pointer" onclick="openOrder(${p.id})">
       <span style="font-weight:700;color:rgba(13,9,13,.4)">#${p.id}</span>
-      <div><div style="font-size:.84rem;font-weight:600">${p.visitante_nome||'—'}</div><div style="font-size:.69rem;color:rgba(13,9,13,.35)">${p.visitante_email||''}</div></div>
+      <div><div style="font-size:.84rem;font-weight:600">${esc(p.visitante_nome)||'—'}</div><div style="font-size:.69rem;color:rgba(13,9,13,.35)">${esc(p.visitante_email)||''}</div></div>
       <span style="font-weight:700">${fmt(p.total)}</span>
       <span></span>
       <span><span class="pill ${p.status}">${{pendente:'⏳',confirmado:'✅',em_producao:'🔨',pronto:'📦',enviado:'🚚',entregue:'📬',cancelado:'❌'}[p.status]||''} ${p.status}</span></span>
@@ -5747,7 +5679,7 @@ async function renderTopProducts(){
     el.innerHTML=dashTopProducts.map((p,i)=>`
       <div class="dash-top-row" ${p.id?`onclick="previewProdLoja(${p.id})" style="cursor:pointer"`:''}>
         <span class="topprod-rank">${i+1}</span>
-        <span class="topprod-name">${p.name}</span>
+        <span class="topprod-name">${esc(p.name)}</span>
         <div class="topprod-bar-wrap"><div class="topprod-bar" style="width:${(p.qty/maxQty*100)}%"></div></div>
         <span class="topprod-qty">${p.qty}</span>
       </div>`).join('');
@@ -5869,65 +5801,75 @@ async function deleteEmailContato(email, nome){
 }
 
 
-// ── LISTA DE COMPRAS ─────────────────────────────────────────────
-let listaCompras = JSON.parse(localStorage.getItem('cr_lista_compras')||'[]');
+// ── LISTA DE COMPRAS ── agora na tabela lista_compras (era localStorage: não
+// aparecia em outro dispositivo e sumia se o cache fosse limpo)
+let listaCompras = [];
 
-const catLabels = {material:'🧵 Material', embalagem:'📦 Embalagem', ferramenta:'🔧 Ferramenta', outro:'📌 Outro'};
+const catLabels = {material:'\u{1F9F5} Material', embalagem:'\u{1F4E6} Embalagem', ferramenta:'\u{1F527} Ferramenta', outro:'\u{1F4CC} Outro'};
 
-function salvarLista(){ localStorage.setItem('cr_lista_compras', JSON.stringify(listaCompras)); }
+async function loadListaCompras(){
+  const d = await sbGet('/rest/v1/lista_compras?select=*&order=created_at.desc');
+  listaCompras = Array.isArray(d) ? d : [];
+  renderListaCompras();
+}
 
 function renderListaCompras(){
   const el = document.getElementById('listaComprasItems');
   if(!el) return;
   if(!listaCompras.length){
-    el.innerHTML = '<div class="empty"><div class="empty-icon">🛒</div><p>Lista vazia. Adicione itens abaixo.</p></div>';
+    el.innerHTML = '<div class="empty"><div class="empty-icon">\u{1F6D2}</div><p>Lista vazia. Adicione itens abaixo.</p></div>';
     return;
   }
   const grupos = {};
-  listaCompras.forEach(i=>{ if(!grupos[i.cat]) grupos[i.cat]=[]; grupos[i.cat].push(i); });
+  listaCompras.forEach(i=>{ if(!grupos[i.categoria]) grupos[i.categoria]=[]; grupos[i.categoria].push(i); });
   el.innerHTML = Object.entries(grupos).map(([cat, items])=>`
     <div style="margin-bottom:20px">
-      <div style="font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(13,9,13,.4);margin-bottom:8px">${catLabels[cat]||cat}</div>
+      <div style="font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(13,9,13,.4);margin-bottom:8px">${esc(catLabels[cat]||cat)}</div>
       ${items.map(i=>`
         <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(229,37,100,.06)" data-id="${i.id}">
-          <input type="checkbox" ${i.feito?'checked':''} onchange="toggleItemLista('${i.id}',this.checked)"
+          <input type="checkbox" ${i.comprado?'checked':''} onchange="toggleItemLista(${Number(i.id)},this.checked)"
             style="width:18px;height:18px;accent-color:var(--pink);cursor:pointer;flex-shrink:0">
-          <span style="flex:1;font-size:.88rem;${i.feito?'text-decoration:line-through;color:rgba(13,9,13,.35)':''}">${i.texto}</span>
-          <span style="font-size:.72rem;background:rgba(229,37,100,.07);padding:2px 8px;border-radius:100px;color:var(--rose)">${catLabels[i.cat]||i.cat}</span>
-          <button onclick="removerItemLista('${i.id}')" style="background:none;border:none;color:rgba(13,9,13,.3);cursor:pointer;font-size:.9rem;padding:4px">✕</button>
+          <span style="flex:1;font-size:.88rem;${i.comprado?'text-decoration:line-through;color:rgba(13,9,13,.35)':''}">${esc(i.item)}</span>
+          <span style="font-size:.72rem;background:rgba(229,37,100,.07);padding:2px 8px;border-radius:100px;color:var(--rose)">${esc(catLabels[i.categoria]||i.categoria)}</span>
+          <button onclick="removerItemLista(${Number(i.id)})" style="background:none;border:none;color:rgba(13,9,13,.3);cursor:pointer;font-size:.9rem;padding:4px">\u2715</button>
         </div>`).join('')}
     </div>`).join('');
 }
 
-function adicionarItemLista(){
+async function adicionarItemLista(){
   const input = document.getElementById('novoItemInput');
-  const cat = document.getElementById('novoItemCat')?.value || 'material';
-  const texto = input?.value.trim();
-  if(!texto){ toast('Digite o item','err'); return; }
-  listaCompras.push({ id: Date.now().toString(), texto, cat, feito: false });
-  salvarLista();
+  const categoria = document.getElementById('novoItemCat')?.value || 'material';
+  const item = input?.value.trim();
+  if(!item){ toast('Digite o item','err'); return; }
+  const r = await sbPost('/rest/v1/lista_compras',{item,categoria,comprado:false});
+  if(!sbOk(r))return;
+  listaCompras.unshift(r[0]);
   if(input) input.value = '';
   renderListaCompras();
   toast('Item adicionado!','ok');
 }
 
-function toggleItemLista(id, feito){
+async function toggleItemLista(id, comprado){
   const item = listaCompras.find(i=>i.id===id);
-  if(item){ item.feito = feito; salvarLista(); renderListaCompras(); }
+  if(!item)return;
+  const r = await sbPatch(`/rest/v1/lista_compras?id=eq.${id}`,{comprado});
+  if(!sbOk(r)){renderListaCompras();return;} // reverte visualmente se o banco recusar
+  item.comprado = comprado;
+  renderListaCompras();
 }
 
-function removerItemLista(id){
+async function removerItemLista(id){
+  if(!await sbDelete(`/rest/v1/lista_compras?id=eq.${id}`))return;
   listaCompras = listaCompras.filter(i=>i.id!==id);
-  salvarLista();
   renderListaCompras();
 }
 
 function enviarListaWA(){
   if(!listaCompras.length){ toast('Lista vazia','err'); return; }
-  const pendentes = listaCompras.filter(i=>!i.feito);
+  const pendentes = listaCompras.filter(i=>!i.comprado);
   if(!pendentes.length){ toast('Todos os itens já foram marcados!','ok'); return; }
   const grupos = {};
-  pendentes.forEach(i=>{ if(!grupos[i.cat]) grupos[i.cat]=[]; grupos[i.cat].push(i.texto); });
+  pendentes.forEach(i=>{ if(!grupos[i.categoria]) grupos[i.categoria]=[]; grupos[i.categoria].push(i.item); });
   let msg = '🛒 *Lista de Compras — Chuchu Rosa*' + String.fromCharCode(10,10);
   Object.entries(grupos).forEach(([cat, items])=>{
     msg += '*' + (catLabels[cat]||cat) + '*' + String.fromCharCode(10);
@@ -6012,7 +5954,7 @@ function renderSugestaoCarrinho(){
     <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(229,37,100,.06)">
       ${p.url?`<img src="${p.url}" style="width:36px;height:48px;object-fit:cover;border-radius:6px;flex-shrink:0">`:'<div style="width:36px;height:48px;background:#f8f0f6;border-radius:6px;flex-shrink:0"></div>'}
       <div style="flex:1;min-width:0">
-        <div style="font-size:.76rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
+        <div style="font-size:.76rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(p.name)}</div>
         <div style="font-size:.76rem;color:var(--rose)">${fmt(p.price)}</div>
       </div>
       <button onclick="toggleSugestao(${p.id})" style="background:none;border:none;color:rgba(13,9,13,.3);cursor:pointer">✕</button>
@@ -6438,26 +6380,32 @@ function renderAvaliacoes(){
   if(filter==='pendentes')list=list.filter(a=>!a.aprovada);
   else if(filter==='aprovadas')list=list.filter(a=>a.aprovada);
   if(!list.length){
-    el.innerHTML='<div class="empty"><div class="empty-icon">⭐</div><p>Nenhuma avaliação '+(filter==='pendentes'?'pendente':'encontrada')+'</p></div>';
+    el.innerHTML='<div class="empty"><div class="empty-icon">\u2b50</div><p>Nenhuma avalia\u00e7\u00e3o '+(filter==='pendentes'?'pendente':'encontrada')+'</p></div>';
     return;
   }
-  el.innerHTML=list.map(a=>`
+  el.innerHTML=list.map(a=>{
+    // estrelas pode vir null/negativo/absurdo do banco; sem clamp o .repeat()
+    // lan\u00e7a e derruba o .map() inteiro, deixando a lista toda em branco
+    const estrelas=Math.min(5,Math.max(0,Math.round(Number(a.estrelas)||0)));
+    // foto_url \u00e9 URL vinda do cliente: s\u00f3 aceita http(s), nunca javascript:
+    const fotoOk=a.foto_url&&/^https?:\/\//i.test(a.foto_url)?a.foto_url:'';
+    return `
     <div class="client-card" style="margin-bottom:10px;${a.aprovada?'border-left:3px solid #10b981':'border-left:3px solid #f59e0b'}">
       <div class="cc-top">
-        <div class="cc-avatar" style="background:${a.aprovada?'#10b981':'#f59e0b'}">${'⭐'.repeat(a.estrelas)}</div>
+        <div class="cc-avatar" style="background:${a.aprovada?'#10b981':'#f59e0b'}">${'\u2b50'.repeat(estrelas)}</div>
         <div class="cc-info">
-          <div class="cc-name">${a.cliente_nome||'—'} <span style="font-size:.72rem;color:rgba(13,9,13,.4)">${a.aprovada?'✅ Aprovada':'⏳ Pendente'}</span></div>
-          <div class="cc-email">${a.cliente_email||''} · ${new Date(a.created_at).toLocaleDateString('pt-BR')}</div>
-          ${a.comentario?`<div style="font-size:.82rem;color:rgba(13,9,13,.6);margin-top:6px">"${a.comentario}"</div>`:''}
-          ${a.foto_url?`<img src="${a.foto_url}" style="width:80px;height:80px;object-fit:cover;border-radius:10px;margin-top:8px;cursor:pointer" onclick="window.open('${a.foto_url}','_blank')">`:''}
-          ${a.pedidos?`<div style="font-size:.72rem;color:rgba(13,9,13,.4);margin-top:6px">Pedido #${a.pedido_id} · ${a.pedidos.visitante_nome||''}</div>`:''}
+          <div class="cc-name">${esc(a.cliente_nome)||'\u2014'} <span style="font-size:.72rem;color:rgba(13,9,13,.4)">${a.aprovada?'\u2705 Aprovada':'\u23f3 Pendente'}</span></div>
+          <div class="cc-email">${esc(a.cliente_email)} \u00b7 ${a.created_at?new Date(a.created_at).toLocaleDateString('pt-BR'):'\u2014'}</div>
+          ${a.comentario?`<div style="font-size:.82rem;color:rgba(13,9,13,.6);margin-top:6px;white-space:pre-wrap">"${esc(a.comentario)}"</div>`:''}
+          ${fotoOk?`<img src="${esc(fotoOk)}" style="width:80px;height:80px;object-fit:cover;border-radius:10px;margin-top:8px;cursor:pointer" onclick="window.open('${escJs(fotoOk)}','_blank')">`:''}
+          ${a.pedidos?`<div style="font-size:.72rem;color:rgba(13,9,13,.4);margin-top:6px">Pedido #${esc(a.pedido_id)} \u00b7 ${esc(a.pedidos.visitante_nome)}</div>`:''}
         </div>
         <div style="display:flex;gap:6px;flex-shrink:0">
-          ${!a.aprovada?`<button class="btn-p" style="padding:6px 12px;font-size:.75rem" onclick="aprovarAval(${a.id})">✅ Aprovar</button>`:''}
-          <button class="btn-s" style="padding:6px 12px;font-size:.75rem;color:#ef4444" onclick="rejeitarAval(${a.id})">🗑 ${a.aprovada?'Remover':'Rejeitar'}</button>
+          ${!a.aprovada?`<button class="btn-p" style="padding:6px 12px;font-size:.75rem" onclick="aprovarAval(${Number(a.id)})">\u2705 Aprovar</button>`:''}
+          <button class="btn-s" style="padding:6px 12px;font-size:.75rem;color:#ef4444" onclick="rejeitarAval(${Number(a.id)})">\u{1F5D1} ${a.aprovada?'Remover':'Rejeitar'}</button>
         </div>
       </div>
-    </div>`).join('');
+    </div>`;}).join('');
 }
 
 async function aprovarAval(id){
@@ -6488,24 +6436,14 @@ async function loadAlertasCount(){
   const d=await sbGet('/rest/v1/alertas_estoque?notificado=eq.false&select=id,produto_id,email,nome,created_at&limit=100');
   if(!Array.isArray(d)||!d.length)return;
   // Show in dashboard
-  const dEl=document.getElementById('dRecentOrders');
+  const dEl=document.getElementById('recentOrders'); // era 'dRecentOrders', ID inexistente: o card de alerta nunca aparecia
   if(dEl&&d.length){
     const alertaDiv=document.createElement('div');
     alertaDiv.style.cssText='background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:12px;padding:12px;margin-bottom:12px';
     alertaDiv.innerHTML=`<div style="font-weight:700;font-size:.84rem;margin-bottom:6px">📬 ${d.length} alerta${d.length!==1?'s':''} de estoque pendente${d.length!==1?'s':''}</div>`+
-      d.slice(0,3).map(a=>`<div style="font-size:.78rem;color:rgba(13,9,13,.5)">${a.nome||a.email} quer ser avisado</div>`).join('');
+      d.slice(0,3).map(a=>`<div style="font-size:.78rem;color:rgba(13,9,13,.5)">${esc(a.nome)||a.email} quer ser avisado</div>`).join('');
     dEl.parentNode.insertBefore(alertaDiv,dEl);
   }
-}
-
-function toggleEmailSection(){
-  const sec=document.getElementById('emailSection');
-  const btn=document.getElementById('emailToggleBtn');
-  if(!sec)return;
-  const open=sec.style.display==='block';
-  sec.style.display=open?'none':'block';
-  btn.textContent=open?'📧 Ver e-mails':'✕ Fechar e-mails';
-  if(!open)renderEmailList();
 }
 
 // ── BUSCA TOLERANTE (sem acento, sem case, tolera erro de digitação) ──
