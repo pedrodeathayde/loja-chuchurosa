@@ -58,20 +58,16 @@ nav{
   position:fixed;top:0;left:0;right:0;z-index:300;
   height:68px;padding:0 48px;
   display:flex;align-items:center;justify-content:space-between;gap:20px;
-  background:linear-gradient(180deg,rgba(15,10,15,.22),rgba(15,10,15,0));
-  border-bottom:1px solid transparent;
-  transition:background .4s,border-color .4s;
+  background:rgba(253,248,244,.92);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(15,10,15,.08);
+  transition:box-shadow .4s;
 }
 .scroll-progress{position:fixed;top:0;left:0;height:2px;width:0%;z-index:301;background:linear-gradient(90deg,var(--pink),var(--gold));transition:width .1s linear}
 @media(prefers-reduced-motion:reduce){.scroll-progress{display:none}}
-nav.s{
-  background:rgba(253,248,244,.92);
-  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-  border-color:rgba(15,10,15,.08);
-}
+nav.s{box-shadow:0 4px 24px rgba(15,10,15,.06)}
 .nl{display:flex;gap:32px;list-style:none}
-.nl a{font-family:var(--fb);font-style:normal;font-weight:600;font-size:.86rem;letter-spacing:.01em;color:var(--ink);opacity:.75;transition:opacity .25s,color .4s,text-shadow .4s;position:relative;text-shadow:0 1px 6px rgba(15,10,15,.35)}
-nav.s .nl a{text-shadow:none}
+.nl a{font-family:var(--fb);font-style:normal;font-weight:600;font-size:.86rem;letter-spacing:.01em;color:var(--ink);opacity:.75;transition:opacity .25s;position:relative}
 .nl a::after{content:'';position:absolute;left:0;right:0;bottom:-4px;height:1px;background:var(--pink);transform:scaleX(0);transform-origin:left;transition:transform .3s}
 .nl a:hover{opacity:1}
 .nl a:hover::after{transform:scaleX(1)}
@@ -84,8 +80,7 @@ nav.s .nl a{text-shadow:none}
 }
 .nc a:hover{background:var(--rose);box-shadow:0 0 28px rgba(229,37,100,.4)}
 .nh{display:none;flex-direction:column;gap:4px;cursor:pointer;border:none;background:transparent;padding:6px}
-.nh span{display:block;width:20px;height:2px;background:var(--ink);border-radius:2px;transition:.3s;box-shadow:0 1px 4px rgba(15,10,15,.3)}
-nav.s .nh span{box-shadow:none}
+.nh span{display:block;width:20px;height:2px;background:var(--ink);border-radius:2px;transition:.3s}
 .nh.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
 .nh.open span:nth-child(2){opacity:0;transform:scaleX(0)}
 .nh.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
