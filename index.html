@@ -75,16 +75,16 @@ nav.s{
 #navLogo{transition:transform .45s ease}
 nav.s #navLogo{transform:scale(.92)}
 
-.nl{display:flex;gap:34px;list-style:none;align-items:center}
+.nl{display:flex;gap:36px;list-style:none;align-items:center}
 .nl a{
-  font-family:var(--fd);font-style:normal;font-weight:400;
-  font-size:1rem;letter-spacing:-.005em;
-  color:var(--ink);opacity:.72;
+  font-family:var(--fd);font-style:normal;font-weight:600;
+  font-size:1.02rem;letter-spacing:-.005em;
+  color:var(--ink);opacity:.85;
   transition:opacity .25s,color .25s;position:relative;
   padding-bottom:2px;
 }
 .nl a::after{
-  content:'';position:absolute;left:0;right:0;bottom:-3px;height:1.5px;
+  content:'';position:absolute;left:0;right:0;bottom:-4px;height:2px;
   background:linear-gradient(90deg,var(--pink),var(--gold));
   border-radius:2px;
   transform:scaleX(0);transform-origin:left;
@@ -94,18 +94,19 @@ nav.s #navLogo{transform:scale(.92)}
 .nl a:hover::after{transform:scaleX(1)}
 .nc a{
   display:inline-flex;align-items:center;gap:7px;
-  background:transparent;color:var(--ink);
-  padding:9px 22px;border-radius:100px;
-  border:1px solid rgba(15,10,15,.22);
+  background:var(--pink);color:#fff;
+  padding:10px 24px;border-radius:100px;
+  border:1px solid var(--pink);
   font-family:var(--fb);
-  font-size:.68rem;font-weight:600;
-  letter-spacing:.16em;text-transform:uppercase;
-  transition:background .25s,color .25s,border-color .25s,box-shadow .25s,transform .25s;
+  font-size:.72rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;
+  box-shadow:0 4px 16px rgba(229,37,100,.28);
+  transition:background .25s,box-shadow .25s,transform .25s;
 }
 .nc a:hover{
-  background:var(--pink);color:#fff;border-color:var(--pink);
+  background:var(--rose);border-color:var(--rose);
   transform:translateY(-1px);
-  box-shadow:0 6px 20px rgba(229,37,100,.32);
+  box-shadow:0 8px 24px rgba(229,37,100,.4);
 }
 .nh{display:none;flex-direction:column;gap:4px;cursor:pointer;border:none;background:transparent;padding:6px}
 .nh span{display:block;width:20px;height:2px;background:var(--ink);border-radius:2px;transition:.3s}
