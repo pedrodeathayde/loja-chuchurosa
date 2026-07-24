@@ -56,29 +56,56 @@ a{text-decoration:none;color:inherit}
 /* ── NAV ── */
 nav{
   position:fixed;top:0;left:0;right:0;z-index:300;
-  height:68px;padding:0 48px;
+  height:76px;padding:0 48px;
   display:flex;align-items:center;justify-content:space-between;gap:20px;
-  background:rgba(253,248,244,.92);
-  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-  border-bottom:1px solid rgba(15,10,15,.08);
-  transition:box-shadow .4s;
+  background:rgba(253,248,244,0);
+  border-bottom:1px solid rgba(15,10,15,0);
+  transition:background .45s ease,border-color .45s ease,box-shadow .45s ease,height .45s ease,backdrop-filter .45s ease;
 }
 .scroll-progress{position:fixed;top:0;left:0;height:2px;width:0%;z-index:301;background:linear-gradient(90deg,var(--pink),var(--gold));transition:width .1s linear}
 @media(prefers-reduced-motion:reduce){.scroll-progress{display:none}}
-nav.s{box-shadow:0 4px 24px rgba(15,10,15,.06)}
-.nl{display:flex;gap:32px;list-style:none}
-.nl a{font-family:var(--fb);font-style:normal;font-weight:600;font-size:.86rem;letter-spacing:.01em;color:var(--ink);opacity:.75;transition:opacity .25s;position:relative}
-.nl a::after{content:'';position:absolute;left:0;right:0;bottom:-4px;height:1px;background:var(--pink);transform:scaleX(0);transform-origin:left;transition:transform .3s}
-.nl a:hover{opacity:1}
+nav.s{
+  height:66px;
+  background:rgba(253,248,244,.88);
+  backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);
+  border-bottom-color:rgba(15,10,15,.07);
+  box-shadow:0 4px 28px rgba(15,10,15,.05);
+}
+#navLogo{transition:transform .45s ease}
+nav.s #navLogo{transform:scale(.92)}
+
+.nl{display:flex;gap:34px;list-style:none;align-items:center}
+.nl a{
+  font-family:var(--fd);font-style:normal;font-weight:400;
+  font-size:1rem;letter-spacing:-.005em;
+  color:var(--ink);opacity:.72;
+  transition:opacity .25s,color .25s;position:relative;
+  padding-bottom:2px;
+}
+.nl a::after{
+  content:'';position:absolute;left:0;right:0;bottom:-3px;height:1.5px;
+  background:linear-gradient(90deg,var(--pink),var(--gold));
+  border-radius:2px;
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .38s cubic-bezier(.22,.61,.36,1);
+}
+.nl a:hover{opacity:1;color:var(--rose)}
 .nl a:hover::after{transform:scaleX(1)}
 .nc a{
-  background:var(--pink);color:#fff;
-  padding:8px 22px;border-radius:100px;
-  font-size:.78rem;font-weight:600;
-  box-shadow:0 0 18px rgba(229,37,100,.25);
-  transition:all .2s;
+  display:inline-flex;align-items:center;gap:7px;
+  background:transparent;color:var(--ink);
+  padding:9px 22px;border-radius:100px;
+  border:1px solid rgba(15,10,15,.22);
+  font-family:var(--fb);
+  font-size:.68rem;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;
+  transition:background .25s,color .25s,border-color .25s,box-shadow .25s,transform .25s;
 }
-.nc a:hover{background:var(--rose);box-shadow:0 0 28px rgba(229,37,100,.4)}
+.nc a:hover{
+  background:var(--pink);color:#fff;border-color:var(--pink);
+  transform:translateY(-1px);
+  box-shadow:0 6px 20px rgba(229,37,100,.32);
+}
 .nh{display:none;flex-direction:column;gap:4px;cursor:pointer;border:none;background:transparent;padding:6px}
 .nh span{display:block;width:20px;height:2px;background:var(--ink);border-radius:2px;transition:.3s}
 .nh.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
@@ -86,7 +113,7 @@ nav.s{box-shadow:0 4px 24px rgba(15,10,15,.06)}
 .nh.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
 /* Mobile menu drawer */
 .mob-menu{
-  display:none;position:fixed;top:58px;left:0;right:0;z-index:299;
+  display:none;position:fixed;top:64px;left:0;right:0;z-index:299;
   background:rgba(15,10,15,.97);backdrop-filter:blur(24px);
   border-bottom:1px solid rgba(244,121,154,.1);
   padding:24px 20px 28px;
@@ -96,16 +123,17 @@ nav.s{box-shadow:0 4px 24px rgba(15,10,15,.06)}
 .mob-menu.open{transform:translateY(0);opacity:1;pointer-events:all}
 .mob-menu ul{list-style:none;display:flex;flex-direction:column;gap:4px;margin-bottom:20px}
 .mob-menu ul a{
-  display:block;padding:11px 12px;border-radius:10px;
-  font-size:.9rem;font-weight:500;letter-spacing:.04em;
-  color:rgba(255,255,255,.6);transition:all .15s;
+  display:block;padding:12px 12px;border-radius:10px;
+  font-family:var(--fd);font-weight:400;font-size:1.05rem;letter-spacing:-.005em;
+  color:rgba(255,255,255,.68);transition:all .15s;
 }
 .mob-menu ul a:hover{background:rgba(229,37,100,.08);color:#fff}
 .mob-menu .mob-cta{
   display:block;width:100%;text-align:center;
   background:var(--pink);color:#fff;
-  padding:13px;border-radius:100px;
-  font-size:.88rem;font-weight:600;
+  padding:14px;border-radius:100px;
+  font-family:var(--fb);
+  font-size:.7rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
   box-shadow:0 4px 18px rgba(229,37,100,.3);
 }
 
@@ -209,18 +237,41 @@ nav.s{box-shadow:0 4px 24px rgba(15,10,15,.06)}
 
 @keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
 
-/* ── TICKER ── */
+/* ── RAILS (ticker + marquee): sistema tipográfico compartilhado ── */
+.ticker,.mq{
+  --rail-pad:17px;
+  padding:var(--rail-pad) 0;overflow:hidden;position:relative;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);
+          mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);
+}
+.ticker-t,.mq-t{display:flex;width:max-content;white-space:nowrap}
+.ti,.mq-i{
+  display:inline-flex;align-items:center;
+  padding:0 30px;
+  font-family:var(--fd);
+  font-size:1.02rem;letter-spacing:-.005em;line-height:1;
+  text-decoration:none;
+  transition:opacity .3s,color .3s;
+}
+.ti::after,.mq-i b{
+  font-family:var(--fb);font-style:normal;font-weight:400;
+  font-size:.46rem;color:var(--gold);
+  margin-left:30px;transform:translateY(-1px);
+  display:inline-block;
+}
+.ti::after{content:'◆'}
+
+/* ticker — voz itálica sobre rosa */
 .ticker{
   background:linear-gradient(90deg,var(--rose),var(--pink) 50%,var(--rose));
-  padding:15px 0;overflow:hidden;position:relative;
   border-top:1px solid rgba(201,169,110,.35);
   border-bottom:1px solid rgba(201,169,110,.35);
 }
-.ticker-t{display:flex;width:max-content;animation:tick 30s linear infinite}
-.ti{display:inline-flex;align-items:center;gap:18px;padding:0 28px;font-family:var(--fd);font-style:italic;font-weight:400;font-size:1.05rem;letter-spacing:.01em;color:#fff;line-height:1;transition:opacity .3s}
-.ticker:hover .ti{opacity:.55}
+.ticker-t{animation:tick 34s linear infinite}
+.ti{font-style:italic;font-weight:400;color:#fff}
+.ti::after{opacity:.75}
+.ticker:hover .ti{opacity:.5}
 .ticker:hover .ti:hover{opacity:1}
-.ti::after{content:'◆';opacity:.6;margin-left:18px;font-size:.5rem;color:var(--gold)}
 @keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){.ticker-t,.mq-t{animation:none}}
 
@@ -260,12 +311,17 @@ nav.s{box-shadow:0 4px 24px rgba(15,10,15,.06)}
   box-shadow:0 4px 16px rgba(229,37,100,.4);
 }
 
-/* ── MARQUEE ── */
-.mq{padding:16px 0;background:var(--ink2);border-top:1px solid rgba(201,169,110,.15);border-bottom:1px solid rgba(201,169,110,.15);overflow:hidden;position:relative}
-.mq-t{display:flex;width:max-content;animation:mqa 30s linear infinite;white-space:nowrap}
-.mq-i{display:inline-flex;align-items:center;gap:14px;padding:0 26px;font-family:var(--fb);font-style:normal;font-weight:600;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);text-decoration:none;transition:color .25s}
-.mq-i:hover{color:var(--gold)}
-.mq-i b{color:var(--gold);font-style:normal;font-weight:400;font-size:.85em;margin-left:2px}
+/* ── MARQUEE — mesma família, voz romana sobre escuro ── */
+.mq{
+  background:var(--ink2);
+  border-top:1px solid rgba(201,169,110,.15);
+  border-bottom:1px solid rgba(201,169,110,.15);
+}
+.mq-t{animation:mqa 34s linear infinite}
+.mq-i{font-style:normal;font-weight:400;color:rgba(255,255,255,.62)}
+.mq-i b{opacity:.65}
+.mq-i:hover{color:#fff}
+.mq-i:hover b{opacity:1}
 @keyframes mqa{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
 /* ── OCASIÕES — LIGHT ── */
@@ -561,7 +617,11 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 
 /* ── MOBILE ── */
 @media(max-width:900px){
-  nav{padding:0 16px;height:58px}
+  nav{padding:0 16px;height:64px}
+  nav.s{height:58px}
+  .ti,.mq-i{font-size:.92rem;padding:0 22px}
+  .ti::after,.mq-i b{margin-left:22px}
+  .ticker,.mq{--rail-pad:14px}
   .nl,.nc{display:none}
   .nh{display:flex}
   .mob-menu{display:block}
