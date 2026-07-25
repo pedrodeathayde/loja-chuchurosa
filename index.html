@@ -899,7 +899,6 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
   }
 
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(reduceMotion) return;
 
   // Só começa a baixar as outras fotos depois que a página terminou de carregar.
   var idx = 0, timer = null;
@@ -918,7 +917,10 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
   function pause(){ if(timer){ clearInterval(timer); timer = null; } }
 
   function boot(){
-    setTimeout(function(){ loadPanel(order[1]); }, 800);
+    // Sempre carrega todas as fotos, mesmo com "reduzir movimento" ativado —
+    // isso só deve impedir a TROCA automática, não o carregamento em si.
+    order.forEach(loadPanel);
+    if(reduceMotion) return;
     play();
     document.addEventListener('visibilitychange', function(){
       document.hidden ? pause() : play();
