@@ -1802,6 +1802,7 @@ function goPage(name){
   document.getElementById('page-'+name)?.classList.add('active');
   document.querySelector(`.ni[data-page="${name}"]`)?.classList.add('active');
   if(name==='pedidos') dismissNovos();
+  else if(_ordersObserver){_ordersObserver.disconnect();_ordersObserver=null;} // evita observer solto num elemento fora do DOM
   // Hide bulk bar when leaving produtos
   if(name!=='produtos'){
     selectedIds.clear();
@@ -1813,7 +1814,7 @@ function goPage(name){
 // ── STATE ─────────────────────────────────────────────────────────────
 let allProds=[],allOrders=[],allClients=[],allCupons=[],allFrete=[],allBanners=[],allVars={};
 let filtProds=[],filtOrders=[];
-let ordersOffset=0, ordersHasMore=true, ordersLoadingMore=false;
+let ordersOffset=0, ordersHasMore=true, ordersLoadingMore=false, _ordersObserver=null;
 let editProdId=null, editOrderId=null, editCupomId=null;
 
 // ── INIT ──────────────────────────────────────────────────────────────
@@ -2117,7 +2118,7 @@ document.getElementById('prodModal').addEventListener('click',e=>{if(e.target===
 
 
 // ── ORDERS ────────────────────────────────────────────────────────────
-const ORDERS_PAGE_SIZE=500;
+const ORDERS_PAGE_SIZE=60;
 async function loadOrders(){
   ordersOffset=0;
   const d=await sbGet(`/rest/v1/pedidos?select=*&order=created_at.desc&limit=${ORDERS_PAGE_SIZE}`);
@@ -2159,14 +2160,23 @@ function renderOrderTable(){
       <span><span class="pill ${p.status}">${{pendente:'⏳ Pendente',confirmado:'✅ Confirmado',em_producao:'🔨 Em produção',pronto:'📦 Pronto',enviado:'🚚 Enviado',entregue:'📬 Entregue',cancelado:'❌ Cancelado'}[p.status]||p.status}</span></span>
       <span style="font-size:.72rem;color:rgba(13,9,13,.38)">${fmtDate(p.created_at)}</span>
     </div>`).join('')
-    // "carregar mais" só aparece sem filtro/busca ativos — com busca, a
-    // query já foi direto ao banco e trouxe tudo que existe (ver filterOrders)
+    // sentinela do scroll infinito: só existe sem filtro/busca ativos —
+    // com busca, a query já foi direto ao banco e trouxe tudo (ver filterOrders)
     +(!temFiltroAtivo&&ordersHasMore?`
-      <div style="text-align:center;padding:16px">
-        <button class="btn-s" onclick="loadMoreOrders()" ${ordersLoadingMore?'disabled':''}>
-          ${ordersLoadingMore?'Carregando...':`⬇️ Carregar mais 500 (mostrando ${allOrders.length})`}
-        </button>
+      <div id="ordersSentinel" style="text-align:center;padding:16px;font-size:.78rem;color:rgba(13,9,13,.35)">
+        ${ordersLoadingMore?'<div class="ld"><div class="spin"></div><span>Carregando mais...</span></div>':`Role para ver mais (${allOrders.length} carregados)`}
       </div>`:'');
+  setupOrdersInfiniteScroll();
+}
+
+function setupOrdersInfiniteScroll(){
+  const sentinel=document.getElementById('ordersSentinel');
+  if(_ordersObserver){_ordersObserver.disconnect();_ordersObserver=null;}
+  if(!sentinel)return;
+  _ordersObserver=new IntersectionObserver(entries=>{
+    if(entries[0].isIntersecting) loadMoreOrders();
+  },{rootMargin:'200px'}); // dispara um pouco antes do fim, pra já ter carregado quando o usuário chegar lá
+  _ordersObserver.observe(sentinel);
 }
 
 async function openOrder(id){
