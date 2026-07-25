@@ -967,6 +967,12 @@ img{display:block;max-width:100%}
         </div>
       </div>
 
+      <!-- CONVERSÃO: visto × vendido -->
+      <div class="dash-section" style="margin-top:20px">
+        <h3>🎯 Conversão por produto <span style="font-weight:400;font-size:.72rem;color:rgba(13,9,13,.4)">— visualizações vs. vendas do mês</span></h3>
+        <div id="convProdutos"><div class="empty"><div class="empty-icon">⏳</div><p>Carregando...</p></div></div>
+      </div>
+
       <div class="tbl-wrap">
         <div style="padding:16px 18px;border-bottom:1px solid rgba(244,121,154,.08);display:flex;align-items:center;justify-content:space-between">
           <h3 style="font-family:var(--fd);font-size:.95rem;font-weight:700">Pedidos recentes</h3>
@@ -1807,6 +1813,7 @@ function goPage(name){
 // ── STATE ─────────────────────────────────────────────────────────────
 let allProds=[],allOrders=[],allClients=[],allCupons=[],allFrete=[],allBanners=[],allVars={};
 let filtProds=[],filtOrders=[];
+let ordersOffset=0, ordersHasMore=true, ordersLoadingMore=false;
 let editProdId=null, editOrderId=null, editCupomId=null;
 
 // ── INIT ──────────────────────────────────────────────────────────────
@@ -2110,9 +2117,13 @@ document.getElementById('prodModal').addEventListener('click',e=>{if(e.target===
 
 
 // ── ORDERS ────────────────────────────────────────────────────────────
+const ORDERS_PAGE_SIZE=500;
 async function loadOrders(){
-  const d=await sbGet('/rest/v1/pedidos?select=*&order=created_at.desc&limit=500');
+  ordersOffset=0;
+  const d=await sbGet(`/rest/v1/pedidos?select=*&order=created_at.desc&limit=${ORDERS_PAGE_SIZE}`);
   allOrders=Array.isArray(d)?d:[];
+  ordersOffset=allOrders.length;
+  ordersHasMore=allOrders.length===ORDERS_PAGE_SIZE; // se veio página cheia, provavelmente há mais
   filtOrders=[...allOrders];
   const pendentes=allOrders.filter(p=>p.status==='pendente').length;
   document.getElementById('nb-ped').textContent=pendentes||0;
@@ -2120,9 +2131,25 @@ async function loadOrders(){
   renderOrderTable();
 }
 
+// Carrega mais 500 pedidos além do lote inicial. Só faz sentido sem busca/
+// filtro ativo — com filtro, a busca já vai direto no banco (ver filterOrders).
+async function loadMoreOrders(){
+  if(ordersLoadingMore||!ordersHasMore)return;
+  ordersLoadingMore=true;
+  renderOrderTable();
+  const d=await sbGet(`/rest/v1/pedidos?select=*&order=created_at.desc&limit=${ORDERS_PAGE_SIZE}&offset=${ordersOffset}`);
+  const novos=Array.isArray(d)?d:[];
+  allOrders.push(...novos);
+  ordersOffset+=novos.length;
+  ordersHasMore=novos.length===ORDERS_PAGE_SIZE;
+  ordersLoadingMore=false;
+  filterOrders(); // reaplica busca/filtro atual sobre a lista já maior
+}
+
 function renderOrderTable(){
   const el=document.getElementById('orderTable');
   if(!filtOrders.length){el.innerHTML='<div class="empty"><div class="empty-icon">📦</div><p>Nenhum pedido</p></div>';return;}
+  const temFiltroAtivo=orderStatusFilter||orderPgtoFilter||(document.getElementById('orderSearch')?.value||'').trim();
   el.innerHTML=`<div class="tbl-head order-cols"><span>#</span><span>Cliente</span><span>Total</span><span>Pgto</span><span>Status</span><span>Data</span></div>`
     +filtOrders.map(p=>`<div class="tbl-row order-cols" style="cursor:pointer" onclick="openOrder(${p.id})">
       <span style="font-weight:700;color:rgba(13,9,13,.4)">#${p.id}</span>
@@ -2131,7 +2158,15 @@ function renderOrderTable(){
       <span style="font-size:.75rem">${p.mp_status||'—'}</span>
       <span><span class="pill ${p.status}">${{pendente:'⏳ Pendente',confirmado:'✅ Confirmado',em_producao:'🔨 Em produção',pronto:'📦 Pronto',enviado:'🚚 Enviado',entregue:'📬 Entregue',cancelado:'❌ Cancelado'}[p.status]||p.status}</span></span>
       <span style="font-size:.72rem;color:rgba(13,9,13,.38)">${fmtDate(p.created_at)}</span>
-    </div>`).join('');
+    </div>`).join('')
+    // "carregar mais" só aparece sem filtro/busca ativos — com busca, a
+    // query já foi direto ao banco e trouxe tudo que existe (ver filterOrders)
+    +(!temFiltroAtivo&&ordersHasMore?`
+      <div style="text-align:center;padding:16px">
+        <button class="btn-s" onclick="loadMoreOrders()" ${ordersLoadingMore?'disabled':''}>
+          ${ordersLoadingMore?'Carregando...':`⬇️ Carregar mais 500 (mostrando ${allOrders.length})`}
+        </button>
+      </div>`:'');
 }
 
 async function openOrder(id){
@@ -3344,18 +3379,41 @@ function setOrderFilter(el,status,pgto=''){
   filterOrders();
 }
 
+// Filtro por status/pagamento continua local (rápido, sem round-trip).
+// Busca de texto (nome/email/#pedido) vai direto ao banco — assim alcança
+// pedidos além dos 500 mais recentes já em cache, em vez de simplesmente
+// não encontrar um pedido antigo que exista mas não esteja carregado.
+let _orderSearchDebounce=null;
 function filterOrders(){
+  clearTimeout(_orderSearchDebounce);
   const q=(document.getElementById('orderSearch')?.value||'').toLowerCase().trim();
-  filtOrders=allOrders.filter(o=>{
-    if(orderStatusFilter&&o.status!==orderStatusFilter)return false;
-    if(orderPgtoFilter&&o.pagamento_status!==orderPgtoFilter)return false;
-    if(q){
-      const hay=`#${o.id} ${esc(o.visitante_nome)||''} ${esc(o.visitante_email)||''} ${o.visitante_whatsapp||''}`.toLowerCase();
-      if(!hay.includes(q))return false;
+  if(!q){
+    filtOrders=allOrders.filter(o=>{
+      if(orderStatusFilter&&o.status!==orderStatusFilter)return false;
+      if(orderPgtoFilter&&o.pagamento_status!==orderPgtoFilter)return false;
+      return true;
+    });
+    renderOrderTable();
+    return;
+  }
+  // busca com texto: espera parar de digitar, depois consulta o banco
+  _orderSearchDebounce=setTimeout(async ()=>{
+    const el=document.getElementById('orderTable');
+    el.innerHTML='<div class="ld"><div class="spin"></div><span>Buscando...</span></div>';
+    const isNum=/^#?\d+$/.test(q);
+    let query=`/rest/v1/pedidos?select=*&order=created_at.desc&limit=200`;
+    if(isNum){
+      query+=`&id=eq.${q.replace('#','')}`;
+    }else{
+      const term=encodeURIComponent(`%${q}%`);
+      query+=`&or=(visitante_nome.ilike.${term},visitante_email.ilike.${term},visitante_whatsapp.ilike.${term})`;
     }
-    return true;
-  });
-  renderOrderTable();
+    if(orderStatusFilter)query+=`&status=eq.${orderStatusFilter}`;
+    if(orderPgtoFilter)query+=`&pagamento_status=eq.${orderPgtoFilter}`;
+    const d=await sbGet(query);
+    filtOrders=Array.isArray(d)?d:[];
+    renderOrderTable();
+  },350);
 }
 
 // ── STATUS BUTTONS IN ORDER MODAL ────────────────────────────────────
@@ -4283,6 +4341,7 @@ async function renderDash(){
   renderPendingActions();
   renderTopProducts();
   renderViewStats();
+  renderConversao();
 }
 
 function setCmp(elId,cmp,suffix){
@@ -4408,6 +4467,76 @@ function renderPendingActions(){
 }
 
 // Produtos mais vendidos (por quantidade, em pedidos pagos)
+// Cruza vendas (itens_pedido) com visualizações (page_views) por produto,
+// pra ver produto muito visto e pouco vendido (problema de preço/foto/frete)
+// vs. pouco visto e bem convertido (candidato a mais destaque).
+async function renderConversao(){
+  const el=document.getElementById('convProdutos');
+  if(!el)return;
+  try{
+    const now=new Date();
+    const since=new Date(now.getFullYear(),now.getMonth(),1).toISOString();
+
+    const [pedidosDoMes,viewsDoMes]=await Promise.all([
+      sbGet(`/rest/v1/pedidos?select=id&pagamento_status=eq.pago&created_at=gte.${encodeURIComponent(since)}`),
+      sbGet(`/rest/v1/page_views?select=produto_id&created_at=gte.${encodeURIComponent(since)}&produto_id=not.is.null`)
+    ]);
+    const pedidoIds=(Array.isArray(pedidosDoMes)?pedidosDoMes:[]).map(p=>p.id);
+
+    const viewsByProd=new Map();
+    (Array.isArray(viewsDoMes)?viewsDoMes:[]).forEach(v=>viewsByProd.set(v.produto_id,(viewsByProd.get(v.produto_id)||0)+1));
+
+    const vendasByProd=new Map();
+    if(pedidoIds.length){
+      const chunks=[];
+      for(let i=0;i<pedidoIds.length;i+=200) chunks.push(pedidoIds.slice(i,i+200));
+      for(const chunk of chunks){
+        const items=await sbGet(`/rest/v1/itens_pedido?select=produto_id,quantidade&pedido_id=in.(${chunk.join(',')})`);
+        (Array.isArray(items)?items:[]).forEach(i=>{
+          if(!i.produto_id)return;
+          vendasByProd.set(i.produto_id,(vendasByProd.get(i.produto_id)||0)+(i.quantidade||1));
+        });
+      }
+    }
+
+    // só produtos com pelo menos 5 visualizações no mês entram na análise —
+    // abaixo disso a taxa de conversão é ruído, não sinal
+    const MIN_VIEWS=5;
+    const linhas=[...viewsByProd.entries()]
+      .filter(([,views])=>views>=MIN_VIEWS)
+      .map(([pid,views])=>{
+        const vendas=vendasByProd.get(pid)||0;
+        const prod=allProds.find(p=>p.id===pid);
+        const name=prod?(prod.name||prod.nome):`Produto #${pid}`;
+        const taxa=views?(vendas/views*100):0;
+        return {pid,name,views,vendas,taxa};
+      });
+
+    if(!linhas.length){
+      el.innerHTML=`<div class="empty"><div class="empty-icon">🎯</div><p>Ainda sem produtos com visualizações suficientes este mês (mínimo ${MIN_VIEWS})</p></div>`;
+      return;
+    }
+
+    const mediaGeral=linhas.reduce((s,l)=>s+l.taxa,0)/linhas.length;
+    linhas.sort((a,b)=>a.taxa-b.taxa); // pior conversão primeiro — é o que precisa de atenção
+
+    el.innerHTML=`
+      <div style="font-size:.72rem;color:rgba(13,9,13,.4);margin-bottom:10px">Taxa média de conversão: <b>${mediaGeral.toFixed(1)}%</b> · destacados em vermelho: muita visita, pouca venda</div>
+    `+linhas.slice(0,8).map(l=>{
+      const abaixoDaMedia=l.taxa<mediaGeral*0.5 && l.views>=MIN_VIEWS*2;
+      return `<div class="dash-top-row" onclick="previewProdLoja(${l.pid})" style="cursor:pointer;${abaixoDaMedia?'background:rgba(239,68,68,.05);border-radius:8px':''}">
+        <span class="topprod-rank" style="${abaixoDaMedia?'color:#ef4444':''}">${abaixoDaMedia?'⚠️':'🎯'}</span>
+        <span class="topprod-name">${esc(l.name)}</span>
+        <span style="font-size:.72rem;color:rgba(13,9,13,.45);white-space:nowrap">👁️ ${l.views} · 🛒 ${l.vendas}</span>
+        <span class="topprod-qty" style="${abaixoDaMedia?'color:#ef4444':''}">${l.taxa.toFixed(1)}%</span>
+      </div>`;
+    }).join('');
+  }catch(e){
+    console.error('renderConversao',e);
+    el.innerHTML='<div class="empty"><p>Erro ao carregar conversão</p></div>';
+  }
+}
+
 async function renderTopProducts(){
   const el=document.getElementById('topProducts');
   if(!el)return;
