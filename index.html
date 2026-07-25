@@ -483,7 +483,14 @@ nav.s #navLogo{transform:scale(.92)}
 .showcase{padding:0}
 .showcase-item{
   display:grid;grid-template-columns:1fr 1fr;
+  min-height:540px;
+}
+.showcase-item:nth-of-type(1){
   height:420px;
+  min-height:0;
+}
+@media(max-width:900px){
+  .showcase-item:nth-of-type(1){height:auto}
 }
 .showcase-item.reverse{direction:rtl}
 .showcase-item.reverse > *{direction:ltr}
