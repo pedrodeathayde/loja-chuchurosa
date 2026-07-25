@@ -32,7 +32,10 @@
 <link rel="alternate" hreflang="pt-BR" href="https://chuchurosa.com.br/">
 
 <!-- LCP: primeira foto do hero -->
-<link rel="preload" as="image" fetchpriority="high" href="img/hero-01-1200.webp">
+<link rel="preload" as="image" fetchpriority="high"
+      href="img/hero-01-1200.webp"
+      imagesrcset="img/hero-01-720.webp 720w, img/hero-01-1200.webp 1200w"
+      imagesizes="(max-width:900px) 100vw, 47vw">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&amp;family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
@@ -480,7 +483,7 @@ nav.s #navLogo{transform:scale(.92)}
 .showcase{padding:0}
 .showcase-item{
   display:grid;grid-template-columns:1fr 1fr;
-  min-height:540px;
+  height:420px;
 }
 .showcase-item.reverse{direction:rtl}
 .showcase-item.reverse > *{direction:ltr}
@@ -858,12 +861,12 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
     </div>
   </div>
   <div class="hero-right" id="heroRight">
-    <div class="hp active"><img src="img/hero-01-1200.webp" sizes="(max-width:900px) 100vw, 47vw" width="1200" height="1200" fetchpriority="high" decoding="async" alt="Menina usando tiara de orelhas de feltro da Chuchu Rosa em ensaio de estúdio"></div>
-    <div class="hp" data-src="img/hero-02-1200.webp"><img width="1200" height="1200" sizes="(max-width:900px) 100vw, 47vw" loading="lazy" decoding="async" alt="Criança com fantasia de feltro feita sob medida pela Chuchu Rosa"></div>
-    <div class="hp" data-src="img/hero-03-1200.webp"><img width="1200" height="1200" sizes="(max-width:900px) 100vw, 47vw" loading="lazy" decoding="async" alt="Criança com peça de feltro da Chuchu Rosa em retrato editorial"></div>
-    <div class="hp" data-src="img/hero-04-1200.webp"><img width="1200" height="1200" sizes="(max-width:900px) 100vw, 47vw" loading="lazy" decoding="async" alt="Menina com acessório de feltro da Chuchu Rosa em ensaio fotográfico"></div>
-    <div class="hp" data-src="img/hero-05-1200.webp"><img width="1200" height="1200" sizes="(max-width:900px) 100vw, 47vw" loading="lazy" decoding="async" alt="Criança vestindo fantasia artesanal de feltro da Chuchu Rosa"></div>
-    <div class="hp hp-sushi" data-src="img/hero-sushi-1200.webp"><img width="1200" height="1200" sizes="(max-width:900px) 100vw, 47vw" loading="lazy" decoding="async" alt="Bebê com fantasia de sushi de feltro da Chuchu Rosa"></div>
+    <div class="hp active"><img src="img/hero-01-1200.webp" srcset="img/hero-01-720.webp 720w, img/hero-01-1200.webp 1200w" sizes="(max-width:900px) 100vw, 47vw" width="1200" height="1200" fetchpriority="high" decoding="async" alt="Menina usando tiara de orelhas de feltro da Chuchu Rosa em ensaio de estúdio"></div>
+    <div class="hp" data-src="img/hero-02-1200.webp" data-srcset="img/hero-02-720.webp 720w, img/hero-02-1200.webp 1200w"><img width="1200" height="1200" sizes="(max-width:900px) 100vw, 47vw" loading="lazy" decoding="async" alt="Criança com fantasia de feltro feita sob medida pela Chuchu Rosa"></div>
+    <div class="hp" data-src="img/hero-03-1200.webp" data-srcset="img/hero-03-720.webp 720w, img/hero-03-1200.webp 1200w"><img width="1200" height="1200" sizes="(max-width:900px) 100vw, 47vw" loading="lazy" decoding="async" alt="Criança com peça de feltro da Chuchu Rosa em retrato editorial"></div>
+    <div class="hp" data-src="img/hero-04-1200.webp" data-srcset="img/hero-04-720.webp 720w, img/hero-04-1200.webp 1200w"><img width="1200" height="1200" sizes="(max-width:900px) 100vw, 47vw" loading="lazy" decoding="async" alt="Menina com acessório de feltro da Chuchu Rosa em ensaio fotográfico"></div>
+    <div class="hp" data-src="img/hero-05-1200.webp" data-srcset="img/hero-05-720.webp 720w, img/hero-05-1200.webp 1200w"><img width="1200" height="1200" sizes="(max-width:900px) 100vw, 47vw" loading="lazy" decoding="async" alt="Criança vestindo fantasia artesanal de feltro da Chuchu Rosa"></div>
+    <div class="hp hp-sushi" data-src="img/hero-sushi-1200.webp" data-srcset="img/hero-sushi-720.webp 720w, img/hero-sushi-1200.webp 1200w"><img width="1200" height="1200" sizes="(max-width:900px) 100vw, 47vw" loading="lazy" decoding="async" alt="Bebê com fantasia de sushi de feltro da Chuchu Rosa"></div>
     <div class="hero-tag">
       <div class="hero-tag-dot"></div>
       <div class="hero-tag-txt"><b>Peça única.</b> Cada detalhe desenhado no estúdio antes de ganhar forma.</div>
