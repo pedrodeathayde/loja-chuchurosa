@@ -497,6 +497,10 @@ nav.s #navLogo{transform:scale(.92)}
 .showcase-photos .sp:hover img{transform:scale(1.05);opacity:1}
 .showcase-photos .sp:nth-child(1){grid-row:span 2}
 .showcase-photos.single{grid-template-columns:1fr;grid-template-rows:1fr}
+.showcase-photos.trio{grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr}
+.showcase-photos.trio .sp:nth-child(1){grid-row:span 1}
+.showcase-item.short{min-height:0}
+.showcase-item.short .showcase-photos{aspect-ratio:4/3}
 /* accent line */
 .showcase-photos .sp::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--pink),var(--gold));transform:scaleX(0);transform-origin:left;transition:transform .4s}
 .showcase-photos .sp:hover::after{transform:scaleX(1)}
@@ -662,6 +666,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
   .showcase-item{grid-template-columns:1fr;min-height:auto}
   .showcase-item.reverse{direction:ltr}
   .showcase-photos{height:72vw;grid-template-rows:1fr 1fr}
+  .showcase-photos.trio{height:46vw;grid-template-rows:1fr}
   .showcase-text{padding:36px 20px}
 }
 @media(max-width:480px){
@@ -1124,11 +1129,11 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 <div class="showcase">
 
   <!-- RAPOSAS — CLARO -->
-  <div class="showcase-item light rv">
-    <div class="showcase-photos">
-      <div class="sp"><img src="img/editorial-raposa-rose-480.webp" srcset="img/editorial-raposa-rose-480.webp 480w, img/editorial-raposa-rose-960.webp 960w" alt="Menina com máscara e tiara de raposa e saia de tutu laranja" loading="lazy"></div>
-      <div class="sp"><img src="img/bebe-raposa-tutu-480.webp" srcset="img/bebe-raposa-tutu-480.webp 480w, img/bebe-raposa-tutu-960.webp 960w" alt="Bebê com coroa de raposa em feltro e saia de tutu" loading="lazy"></div>
-      <div class="sp"><img src="img/tema-raposa-naninha-480.webp" srcset="img/tema-raposa-naninha-480.webp 480w, img/tema-raposa-naninha-960.webp 960w" alt="Naninha de raposa em feltro laranja" loading="lazy"></div>
+  <div class="showcase-item light short rv">
+    <div class="showcase-photos trio">
+      <div class="sp"><img src="img/bebe-raposa-tutu-480.webp" srcset="img/bebe-raposa-tutu-480.webp 480w, img/bebe-raposa-tutu-960.webp 960w" alt="Bebê com naninha de raposa em feltro marrom" loading="lazy"></div>
+      <div class="sp"><img src="img/editorial-raposa-rose-480.webp" srcset="img/editorial-raposa-rose-480.webp 480w, img/editorial-raposa-rose-960.webp 960w" alt="Menino com fantasia de raposa laranja completa" loading="lazy"></div>
+      <div class="sp"><img src="img/tema-raposa-naninha-480.webp" srcset="img/tema-raposa-naninha-480.webp 480w, img/tema-raposa-naninha-960.webp 960w" alt="Menina com máscara e tiara de raposa e saia de tutu laranja" loading="lazy"></div>
     </div>
     <div class="showcase-text">
       <div class="sc-eyebrow">Coleção</div>
