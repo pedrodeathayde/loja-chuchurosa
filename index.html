@@ -236,7 +236,8 @@ nav.s #navLogo{transform:scale(.92)}
 .hero-right{position:relative;overflow:hidden;min-height:460px}
 .hero-right .hp{position:absolute;inset:0;opacity:0;transition:opacity 1.6s ease}
 .hero-right .hp.active{opacity:1}
-.hero-right .hp img{width:100%;height:100%;object-fit:cover;object-position:center 20%}
+.hero-right .hp img{width:100%;height:100%;object-fit:cover;object-position:center top}
+.hero-right .hp.hp-sushi img{object-position:center 20%}
 .hero-tag{
   position:absolute;bottom:28px;left:28px;z-index:3;
   background:var(--cream);
@@ -494,9 +495,7 @@ nav.s #navLogo{transform:scale(.92)}
   grid-template-rows:1fr 1fr;
   gap:3px;overflow:hidden;
 }
-.showcase-photos .sp{overflow:hidden;position:relative;background:var(--ink);min-height:0;aspect-ratio:1/1}
-.showcase-photos .sp:nth-child(1){aspect-ratio:1/2}
-@media(max-width:900px){.showcase-photos .sp,.showcase-photos .sp:nth-child(1){aspect-ratio:1/1}}
+.showcase-photos .sp{overflow:hidden;position:relative;background:var(--ink);min-height:0}
 .showcase-photos .sp img{width:100%;height:100%;object-fit:cover;transition:transform .65s;opacity:.88;filter:saturate(1.1)}
 .showcase-photos .sp:hover img{transform:scale(1.05);opacity:1}
 .showcase-photos .sp:nth-child(1){grid-row:span 2}
@@ -870,7 +869,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
     <div class="hp" data-src="img/hero-03-1200.webp" data-srcset="img/hero-03-720.webp 720w, img/hero-03-1200.webp 1200w"><img width="1200" height="1800" sizes="(max-width:900px) 100vw, 47vw" loading="lazy" decoding="async" alt="Criança com peça de feltro da Chuchu Rosa em retrato editorial"></div>
     <div class="hp" data-src="img/hero-04-1200.webp" data-srcset="img/hero-04-720.webp 720w, img/hero-04-1200.webp 1200w"><img width="1200" height="1800" sizes="(max-width:900px) 100vw, 47vw" loading="lazy" decoding="async" alt="Menina com acessório de feltro da Chuchu Rosa em ensaio fotográfico"></div>
     <div class="hp" data-src="img/hero-05-1200.webp" data-srcset="img/hero-05-720.webp 720w, img/hero-05-1200.webp 1200w"><img width="1200" height="1800" sizes="(max-width:900px) 100vw, 47vw" loading="lazy" decoding="async" alt="Criança vestindo fantasia artesanal de feltro da Chuchu Rosa"></div>
-    <div class="hp" data-src="img/hero-sushi-960.webp"><img loading="lazy" decoding="async" alt="Bebê com fantasia de sushi de feltro da Chuchu Rosa"></div>
+    <div class="hp hp-sushi" data-src="img/hero-sushi-960.webp"><img loading="lazy" decoding="async" alt="Bebê com fantasia de sushi de feltro da Chuchu Rosa"></div>
     <div class="hero-tag">
       <div class="hero-tag-dot"></div>
       <div class="hero-tag-txt"><b>Peça única.</b> Cada detalhe desenhado no estúdio antes de ganhar forma.</div>
