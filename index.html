@@ -98,7 +98,7 @@ nav.s #navLogo{transform:scale(.92)}
 
 .nl{display:flex;gap:6px;list-style:none;align-items:center}
 .nl a{
-  font-family:var(--fn);font-weight:400;
+  font-family:var(--fb);font-weight:500;
   font-size:1.05rem;letter-spacing:.01em;
   color:var(--ink);opacity:.68;
   display:block;padding:9px 14px;border-radius:100px;
@@ -125,8 +125,8 @@ nav.s #navLogo{transform:scale(.92)}
   background:var(--pink);color:#fff;
   padding:10px 24px;border-radius:100px;
   border:1px solid var(--pink);
-  font-family:var(--fn);
-  font-size:.95rem;font-weight:400;
+  font-family:var(--fb);
+  font-size:.95rem;font-weight:600;
   letter-spacing:.02em;
   box-shadow:0 4px 16px rgba(229,37,100,.28);
   transition:background .25s,box-shadow .25s,transform .25s;
@@ -154,7 +154,7 @@ nav.s #navLogo{transform:scale(.92)}
 .mob-menu ul{list-style:none;display:flex;flex-direction:column;gap:4px;margin-bottom:20px}
 .mob-menu ul a{
   display:block;padding:12px 12px;border-radius:10px;
-  font-family:var(--fd);font-weight:400;font-size:1.05rem;letter-spacing:-.005em;
+  font-family:var(--fb);font-weight:500;font-size:1.05rem;letter-spacing:-.005em;
   color:rgba(255,255,255,.68);transition:all .15s;
 }
 .mob-menu ul a:hover{background:rgba(229,37,100,.08);color:#fff}
@@ -316,7 +316,7 @@ nav.s #navLogo{transform:scale(.92)}
 .st-light em{font-style:italic;background:linear-gradient(135deg,#ffd89b,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 
 /* ── ABOUT — LIGHT ── */
-.about{background:var(--cream);padding:88px 0}
+.about{background:var(--cream);padding:48px 0 88px}
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
 .about-text .sl-pink{margin-bottom:14px}
 .about-body{font-size:1rem;line-height:1.9;color:rgba(15,10,15,.72);max-width:440px;margin-top:16px}
@@ -590,16 +590,15 @@ nav.s #navLogo{transform:scale(.92)}
 .band-head .sl::before{background:#ffd6e3}
 .band-head h2{font-family:var(--fd);font-weight:600;font-size:clamp(2rem,3.5vw,3.1rem);line-height:1.08;letter-spacing:-.03em;color:#fff}
 .band-head h2 em{font-style:italic;font-weight:400;background:linear-gradient(135deg,#ffd89b,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.pink-rail{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;max-width:1180px;margin:0 auto;padding:32px 48px 64px;scrollbar-width:none;position:relative;z-index:1}
-.pink-rail::-webkit-scrollbar{display:none}
-.pink-item{scroll-snap-align:start;flex:0 0 auto;width:min(21%,220px);display:flex;flex-direction:column;gap:12px;transition:transform .35s}
+.pink-rail{display:flex;flex-wrap:wrap;gap:22px;max-width:1180px;margin:0 auto;padding:32px 48px 64px;position:relative;z-index:1}
+.pink-item{flex:1 1 220px;max-width:220px;display:flex;flex-direction:column;gap:12px;transition:transform .35s}
 .pink-item:hover{transform:translateY(-6px)}
 .pink-item .pi-photo{position:relative;border-radius:14px;overflow:hidden;box-shadow:0 20px 44px rgba(15,10,15,.18)}
 .pink-item img{width:100%;aspect-ratio:2/3;object-fit:cover;object-position:center 15%;display:block;transition:transform .7s cubic-bezier(.22,.61,.36,1)}
 .pink-item:hover img{transform:scale(1.06)}
 .pink-item figcaption{font-family:var(--fb);font-style:normal;font-weight:700;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;text-align:left;color:#fff}
-@media(max-width:900px){.pink-item{width:min(38%,220px)}.band-head{padding:64px 20px 0}.pink-rail{padding:32px 20px 64px}}
-@media(max-width:600px){.pink-rail{justify-content:flex-start}.pink-item{flex:0 0 min(58vw,220px);width:auto}}
+@media(max-width:900px){.pink-item{flex:1 1 30%;max-width:none}.band-head{padding:64px 20px 0}.pink-rail{padding:32px 20px 64px}}
+@media(max-width:600px){.pink-rail{gap:14px}.pink-item{flex:1 1 calc(50% - 7px);max-width:none}}
 
 /* ── CRESCE COM A CHUCHU ROSA — ESCURO ── */
 .grow{background:var(--ink);padding:88px 0;position:relative}
@@ -649,14 +648,15 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 
 /* ── MOBILE ── */
 @media(max-width:900px){
-  nav{padding:0 16px;height:64px}
+  nav{padding:0 20px;height:64px;border-bottom:none}
   nav.s{height:58px}
   .ti,.mq-i{font-size:.92rem;padding:0 22px}
   .ti::after,.mq-i b{margin-left:22px}
   .ticker,.mq{--rail-pad:14px}
   .nl,.nc{display:none}
-  .nh{display:flex}
-  .mob-menu{display:block}
+  .nh{display:flex;padding:6px 0;margin:0}
+  .mob-menu{display:block;top:64px}
+  nav.s+.mob-menu{top:58px}
   .about-grid{grid-template-columns:1fr;gap:40px}
   .about-imgs{height:360px}
   .cgrid{grid-template-columns:1fr 1fr;grid-template-rows:auto;height:auto;gap:4px}
@@ -1038,7 +1038,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
     <div class="sl" style="color:#ffd6e3">Em estúdio</div>
     <h2>Cor que se veste,<br><em>alegria</em> que se usa</h2>
   </div>
-  <div class="pink-rail rv" tabindex="0" aria-label="Fotos da campanha — role para o lado">
+  <div class="pink-rail rv" aria-label="Fotos da campanha">
     <figure class="pink-item"><div class="pi-photo"><img src="img/pink-abelha-480.webp" loading="lazy" alt="Criança com fantasia de abelha em colete listrado amarelo e preto e capuz com antenas"></div><figcaption>Abelha</figcaption></figure>
     <figure class="pink-item"><div class="pi-photo"><img src="img/pink-flor-480.webp" loading="lazy" alt="Menina sorrindo com fantasia de flor: capuz de pétalas rosa e vestido verde com folhas"></div><figcaption>Flor</figcaption></figure>
     <figure class="pink-item"><div class="pi-photo"><img src="img/pink-pavao-480.webp" loading="lazy" alt="Menina com máscara e asas de pavão azul-turquesa com penas bordadas"></div><figcaption>Pavão</figcaption></figure>
