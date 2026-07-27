@@ -78,7 +78,7 @@ a{text-decoration:none;color:inherit}
 /* ── NAV ── */
 nav{
   position:sticky;top:0;left:0;right:0;z-index:300;
-  height:78px;padding:0 48px;
+  height:70px;padding:0 48px;
   display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px;
   background:var(--cream);
   border-bottom:1px solid rgba(201,169,110,.28);
@@ -94,7 +94,7 @@ nav .nc{justify-self:end}
 .scroll-progress{position:fixed;top:0;left:0;height:2px;width:0%;z-index:301;background:linear-gradient(90deg,var(--pink),var(--gold));transition:width .1s linear}
 @media(prefers-reduced-motion:reduce){.scroll-progress{display:none}}
 nav.s{
-  height:62px;
+  height:58px;
   background:rgba(253,248,244,.82);
   backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);
   border-bottom-color:rgba(15,10,15,.08);
@@ -106,11 +106,11 @@ nav.s #navLogo img{transform:scale(.88)}
 
 .nl{display:flex;gap:2px;list-style:none;align-items:center}
 .nl a{
-  font-family:var(--fb);font-weight:600;
-  font-size:1.02rem;letter-spacing:.03em;
+  font-family:var(--fb);font-weight:700;
+  font-size:1.12rem;letter-spacing:.035em;
   font-variant-caps:all-small-caps;
-  color:var(--ink);opacity:.72;
-  display:block;padding:9px 14px;
+  color:var(--ink);opacity:.78;
+  display:block;padding:6px 14px;
   transition:opacity .25s,color .25s;position:relative;
 }
 .nl a::after{
@@ -722,6 +722,120 @@ nav.s #navLogo img{transform:scale(.88)}
 }
 .spaces-cta{margin-top:52px;display:flex;gap:20px;align-items:center;flex-wrap:wrap}
 
+/* ══ FEATURE EDITORIAL — destoa de propósito do resto da página ══ */
+.spaces{padding:0 0 100px}
+.ed-open{padding:96px 0 0;text-align:center;position:relative}
+.ed-kicker{
+  display:flex;align-items:center;justify-content:center;gap:16px;
+  font-family:var(--fb);font-size:.66rem;font-weight:700;
+  letter-spacing:.34em;text-transform:uppercase;color:var(--pink);
+  margin-bottom:34px;
+}
+.ed-kicker::before,.ed-kicker::after{content:'';width:56px;height:1px;background:var(--gold);opacity:.7}
+.ed-title{
+  font-family:var(--fd);font-weight:600;
+  font-size:clamp(3.2rem,8vw,7rem);
+  line-height:.88;letter-spacing:-.045em;color:var(--ink);
+  max-width:15ch;margin:0 auto;
+}
+.ed-title em{font-style:italic;font-weight:400;color:var(--pink)}
+.ed-deck{
+  font-family:var(--fd);font-style:italic;font-weight:400;
+  font-size:clamp(1.25rem,2.3vw,1.72rem);
+  line-height:1.5;color:rgba(15,10,15,.78);
+  max-width:34ch;margin:34px auto 0;
+}
+.ed-byline{
+  margin-top:38px;display:flex;justify-content:center;align-items:center;gap:12px;
+  font-family:var(--fb);font-size:.63rem;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;color:rgba(15,10,15,.45);
+  flex-wrap:wrap;
+}
+.ed-byline b{color:var(--ink);font-weight:700}
+.ed-byline i{font-style:normal;color:var(--gold)}
+.ed-rule{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(15,10,15,.22),transparent);margin:52px 0 0}
+
+/* corpo em duas colunas com capitular */
+.ed-body{
+  columns:2;column-gap:52px;margin-top:56px;
+  font-size:1.02rem;line-height:1.92;color:rgba(15,10,15,.8);
+  text-align:justify;hyphens:auto;
+}
+.ed-body p{margin-bottom:18px;break-inside:avoid-column}
+.ed-body p:first-child::first-letter{
+  font-family:var(--fd);font-weight:600;
+  float:left;font-size:4.4rem;line-height:.82;
+  padding:6px 12px 0 0;color:var(--pink);
+}
+@media(max-width:820px){.ed-body{columns:1;text-align:left;hyphens:none}}
+
+/* verbatim gigante */
+.ed-verbatim{
+  margin:76px auto;max-width:900px;text-align:center;position:relative;padding:0 24px;
+}
+.ed-verbatim::before{
+  content:'\201C';position:absolute;top:-46px;left:50%;transform:translateX(-50%);
+  font-family:var(--fd);font-size:7rem;line-height:1;color:var(--pink);opacity:.18;
+}
+.ed-verbatim q{
+  quotes:none;font-family:var(--fd);font-style:italic;font-weight:500;
+  font-size:clamp(1.6rem,3.4vw,2.7rem);line-height:1.28;
+  letter-spacing:-.02em;color:var(--ink);display:block;
+}
+.ed-verbatim q em{font-style:italic;color:var(--pink)}
+.ed-verbatim footer,.ed-aside footer{background:none;padding:0;position:static}
+.ed-verbatim footer::before,.ed-aside footer::before{display:none}
+.ed-verbatim footer{
+  margin-top:26px;font-family:var(--fb);font-size:.68rem;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;color:rgba(15,10,15,.5);
+}
+.ed-verbatim footer b{color:var(--ink)}
+
+/* verbatim lateral, dentro do fluxo do portfólio */
+.ed-aside{
+  border-left:2px solid var(--pink);padding:6px 0 6px 26px;margin:0;
+}
+.ed-aside q{
+  quotes:none;font-family:var(--fd);font-style:italic;font-weight:500;
+  font-size:clamp(1.15rem,1.9vw,1.5rem);line-height:1.4;color:var(--ink);display:block;
+}
+.ed-aside footer{
+  margin-top:14px;font-family:var(--fb);font-size:.64rem;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;color:rgba(15,10,15,.5);
+  background:none;padding:0;
+}
+
+/* bloco de processo — "como nasce um cenário" */
+.ed-process{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+  margin:72px 0 0;border-top:1px solid rgba(15,10,15,.14);
+}
+.ed-process > div{
+  padding:30px 26px 8px 0;border-right:1px solid rgba(15,10,15,.1);
+}
+.ed-process > div:last-child{border-right:none}
+.ed-pn{
+  font-family:var(--fd);font-style:italic;font-weight:600;font-size:1.5rem;
+  color:var(--gold);line-height:1;margin-bottom:14px;
+}
+.ed-pt{font-family:var(--fd);font-weight:600;font-size:1.12rem;color:var(--ink);margin-bottom:8px}
+.ed-pd{font-size:.88rem;line-height:1.72;color:rgba(15,10,15,.68)}
+@media(max-width:900px){
+  .ed-process{grid-template-columns:1fr 1fr}
+  .ed-process > div:nth-child(2){border-right:none}
+  .ed-process > div:nth-child(1),.ed-process > div:nth-child(2){border-bottom:1px solid rgba(15,10,15,.1)}
+  .ed-open{padding-top:64px}
+}
+@media(max-width:560px){
+  .ed-process{grid-template-columns:1fr}
+  .ed-process > div{border-right:none;border-bottom:1px solid rgba(15,10,15,.1)}
+  .ed-process > div:last-child{border-bottom:none}
+}
+
+/* folio lead com verbatim ao lado */
+.folio-lead{align-items:start}
+.folio-quote{gap:18px;padding-top:8px}
+
 /* ── FOOTER — DARK ── */
 footer{background:var(--ink);position:relative;padding:64px 0 32px}
 footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--pink),var(--gold),transparent)}
@@ -1289,14 +1403,31 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 
 </div>
 
-<!-- AMBIENTES & FESTAS — CLARO -->
+<!-- AMBIENTES & FESTAS — FEATURE EDITORIAL -->
 <section class="spaces" id="ambientes">
+
   <div class="c">
-    <div class="spaces-masthead rv">
-      <div class="sl sl-pink">Ambientes &amp; festas</div>
-      <h2 class="st-dark">Cenários que o<br>estúdio <em>assina</em></h2>
-      <p class="about-body">Além das peças, a Chuchu Rosa projeta ambientes completos — mesas temáticas, cenários de festa e decoração de quarto — do primeiro esboço à montagem no dia do evento. Cada cenário é desenhado sob medida, como uma peça única de vestuário: nada é repetido, nada sai de catálogo.</p>
+    <div class="ed-open rv">
+      <div class="ed-kicker">Ambientes &amp; Festas</div>
+      <h2 class="ed-title">Cenários que o estúdio <em>assina</em></h2>
+      <p class="ed-deck">Onde a fantasia sai do corpo da criança e toma conta da sala inteira — um ofício de cenografia doméstica praticado há dezesseis anos no interior paulista.</p>
+      <div class="ed-byline">
+        <span>Por <b>Ellen</b>, fundadora</span><i>◆</i><span>Fotografia <b>Estúdio Chuchu Rosa</b></span><i>◆</i><span>Nova Odessa, SP</span>
+      </div>
+      <div class="ed-rule"></div>
     </div>
+
+    <div class="ed-body rv">
+      <p>Há um momento, em toda festa infantil, em que a criança para no meio do salão e olha em volta pela primeira vez. É por esse instante que a Chuchu Rosa trabalha. Não pelo bolo, nem pela lembrancinha — pelo segundo em que o mundo inteiro parece ter sido construído sob medida para ela.</p>
+      <p>Fazer isso acontecer exige mais do que enfeite. Exige entender o que aquela criança ama esta semana, quais cores a acalmam, qual bicho ela pede para ver de novo no livro. A partir daí vem o croqui — sempre à mão, sempre o primeiro passo. Depois, o feltro é cortado, as peças são costuradas uma a uma e a montagem acontece no próprio dia, horas antes de os convidados chegarem.</p>
+      <p>Nada é alugado. Nada é reaproveitado de um projeto anterior. Cada cenário nasce e morre com aquela festa, e depois vai para casa com a família — porque as peças são feitas para durar bem mais do que a tarde de domingo em que foram usadas.</p>
+      <p>É um jeito caro de trabalhar, e a Ellen sabe disso. Também é o único jeito que ela conhece de fazer uma criança olhar em volta daquele jeito.</p>
+    </div>
+
+    <blockquote class="ed-verbatim rv">
+      <q>Eu não decoro festa. Eu construo o lugar onde a <em>lembrança</em> vai acontecer.</q>
+      <footer><b>Ellen</b> — fundadora e designer</footer>
+    </blockquote>
 
     <div class="sub-head rv"><small>Escolha seu momento</small><h3>Para cada ocasião</h3></div>
     <div class="occ-grid rv" style="margin-top:0">
@@ -1317,7 +1448,14 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
       </a>
     </div>
 
-    <div class="sub-head rv" style="margin-top:80px"><small>Portfólio</small><h3>Projetos assinados</h3></div>
+    <div class="ed-process rv">
+      <div><div class="ed-pn">I</div><div class="ed-pt">A conversa</div><div class="ed-pd">Tudo começa com perguntas sobre a criança — não sobre a festa. O tema costuma aparecer sozinho no meio do papo.</div></div>
+      <div><div class="ed-pn">II</div><div class="ed-pt">O croqui</div><div class="ed-pd">Cada cenário é desenhado à mão antes de existir. É o croqui que define paleta, escala e o que será feito de feltro.</div></div>
+      <div><div class="ed-pn">III</div><div class="ed-pt">O ateliê</div><div class="ed-pd">Corte, costura e acabamento peça por peça. Nada de cola nos detalhes que a criança vai pegar na mão.</div></div>
+      <div><div class="ed-pn">IV</div><div class="ed-pt">A montagem</div><div class="ed-pd">No dia, horas antes. A mesa, o painel e os bichos ganham lugar — e depois vão embora com a família.</div></div>
+    </div>
+
+    <div class="sub-head rv" style="margin-top:88px"><small>Portfólio</small><h3>Projetos assinados</h3></div>
 
     <div class="folio-lead rv">
       <div class="folio-lead-photo">
@@ -1328,6 +1466,10 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
         <span class="fq-mark">"</span>
         <blockquote>A Ellen entendeu exatamente o clima que eu queria — cada detalhe da mesa parecia tirado da cabeça da minha filha.</blockquote>
         <cite><span class="fq-line"></span><span><span class="fq-name">Camila R.</span><span class="fq-role">Festa de 3 anos, tema floresta</span></span></cite>
+        <blockquote class="ed-aside" style="margin-top:34px">
+          <q>A raposa da mesa virou o brinquedo preferido dela. Um ano depois, ainda dorme abraçada.</q>
+          <footer>Camila R. — seis meses depois</footer>
+        </blockquote>
       </div>
     </div>
 
@@ -1353,6 +1495,11 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
         <figcaption><span class="fc-t">Cogumelos encantados</span><span class="fc-n">Mesa</span></figcaption>
       </figure>
     </div>
+
+    <blockquote class="ed-verbatim rv">
+      <q>Contratei uma mesa de festa. Recebi um <em>cenário</em> que a minha filha reconheceu antes mesmo de eu explicar.</q>
+      <footer><b>Juliana R.</b> — cliente desde 2021</footer>
+    </blockquote>
 
     <div class="spaces-cta rv">
       <a href="https://wa.me/5519993041555?text=Oi!%20Quero%20saber%20mais%20sobre%20os%20ambientes%20e%20festas%20da%20Chuchu%20Rosa" target="_blank" rel="noopener" class="btn-p">Pedir um projeto de ambiente →</a>
@@ -1622,18 +1769,20 @@ fetch(SB+'/rest/v1/produtos?select=id&ativo=eq.true&oculto=eq.false',{
     if(fired) return;
     fired = true;
     var colors = ['#e52564','#f0995a','#c9a96e','#7fb88f','#4f7fc9','#ffd6e3'];
-    var count = 140;
+    var count = 400;
     for(var i=0;i<count;i++){
       var el = document.createElement('div');
       var size = 6 + Math.random()*7;
       var isCircle = Math.random() > .5;
+      var baseColor = colors[Math.floor(Math.random()*colors.length)];
       el.style.cssText =
         'position:fixed;top:-20px;left:'+(Math.random()*100)+'vw;'+
         'width:'+size+'px;height:'+(isCircle?size:size*1.6)+'px;'+
-        'background:'+colors[Math.floor(Math.random()*colors.length)]+';'+
+        'background:linear-gradient(135deg,'+baseColor+',color-mix(in srgb,'+baseColor+' 70%,#fff));'+
         'border-radius:'+(isCircle?'50%':'2px')+';'+
         'z-index:9999;pointer-events:none;'+
         'opacity:'+(.85+Math.random()*.15)+';'+
+        'box-shadow:0 '+(3+Math.random()*4)+'px '+(7+Math.random()*6)+'px rgba(15,10,15,.22),inset 0 0 0 1px rgba(255,255,255,.25);'+
         'transform:rotate('+(Math.random()*360)+'deg);';
       document.body.appendChild(el);
       var duration = 2600 + Math.random()*1800;
@@ -1645,6 +1794,38 @@ fetch(SB+'/rest/v1/produtos?select=id&ativo=eq.true&oculto=eq.false',{
         { transform:'translate('+drift+'px, 108vh) rotate('+rotEnd+'deg)', opacity:0 }
       ], { duration:duration, easing:'cubic-bezier(.25,.46,.45,.94)' });
       anim.onfinish = function(node){ return function(){ node.remove(); }; }(el);
+    }
+
+    // serpentinas — fitas longas balançando de um lado a outro na queda
+    var streamerCount = 36;
+    for(var j=0;j<streamerCount;j++){
+      var st = document.createElement('div');
+      var w = 5 + Math.random()*4;
+      var h = 60 + Math.random()*70;
+      var startLeft = Math.random()*100;
+      var stColor = colors[Math.floor(Math.random()*colors.length)];
+      st.style.cssText =
+        'position:fixed;top:-120px;left:'+startLeft+'vw;'+
+        'width:'+w+'px;height:'+h+'px;'+
+        'background:linear-gradient(90deg,color-mix(in srgb,'+stColor+' 75%,#000),'+stColor+',color-mix(in srgb,'+stColor+' 65%,#fff));'+
+        'border-radius:'+(w/2)+'px;'+
+        'z-index:9999;pointer-events:none;'+
+        'opacity:'+(.8+Math.random()*.2)+';'+
+        'box-shadow:0 6px 14px rgba(15,10,15,.2);'+
+        'transform-origin:center top;'+
+        'transform:rotate('+(Math.random()*40-20)+'deg);';
+      document.body.appendChild(st);
+      var sDuration = 3200 + Math.random()*2000;
+      var swayAmp = 70 + Math.random()*90;
+      var sRot = (Math.random()-.5)*60;
+      var sAnim = st.animate([
+        { transform:'translate(0,0) rotate('+sRot+'deg)', opacity:1 },
+        { transform:'translate('+(swayAmp)+'px, 35vh) rotate('+(sRot+70)+'deg)', opacity:1, offset:.3 },
+        { transform:'translate('+(-swayAmp)+'px, 65vh) rotate('+(sRot-70)+'deg)', opacity:1, offset:.6 },
+        { transform:'translate('+(swayAmp*.6)+'px, 100vh) rotate('+(sRot+40)+'deg)', opacity:.9, offset:.88 },
+        { transform:'translate('+(swayAmp*.6)+'px, 110vh) rotate('+(sRot+40)+'deg)', opacity:0 }
+      ], { duration:sDuration, easing:'ease-in-out' });
+      sAnim.onfinish = function(node){ return function(){ node.remove(); }; }(st);
     }
     setTimeout(reset, 900);
     setTimeout(function(){ fired = false; }, 1200);
