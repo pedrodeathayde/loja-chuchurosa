@@ -319,6 +319,10 @@ nav.s{
 .about-text .sl-pink{margin-bottom:14px}
 .about-body{font-size:1rem;line-height:1.9;color:rgba(15,10,15,.72);max-width:440px;margin-top:16px}
 .about-pts{display:flex;flex-direction:column;gap:18px;margin-top:30px}
+.about-stats{display:flex;gap:36px;margin-top:32px;padding-top:26px;border-top:1px solid rgba(15,10,15,.1)}
+.ast-n{font-family:var(--fd);font-size:1.9rem;font-weight:600;color:var(--ink);line-height:1;font-variant-numeric:oldstyle-nums}
+.ast-n sup{font-size:1rem;color:var(--pink)}
+.ast-l{font-size:.68rem;color:rgba(15,10,15,.5);margin-top:6px;letter-spacing:.04em;text-transform:uppercase}
 .about-link{
   display:inline-flex;align-items:center;gap:7px;margin-top:28px;
   font-size:.85rem;font-weight:600;color:var(--pink);
@@ -357,7 +361,6 @@ nav.s{
 @keyframes mqa{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
 /* ── OCASIÕES — LIGHT ── */
-.occ{background:var(--cream);padding:80px 0}
 .occ-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:44px}
 @media(max-width:860px){.occ-grid{grid-template-columns:1fr}}
 .occ-card{position:relative;border-radius:18px;overflow:hidden;cursor:pointer;aspect-ratio:4/5;box-shadow:0 20px 44px rgba(15,10,15,.08);transition:transform .35s,box-shadow .35s}
@@ -461,11 +464,7 @@ nav.s{
 @media(max-width:540px){.steps{grid-template-columns:1fr}}
 
 /* ── CATÁLOGO COMPLETO — LIGHT ── */
-.catgrid2{background:var(--cream);padding:88px 0}
-.catgrid2-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:32px;flex-wrap:wrap}
-.catgrid2-list{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
-@media(max-width:900px){.catgrid2-list{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:560px){.catgrid2-list{grid-template-columns:repeat(2,1fr)}}
+
 .catcard2{display:block;border-radius:14px;overflow:hidden;position:relative;aspect-ratio:3/4;background:var(--cream2);cursor:pointer}
 .catcard2 img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.22,.61,.36,1)}
 .catcard2:hover img{transform:scale(1.08)}
@@ -587,7 +586,7 @@ nav.s{
 .btn-wa:hover{border-color:#25d366;background:rgba(37,211,102,.1);transform:translateY(-2px)}
 
 
-/* ── EM ESTÚDIO — CAMPANHA ROSA ── */
+/* ── RETRATOS DO ESTÚDIO — CAMPANHA ROSA + FASES ── */
 .pinkband{background:var(--pink);color:#fff;padding:0;position:relative;overflow:hidden}
 .pinkband::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 15% 20%,rgba(255,255,255,.12),transparent 45%),radial-gradient(circle at 85% 80%,rgba(201,169,110,.16),transparent 50%);pointer-events:none}
 .band-head{max-width:1180px;margin:0 auto;padding:64px 48px 0;position:relative;z-index:1}
@@ -595,7 +594,7 @@ nav.s{
 .band-head .sl::before{background:#ffd6e3}
 .band-head h2{font-family:var(--fd);font-weight:600;font-size:clamp(2rem,3.5vw,3.1rem);line-height:1.08;letter-spacing:-.03em;color:#fff}
 .band-head h2 em{font-style:italic;font-weight:400;background:linear-gradient(135deg,#ffd89b,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.pink-rail{display:grid;grid-template-columns:repeat(5,1fr);gap:22px;max-width:1180px;margin:0 auto;padding:32px 48px 64px;position:relative;z-index:1}
+.pink-rail{display:grid;grid-template-columns:repeat(5,1fr);gap:22px;max-width:1180px;margin:0 auto;padding:32px 48px 0;position:relative;z-index:1}
 .pink-item{display:flex;flex-direction:column;gap:12px;transition:transform .35s}
 .pink-item:hover{transform:translateY(-6px)}
 .pink-item .pi-photo{position:relative;border-radius:14px;overflow:hidden;box-shadow:0 20px 44px rgba(15,10,15,.18);height:100%}
@@ -607,27 +606,26 @@ nav.s{
 .pink-item:hover img{transform:scale(1.06)}
 .pink-item figcaption{font-family:var(--fb);font-style:normal;font-weight:700;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;text-align:left;color:#fff}
 @media(max-width:900px){
-  .pink-rail{grid-template-columns:repeat(2,1fr);padding:32px 20px 64px}
+  .pink-rail{grid-template-columns:repeat(2,1fr);padding:32px 20px 0}
   .pink-item:nth-child(1),.pink-item:nth-child(4){grid-row:span 1}
   .pink-item:nth-child(1) .pi-photo,.pink-item:nth-child(4) .pi-photo,.pink-item:nth-child(2) .pi-photo,.pink-item:nth-child(3) .pi-photo,.pink-item:nth-child(5) .pi-photo{aspect-ratio:2/3}
   .pink-item:nth-child(2),.pink-item:nth-child(5){margin-top:0}
   .pink-item:nth-child(5){grid-column:span 2}
   .pink-item:nth-child(5) .pi-photo{aspect-ratio:16/9}
   .band-head{padding:64px 20px 0}
+  .grow-head{padding:0 20px;margin-top:44px}
+  .grow-rail{padding:0 20px 56px;grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:600px){.pink-rail{gap:14px}}
 
-/* ── CRESCE COM A CHUCHU ROSA — ESCURO ── */
-.grow{background:var(--ink);padding:88px 0;position:relative}
-.grow-rail{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;align-items:end;margin-top:36px}
+/* ── trilha "para cada fase" — vive dentro da seção .pinkband acima ── */
+.grow-head{max-width:1180px;margin:56px auto 0;padding:0 48px}
+.grow-head p{font-size:.88rem;line-height:1.8;color:rgba(255,255,255,.78);margin-top:10px;max-width:480px}
+.grow-rail{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;align-items:end;max-width:1180px;margin:28px auto 0;padding:0 48px 72px}
 @media(max-width:880px){.grow-rail{grid-template-columns:repeat(2,1fr)}}
-.grow-item img{border-radius:14px;aspect-ratio:4/3;object-fit:cover;width:100%;transition:transform .5s}
+.grow-item img{border-radius:14px;aspect-ratio:4/3;object-fit:cover;width:100%;transition:transform .5s;box-shadow:0 16px 36px rgba(15,10,15,.18)}
 .grow-item:hover img{transform:scale(1.04)}
-.grow-item figcaption{margin-top:12px;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
-.grow-item:nth-child(1) figcaption{color:var(--gold)}
-.grow-item:nth-child(2) figcaption{color:#e8a8bf}
-.grow-item:nth-child(3) figcaption{color:#9fb8c9}
-.grow-item:nth-child(4) figcaption{color:var(--pink)}
+.grow-item figcaption{margin-top:12px;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#ffe3ec}
 
 /* ── AMBIENTES & FESTAS — CLARO ── */
 .spaces{background:var(--cream);padding:88px 0}
@@ -677,14 +675,14 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
   .cgrid{grid-template-columns:1fr 1fr;grid-template-rows:auto;height:auto;gap:4px}
   .cc:nth-child(1){grid-column:span 2;aspect-ratio:4/3}
   .cc:not(:nth-child(1)){aspect-ratio:3/4}
-  .stats-grid{grid-template-columns:1fr 1fr}
+  .about-stats{gap:24px;flex-wrap:wrap}
   .steps{grid-template-columns:1fr 1fr}
   .pgrid{grid-template-columns:1fr 1fr;gap:10px}
   .tgrid{grid-template-columns:1fr;gap:12px}
   .fg{grid-template-columns:1fr;gap:24px}
   .fbot{flex-direction:column;gap:10px;text-align:center}
   .c{padding:0 16px}
-  .about,.cats,.how,.prods,.testi,.cta-final,.grow,.spaces,.occ,.catgrid2{padding:52px 0}
+  .about,.cats,.how,.testi,.cta-final,.spaces{padding:52px 0}
   .band-head{padding:44px 20px 0}
   .pink-rail{padding:24px 20px 44px}
   .showcase-item{grid-template-columns:1fr;min-height:auto}
@@ -698,7 +696,6 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
   .cc:nth-child(1){grid-column:span 1}
   .steps{grid-template-columns:1fr}
   .pgrid{grid-template-columns:1fr 1fr}
-  .stats-grid{grid-template-columns:1fr 1fr}
 }
 
 /* ── SOCIAL BUTTONS ── */
@@ -846,7 +843,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
     <li><a href="#colecoes">Coleções</a></li>
     <li><a href="#como-funciona">Como funciona</a></li>
     <li><a href="#ambientes">Ambientes</a></li>
-    <li><a href="#produtos">Catálogo</a></li>
+    <li><a href="#depoimentos">Depoimentos</a></li>
   </ul>
   <div class="nc"><a href="loja.html">Ver loja →</a></div>
   <button class="nh" id="nh" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobMenu"><span></span><span></span><span></span></button>
@@ -858,7 +855,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
     <li><a href="#colecoes" onclick="closeMob()">Coleções</a></li>
     <li><a href="#como-funciona" onclick="closeMob()">Como funciona</a></li>
     <li><a href="#ambientes" onclick="closeMob()">Ambientes</a></li>
-    <li><a href="#produtos" onclick="closeMob()">Catálogo</a></li>
+    <li><a href="#depoimentos" onclick="closeMob()">Depoimentos</a></li>
     <li><a href="#contato" onclick="closeMob()">Contato</a></li>
   </ul>
   <a href="loja.html" class="mob-cta">Ver loja →</a>
@@ -984,6 +981,11 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
           <div class="pt"><div class="pt-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></div><div><div class="pt-title">Pensado por fase</div><div class="pt-desc">Cada peça considera o que a criança consegue vestir, segurar e imaginar naquela idade.</div></div></div>
           <div class="pt"><div class="pt-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="1.8"><path d="M3 8h13v9H3zM16 11h3l2 2v4h-5M6 20a1.6 1.6 0 1 0 0-3.2A1.6 1.6 0 0 0 6 20zm12 0a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2z"/></svg></div><div><div class="pt-title">Entrega em todo o Brasil</div><div class="pt-desc">Produção dedicada com prazo médio de 5 dias úteis e envio rastreado.</div></div></div>
         </div>
+        <div class="about-stats">
+          <div class="ast"><div class="ast-n" data-count-to="319" data-prod-count id="statProdCount"><span class="num">0</span></div><div class="ast-l">Produtos no acervo</div></div>
+          <div class="ast"><div class="ast-n" data-count-to="16"><span class="num">0</span><sup>+</sup></div><div class="ast-l">Anos de estúdio</div></div>
+          <div class="ast"><div class="ast-n" data-count-to="5"><span class="num">0</span></div><div class="ast-l">Dias úteis de prazo</div></div>
+        </div>
         <a href="sobre.html" class="about-link">Conheça a história do estúdio →</a>
       </div>
     </div>
@@ -995,31 +997,6 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
   <a href="loja.html?cat=Fantasias" class="mq-i">Fantasias <b>◆</b></a><a href="loja.html?cat=Para+bebês" class="mq-i">Para Bebês <b>◆</b></a><a href="loja.html?cat=Almofadas" class="mq-i">Almofadas <b>◆</b></a><a href="loja.html?cat=Decoração" class="mq-i">Decoração <b>◆</b></a><a href="loja.html?cat=Plush+%26+Pelúcia" class="mq-i">Plush &amp; Pelúcia <b>◆</b></a><a href="loja.html?cat=Pássaros" class="mq-i">Pássaros <b>◆</b></a><a href="loja.html?cat=Educativo" class="mq-i">Educativo <b>◆</b></a><a href="loja.html?cat=Raposas" class="mq-i">Raposas <b>◆</b></a><a href="loja.html?cat=Lembrancinhas" class="mq-i">Lembrancinhas <b>◆</b></a>
   <a href="loja.html?cat=Fantasias" class="mq-i">Fantasias <b>◆</b></a><a href="loja.html?cat=Para+bebês" class="mq-i">Para Bebês <b>◆</b></a><a href="loja.html?cat=Almofadas" class="mq-i">Almofadas <b>◆</b></a><a href="loja.html?cat=Decoração" class="mq-i">Decoração <b>◆</b></a><a href="loja.html?cat=Plush+%26+Pelúcia" class="mq-i">Plush &amp; Pelúcia <b>◆</b></a><a href="loja.html?cat=Pássaros" class="mq-i">Pássaros <b>◆</b></a><a href="loja.html?cat=Educativo" class="mq-i">Educativo <b>◆</b></a><a href="loja.html?cat=Raposas" class="mq-i">Raposas <b>◆</b></a><a href="loja.html?cat=Lembrancinhas" class="mq-i">Lembrancinhas <b>◆</b></a>
 </div></div>
-
-<!-- OCASIÕES — CLARO -->
-<section class="occ" id="ocasioes">
-  <div class="c">
-    <div class="rv" style="max-width:560px">
-      <div class="sl sl-pink">Para cada ocasião</div>
-      <h2 class="st-dark">Um motivo pra<br><em>encomendar</em></h2>
-      <p class="about-body">De ensaios fotográficos a festas de aniversário — cada ocasião pede uma peça diferente. Veja onde a Chuchu Rosa entra na sua história.</p>
-    </div>
-    <div class="occ-grid rv">
-      <a class="occ-card" href="loja.html?cat=Fantasias">
-        <img src="img/ocasiao-ensaio-maternidade-480.webp" srcset="img/ocasiao-ensaio-maternidade-480.webp 480w, img/ocasiao-ensaio-maternidade-960.webp 960w" loading="lazy" alt="Placa de maternidade em feltro com nuvens e ovelhinhas para ensaio newborn">
-        <div class="occ-info"><small>Para brilhar</small><h3>Ensaios fotográficos</h3></div>
-      </a>
-      <a class="occ-card" href="loja.html?cat=Fantasias">
-        <img src="img/ocasiao-festa-bandeirola-480.webp" srcset="img/ocasiao-festa-bandeirola-480.webp 480w, img/ocasiao-festa-bandeirola-960.webp 960w" loading="lazy" alt="Bandeirola de flamingos em feltro decorando uma festa ao ar livre">
-        <div class="occ-info"><small>Comemore com estilo</small><h3>Festas &amp; aniversários</h3></div>
-      </a>
-      <a class="occ-card" href="loja.html?cat=Decoração">
-        <img src="img/ocasiao-festa-topobolo-480.webp" srcset="img/ocasiao-festa-topobolo-480.webp 480w, img/ocasiao-festa-topobolo-960.webp 960w" loading="lazy" alt="Mesa de festa temática com cogumelos, luzes e decoração de floresta encantada">
-        <div class="occ-info"><small>O toque final</small><h3>Ambientes &amp; mesas</h3></div>
-      </a>
-    </div>
-  </div>
-</section>
 
 <!-- CATEGORIES — ESCURO -->
 <section class="cats" id="colecoes">
@@ -1038,20 +1015,10 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
   </div>
 </section>
 
-<!-- STATS — CLARO -->
-<div class="stats rv">
-  <div class="stats-grid">
-    <div class="stat"><div class="stat-n" data-count-to="319" data-prod-count id="statProdCount"><span class="num">0</span></div><div class="stat-l">Produtos no acervo</div></div>
-    <div class="stat"><div class="stat-n" data-count-to="16"><span class="num">0</span><sup>+</sup></div><div class="stat-l">Anos de experiência</div></div>
-    <div class="stat"><div class="stat-n" data-count-to="100"><span class="num">0</span><sup>%</sup></div><div class="stat-l">Feito com carinho</div></div>
-    <div class="stat"><div class="stat-n" data-count-to="5"><span class="num">0</span></div><div class="stat-l">Dias úteis de prazo</div></div>
-  </div>
-</div>
-
-<!-- EM ESTÚDIO — CAMPANHA ROSA -->
+<!-- RETRATOS DO ESTÚDIO — CAMPANHA + FASES -->
 <section class="pinkband" aria-label="Campanha em estúdio">
   <div class="band-head rv">
-    <div class="sl" style="color:#ffd6e3">Em estúdio</div>
+    <div class="sl" style="color:#ffd6e3">Retratos do estúdio</div>
     <h2>Cor que se veste,<br><em>alegria</em> que se usa</h2>
   </div>
   <div class="pink-rail rv" aria-label="Fotos da campanha">
@@ -1060,6 +1027,16 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
     <figure class="pink-item"><div class="pi-photo"><img src="img/pink-pavao-480.webp" loading="lazy" alt="Menina com máscara e asas de pavão azul-turquesa com penas bordadas"></div><figcaption>Pavão</figcaption></figure>
     <figure class="pink-item"><div class="pi-photo"><img src="img/pink-morango-480.webp" loading="lazy" alt="Criança sentada com fantasia de morango: capa vermelha com sementes e flor branca"></div><figcaption>Morango</figcaption></figure>
     <figure class="pink-item"><div class="pi-photo"><img src="img/pink-sorvete-480.webp" srcset="img/pink-sorvete-480.webp 480w, img/pink-sorvete-960.webp 960w" loading="lazy" alt="Criança mostrando a língua com touca de sorvete rosa com chantilly e cereja"></div><figcaption>Sorvete</figcaption></figure>
+  </div>
+  <div class="grow-head rv">
+    <div class="sl" style="color:#ffd6e3">Para cada fase</div>
+    <p>Do enxoval do recém-nascido à fantasia da festa de dez anos — o acervo acompanha cada fase da infância.</p>
+  </div>
+  <div class="grow-rail rv">
+    <figure class="grow-item"><img src="img/bebe-newborn-coroa-480.webp" loading="lazy" alt="Recém-nascido dormindo em mini cama de madeira com coroa dourada de renda e urso de pelúcia"><figcaption>Recém-nascido</figcaption></figure>
+    <figure class="grow-item"><img src="img/bebe-linguado-praia-480.webp" srcset="img/bebe-linguado-praia-480.webp 480w, img/bebe-linguado-praia-960.webp 960w" loading="lazy" alt="Bebê com fantasia de linguado na praia"><figcaption>Bebê</figcaption></figure>
+    <figure class="grow-item"><img src="img/bebe-coroa-azul-480.webp" srcset="img/bebe-coroa-azul-480.webp 480w, img/bebe-coroa-azul-960.webp 960w" loading="lazy" alt="Bebê com coroa azul de feltro"><figcaption>Primeiros passos</figcaption></figure>
+    <figure class="grow-item"><img src="img/kids-astronauta-480.webp" srcset="img/kids-astronauta-480.webp 480w, img/kids-astronauta-960.webp 960w" loading="lazy" alt="Criança com fantasia de astronauta"><figcaption>Infância</figcaption></figure>
   </div>
 </section>
 
@@ -1104,39 +1081,8 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 </section>
 
 <!-- CATÁLOGO COMPLETO — CLARO -->
-<section class="catgrid2" id="produtos">
-  <div class="c">
-    <div class="catgrid2-head rv">
-      <div><div class="sl sl-pink">Navegue pela loja</div><h2 class="st-dark" style="font-size:clamp(1.8rem,3.5vw,2.6rem)">O catálogo <em>completo</em></h2></div>
-      <a href="loja.html" class="more" style="color:var(--pink);margin-bottom:4px">Ver tudo →</a>
-    </div>
-    <div class="catgrid2-list rv">
-      <a class="catcard2" href="loja.html?cat=Fantasias">
-        <img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/fantasia-de-flamingo-com-asas-carnaval.jpg" loading="lazy" alt="Fantasia infantil de flamingo com asas, carnaval">
-        <span><b>Fantasias</b><small>Para brincar de ser</small></span>
-      </a>
-      <a class="catcard2" href="loja.html?cat=Para+bebês">
-        <img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/naninha-de-flamingo-flamingo.jpg" loading="lazy" alt="Naninha de flamingo para bebê">
-        <span><b>Para bebês</b><small>Do enxoval ao colo</small></span>
-      </a>
-      <a class="catcard2" href="loja.html?cat=Almofadas">
-        <img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/almofada-raposa-almofada.jpg" loading="lazy" alt="Almofada de raposa em tecido">
-        <span><b>Almofadas</b><small>Esculturas de tecido</small></span>
-      </a>
-      <a class="catcard2" href="loja.html?cat=Decoração">
-        <img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/mobile-flamingo-decoracao.jpg" loading="lazy" alt="Mobile decorativo de flamingo para decoração">
-        <span><b>Decoração</b><small>Para o quarto</small></span>
-      </a>
-      <a class="catcard2" href="loja.html?cat=Educativo">
-        <img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/kit-piquenique-montessori.jpg" loading="lazy" alt="Kit piquenique montessoriano educativo">
-        <span><b>Educativo</b><small>Aprender brincando</small></span>
-      </a>
-    </div>
-  </div>
-</section>
-
 <!-- TESTIMONIALS — ESCURO -->
-<section class="testi">
+<section class="testi" id="depoimentos">
   <div class="c">
     <div class="rv" style="text-align:center;max-width:480px;margin:0 auto 44px">
       <div class="sl sl-gold" style="justify-content:center">Depoimentos</div>
@@ -1258,23 +1204,6 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 
 </div>
 
-<!-- CRESCE COM A CHUCHU ROSA — ESCURO -->
-<section class="grow">
-  <div class="c">
-    <div class="rv" style="max-width:560px">
-      <div class="sl sl-gold">Para cada fase</div>
-      <h2 class="st-light">Peças que<br><em>crescem</em> junto</h2>
-      <p style="font-size:.88rem;line-height:1.8;color:rgba(255,255,255,.65);max-width:420px;margin-top:12px">Do enxoval do recém-nascido à fantasia da festa de dez anos — o acervo acompanha cada fase da infância.</p>
-    </div>
-    <div class="grow-rail rv">
-      <figure class="grow-item"><img src="img/bebe-newborn-coroa-480.webp" loading="lazy" alt="Recém-nascido dormindo em mini cama de madeira com coroa dourada de renda e urso de pelúcia"><figcaption>Recém-nascido</figcaption></figure>
-      <figure class="grow-item"><img src="img/bebe-linguado-praia-480.webp" srcset="img/bebe-linguado-praia-480.webp 480w, img/bebe-linguado-praia-960.webp 960w" loading="lazy" alt="Bebê com fantasia de linguado na praia"><figcaption>Bebê</figcaption></figure>
-      <figure class="grow-item"><img src="img/bebe-coroa-azul-480.webp" srcset="img/bebe-coroa-azul-480.webp 480w, img/bebe-coroa-azul-960.webp 960w" loading="lazy" alt="Bebê com coroa azul de feltro"><figcaption>Primeiros passos</figcaption></figure>
-      <figure class="grow-item"><img src="img/kids-astronauta-480.webp" srcset="img/kids-astronauta-480.webp 480w, img/kids-astronauta-960.webp 960w" loading="lazy" alt="Criança com fantasia de astronauta"><figcaption>Infância</figcaption></figure>
-    </div>
-  </div>
-</section>
-
 <!-- AMBIENTES & FESTAS — CLARO -->
 <section class="spaces" id="ambientes">
   <div class="c">
@@ -1283,7 +1212,21 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
       <h2 class="st-dark">Cenários que o estúdio <em>assina</em></h2>
       <p class="about-body" style="margin-top:12px">Além das peças, criamos ambientes completos: mesas temáticas, cenários de festa e decoração de quarto — cada projeto pensado sob consulta, do conceito à montagem.</p>
     </div>
-    <div class="spaces-grid rv">
+    <div class="occ-grid rv">
+      <a class="occ-card" href="loja.html?cat=Fantasias">
+        <img src="img/ocasiao-ensaio-maternidade-480.webp" srcset="img/ocasiao-ensaio-maternidade-480.webp 480w, img/ocasiao-ensaio-maternidade-960.webp 960w" loading="lazy" alt="Placa de maternidade em feltro com nuvens e ovelhinhas para ensaio newborn">
+        <div class="occ-info"><small>Para brilhar</small><h3>Ensaios fotográficos</h3></div>
+      </a>
+      <a class="occ-card" href="loja.html?cat=Fantasias">
+        <img src="img/ocasiao-festa-bandeirola-480.webp" srcset="img/ocasiao-festa-bandeirola-480.webp 480w, img/ocasiao-festa-bandeirola-960.webp 960w" loading="lazy" alt="Bandeirola de flamingos em feltro decorando uma festa ao ar livre">
+        <div class="occ-info"><small>Comemore com estilo</small><h3>Festas &amp; aniversários</h3></div>
+      </a>
+      <a class="occ-card" href="loja.html?cat=Decoração">
+        <img src="img/ocasiao-festa-topobolo-480.webp" srcset="img/ocasiao-festa-topobolo-480.webp 480w, img/ocasiao-festa-topobolo-960.webp 960w" loading="lazy" alt="Mesa de festa temática com cogumelos, luzes e decoração de floresta encantada">
+        <div class="occ-info"><small>O toque final</small><h3>Mesas &amp; decoração</h3></div>
+      </a>
+    </div>
+    <div class="spaces-grid rv" style="margin-top:56px">
       <figure><img src="img/ambiente-mesa-raposa-480.webp" srcset="img/ambiente-mesa-raposa-480.webp 480w, img/ambiente-mesa-raposa-960.webp 960w, img/ambiente-mesa-raposa-1920.webp 1920w" loading="lazy" alt="Mesa de festa tema floresta com boneca de raposa de laço xadrez, vasinhos de suculentas, doces e caixotes de madeira"></figure>
       <figure><img src="img/ambiente-festa-maes-480.webp" srcset="img/ambiente-festa-maes-480.webp 480w, img/ambiente-festa-maes-960.webp 960w" loading="lazy" alt="Mães e criança rindo em festa, usando tiaras de bichinhos e luvas de pata em feltro"></figure>
       <figure><img src="img/ambiente-mae-filha-480.webp" srcset="img/ambiente-mae-filha-480.webp 480w, img/ambiente-mae-filha-960.webp 960w, img/ambiente-mae-filha-1920.webp 1920w" loading="lazy" alt="Mãe e filha abraçadas usando tiaras de girafa e gatinho em feltro"></figure>
@@ -1489,7 +1432,7 @@ const statObserver = new IntersectionObserver(es=>{
     }
   });
 },{threshold:.4});
-document.querySelectorAll('.stat-n[data-count-to]').forEach(el=>statObserver.observe(el));
+document.querySelectorAll('.ast-n[data-count-to]').forEach(el=>statObserver.observe(el));
 
 // ── HOW STEPS: staggered reveal ──
 (function(){
