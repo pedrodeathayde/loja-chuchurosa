@@ -57,7 +57,7 @@ body::after{
   background-size:120px 120px;
 }
 @media(prefers-reduced-motion:reduce){body::after{display:none}}
-html{max-width:100%}
+html{max-width:100%;overflow-x:clip}
 body{overflow-x:clip;max-width:100%;font-family:var(--fb)}
 .skip{position:absolute;left:-9999px;top:0;z-index:9999;background:var(--pink);color:#fff;padding:12px 20px;border-radius:0 0 8px 0;font-size:.85rem;font-weight:600}
 .skip:focus{left:0}
@@ -78,23 +78,21 @@ a{text-decoration:none;color:inherit}
 /* ── NAV ── */
 nav{
   position:sticky;top:0;left:0;right:0;z-index:300;
-  height:76px;padding:0 48px;
+  height:70px;padding:0 48px;
   display:flex;align-items:center;justify-content:space-between;gap:20px;
   background:var(--cream);
   border-bottom:1px solid rgba(15,10,15,.05);
-  transition:background .45s ease,border-color .45s ease,box-shadow .45s ease,height .45s ease;
+  transition:background .45s ease,border-color .45s ease,box-shadow .45s ease;
 }
 .scroll-progress{position:fixed;top:0;left:0;height:2px;width:0%;z-index:301;background:linear-gradient(90deg,var(--pink),var(--gold));transition:width .1s linear}
 @media(prefers-reduced-motion:reduce){.scroll-progress{display:none}}
 nav.s{
-  height:66px;
   background:rgba(253,248,244,.82);
   backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);
   border-bottom-color:rgba(15,10,15,.08);
   box-shadow:0 4px 28px rgba(15,10,15,.06);
 }
 #navLogo{transition:transform .45s ease}
-nav.s #navLogo{transform:scale(.92)}
 
 .nl{display:flex;gap:6px;list-style:none;align-items:center}
 .nl a{
@@ -188,7 +186,7 @@ nav.s #navLogo{transform:scale(.92)}
 }
 .hero-left{
   position:relative;
-  padding:132px 0 56px 52px;
+  padding:108px 40px 56px 52px;
   display:flex;flex-direction:column;justify-content:center;
   z-index:2;
 }
@@ -321,6 +319,13 @@ nav.s #navLogo{transform:scale(.92)}
 .about-text .sl-pink{margin-bottom:14px}
 .about-body{font-size:1rem;line-height:1.9;color:rgba(15,10,15,.72);max-width:440px;margin-top:16px}
 .about-pts{display:flex;flex-direction:column;gap:18px;margin-top:30px}
+.about-link{
+  display:inline-flex;align-items:center;gap:7px;margin-top:28px;
+  font-size:.85rem;font-weight:600;color:var(--pink);
+  padding-bottom:3px;border-bottom:1px solid rgba(229,37,100,.32);
+  transition:color .2s,border-color .2s,gap .2s;
+}
+.about-link:hover{color:var(--rose);border-color:var(--rose);gap:11px}
 .pt{display:flex;gap:14px;align-items:flex-start}
 .pt-ic{width:38px;height:38px;border-radius:10px;flex-shrink:0;background:rgba(229,37,100,.08);display:flex;align-items:center;justify-content:center;font-size:.9rem}
 .pt-title{font-size:.88rem;font-weight:700;color:var(--ink);margin-bottom:3px}
@@ -590,15 +595,27 @@ nav.s #navLogo{transform:scale(.92)}
 .band-head .sl::before{background:#ffd6e3}
 .band-head h2{font-family:var(--fd);font-weight:600;font-size:clamp(2rem,3.5vw,3.1rem);line-height:1.08;letter-spacing:-.03em;color:#fff}
 .band-head h2 em{font-style:italic;font-weight:400;background:linear-gradient(135deg,#ffd89b,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.pink-rail{display:flex;flex-wrap:wrap;gap:22px;max-width:1180px;margin:0 auto;padding:32px 48px 64px;position:relative;z-index:1}
-.pink-item{flex:1 1 220px;max-width:220px;display:flex;flex-direction:column;gap:12px;transition:transform .35s}
+.pink-rail{display:grid;grid-template-columns:repeat(5,1fr);gap:22px;max-width:1180px;margin:0 auto;padding:32px 48px 64px;position:relative;z-index:1}
+.pink-item{display:flex;flex-direction:column;gap:12px;transition:transform .35s}
 .pink-item:hover{transform:translateY(-6px)}
-.pink-item .pi-photo{position:relative;border-radius:14px;overflow:hidden;box-shadow:0 20px 44px rgba(15,10,15,.18)}
-.pink-item img{width:100%;aspect-ratio:2/3;object-fit:cover;object-position:center 15%;display:block;transition:transform .7s cubic-bezier(.22,.61,.36,1)}
+.pink-item .pi-photo{position:relative;border-radius:14px;overflow:hidden;box-shadow:0 20px 44px rgba(15,10,15,.18);height:100%}
+.pink-item img{width:100%;height:100%;aspect-ratio:auto;object-fit:cover;object-position:center 15%;display:block;transition:transform .7s cubic-bezier(.22,.61,.36,1)}
+.pink-item:nth-child(1),.pink-item:nth-child(4){grid-row:span 2;align-self:start}
+.pink-item:nth-child(1) .pi-photo,.pink-item:nth-child(4) .pi-photo{aspect-ratio:2/3.6}
+.pink-item:nth-child(2) .pi-photo,.pink-item:nth-child(3) .pi-photo,.pink-item:nth-child(5) .pi-photo{aspect-ratio:2/2.5}
+.pink-item:nth-child(2),.pink-item:nth-child(5){margin-top:34px}
 .pink-item:hover img{transform:scale(1.06)}
 .pink-item figcaption{font-family:var(--fb);font-style:normal;font-weight:700;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;text-align:left;color:#fff}
-@media(max-width:900px){.pink-item{flex:1 1 30%;max-width:none}.band-head{padding:64px 20px 0}.pink-rail{padding:32px 20px 64px}}
-@media(max-width:600px){.pink-rail{gap:14px}.pink-item{flex:1 1 calc(50% - 7px);max-width:none}}
+@media(max-width:900px){
+  .pink-rail{grid-template-columns:repeat(2,1fr);padding:32px 20px 64px}
+  .pink-item:nth-child(1),.pink-item:nth-child(4){grid-row:span 1}
+  .pink-item:nth-child(1) .pi-photo,.pink-item:nth-child(4) .pi-photo,.pink-item:nth-child(2) .pi-photo,.pink-item:nth-child(3) .pi-photo,.pink-item:nth-child(5) .pi-photo{aspect-ratio:2/3}
+  .pink-item:nth-child(2),.pink-item:nth-child(5){margin-top:0}
+  .pink-item:nth-child(5){grid-column:span 2}
+  .pink-item:nth-child(5) .pi-photo{aspect-ratio:16/9}
+  .band-head{padding:64px 20px 0}
+}
+@media(max-width:600px){.pink-rail{gap:14px}}
 
 /* ── CRESCE COM A CHUCHU ROSA — ESCURO ── */
 .grow{background:var(--ink);padding:88px 0;position:relative}
@@ -648,15 +665,13 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 
 /* ── MOBILE ── */
 @media(max-width:900px){
-  nav{padding:0 20px;height:64px;border-bottom:none}
-  nav.s{height:58px}
+  nav{padding:0 20px;height:62px;border-bottom:none}
   .ti,.mq-i{font-size:.92rem;padding:0 22px}
   .ti::after,.mq-i b{margin-left:22px}
   .ticker,.mq{--rail-pad:14px}
   .nl,.nc{display:none}
   .nh{display:flex;padding:6px 0;margin:0}
-  .mob-menu{display:block;top:64px}
-  nav.s+.mob-menu{top:58px}
+  .mob-menu{display:block;top:62px}
   .about-grid{grid-template-columns:1fr;gap:40px}
   .about-imgs{height:360px}
   .cgrid{grid-template-columns:1fr 1fr;grid-template-rows:auto;height:auto;gap:4px}
@@ -827,7 +842,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 <nav id="nav" aria-label="Navegação principal">
   <a href="#" id="navLogo" style="display:flex;align-items:center"><img src="img/logo-nav.webp" alt="Chuchu Rosa" style="height:34px;width:auto;display:block"></a>
   <ul class="nl">
-    <li><a href="#sobre">Sobre</a></li>
+    <li><a href="sobre.html">Sobre</a></li>
     <li><a href="#colecoes">Coleções</a></li>
     <li><a href="#como-funciona">Como funciona</a></li>
     <li><a href="#ambientes">Ambientes</a></li>
@@ -839,7 +854,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 
 <div class="mob-menu" id="mobMenu" hidden>
   <ul>
-    <li><a href="#sobre" onclick="closeMob()">Sobre</a></li>
+    <li><a href="sobre.html">Sobre</a></li>
     <li><a href="#colecoes" onclick="closeMob()">Coleções</a></li>
     <li><a href="#como-funciona" onclick="closeMob()">Como funciona</a></li>
     <li><a href="#ambientes" onclick="closeMob()">Ambientes</a></li>
@@ -958,17 +973,18 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
       <div class="about-imgs rl">
         <div class="about-main"><img src="img/editorial-coelho-rosas-480.webp" srcset="img/editorial-coelho-rosas-480.webp 480w" sizes="(max-width:900px) 92vw, 44vw" alt="Menina com tiara de orelhas de coelho felpudas e rosas azuis, peça de design da Chuchu Rosa, em retrato editorial" loading="lazy"></div>
         <div class="about-accent"><img src="img/bebe-coroa-azul-480.webp" srcset="img/bebe-coroa-azul-480.webp 480w, img/bebe-coroa-azul-960.webp 960w" sizes="(max-width:900px) 46vw, 22vw" alt="Bebê com coroa azul de feltro" loading="lazy"></div>
-        <div class="about-badge">Com carinho ◆</div>
+        <div class="about-badge">Desde 2009 ◆</div>
       </div>
       <div class="about-text rr">
         <div class="sl sl-pink">Nossa história</div>
-        <h2 class="st-dark">Um estúdio de design<br>para a <em>infância</em></h2>
-        <p class="about-body">Desde 2009, a Chuchu Rosa cria peças originais que viram memória de infância. Cada fantasia, almofada e ambiente nasce do croqui à peça final dentro do próprio estúdio, com produção própria e acabamento de coleção.</p>
+        <h2 class="st-dark">Psicologia e design,<br>a serviço da <em>infância</em></h2>
+        <p class="about-body">A Chuchu Rosa nasceu do encontro de duas formações: psicologia, com foco em desenvolvimento infantil, e design de interiores. Desde 2009, a Ellen desenha fantasias, brinquedos, peças de decoração e ambientes inteiros — sempre a partir de um croqui próprio, nunca de um catálogo de terceiros.</p>
         <div class="about-pts">
           <div class="pt"><div class="pt-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="1.8"><path d="M12 19l7-7a4.2 4.2 0 0 0-6-6l-7 7v6h6z"/><path d="M14.5 5.5l4 4"/></svg></div><div><div class="pt-title">Design original</div><div class="pt-desc">Modelagens e estampas próprias — coleções que você não encontra em nenhuma outra marca.</div></div></div>
-          <div class="pt"><div class="pt-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></div><div><div class="pt-title">Sob medida, do seu jeito</div><div class="pt-desc">Cores, tamanhos e detalhes escolhidos com você antes da produção começar.</div></div></div>
+          <div class="pt"><div class="pt-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></div><div><div class="pt-title">Pensado por fase</div><div class="pt-desc">Cada peça considera o que a criança consegue vestir, segurar e imaginar naquela idade.</div></div></div>
           <div class="pt"><div class="pt-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="1.8"><path d="M3 8h13v9H3zM16 11h3l2 2v4h-5M6 20a1.6 1.6 0 1 0 0-3.2A1.6 1.6 0 0 0 6 20zm12 0a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2z"/></svg></div><div><div class="pt-title">Entrega em todo o Brasil</div><div class="pt-desc">Produção dedicada com prazo médio de 5 dias úteis e envio rastreado.</div></div></div>
         </div>
+        <a href="sobre.html" class="about-link">Conheça a história do estúdio →</a>
       </div>
     </div>
   </div>
@@ -1344,7 +1360,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
           <li><a href="minha-conta.html">Minha conta</a></li>
           <li><a href="#como-funciona">Como funciona</a></li>
           <li><a href="#ambientes">Ambientes &amp; festas</a></li>
-          <li><a href="#sobre">Sobre</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
         </ul>
       </div>
       <div>
