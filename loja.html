@@ -141,27 +141,30 @@ nav.elevated{
 .hamburger span{display:block;width:18px;height:2px;background:var(--dark);border-radius:2px;transition:all .3s}
 
 /* ── HERO — faixa clara enxuta ── */
+/* ── HERO — mais estreito (largura de conteúdo, não a página inteira),
+   com um mosaico de 3 fotos em alturas escalonadas em vez de um único
+   slide grandão. Cada tile troca de foto no seu próprio ritmo — o efeito
+   é de vitrine viva, não de carrossel sincronizado. ── */
 .shop-hero{
-  position:relative;overflow:hidden;
-  background:var(--cream2);
-  min-height:360px;display:grid;
-  grid-template-columns:.85fr 1.15fr;align-items:stretch;
+  position:relative;overflow:visible;
+  max-width:1180px;margin:0 auto;padding:0 28px;
+  min-height:280px;display:grid;
+  grid-template-columns:1fr 1.1fr;align-items:center;gap:40px;
 }
-@media(max-width:768px){.shop-hero{grid-template-columns:1fr;min-height:auto}}
+@media(max-width:900px){.shop-hero{grid-template-columns:1fr;gap:24px;padding:0 20px}}
 .hero-inner{
   position:relative;z-index:2;
-  padding:56px 48px;
-  display:flex;flex-direction:column;justify-content:center;
+  padding:40px 0;
 }
-@media(max-width:768px){.hero-inner{padding:32px 24px 28px;order:1}}
+@media(max-width:900px){.hero-inner{padding:28px 0 6px;order:1}}
 .hero-eyebrow{
   font-size:.7rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
   color:var(--pink);display:flex;align-items:center;gap:10px;margin-bottom:18px;
 }
 .hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--pink);display:block}
 .hero-inner h1{
-  font-family:var(--fd);font-size:clamp(2.1rem,4.4vw,3.4rem);
-  font-weight:600;line-height:.98;letter-spacing:-.02em;
+  font-family:var(--fd);font-size:clamp(2rem,3.6vw,2.9rem);
+  font-weight:600;line-height:1.02;letter-spacing:-.02em;
   margin-bottom:16px;color:var(--dark);
 }
 .hero-inner h1 em{font-style:italic;font-weight:400;color:var(--pink)}
@@ -171,18 +174,31 @@ nav.elevated{
 }
 [data-theme="dark"] .hero-count{color:rgba(240,232,236,.6)}
 .hero-count b{color:var(--dark);font-weight:700;font-family:var(--fd)}
-.hero-photo{position:relative;overflow:hidden;min-height:320px}
-@media(max-width:768px){.hero-photo{order:2;min-height:280px}}
-.hero-photo .hero-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.4s ease-in-out}
-.hero-photo .hero-slide.active{opacity:1}
-.hero-photo .hero-slide img{
-  width:100%;height:100%;object-fit:cover;object-position:center 22%;
-  transform:scale(1.06);transition:transform 6s ease-out;
+
+/* Mosaico: 3 colunas, alturas assimétricas — quebra a grade quadriculada
+   que domina o resto da página (cards, sidebar). A coluna do meio é mais
+   alta, criando um degrau visual em vez de um bloco só. */
+.hero-mosaic{
+  display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:12px;
+  height:340px;order:2;
 }
-.hero-photo .hero-slide.active img{transform:scale(1)}
-.hero-dots{position:absolute;bottom:16px;right:18px;z-index:4;display:flex;gap:6px;align-items:center}
-.hero-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.5);cursor:pointer;transition:all .3s;border:none;padding:0}
-.hero-dot.active{background:#fff;transform:scale(1.3)}
+@media(max-width:900px){.hero-mosaic{height:220px;order:2}}
+@media(max-width:520px){.hero-mosaic{grid-template-columns:1fr 1.2fr;height:200px}
+  .hero-tile-c{display:none}}
+.hero-tile{
+  position:relative;overflow:hidden;border-radius:20px;
+  background:var(--cream2);
+}
+.hero-tile-a{align-self:end;height:78%}
+.hero-tile-b{height:100%}
+.hero-tile-c{align-self:start;height:82%}
+@media(max-width:900px){.hero-tile-a,.hero-tile-b,.hero-tile-c{height:100%;align-self:stretch}}
+.hero-tile img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  object-position:center 25%;opacity:0;transition:opacity 1.1s ease,transform 7s ease-out;
+  transform:scale(1.08);
+}
+.hero-tile img.active{opacity:1;transform:scale(1)}
 
 /* ── HERO SHORTCUTS — barra de pills de designs, quebra em linhas ── */
 .hero-shortcuts-wrap{
@@ -259,41 +275,51 @@ nav.elevated{
 .sidebar-head{display:none}
 .sidebar-close{display:none}
 
-/* ── "Todos os produtos" — é um controle (limpa a categoria), não um
-   título de seção — por isso usa a mesma família sans dos rótulos
-   abaixo, só um pouco maior/mais escuro pra continuar sendo a
-   primeira linha do índice. ── */
-.sidebar-hero{margin-bottom:22px}
-.sidebar-hero-eyebrow{display:none}
+/* ── "Todos os produtos" — botão real, pílula preenchida, primeira coisa
+   que se vê. Antes era uma linha de texto disfarçada de controle; agora
+   tem peso de botão de verdade (fundo, borda arredondada), e some o
+   estado ativo com um preenchimento sólido — não só cor de texto. ── */
 .sidebar-all-btn{
-  display:flex;align-items:baseline;justify-content:space-between;gap:10px;
-  cursor:pointer;transition:color .18s;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  width:100%;cursor:pointer;transition:all .18s;
   font-family:var(--fb);
-  font-size:.98rem;font-weight:700;letter-spacing:0;
+  font-size:.92rem;font-weight:700;letter-spacing:0;
   line-height:1.2;color:var(--dark);
+  background:var(--cream2);border:1.5px solid transparent;
+  border-radius:14px;padding:13px 16px;margin-bottom:24px;
 }
-.sidebar-all-btn:hover{color:var(--rose)}
-.sidebar-all-btn:focus-visible{outline:2px solid var(--rose);outline-offset:3px;border-radius:4px}
-.sidebar-all-btn.active{color:var(--pink)}
+.sidebar-all-btn:hover{border-color:rgba(229,37,100,.25);background:rgba(229,37,100,.05)}
+.sidebar-all-btn:focus-visible{outline:2px solid var(--rose);outline-offset:3px}
+.sidebar-all-btn.active{background:var(--pink);border-color:var(--pink);color:#fff;box-shadow:0 6px 18px rgba(229,37,100,.28)}
 .sidebar-all-btn .cnt{
   font-family:var(--fb);font-size:.78rem;font-weight:600;
   color:rgba(15,10,15,.34);flex-shrink:0;
   font-variant-numeric:tabular-nums;
 }
+[data-theme="dark"] .sidebar-all-btn{background:rgba(240,232,236,.06)}
 [data-theme="dark"] .sidebar-all-btn .cnt{color:rgba(240,232,236,.3)}
-.sidebar-all-btn.active .cnt{color:rgba(229,37,100,.55)}
+.sidebar-all-btn.active .cnt{color:rgba(255,255,255,.75)}
 
-/* ── Seções ── */
-.sidebar-section{padding:0;margin-bottom:4px}
+/* ── Seções — cada uma um bloco levemente destacado, não só texto solto
+   flutuando na coluna. É isso que quebra a sensação de "tudo quadrado":
+   cantos arredondados no bloco inteiro, não só nos botões internos. ── */
+.sidebar-section{
+  padding:4px 14px;margin-bottom:10px;
+  border-radius:16px;background:rgba(229,37,100,.025);
+  transition:background .2s;
+}
+[data-theme="dark"] .sidebar-section{background:rgba(240,232,236,.025)}
 .sidebar-label{
   width:100%;background:none;border:none;text-align:left;cursor:pointer;
   font-family:var(--fb);
-  font-size:.7rem;font-weight:700;letter-spacing:.13em;
-  text-transform:uppercase;color:rgba(15,10,15,.4);
-  margin:0;padding:12px 0;
-  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  font-size:.72rem;font-weight:700;letter-spacing:.11em;
+  text-transform:uppercase;color:rgba(15,10,15,.48);
+  margin:0;padding:13px 0;
+  display:flex;align-items:center;gap:8px;
   transition:color .18s;
 }
+.sidebar-label-icon{width:15px;height:15px;flex-shrink:0;opacity:.55}
+.sidebar-label .chev{margin-left:auto}
 .sidebar-label:hover{color:var(--rose)}
 .sidebar-label:focus-visible{outline:2px solid var(--rose);outline-offset:2px;border-radius:3px}
 .sidebar-label .chev{
@@ -302,9 +328,9 @@ nav.elevated{
 }
 .sidebar-label:hover .chev{opacity:.85}
 .sidebar-section.collapsed .chev{transform:rotate(-90deg)}
-.sidebar-body{padding-bottom:22px}
+.sidebar-body{padding-bottom:20px}
 .sidebar-section.collapsed .sidebar-body{display:none}
-[data-theme="dark"] .sidebar-label{color:rgba(240,232,236,.32)}
+[data-theme="dark"] .sidebar-label{color:rgba(240,232,236,.4)}
 [data-theme="dark"] .sidebar-label:hover{color:var(--pink2)!important}
 
 /* ── Categorias: lista rica ── */
@@ -321,9 +347,9 @@ nav.elevated{
 [data-theme="dark"] .cat-list::before{background:rgba(240,232,236,.13)}
 .cat-item{
   display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;
-  padding:8px 0;
+  padding:9px 0;
   cursor:pointer;transition:color .16s;
-  font-family:var(--fd);font-size:.95rem;font-weight:600;
+  font-family:var(--fd);font-size:1rem;font-weight:600;
   color:rgba(15,10,15,.7);
   position:relative;
 }
@@ -340,10 +366,10 @@ nav.elevated{
 .cat-item-empty{opacity:.38}
 .cat-item-empty:hover{opacity:.6}
 .cat-item.active::before{transform:scaleY(1)}
-.cat-icon{font-size:.82rem;width:17px;flex-shrink:0;opacity:.7}
+.cat-icon{font-size:.86rem;width:17px;flex-shrink:0;opacity:.7}
 .cat-name{flex:1;min-width:0}
 .cat-count{
-  font-size:.76rem;color:rgba(15,10,15,.34);font-weight:500;
+  font-size:.78rem;color:rgba(15,10,15,.34);font-weight:500;
   font-family:var(--fb);flex-shrink:0;font-variant-numeric:tabular-nums;
 }
 .cat-item.active .cat-count{color:rgba(229,37,100,.55)}
@@ -366,55 +392,13 @@ nav.elevated{
 .subtag-item{
   display:flex;justify-content:space-between;gap:8px;
   padding:6px 8px;border-radius:8px;cursor:pointer;
-  font-size:.76rem;color:rgba(15,10,15,.55);transition:background .15s;
+  font-size:.78rem;color:rgba(15,10,15,.55);transition:background .15s;
 }
 .subtag-item:hover{background:rgba(229,37,100,.06);color:var(--dark)}
 .subtag-empty{padding:6px 8px;font-size:.8rem;color:rgba(15,10,15,.35);font-style:italic}
 [data-theme="dark"] .subtag-list{border-left-color:rgba(240,232,236,.12)}
 [data-theme="dark"] .subtag-item{color:rgba(240,232,236,.55)}
 [data-theme="dark"] .subtag-empty{color:rgba(240,232,236,.35)}
-
-/* ── Designs: mesma lista das categorias, não pílulas. A sidebar inteira
-   fala uma língua visual só — era a mistura de lista + chips que dava a
-   sensação de duas interfaces coladas. ── */
-.design-grid{
-  display:flex;flex-direction:column;gap:0;
-  position:relative;padding-left:14px;
-}
-.design-grid::before{
-  content:'';position:absolute;left:0;top:4px;bottom:4px;
-  width:1px;background:rgba(15,10,15,.1);
-}
-[data-theme="dark"] .design-grid::before{background:rgba(240,232,236,.13)}
-/* injetado por JS com display:flex — precisa herdar a direção da lista */
-#designListMore{margin-top:0;padding-top:0;flex-direction:column}
-#designListMore::before{top:0;bottom:0}
-.design-chip-item{
-  display:flex;align-items:baseline;gap:8px;
-  padding:8px 0;
-  font-family:var(--fd);font-size:.95rem;font-weight:600;
-  color:rgba(15,10,15,.7);cursor:pointer;transition:color .16s;
-  position:relative;
-}
-.design-chip-item::before{
-  content:'';position:absolute;left:-14px;top:4px;bottom:4px;
-  width:2px;background:var(--pink);
-  transform:scaleY(0);transform-origin:center;
-  transition:transform .2s ease;
-}
-[data-theme="dark"] .design-chip-item{color:rgba(240,232,236,.68)}
-.design-chip-item:hover{color:var(--dark)}
-.design-chip-item:focus-visible{outline:2px solid var(--rose);outline-offset:2px;border-radius:3px}
-.design-chip-item.active{color:var(--pink);font-weight:700}
-.design-chip-item.active::before{transform:scaleY(1)}
-.sidebar-toggle-more{
-  background:none;border:none;cursor:pointer;
-  font-family:var(--fb);font-size:.76rem;font-weight:600;
-  letter-spacing:.04em;color:var(--rose);
-  padding:9px 0 2px 14px;margin:0;display:flex;align-items:center;gap:4px;
-}
-.sidebar-toggle-more:hover{text-decoration:underline}
-.sidebar-toggle-more:focus-visible{outline:2px solid var(--rose);outline-offset:2px;border-radius:3px}
 
 .sidebar-title{position:relative;display:flex;align-items:center;gap:6px}
 .active-count{
@@ -428,7 +412,7 @@ nav.elevated{
 .sort-select,.price-input{
   width:100%;padding:9px 12px;
   border:1px solid rgba(15,10,15,.13);border-radius:9px;
-  font-family:var(--fb);font-size:.8rem;
+  font-family:var(--fb);font-size:.86rem;
   background:transparent;color:var(--dark);
   outline:none;transition:border-color .15s;
 }
@@ -509,14 +493,26 @@ nav.elevated{
 /* ── PRODUCT GRID ── */
 .prod-grid{
   display:grid;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:repeat(2,1fr);
   gap:10px;
 }
+/* Tablet/PC pequeno: 3 colunas */
 @media(min-width:640px){
-  .prod-grid{grid-template-columns:repeat(3,1fr);gap:20px}
+  .prod-grid{grid-template-columns:repeat(3,1fr);gap:18px}
 }
-@media(min-width:1100px){
-  .prod-grid{grid-template-columns:repeat(3,1fr);gap:28px}
+/* Desktop: 4 colunas */
+@media(min-width:1200px){
+  .prod-grid{grid-template-columns:repeat(4,1fr);gap:24px}
+}
+/* Telas grandes: 5 colunas */
+@media(min-width:1600px){
+  .prod-grid{grid-template-columns:repeat(5,1fr);gap:26px}
+}
+/* Ultra-wide: preenche o quanto couber em vez de travar em 5 —
+   cada card nunca fica menor que 230px, então a grade ganha colunas
+   extras conforme a tela cresce, sem virar cards minúsculos. */
+@media(min-width:2000px){
+  .prod-grid{grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:28px}
 }
 
 /* ── PRODUCT CARD (parts not in premium block below) ── */
@@ -587,21 +583,21 @@ nav.elevated{
 .strip-scroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .strip-scroll::-webkit-scrollbar{display:none}
 .scard{
-  flex:0 0 140px;background:var(--cream);
-  border-radius:12px;overflow:hidden;
+  flex:0 0 148px;background:var(--cream);
+  border-radius:18px;overflow:hidden;
   border:1px solid rgba(229,37,100,.07);
   cursor:pointer;transition:all .22s;position:relative;
 }
-@media(min-width:640px){.scard{flex:0 0 160px}}
+@media(min-width:640px){.scard{flex:0 0 168px}}
 .scard:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(229,37,100,.1)}
 .scard-img{aspect-ratio:1;overflow:hidden;position:relative;background:var(--cream2)}
 .scard-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;transition:transform .35s}
 .scard:hover .scard-img img{transform:scale(1.05)}
 .scard-ph,.scard-img-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(15,10,15,.18)}
 [data-theme="dark"] .scard-ph,[data-theme="dark"] .scard-img-ph{color:rgba(240,232,236,.18)}
-.scard-body{padding:8px 10px 10px}
-.scard-name{font-family:var(--fd);font-size:.8rem;font-weight:700;line-height:1.25;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.scard-price{font-size:.8rem;font-weight:700;color:var(--dark)}
+.scard-body{padding:10px 12px 12px}
+.scard-name{font-family:var(--fd);font-size:.88rem;font-weight:700;line-height:1.28;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.scard-price{font-size:.85rem;font-weight:700;color:var(--dark)}
 .scard-badge{position:absolute;top:6px;left:6px;background:var(--pink);color:#fff;font-size:.66rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:var(--r-sm)}
 
 /* ── EMPTY ── */
@@ -609,17 +605,19 @@ nav.elevated{
 .empty-icon{font-size:3rem;margin-bottom:12px;opacity:.5}
 
 /* ── PAGINATION ── */
-.pagination{display:flex;gap:4px;justify-content:center;padding:32px 0 12px;flex-wrap:wrap}
-.pag-btn{
-  width:38px;height:38px;border-radius:10px;
-  border:1.5px solid rgba(229,37,100,.15);
-  background:var(--white);font-family:var(--fd);font-size:.86rem;
-  cursor:pointer;transition:all .2s;
-  display:flex;align-items:center;justify-content:center;
-  color:rgba(15,10,15,.5);font-weight:600;
+.scroll-sentinel{
+  display:none;align-items:center;justify-content:center;gap:10px;
+  padding:40px 0;font-family:var(--fb);font-size:.85rem;
+  color:rgba(15,10,15,.4);opacity:0;transition:opacity .2s;
 }
-.pag-btn:hover{background:rgba(229,37,100,.06);border-color:rgba(229,37,100,.25);color:var(--rose)}
-.pag-btn.active{background:var(--pink);border-color:var(--pink);color:#fff;box-shadow:0 4px 14px rgba(229,37,100,.3)}
+[data-theme="dark"] .scroll-sentinel{color:rgba(240,232,236,.4)}
+.scroll-sentinel.loading{opacity:1}
+.scroll-spinner{
+  width:16px;height:16px;border-radius:50%;
+  border:2px solid rgba(229,37,100,.2);border-top-color:var(--rose);
+  animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
 .pag-btn:disabled{opacity:.3;cursor:default}
 
 /* ── CART ── */
@@ -640,8 +638,8 @@ nav.elevated{
 .cart-item{display:grid;grid-template-columns:60px 1fr auto;gap:10px;align-items:start;padding:12px 0;border-bottom:1px solid rgba(229,37,100,.06)}
 .ci-img{width:60px;height:60px;border-radius:10px;overflow:hidden;background:var(--cream);position:relative}
 .ci-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
-.ci-name{font-family:var(--fd);font-size:.82rem;font-weight:700;line-height:1.3;margin-bottom:3px}
-.ci-prazo{font-size:.72rem;color:rgba(15,10,15,.35);margin-bottom:6px}
+.ci-name{font-family:var(--fd);font-size:.9rem;font-weight:700;line-height:1.32;margin-bottom:3px}
+.ci-prazo{font-size:.76rem;color:rgba(15,10,15,.4);margin-bottom:6px}
 .ci-qty{display:flex;align-items:center;gap:6px}
 .qty-btn{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(229,37,100,.2);background:var(--white);color:var(--dark);font-size:.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
 .qty-btn:hover{background:var(--pink);border-color:var(--pink);color:#fff}
@@ -977,20 +975,20 @@ body::before{
 /* ── PCARD BODY ── */
 .pcard-body{padding:14px 15px 16px}
 .pcard-cat{
-  font-size:.7rem;font-weight:700;letter-spacing:.13em;
+  font-size:.72rem;font-weight:700;letter-spacing:.12em;
   text-transform:uppercase;color:var(--pink);margin-bottom:7px;
   display:flex;align-items:center;gap:6px;
 }
 .pcard-name{
-  font-family:var(--fd);font-size:.98rem;font-weight:600;
-  color:var(--dark);line-height:1.32;margin-bottom:8px;
+  font-family:var(--fd);font-size:1.04rem;font-weight:600;
+  color:var(--dark);line-height:1.34;margin-bottom:8px;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
 }
 .pcard-prazo{
-  font-size:.74rem;color:rgba(15,10,15,.5);margin-bottom:11px;
+  font-size:.8rem;color:rgba(15,10,15,.55);margin-bottom:11px;
   display:flex;align-items:center;gap:5px;
 }
-[data-theme="dark"] .pcard-prazo{color:rgba(240,232,236,.5)}
+[data-theme="dark"] .pcard-prazo{color:rgba(240,232,236,.55)}
 
 /* ── PCARD BADGE — single badge only ── */
 .pcard-badge{
@@ -1378,35 +1376,10 @@ body::before{
     <h1>Peças que viram<br><em>memória de infância</em></h1>
     <div class="hero-count"><b id="heroProdCount">—</b> peças de design exclusivo, prontas para encomendar</div>
   </div>
-  <div class="hero-photo">
-    <div class="hero-slides" id="heroSlides">
-      <div class="hero-slide active">
-        <img src="img/hero-leao-960.webp" srcset="img/hero-leao-480.webp 480w, img/hero-leao-960.webp 960w, img/hero-leao-1920.webp 1920w" sizes="(max-width:768px) 100vw, 45vw" alt="Fantasia de leão, editorial Chuchu Rosa" loading="eager">
-      </div>
-      <div class="hero-slide">
-        <img src="img/ambiente-mae-filha-960.webp" srcset="img/ambiente-mae-filha-480.webp 480w, img/ambiente-mae-filha-960.webp 960w, img/ambiente-mae-filha-1920.webp 1920w" sizes="(max-width:768px) 100vw, 45vw" alt="Mãe e filha usando peças Chuchu Rosa" loading="lazy">
-      </div>
-      <div class="hero-slide">
-        <img src="img/colecao-raposa-960.webp" srcset="img/colecao-raposa-480.webp 480w, img/colecao-raposa-960.webp 960w" sizes="(max-width:768px) 100vw, 45vw" alt="Coleção temática de raposa" loading="lazy">
-      </div>
-      <div class="hero-slide">
-        <img src="img/bebe-urso-cinza-960.webp" srcset="img/bebe-urso-cinza-480.webp 480w, img/bebe-urso-cinza-960.webp 960w, img/bebe-urso-cinza-1920.webp 1920w" sizes="(max-width:768px) 100vw, 45vw" alt="Bebê com fantasia de urso" loading="lazy">
-      </div>
-      <div class="hero-slide">
-        <img src="img/ambiente-mesa-raposa-960.webp" srcset="img/ambiente-mesa-raposa-480.webp 480w, img/ambiente-mesa-raposa-960.webp 960w, img/ambiente-mesa-raposa-1920.webp 1920w" sizes="(max-width:768px) 100vw, 45vw" alt="Ambiente de festa com tema de raposa" loading="lazy">
-      </div>
-      <div class="hero-slide">
-        <img src="img/hero-sushi-480.webp" alt="Almofada de sushi decorativa" loading="lazy">
-      </div>
-    </div>
-    <div class="hero-dots" id="heroDots">
-      <button class="hero-dot active" data-idx="0" aria-label="Slide 1"></button>
-      <button class="hero-dot" data-idx="1" aria-label="Slide 2"></button>
-      <button class="hero-dot" data-idx="2" aria-label="Slide 3"></button>
-      <button class="hero-dot" data-idx="3" aria-label="Slide 4"></button>
-      <button class="hero-dot" data-idx="4" aria-label="Slide 5"></button>
-      <button class="hero-dot" data-idx="5" aria-label="Slide 6"></button>
-    </div>
+  <div class="hero-mosaic" id="heroMosaic">
+    <div class="hero-tile hero-tile-a" data-slot="0"><img alt="" loading="eager"></div>
+    <div class="hero-tile hero-tile-b" data-slot="1"><img alt="" loading="lazy"></div>
+    <div class="hero-tile hero-tile-c" data-slot="2"><img alt="" loading="lazy"></div>
   </div>
 </div>
 
@@ -1436,29 +1409,20 @@ body::before{
       <button class="sidebar-close" onclick="closeSidebar()" aria-label="Fechar filtros">✕</button>
     </div>
 
-    <div class="sidebar-hero">
-      <div class="sidebar-all-btn active" data-cat="Todas" role="button" tabindex="0" aria-pressed="true" id="allProductsBtn">
-        <span>Todos os produtos</span>
-        <span class="cnt" id="countTodas"></span>
-      </div>
-    </div>
+    <button type="button" class="sidebar-all-btn active" data-cat="Todas" aria-pressed="true" id="allProductsBtn">
+      <span>Todos os produtos</span>
+      <span class="cnt" id="countTodas"></span>
+    </button>
 
     <section class="sidebar-section" data-sec="cats">
-      <button class="sidebar-label" type="button" aria-expanded="true" aria-controls="secCats">Categorias <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></button>
+      <button class="sidebar-label" type="button" aria-expanded="true" aria-controls="secCats"><svg class="sidebar-label-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h6M3 10h14M3 14h10"/></svg>Categorias <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></button>
       <div class="sidebar-body" id="secCats">
         <ul class="cat-list" id="catList"></ul>
       </div>
     </section>
 
-    <section class="sidebar-section" data-sec="designs">
-      <button class="sidebar-label" type="button" aria-expanded="true" aria-controls="secDesigns">Designs <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></button>
-      <div class="sidebar-body" id="secDesigns">
-        <div class="design-grid" id="designList"></div>
-      </div>
-    </section>
-
     <section class="sidebar-section" data-sec="preco">
-      <button class="sidebar-label" type="button" aria-expanded="true" aria-controls="secPreco">Faixa de preço <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></button>
+      <button class="sidebar-label" type="button" aria-expanded="true" aria-controls="secPreco"><svg class="sidebar-label-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2v16M14.5 5.5c0-1.4-2-2.5-4.5-2.5S5.5 4.1 5.5 5.5 7.5 8 10 8s4.5 1.1 4.5 2.5-2 2.5-4.5 2.5-4.5-1.1-4.5-2.5"/></svg>Faixa de preço <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></button>
       <div class="sidebar-body" id="secPreco">
         <div class="price-row">
           <input class="price-input" type="number" id="priceMin" placeholder="Mín" min="0" inputmode="numeric">
@@ -1492,7 +1456,7 @@ body::before{
     <div class="active-filters" id="activeFilters"></div>
     <div class="cat-tabs" id="catTabs"></div>
     <div class="prod-grid" id="prodGrid"></div>
-    <div class="pagination" id="pagination"></div>
+    <div class="scroll-sentinel" id="scrollSentinel"><span class="scroll-spinner"></span> Carregando mais peças…</div>
   </main>
 </div>
 
@@ -1760,7 +1724,6 @@ function applyFilters(){
   filtered=res;
   page=1;
   renderGrid();
-  renderPagination();
   updateCatCounts();
   updateActiveFilterCount();
   renderActiveFilters();
@@ -1774,19 +1737,22 @@ function fmt(v){ return 'R$ '+parseFloat(v).toFixed(2).replace('.',','); }
 
 function renderGrid(){
   const grid=document.getElementById('prodGrid');
+  const isFirstBatch = page===1;
   const slice=filtered.slice((page-1)*PER_PAGE, page*PER_PAGE);
-  if(!slice.length){
+  if(isFirstBatch && !slice.length){
     const suggestedCats=['Fantasias','Almofadas','Para bebês','Decoração','Educativo'];
     const catBtns=suggestedCats.map(c=>'<span class="empty-cat" onclick="selectCategoryOnly(\''+c+'\')" data-cat="'+c+'">'+c+'</span>').join('');
     const emptyIcon=activeDesigns.length?'🎨':'🔍';
     const emptyMsg=activeDesigns.length?'Nenhum produto para este design':'Nenhum produto encontrado';
     const emptySub=activeDesigns.length?'Tente outro design ou explore uma coleção:':'Tente outro termo ou explore uma coleção:';
     grid.innerHTML='<div class="empty-state"><div class="empty-icon">'+emptyIcon+'</div><div class="empty-title">'+emptyMsg+'</div><p class="empty-sub">'+emptySub+'</p><div class="empty-cats">'+catBtns+'</div></div>';
+    updateScrollSentinel();
     return;
   }
+  if(!slice.length){ updateScrollSentinel(); return; }
   grid.className='prod-grid';
-  let featuredUsed=false;
-  grid.innerHTML=slice.map((p,_idx)=>{
+  let featuredUsed=isFirstBatch?false:true; // destaque só é fixado na primeira leva
+  const html=slice.map((p,_idx)=>{
     const isFeatured=p.destaque&&!featuredUsed;
     if(isFeatured)featuredUsed=true;
     const cats=(p.collections||[]).slice(0,2).map(catLabel).join(' · ');
@@ -1815,7 +1781,7 @@ function renderGrid(){
       :p.price
       ?`<div class="pcard-price${p.preco_promocional?' promo':''}">${p.preco_promocional?`<span class="pcard-price-old">${fmt(p.price)}</span>`:''}${fmt(p.preco_promocional||p.price)}</div>
         <button class="btn-add" onclick="event.preventDefault();event.stopPropagation();addToCart(event,'${p.id}')">＋</button>`
-      :`<div class="pcard-price" style="font-size:.78rem;color:rgba(15,10,15,.35)">Sob consulta</div>
+      :`<div class="pcard-price pcard-price-consult">Sob consulta</div>
         <button class="btn-consult" onclick="event.preventDefault();event.stopPropagation();openWA('${p.name.replace(/'/g,"\\'")}')">Consultar</button>`;
     const esgotadoBadge=p.esgotado?'<span class="pcard-badge" style="background:rgba(15,10,15,.7)">Esgotado</span>':'';
     return `<a class="pcard${isFeatured?' featured-card':''}${p.esgotado?' pcard-esgotado':''}" style="position:relative" href="produto.html?id=${p.id}">
@@ -1834,21 +1800,40 @@ ${p.url?`<button class="lb-trigger" onclick="event.preventDefault();event.stopPr
       </div>
     </a>`;
   }).join('');
+  if(isFirstBatch) grid.innerHTML=html;
+  else grid.insertAdjacentHTML('beforeend',html);
+  updateScrollSentinel();
 }
 
-function renderPagination(){
-  const total=Math.ceil(filtered.length/PER_PAGE);
-  const pag=document.getElementById('pagination');
-  if(total<=1){pag.innerHTML='';return;}
-  let h=`<button class="pag-btn" onclick="goPage(${page-1})" ${page===1?'disabled':''}>‹</button>`;
-  for(let i=1;i<=total;i++){
-    if(i===1||i===total||Math.abs(i-page)<=2) h+=`<button class="pag-btn ${i===page?'active':''}" onclick="goPage(${i})">${i}</button>`;
-    else if(Math.abs(i-page)===3) h+=`<span style="padding:0 4px;color:rgba(15,10,15,.3)">…</span>`;
-  }
-  h+=`<button class="pag-btn" onclick="goPage(${page+1})" ${page===total?'disabled':''}>›</button>`;
-  pag.innerHTML=h;
+// ── SCROLL INFINITO ─────────────────────────────────────────────────
+// Substitui a paginação numerada: com ~286 produtos, 12 páginas de clique
+// era mais atrito do que ajuda num catálogo visual. A sentinela fica logo
+// depois da grade; quando ela entra na viewport, carrega a próxima leva.
+let _scrollObserver=null;
+function updateScrollSentinel(){
+  const sentinel=document.getElementById('scrollSentinel');
+  if(!sentinel)return;
+  const totalLoaded=page*PER_PAGE;
+  const hasMore=totalLoaded<filtered.length;
+  sentinel.style.display=hasMore?'flex':'none';
+  sentinel.classList.remove('loading');
 }
-function goPage(p){ page=p; renderGrid(); renderPagination(); window.scrollTo({top:0,behavior:'smooth'}); }
+function loadNextBatch(){
+  const sentinel=document.getElementById('scrollSentinel');
+  const totalLoaded=page*PER_PAGE;
+  if(totalLoaded>=filtered.length)return;
+  if(sentinel) sentinel.classList.add('loading');
+  page++;
+  renderGrid();
+}
+function initScrollObserver(){
+  const sentinel=document.getElementById('scrollSentinel');
+  if(!sentinel||_scrollObserver)return;
+  _scrollObserver=new IntersectionObserver(entries=>{
+    if(entries[0].isIntersecting) loadNextBatch();
+  },{rootMargin:'600px 0px'});
+  _scrollObserver.observe(sentinel);
+}
 
 // ── CART ──────────────────────────────────────────────────────────────
 let cart=loadCart();
@@ -2049,11 +2034,6 @@ document.getElementById('catList').addEventListener('keydown',e=>{
   li.click();
 });
 document.getElementById('allProductsBtn')?.addEventListener('click',()=>selectCategoryOnly(null));
-document.getElementById('allProductsBtn')?.addEventListener('keydown',e=>{
-  if(e.key!=='Enter'&&e.key!==' ')return;
-  e.preventDefault();
-  selectCategoryOnly(null);
-});
 let searchTimer;
 document.getElementById('searchInput').addEventListener('input',e=>{
   clearTimeout(searchTimer);
@@ -2076,7 +2056,6 @@ async function setCatTab(el,cat){
 
 async function loadDesignBadges(){
   const badgeRow=document.getElementById('heroBadges');
-  const designList=document.getElementById('designList');
   if(!badgeRow)return;
   // Fallback designs if DB not available
   const fallback=[
@@ -2104,40 +2083,13 @@ async function loadDesignBadges(){
   badgeRow.innerHTML=designs.map(d=>
     `<span class="hbadge" data-filter="${toSlug(d.nome)}" data-type="search">${d.emoji||''} ${d.nome}</span>`
   ).join('');
-
-  // Mesma lista, como grid compacto de chips na sidebar (limita a 8, com "mostrar mais")
-  if(designList){
-    const DESIGN_LIMIT=8;
-    const chipHtml=d=>`<span class="design-chip-item" data-filter="${toSlug(d.nome)}" role="button" tabindex="0">${d.emoji||''} ${d.nome}</span>`;
-    designList.innerHTML=designs.slice(0,DESIGN_LIMIT).map(chipHtml).join('');
-    if(designs.length>DESIGN_LIMIT){
-      const hiddenHtml=designs.slice(DESIGN_LIMIT).map(chipHtml).join('');
-      designList.insertAdjacentHTML('afterend',
-        `<div class="design-grid" id="designListMore" style="display:none;margin-top:6px">${hiddenHtml}</div>
-         <button class="sidebar-toggle-more" id="designMoreBtn">+ ${designs.length-DESIGN_LIMIT} designs</button>`);
-      document.getElementById('designMoreBtn').addEventListener('click',function(){
-        const more=document.getElementById('designListMore');
-        const isOpen=more.style.display!=='none';
-        more.style.display=isOpen?'none':'flex';
-        this.textContent=isOpen?`+ ${designs.length-DESIGN_LIMIT} designs`:'− Mostrar menos';
-      });
-    }
-  }
 }
 loadDesignBadges();
 
-document.addEventListener('click',e=>{
-  const item=e.target.closest('.design-chip-item');
-  if(!item)return;
-  const filter=item.dataset.filter;
-  const heroBadge=document.querySelector(`#heroBadges .hbadge[data-filter="${filter}"]`);
-  if(heroBadge)heroBadge.click();
-});
 function syncDesignSidebarUI(){
-  const activeFilters=[...document.querySelectorAll('#heroBadges .hbadge.active')].map(b=>b.dataset.filter);
-  document.querySelectorAll('.design-chip-item').forEach(chip=>{
-    chip.classList.toggle('active',activeFilters.includes(chip.dataset.filter));
-  });
+  // Mantido como no-op — chamado em vários pontos do fluxo de filtros.
+  // Os designs agora vivem só em #heroBadges, que já controla seu próprio
+  // estado .active diretamente nos cliques.
 }
 
 document.getElementById('heroBadges').addEventListener('click',e=>{
@@ -2449,6 +2401,7 @@ async function init(){
   updateCartUI();
   loadFavsFromDB();
   setPriceRangePlaceholders();
+  initScrollObserver();
 }
 init();
 
@@ -2568,26 +2521,58 @@ function closeSidebar(){
   });
 })();
 
-// ── HERO SLIDESHOW ──────────────────────────────────────────────
+// ── HERO MOSAIC — 3 fotos que trocam de forma independente ──────────
+// Cada tile tem seu próprio timer com um período levemente diferente,
+// então nunca trocam juntas — o efeito é de vitrine viva, não de slide
+// sincronizado. Evita repetir a imagem que já está no tile ao lado.
 (function(){
-  const slides=document.querySelectorAll('.hero-slide');
-  const dots=document.querySelectorAll('.hero-dot');
-  if(!slides.length)return;
-  let cur=0,timer;
-  function goTo(n){
-    slides[cur].classList.remove('active');
-    dots[cur].classList.remove('active');
-    cur=(n+slides.length)%slides.length;
-    slides[cur].classList.add('active');
-    dots[cur].classList.add('active');
+  const pool=[
+    {src:'img/hero-leao-960.webp',alt:'Fantasia de leão, editorial Chuchu Rosa'},
+    {src:'img/ambiente-mae-filha-960.webp',alt:'Mãe e filha usando peças Chuchu Rosa'},
+    {src:'img/colecao-raposa-960.webp',alt:'Coleção temática de raposa'},
+    {src:'img/bebe-urso-cinza-960.webp',alt:'Bebê com fantasia de urso'},
+    {src:'img/ambiente-mesa-raposa-960.webp',alt:'Ambiente de festa com tema de raposa'},
+    {src:'img/hero-sushi-480.webp',alt:'Almofada de sushi decorativa'},
+  ];
+  const tiles=[...document.querySelectorAll('.hero-tile')];
+  if(!tiles.length)return;
+  const state=tiles.map(()=>-1); // índice atual no pool, por tile
+
+  function pickNext(exceptIdx,avoid){
+    const taken=new Set([exceptIdx,...avoid]);
+    const options=pool.map((_,i)=>i).filter(i=>!taken.has(i));
+    if(!options.length) return exceptIdx; // pool pequeno demais — repete, sem travar
+    return options[Math.floor(Math.random()*options.length)];
   }
-  function next(){goTo(cur+1)}
-  function start(){timer=setInterval(next,4000)}
-  function stop(){clearInterval(timer)}
-  start();
-  dots.forEach(d=>d.addEventListener('click',()=>{stop();goTo(+d.dataset.idx);start()}));
-  const hero=document.querySelector('.shop-hero');
-  if(hero){hero.addEventListener('mouseenter',stop);hero.addEventListener('mouseleave',start)}
+  function setTile(tileIdx,poolIdx){
+    const tile=tiles[tileIdx];
+    const img=tile.querySelector('img');
+    if(!img)return;
+    const next=new Image();
+    next.onload=()=>{
+      img.src=pool[poolIdx].src;
+      img.alt=pool[poolIdx].alt;
+      requestAnimationFrame(()=>img.classList.add('active'));
+    };
+    img.classList.remove('active');
+    next.src=pool[poolIdx].src;
+    state[tileIdx]=poolIdx;
+  }
+  // Distribui as 3 primeiras fotos sem repetir
+  const initial=[0,1,2].filter(i=>i<pool.length);
+  tiles.forEach((_,i)=>setTile(i,initial[i]??(i%pool.length)));
+
+  // Cada tile roda no seu próprio intervalo (períodos diferentes = nunca
+  // trocam ao mesmo tempo), com um atraso inicial escalonado.
+  const periods=[5200,6600,7800];
+  tiles.forEach((_,i)=>{
+    setTimeout(()=>{
+      setInterval(()=>{
+        const avoid=state.filter((_,j)=>j!==i);
+        setTile(i,pickNext(state[i],avoid));
+      },periods[i%periods.length]);
+    },i*900);
+  });
 })();
 
 
