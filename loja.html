@@ -438,15 +438,6 @@ nav.elevated{
 .sort-select{cursor:pointer}
 .sort-select:focus,.price-input:focus{border-color:var(--pink)}
 .price-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.check-row{
-  display:flex;align-items:center;gap:9px;cursor:pointer;
-  font-family:var(--fb);font-size:.85rem;color:rgba(15,10,15,.72);
-  user-select:none;
-}
-.check-row input[type="checkbox"]{
-  width:17px;height:17px;flex-shrink:0;accent-color:var(--rose);cursor:pointer;
-}
-[data-theme="dark"] .check-row{color:rgba(240,232,236,.72)}
 
 /* Sem filtro ativo o rodapé não existe — nada de faixa vazia com linha. */
 .sidebar-footer{padding:0}
@@ -890,7 +881,7 @@ nav.elevated{
 .sh-clear{display:block;width:100%;text-align:center;padding:8px;font-size:.78rem;color:rgba(255,255,255,.3);cursor:pointer;border:none;background:none;border-top:1px solid rgba(255,255,255,.06);transition:color .15s}
 .sh-clear:hover{color:var(--pink)}
 
-.prazo-btns,.prazo-row{display:flex;flex-direction:column;gap:6px;margin-top:2px}
+.prazo-btns{display:flex;flex-direction:column;gap:6px;margin-top:2px}
 
 /* ── SKELETON ── */
 @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
@@ -1476,27 +1467,6 @@ body::before{
       </div>
     </section>
 
-    <section class="sidebar-section" data-sec="prazo">
-      <button class="sidebar-label" type="button" aria-expanded="true" aria-controls="secPrazo">Prazo de produção <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></button>
-      <div class="sidebar-body" id="secPrazo">
-        <div class="prazo-row" id="prazoRow">
-          <button class="prazo-btn" type="button" data-prazo="5">até 5 dias</button>
-          <button class="prazo-btn" type="button" data-prazo="10">até 10 dias</button>
-          <button class="prazo-btn" type="button" data-prazo="15">até 15 dias</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="sidebar-section" data-sec="disp">
-      <button class="sidebar-label" type="button" aria-expanded="true" aria-controls="secDisp">Disponibilidade <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></button>
-      <div class="sidebar-body" id="secDisp">
-        <label class="check-row">
-          <input type="checkbox" id="hideEsgotados">
-          <span>Ocultar esgotados</span>
-        </label>
-      </div>
-    </section>
-
     <div class="sidebar-footer">
       <button class="clear-filters-btn" id="clearFiltersBtn" onclick="clearAllFilters()">✕ Limpar filtros</button>
     </div>
@@ -1649,8 +1619,6 @@ let selectedCats=[]; // multi-seleção de categorias na sidebar; vazio = Todas
 let currentSort=localStorage.getItem('cr_sort')||'az';
 let priceMin=null;
 let priceMax=null;
-let prazoMax=null;
-let hideEsgotados=false;
 let searchQ='';
 let activeDesigns=[];
 let activeDesignFilter=null;
@@ -1745,8 +1713,6 @@ function applyFiltersExceptCategory(){
   }
   if(priceMin!==null) res=res.filter(p=>p.price===null||p.price>=priceMin);
   if(priceMax!==null) res=res.filter(p=>p.price===null||p.price<=priceMax);
-  if(prazoMax!==null) res=res.filter(p=>(p.prazo_producao_dias||7)<=prazoMax);
-  if(hideEsgotados) res=res.filter(p=>!p.esgotado);
   if(activeDesignFilter){
     res=res.filter(p=>{
       const ds=Array.isArray(p.design)?p.design:(p.design?[p.design]:[]);
@@ -1773,8 +1739,6 @@ function applyFilters(){
   }
   if(priceMin!==null) res=res.filter(p=>p.price===null||p.price>=priceMin);
   if(priceMax!==null) res=res.filter(p=>p.price===null||p.price<=priceMax);
-  if(prazoMax!==null) res=res.filter(p=>(p.prazo_producao_dias||7)<=prazoMax);
-  if(hideEsgotados) res=res.filter(p=>!p.esgotado);
   if(activeDesignFilter){
     res=res.filter(p=>{
       const ds=Array.isArray(p.design)?p.design:(p.design?[p.design]:[]);
@@ -2017,30 +1981,6 @@ function onPriceTextInput(){
   applyFilters();
 }
 
-// ── PRAZO DE PRODUÇÃO (chips exclusivos) ────────────────────────────
-document.getElementById('prazoRow')?.addEventListener('click',e=>{
-  const btn=e.target.closest('.prazo-btn');
-  if(!btn)return;
-  const val=+btn.dataset.prazo;
-  const wasActive=btn.classList.contains('active');
-  document.querySelectorAll('#prazoRow .prazo-btn').forEach(b=>b.classList.remove('active'));
-  if(wasActive){
-    prazoMax=null;
-  }else{
-    btn.classList.add('active');
-    prazoMax=val;
-  }
-  saveFiltersToURL();
-  applyFilters();
-});
-
-// ── DISPONIBILIDADE (ocultar esgotados) ──────────────────────────────
-document.getElementById('hideEsgotados')?.addEventListener('change',e=>{
-  hideEsgotados=e.target.checked;
-  saveFiltersToURL();
-  applyFilters();
-});
-
 // ── NAVIGATION ────────────────────────────────────────────────────────
 function goProduct(id){location.href='produto.html?id='+id;}
 function openWA(nome){ window.open('https://wa.me/5519993041555?text='+encodeURIComponent('Olá! Tenho interesse no produto: '+nome),'_blank'); }
@@ -2090,11 +2030,9 @@ function saveFiltersToURL(){
   if(priceMax!==null) p.set('max',priceMax); else p.delete('max');
   if(searchQ) p.set('q',searchQ); else p.delete('q');
   if(typeof activeDesigns!=='undefined'&&activeDesigns.length) p.set('design',activeDesigns.join(',')); else p.delete('design');
-  if(prazoMax!==null) p.set('prazo',prazoMax); else p.delete('prazo');
-  if(hideEsgotados) p.set('disp','1'); else p.delete('disp');
   const newUrl=window.location.pathname+(p.toString()?'?'+p.toString():'');
   history.replaceState(null,'',newUrl);
-  localStorage.setItem('cr_filters',JSON.stringify({cats:selectedCats,min:priceMin,max:priceMax,designs:activeDesigns,prazo:prazoMax,disp:hideEsgotados}));
+  localStorage.setItem('cr_filters',JSON.stringify({cats:selectedCats,min:priceMin,max:priceMax,designs:activeDesigns}));
 }
 
 // ── EVENTS ────────────────────────────────────────────────────────────
@@ -2263,14 +2201,12 @@ document.getElementById('heroBadges').addEventListener('click',e=>{
 function restoreSavedFilters(){
   const urlParams=new URLSearchParams(window.location.search);
   const hasUrlFilters=urlParams.get('cat')||urlParams.get('min')||urlParams.get('max')||urlParams.get('q');
-  if(hasUrlFilters||urlParams.get('design')||urlParams.get('prazo')||urlParams.get('disp')){
+  if(hasUrlFilters||urlParams.get('design')){
     if(urlParams.get('cat')) selectedCats=urlParams.get('cat').split(',').map(s=>s.trim()).filter(Boolean);
     if(urlParams.get('min')) priceMin=+urlParams.get('min');
     if(urlParams.get('max')) priceMax=+urlParams.get('max');
     if(urlParams.get('q')) searchQ=urlParams.get('q');
     if(urlParams.get('design')) activeDesigns=urlParams.get('design').split(',').map(s=>s.trim()).filter(Boolean);
-    if(urlParams.get('prazo')) prazoMax=+urlParams.get('prazo');
-    if(urlParams.get('disp')) hideEsgotados=urlParams.get('disp')==='1';
   }else{
     try{
       const saved=JSON.parse(localStorage.getItem('cr_filters')||'null');
@@ -2279,8 +2215,6 @@ function restoreSavedFilters(){
         priceMin=saved.min??null;
         priceMax=saved.max??null;
         activeDesigns=Array.isArray(saved.designs)?saved.designs:[];
-        prazoMax=saved.prazo??null;
-        hideEsgotados=!!saved.disp;
       }
     }catch(e){}
   }
@@ -2289,12 +2223,6 @@ function restoreSavedFilters(){
   const si=document.getElementById('searchInput'); if(si&&searchQ) si.value=searchQ;
   const pMinEl=document.getElementById('priceMin'); if(pMinEl) pMinEl.value=priceMin??'';
   const pMaxEl=document.getElementById('priceMax'); if(pMaxEl) pMaxEl.value=priceMax??'';
-  if(prazoMax!==null){
-    document.querySelectorAll('#prazoRow .prazo-btn').forEach(b=>{
-      b.classList.toggle('active', +b.dataset.prazo===prazoMax);
-    });
-  }
-  const hideEl=document.getElementById('hideEsgotados'); if(hideEl) hideEl.checked=hideEsgotados;
   if(activeDesigns.length){
     document.querySelectorAll('#heroBadges .hbadge').forEach(b=>{
       b.classList.toggle('active', activeDesigns.includes(b.dataset.filter));
@@ -2408,8 +2336,6 @@ function updateActiveFilterCount(){
   if(priceMin!==null) n++;
   if(priceMax!==null) n++;
   if(typeof activeDesigns!=='undefined'&&activeDesigns.length) n++;
-  if(prazoMax!==null) n++;
-  if(hideEsgotados) n++;
   const badge=document.getElementById('activeCount');
   const dot=document.getElementById('filterDot');
   const clearBtn=document.getElementById('clearFiltersBtn');
@@ -2444,12 +2370,6 @@ function renderActiveFilters(){
       ?`R$ ${priceMin} – R$ ${priceMax}`
       :priceMin!==null?`A partir de R$ ${priceMin}`:`Até R$ ${priceMax}`;
     chips.push({label:lbl,onRemove:`document.getElementById('priceMin').value='';document.getElementById('priceMax').value='';onPriceTextInput()`});
-  }
-  if(prazoMax!==null){
-    chips.push({label:`Até ${prazoMax} dias`,onRemove:`document.querySelector('#prazoRow .prazo-btn.active')?.click()`});
-  }
-  if(hideEsgotados){
-    chips.push({label:'Ocultar esgotados',onRemove:`document.getElementById('hideEsgotados').checked=false;document.getElementById('hideEsgotados').dispatchEvent(new Event('change'))`});
   }
   if(searchQ){
     chips.push({label:`"${searchQ}"`,onRemove:`document.getElementById('searchInput').value='';searchQ='';saveFiltersToURL();applyFilters()`});
@@ -2803,12 +2723,8 @@ function clearAllFilters(){
   priceMax=null;
   searchQ='';
   activeDesigns=[];
-  prazoMax=null;
-  hideEsgotados=false;
   document.getElementById('priceMin').value='';
   document.getElementById('priceMax').value='';
-  document.querySelectorAll('#prazoRow .prazo-btn').forEach(b=>b.classList.remove('active'));
-  const hideEl=document.getElementById('hideEsgotados'); if(hideEl) hideEl.checked=false;
   const si=document.getElementById('searchInput'); if(si) si.value='';
   document.querySelectorAll('#heroBadges .hbadge').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
