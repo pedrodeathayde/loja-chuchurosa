@@ -631,7 +631,7 @@ nav.s #navLogo img{transform:scale(.88)}
 .band-head .sl::after{color:#ffd89b}
 .band-head h2{font-family:var(--fd);font-weight:600;font-size:clamp(2.2rem,3.8vw,3.4rem);line-height:1.06;letter-spacing:-.03em;color:#fff}
 .band-head h2 em{font-style:italic;font-weight:400;color:#ffd6e3}
-.pink-rail{display:grid;grid-template-columns:repeat(5,1fr);gap:22px;max-width:1180px;margin:0 auto;padding:40px 48px 0;position:relative;z-index:1}
+.pink-rail{display:grid;grid-template-columns:repeat(6,1fr);gap:20px;max-width:1180px;margin:0 auto;padding:40px 48px 0;position:relative;z-index:1}
 .pink-item{display:flex;flex-direction:column;gap:12px;transition:transform .35s}
 .pink-item:hover{transform:translateY(-6px)}
 .pink-item .pi-photo{position:relative;border-radius:14px;overflow:hidden;box-shadow:0 20px 44px rgba(15,10,15,.2);aspect-ratio:3/4}
@@ -641,9 +641,6 @@ nav.s #navLogo img{transform:scale(.88)}
 @media(max-width:900px){
   .band-head{padding:64px 20px 0}
   .pink-rail{grid-template-columns:repeat(2,1fr);gap:20px 16px;padding:36px 20px 0}
-  .pink-item:first-child{grid-column:span 2}
-  .pink-item:first-child .pi-photo{aspect-ratio:16/10}
-  .pink-item:first-child img{object-position:center 22%}
   .grow-head{padding:0 20px}
   .grow-rail{padding:0 20px;grid-template-columns:repeat(2,1fr)}
   .phases{padding:56px 0 60px}
@@ -652,7 +649,6 @@ nav.s #navLogo img{transform:scale(.88)}
   .pink-rail{grid-template-columns:repeat(2,1fr);gap:16px 12px}
   .pink-item .pi-photo{aspect-ratio:1/1.2}
   .pink-item figcaption{font-size:.68rem}
-  .pink-item:first-child .pi-photo{aspect-ratio:4/3}
 }
 
 /* ── PARA CADA FASE — seção própria, rosa-claro ── */
@@ -703,7 +699,7 @@ nav.s #navLogo img{transform:scale(.88)}
 .folio .f-tall{grid-column:span 5;aspect-ratio:3/4}
 .folio .f-wide{grid-column:span 7;aspect-ratio:16/11}
 .folio .f-sq{grid-column:span 4;aspect-ratio:1/1}
-.folio .f-panor{grid-column:span 8;aspect-ratio:16/9}
+.folio .f-panor{grid-column:span 8;aspect-ratio:3/2}
 .folio .f-slim{grid-column:span 4;aspect-ratio:4/5}
 
 /* placeholders — trocar por <img> quando a foto chegar */
@@ -1112,6 +1108,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
     <figure class="pink-item"><div class="pi-photo"><img src="img/pink-pavao-480.webp" loading="lazy" alt="Menina com máscara e asas de pavão azul-turquesa com penas bordadas"></div><figcaption>Pavão</figcaption></figure>
     <figure class="pink-item"><div class="pi-photo"><img src="img/pink-morango-480.webp" loading="lazy" alt="Criança sentada com fantasia de morango: capa vermelha com sementes e flor branca"></div><figcaption>Morango</figcaption></figure>
     <figure class="pink-item"><div class="pi-photo"><img src="img/pink-sorvete-480.webp" srcset="img/pink-sorvete-480.webp 480w, img/pink-sorvete-960.webp 960w" loading="lazy" alt="Criança mostrando a língua com touca de sorvete rosa com chantilly e cereja"></div><figcaption>Sorvete</figcaption></figure>
+    <figure class="pink-item"><div class="pi-photo"><img src="img/pink-flamingo-480.webp" srcset="img/pink-flamingo-480.webp 480w, img/pink-flamingo-960.webp 960w" loading="lazy" alt="Menina de perfil com máscara de flamingo em feltro rosa e asas nas costas, fundo rosa"></div><figcaption>Flamingo</figcaption></figure>
   </div>
 </section>
 
@@ -1332,8 +1329,8 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
       <figure class="fi f-sq"><img src="img/ambiente-trio-mascaras-480.webp" srcset="img/ambiente-trio-mascaras-480.webp 480w, img/ambiente-trio-mascaras-960.webp 960w" loading="lazy" alt="Três meninos sorrindo com coroas e máscara de coruja em feltro"></figure>
       <figure class="fi f-sq"><img src="img/deco-mobile-baloes-480.webp" srcset="img/deco-mobile-baloes-480.webp 480w, img/deco-mobile-baloes-960.webp 960w" loading="lazy" alt="Varal decorativo com balões e nuvens de feltro contra o céu azul"></figure>
 
-      <figure class="fi f-panor"><div class="ph" data-ph="Foto panorâmica · salão montado"></div></figure>
-      <figure class="fi f-slim"><div class="ph" data-ph="Foto vertical · painel de fundo"></div></figure>
+      <figure class="fi f-panor"><img src="img/ambiente-festa-unicornio-mesa-480.webp" srcset="img/ambiente-festa-unicornio-mesa-480.webp 480w, img/ambiente-festa-unicornio-mesa-960.webp 960w" loading="lazy" alt="Menina posando ao lado de mesa de festa temática de unicórnio, com bolo e decoração colorida"></figure>
+      <figure class="fi f-slim"><img src="img/ambiente-familia-mascaras-480.webp" srcset="img/ambiente-familia-mascaras-480.webp 480w, img/ambiente-familia-mascaras-960.webp 960w" loading="lazy" alt="Família sorrindo usando máscaras de coruja e raposa em feltro"></figure>
     </div>
 
     <div class="spaces-cta rv">
