@@ -1,17 +1,23 @@
 name: Supabase Keep-Alive
 on:
   schedule:
-    - cron: '0 9 * * *'  # todo dia, 9h UTC — mais margem
+    - cron: '0 9 * * *'
   workflow_dispatch:
 
 jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Supabase (insert)
+      - name: Insert ping
         run: |
           curl -sf -X POST "https://oznpfqsgurztffwfyfec.supabase.co/rest/v1/keep_alive_ping" \
             -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
             -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
             -H "Content-Type: application/json" \
             -d '{}'
+
+      - name: Delete all pings
+        run: |
+          curl -sf -X DELETE "https://oznpfqsgurztffwfyfec.supabase.co/rest/v1/keep_alive_ping?id=gt.0" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}"
