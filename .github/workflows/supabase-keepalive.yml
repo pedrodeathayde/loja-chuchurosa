@@ -1,16 +1,17 @@
 name: Supabase Keep-Alive
-
 on:
   schedule:
-    - cron: '0 9 * * 1,4'  # segunda e quinta, 9h UTC
-  workflow_dispatch:        # permite rodar manualmente também
+    - cron: '0 9 * * *'  # todo dia, 9h UTC — mais margem
+  workflow_dispatch:
 
 jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Supabase
+      - name: Ping Supabase (insert)
         run: |
-          curl -X GET "https://oznpfqsgurztffwfyfec.supabase.co/rest/v1/produtos?select=id&limit=1" \
+          curl -sf -X POST "https://oznpfqsgurztffwfyfec.supabase.co/rest/v1/keep_alive_ping" \
             -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
-            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}"
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{}'
