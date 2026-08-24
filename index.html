@@ -38,7 +38,7 @@
       imagesizes="(max-width:900px) 100vw, 47vw">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&amp;family=Outfit:wght@400;500;600;700&amp;family=Fjalla+One&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&amp;family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 <style>
 :root{
   --ink:#0f0a0f;--ink2:#1a1020;
@@ -47,7 +47,6 @@
   --gold:#c9a96e;
   --fd:'Fraunces','Playfair Display',Georgia,serif;
   --fb:'Outfit',sans-serif;
-  --fn:'Fjalla One','Arial Narrow',sans-serif; /* fonte da navegação */
 }
 *{margin:0;padding:0;box-sizing:border-box;font-optical-sizing:auto}
 body::after{
@@ -104,17 +103,17 @@ nav.s #navLogo img{transform:scale(.88)}
 #navLogo{transition:transform .45s ease}
 #navLogo img{transition:transform .35s cubic-bezier(.22,.61,.36,1)}
 
-.nl{display:flex;gap:2px;list-style:none;align-items:center}
+.nl{display:flex;gap:6px;list-style:none;align-items:center}
 .nl a{
-  font-family:var(--fb);font-weight:700;
-  font-size:1.12rem;letter-spacing:.035em;
-  font-variant-caps:all-small-caps;
-  color:var(--ink);opacity:.78;
-  display:block;padding:6px 14px;
+  font-family:var(--fb);font-weight:500;
+  font-size:.8rem;letter-spacing:.13em;
+  text-transform:uppercase;
+  color:var(--ink);opacity:.62;
+  display:block;padding:8px 15px;
   transition:opacity .25s,color .25s;position:relative;
 }
 .nl a::after{
-  content:'';position:absolute;left:14px;right:14px;bottom:3px;height:1.5px;
+  content:'';position:absolute;left:15px;right:15px;bottom:2px;height:1px;
   background:linear-gradient(90deg,var(--pink),var(--gold));
   border-radius:2px;
   transform:scaleX(0);transform-origin:center;
@@ -122,7 +121,7 @@ nav.s #navLogo img{transform:scale(.88)}
 }
 .nl a:hover{opacity:1;color:var(--rose)}
 .nl a:hover::after,.nl a.active::after{transform:scaleX(1)}
-.nl a.active{opacity:1;color:var(--rose)}
+.nl a.active{opacity:1;color:var(--rose);font-weight:600}
 .nl a:focus-visible,.nc a:focus-visible,.nh:focus-visible,#navLogo:focus-visible{
   outline:2px solid var(--pink);outline-offset:3px;border-radius:100px;
 }
@@ -397,7 +396,8 @@ nav.s #navLogo img{transform:scale(.88)}
 .more{font-size:.82rem;font-weight:600;color:var(--pink);display:flex;align-items:center;gap:5px;transition:gap .2s;margin-bottom:4px}
 .more:hover{gap:9px}
 .cgrid{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;height:560px;border-radius:20px;overflow:hidden}
-.cc{position:relative;overflow:hidden;cursor:pointer;background:var(--ink)}
+.cc{position:relative;overflow:hidden;cursor:pointer;background:var(--ink);display:block;color:inherit}
+.cc:focus-visible{outline:2px solid var(--pink);outline-offset:-4px;z-index:2}
 .cc:nth-child(1){grid-row:span 2}
 .cc img{width:100%;height:100%;object-fit:cover;transition:transform .65s;opacity:.7;filter:saturate(1.1)}
 .cc:hover img{transform:scale(1.05);opacity:.85}
@@ -668,13 +668,6 @@ nav.s #navLogo img{transform:scale(.88)}
 .grow-item figcaption{margin-top:12px;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gc);display:flex;align-items:center;gap:7px}
 .grow-item figcaption::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gc);flex:none}
 
-/* ── AMBIENTES & FESTAS — CREME QUENTE, duas subseções ── */
-.spaces{background:var(--cream2);padding:92px 0;position:relative}
-.spaces::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
-.sub-head{display:flex;align-items:baseline;gap:14px;margin:0 0 24px}
-.sub-head h3{font-family:var(--fd);font-style:italic;font-weight:600;font-size:1.45rem;letter-spacing:-.01em;color:var(--ink)}
-.sub-head::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(201,169,110,.5),transparent)}
-.sub-head small{font-size:.62rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
 /* ── AMBIENTES & FESTAS — ULTRAPREMIUM ── */
 .spaces{
   background:
@@ -773,6 +766,67 @@ nav.s #navLogo img{transform:scale(.88)}
 .folio .f-panor{grid-column:span 8;aspect-ratio:3/2}
 .folio .f-slim{grid-column:span 4;aspect-ratio:4/5}
 
+/* legendas editoriais — aparecem no hover, com véu escuro */
+.folio .fi figcaption{
+  position:absolute;left:0;right:0;bottom:0;z-index:2;
+  padding:22px 22px 20px;color:#fff;
+  display:flex;flex-direction:column;gap:3px;
+  background:linear-gradient(180deg,transparent,rgba(15,10,15,.88));
+  opacity:0;transform:translateY(10px);
+  transition:opacity .45s cubic-bezier(.22,.61,.36,1),transform .45s cubic-bezier(.22,.61,.36,1);
+}
+.folio .fi:hover figcaption,.folio .fi:focus-within figcaption{opacity:1;transform:translateY(0)}
+.fi-n{
+  font-family:var(--fd);font-style:italic;font-weight:600;
+  font-size:.78rem;color:var(--gold);letter-spacing:.02em;
+}
+.fi-t{font-family:var(--fd);font-style:italic;font-weight:600;font-size:1.18rem;letter-spacing:-.01em;line-height:1.15}
+.fi-d{font-size:.68rem;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-top:3px}
+.folio .f-sq figcaption{padding:18px}
+.folio .f-sq .fi-t{font-size:1.02rem}
+
+/* VERBATIM — pull quote atravessando a grade, gramática de revista */
+.folio-verbatim{
+  grid-column:span 12;margin:14px 0;padding:52px 6% 48px;position:relative;
+  text-align:center;border-radius:18px;
+  background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.34));
+  box-shadow:inset 0 0 0 1px rgba(201,169,110,.34);
+}
+.folio-verbatim::before,.folio-verbatim::after{
+  content:'';position:absolute;left:50%;transform:translateX(-50%);
+  width:64px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.folio-verbatim::before{top:0}
+.folio-verbatim::after{bottom:0}
+.fv-label{
+  display:block;font-size:.62rem;font-weight:700;letter-spacing:.28em;
+  text-transform:uppercase;color:var(--rose);margin-bottom:20px;
+}
+.folio-verbatim p{
+  font-family:var(--fd);font-weight:400;font-style:italic;
+  font-size:clamp(1.35rem,2.6vw,2.05rem);line-height:1.34;
+  letter-spacing:-.02em;color:var(--ink);max-width:20ch;margin:0 auto;
+  text-wrap:balance;
+}
+.folio-verbatim p em{font-style:italic;color:var(--pink)}
+.folio-verbatim cite{
+  display:block;margin-top:22px;font-style:normal;
+  font-size:.64rem;font-weight:700;letter-spacing:.2em;
+  text-transform:uppercase;color:rgba(15,10,15,.46);
+}
+
+/* ÍNDICE / ficha técnica sob o mosaico */
+.folio-index{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  margin-top:28px;background:rgba(201,169,110,.32);
+  border-top:1px solid rgba(201,169,110,.32);border-bottom:1px solid rgba(201,169,110,.32);
+}
+.fx{background:var(--cream2);padding:20px 22px;display:flex;flex-direction:column;gap:6px}
+.fx-k{font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--rose)}
+.fx-v{font-family:var(--fd);font-style:italic;font-size:.98rem;color:var(--ink);line-height:1.35}
+@media(max-width:820px){.folio-index{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.folio-index{grid-template-columns:1fr}}
+
 /* placeholders — trocar por <img> quando a foto chegar */
 .ph{
   position:absolute;inset:0;
@@ -790,6 +844,10 @@ nav.s #navLogo img{transform:scale(.88)}
   .folio{grid-template-columns:repeat(2,1fr);gap:14px}
   .folio .fi{grid-column:span 1 !important;aspect-ratio:1/1 !important}
   .folio .f-wide,.folio .f-panor{grid-column:span 2 !important;aspect-ratio:16/10 !important}
+  .folio-verbatim{grid-column:span 2;padding:38px 22px 34px;margin:6px 0}
+  .folio .fi figcaption{opacity:1;transform:none;padding:14px}
+  .folio .fi .fi-t{font-size:.95rem}
+  .folio .fi .fi-d{display:none}
 }
 
 /* CTA final da seção — cartão com moldura, não mais uma linha solta */
@@ -1017,11 +1075,11 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 <nav id="nav" aria-label="Navegação principal">
   <a href="#" id="navLogo" style="display:flex;align-items:center"><img src="img/logo-nav.webp" alt="Chuchu Rosa" style="height:34px;width:auto;display:block"></a>
   <ul class="nl">
-    <li><a href="sobre.html">Sobre</a></li>
+    <li><a href="#sobre">O estúdio</a></li>
     <li><a href="#colecoes">Coleções</a></li>
-    <li><a href="#como-funciona">Como funciona</a></li>
-    <li><a href="#ambientes">Ambientes</a></li>
+    <li><a href="#como-funciona">O processo</a></li>
     <li><a href="#depoimentos">Depoimentos</a></li>
+    <li><a href="#ambientes">Ambientes</a></li>
   </ul>
   <div class="nc"><a href="loja.html">Ver loja →</a></div>
   <button class="nh" id="nh" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobMenu"><span></span><span></span><span></span></button>
@@ -1029,12 +1087,13 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 
 <div class="mob-menu" id="mobMenu" hidden>
   <ul>
-    <li><a href="sobre.html">Sobre</a></li>
+    <li><a href="#sobre" onclick="closeMob()">O estúdio</a></li>
     <li><a href="#colecoes" onclick="closeMob()">Coleções</a></li>
-    <li><a href="#como-funciona" onclick="closeMob()">Como funciona</a></li>
-    <li><a href="#ambientes" onclick="closeMob()">Ambientes</a></li>
+    <li><a href="#como-funciona" onclick="closeMob()">O processo</a></li>
     <li><a href="#depoimentos" onclick="closeMob()">Depoimentos</a></li>
+    <li><a href="#ambientes" onclick="closeMob()">Ambientes</a></li>
     <li><a href="#contato" onclick="closeMob()">Contato</a></li>
+    <li><a href="sobre.html">Nossa história</a></li>
   </ul>
   <a href="loja.html" class="mob-cta">Ver loja →</a>
 </div>
@@ -1184,11 +1243,11 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
       <a href="loja.html" class="more">Ver toda a loja →</a>
     </div>
     <div class="cgrid rv">
-      <div class="cc" onclick="location.href='loja.html?cat=Fantasias'"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/fantasia-de-flamingo-com-asas-carnaval.jpg" alt="Fantasias" loading="lazy"><div class="co"><div class="cc-tag">Mais vendida</div><div class="cc-name">Fantasias</div><div class="cc-count" data-cat-count="Fantasias">100+ modelos</div></div></div>
-      <div class="cc" onclick="location.href='loja.html?cat=Para+bebês'"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/naninha-de-flamingo-flamingo.jpg" alt="Bebês" loading="lazy"><div class="co"><div class="cc-name">Para bebês</div><div class="cc-count" data-cat-count="Para bebês">74 produtos</div></div></div>
-      <div class="cc" onclick="location.href='loja.html?cat=Almofadas'"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/almofada-raposa-almofada.jpg" alt="Almofadas" loading="lazy"><div class="co"><div class="cc-name">Almofadas</div><div class="cc-count" data-cat-count="Almofadas">28 modelos</div></div></div>
-      <div class="cc" onclick="location.href='loja.html?cat=Decoração'"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/mobile-flamingo-decoracao.jpg" alt="Decoração" loading="lazy"><div class="co"><div class="cc-name">Decoração</div><div class="cc-count" data-cat-count="Decoração">—</div></div></div>
-      <div class="cc" onclick="location.href='loja.html?cat=Educativo'"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/kit-piquenique-montessori.jpg" alt="Educativo" loading="lazy"><div class="co"><div class="cc-name">Educativo</div><div class="cc-count" data-cat-count="Educativo">—</div></div></div>
+      <a class="cc" href="loja.html?cat=Fantasias"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/fantasia-de-flamingo-com-asas-carnaval.jpg" alt="Fantasias" loading="lazy"><div class="co"><div class="cc-tag">Mais vendida</div><div class="cc-name">Fantasias</div><div class="cc-count" data-cat-count="Fantasias">100+ modelos</div></div></a>
+      <a class="cc" href="loja.html?cat=Para+bebês"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/naninha-de-flamingo-flamingo.jpg" alt="Bebês" loading="lazy"><div class="co"><div class="cc-name">Para bebês</div><div class="cc-count" data-cat-count="Para bebês">74 produtos</div></div></a>
+      <a class="cc" href="loja.html?cat=Almofadas"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/almofada-raposa-almofada.jpg" alt="Almofadas" loading="lazy"><div class="co"><div class="cc-name">Almofadas</div><div class="cc-count" data-cat-count="Almofadas">28 modelos</div></div></a>
+      <a class="cc" href="loja.html?cat=Decoração"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/mobile-flamingo-decoracao.jpg" alt="Decoração" loading="lazy"><div class="co"><div class="cc-name">Decoração</div><div class="cc-count" data-cat-count="Decoração">—</div></div></a>
+      <a class="cc" href="loja.html?cat=Educativo"><img src="https://oznpfqsgurztffwfyfec.supabase.co/storage/v1/object/public/Fotos/kit-piquenique-montessori.jpg" alt="Educativo" loading="lazy"><div class="co"><div class="cc-name">Educativo</div><div class="cc-count" data-cat-count="Educativo">—</div></div></a>
     </div>
   </div>
 </section>
@@ -1239,7 +1298,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
           <div class="s-halo" aria-hidden="true"></div>
           <div class="s-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6L4.5 3H2"/><circle cx="9.5" cy="19.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="17.5" cy="19.5" r="1.5" fill="currentColor" stroke="none"/></svg></div>
           <div class="s-title">Escolha</div>
-          <div class="s-desc">Navegue pelo acervo de 319 peças e encontre o ponto de partida perfeito.</div>
+          <div class="s-desc">Navegue pelo acervo de <span data-prod-count-text>319</span> peças e encontre o ponto de partida perfeito.</div>
         </div>
         <div class="step" data-step="2" style="--step-c:#f0995a">
           <div class="s-halo" aria-hidden="true"></div>
@@ -1417,17 +1476,52 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
       </a>
     </div>
 
-    <div class="sub-head rv" style="margin-top:64px"><small>Projetos assinados</small></div>
+    <div class="sub-head rv" style="margin-top:72px"><small>Projetos assinados</small></div>
     <div class="folio rv">
-      <figure class="fi f-tall"><img src="img/ambiente-mesa-raposa-480.webp" srcset="img/ambiente-mesa-raposa-480.webp 480w, img/ambiente-mesa-raposa-960.webp 960w" loading="lazy" alt="Mesa de festa tema floresta com boneca de raposa, suculentas e caixotes de madeira"></figure>
-      <figure class="fi f-wide"><img src="img/ambiente-festa-maes-480.webp" srcset="img/ambiente-festa-maes-480.webp 480w, img/ambiente-festa-maes-960.webp 960w" loading="lazy" alt="Mães e criança rindo em festa, usando tiaras de bichinhos e luvas de pata em feltro"></figure>
 
-      <figure class="fi f-sq"><img src="img/ambiente-mae-filha-480.webp" srcset="img/ambiente-mae-filha-480.webp 480w, img/ambiente-mae-filha-960.webp 960w" loading="lazy" alt="Mãe e filha abraçadas usando tiaras de girafa e gatinho em feltro"></figure>
-      <figure class="fi f-sq"><img src="img/almofada-unicornio-mesa-480.webp" srcset="img/almofada-unicornio-mesa-480.webp 480w, img/almofada-unicornio-mesa-960.webp 960w" loading="lazy" alt="Par de almofadas de unicórnio decorando uma mesa de festa"></figure>
-      <figure class="fi f-sq"><img src="img/deco-mobile-baloes-480.webp" srcset="img/deco-mobile-baloes-480.webp 480w, img/deco-mobile-baloes-960.webp 960w" loading="lazy" alt="Varal decorativo com balões e nuvens de feltro contra o céu azul"></figure>
+      <figure class="fi f-tall">
+        <img src="img/ambiente-mesa-raposa-480.webp" srcset="img/ambiente-mesa-raposa-480.webp 480w, img/ambiente-mesa-raposa-960.webp 960w" loading="lazy" alt="Mesa de festa tema floresta com boneca de raposa, suculentas e caixotes de madeira">
+        <figcaption><span class="fi-n">01</span><span class="fi-t">Floresta encantada</span><span class="fi-d">Mesa temática · Raposa</span></figcaption>
+      </figure>
+      <figure class="fi f-wide">
+        <img src="img/ambiente-festa-maes-480.webp" srcset="img/ambiente-festa-maes-480.webp 480w, img/ambiente-festa-maes-960.webp 960w" loading="lazy" alt="Mães e criança rindo em festa, usando tiaras de bichinhos e luvas de pata em feltro">
+        <figcaption><span class="fi-n">02</span><span class="fi-t">Bichos da casa</span><span class="fi-d">Kit de festa · Tiaras &amp; patas</span></figcaption>
+      </figure>
 
-      <figure class="fi f-panor"><img src="img/ambiente-festa-unicornio-mesa-480.webp" srcset="img/ambiente-festa-unicornio-mesa-480.webp 480w, img/ambiente-festa-unicornio-mesa-960.webp 960w" loading="lazy" alt="Menina posando ao lado de mesa de festa temática de unicórnio, com bolo e decoração colorida"></figure>
-      <figure class="fi f-slim"><img src="img/ambiente-familia-mascaras-480.webp" srcset="img/ambiente-familia-mascaras-480.webp 480w, img/ambiente-familia-mascaras-960.webp 960w" loading="lazy" alt="Família sorrindo usando máscaras de coruja e raposa em feltro"></figure>
+      <figure class="fi f-sq">
+        <img src="img/ambiente-mae-filha-480.webp" srcset="img/ambiente-mae-filha-480.webp 480w, img/ambiente-mae-filha-960.webp 960w" loading="lazy" alt="Mãe e filha abraçadas usando tiaras de girafa e gatinho em feltro">
+        <figcaption><span class="fi-n">03</span><span class="fi-t">Mãe &amp; filha</span><span class="fi-d">Par sob medida</span></figcaption>
+      </figure>
+      <figure class="fi f-sq">
+        <img src="img/almofada-unicornio-mesa-480.webp" srcset="img/almofada-unicornio-mesa-480.webp 480w, img/almofada-unicornio-mesa-960.webp 960w" loading="lazy" alt="Par de almofadas de unicórnio decorando uma mesa de festa">
+        <figcaption><span class="fi-n">04</span><span class="fi-t">Unicórnio</span><span class="fi-d">Cenário de mesa</span></figcaption>
+      </figure>
+      <figure class="fi f-sq">
+        <img src="img/deco-mobile-baloes-480.webp" srcset="img/deco-mobile-baloes-480.webp 480w, img/deco-mobile-baloes-960.webp 960w" loading="lazy" alt="Varal decorativo com balões e nuvens de feltro contra o céu azul">
+        <figcaption><span class="fi-n">05</span><span class="fi-t">Céu de feltro</span><span class="fi-d">Varal · Balões &amp; nuvens</span></figcaption>
+      </figure>
+
+      <blockquote class="folio-verbatim">
+        <span class="fv-label">Verbatim</span>
+        <p>Um ambiente bem feito não é o que a criança <em>vê</em> — é o que ela <em>lembra</em> vinte anos depois.</p>
+        <cite>Ellen · fundadora do estúdio</cite>
+      </blockquote>
+
+      <figure class="fi f-panor">
+        <img src="img/ambiente-festa-unicornio-mesa-480.webp" srcset="img/ambiente-festa-unicornio-mesa-480.webp 480w, img/ambiente-festa-unicornio-mesa-960.webp 960w" loading="lazy" alt="Menina posando ao lado de mesa de festa temática de unicórnio, com bolo e decoração colorida">
+        <figcaption><span class="fi-n">06</span><span class="fi-t">Aniversário unicórnio</span><span class="fi-d">Projeto completo · Montagem no dia</span></figcaption>
+      </figure>
+      <figure class="fi f-slim">
+        <img src="img/ambiente-familia-mascaras-480.webp" srcset="img/ambiente-familia-mascaras-480.webp 480w, img/ambiente-familia-mascaras-960.webp 960w" loading="lazy" alt="Família sorrindo usando máscaras de coruja e raposa em feltro">
+        <figcaption><span class="fi-n">07</span><span class="fi-t">Retrato de família</span><span class="fi-d">Máscaras · Coruja &amp; raposa</span></figcaption>
+      </figure>
+    </div>
+
+    <div class="folio-index rv">
+      <div class="fx"><span class="fx-k">Escopo</span><span class="fx-v">Croqui, produção e montagem</span></div>
+      <div class="fx"><span class="fx-k">Formatos</span><span class="fx-v">Mesa, painel, varal e quarto</span></div>
+      <div class="fx"><span class="fx-k">Prazo</span><span class="fx-v">Definido por projeto</span></div>
+      <div class="fx"><span class="fx-k">Atendimento</span><span class="fx-v">Interior de SP e sob consulta</span></div>
     </div>
 
     <div class="spaces-cta rv">
@@ -1669,6 +1763,9 @@ fetch(SB+'/rest/v1/produtos?select=id&ativo=eq.true&oculto=eq.false',{
       document.querySelectorAll('[data-prod-count]').forEach(el=>{
         el.setAttribute('data-count-to',c);
         if(el.classList.contains('counted')) animateStat(el);
+      });
+      document.querySelectorAll('[data-prod-count-text]').forEach(el=>{
+        el.textContent=c;
       });
     }
   }
