@@ -16,7 +16,7 @@
 :root{
   --pink:#e52564;--pink2:#f04d7f;--rose:#c41d55;
   --dark:#0f0a0f;--dark2:#1a1020;
-  --cream:#fdf8f4;--cream2:#f0e8e0;--white:#fff;
+  --cream:#fdf8f4;--cream2:#f0e8e0;--cream3:#e6d9d0;--white:#fff;--ink:#0f0a0f;
   --gold:#c9a96e;
   --ink:#0f0a0f;
   --fd:'Fraunces','Playfair Display',Georgia,serif;
@@ -25,7 +25,7 @@
   --r-sm:10px;--r-md:16px;--r-lg:22px;
 }
 [data-theme="dark"]{
-  --cream:#15101a;--cream2:#1e1722;--white:#1e1722;
+  --cream:#15101a;--cream2:#1e1722;--cream3:#2a2130;--white:#1e1722;--ink:#f0e8ec;
   --dark:#f0e8ec;--dark2:#fdf8f5;
   --gold:#d9bc8a;
 }
@@ -1334,6 +1334,252 @@ body::before{
 [data-theme="dark"] [style*="color:rgba(15,10,15,.35)"]{color:rgba(240,232,236,.55)!important}
 [data-theme="dark"] [style*="color:rgba(15,10,15,.45)"]{color:rgba(240,232,236,.55)!important}
 [data-theme="dark"] [style*="color:rgba(15,10,15,.55)"]{color:rgba(240,232,236,.55)!important}
+
+/* ══════════════════════════════════════════════════════════
+   HERO BANNER + TRILHO DE FILTROS
+   ══════════════════════════════════════════════════════════ */
+/* ══════════ HERO ══════════ */
+.chr-hero{
+  position:relative;isolation:isolate;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% -8%,rgba(229,37,100,.07),transparent 62%),
+    radial-gradient(ellipse 50% 50% at 8% 96%,rgba(201,169,110,.16),transparent 60%),
+    linear-gradient(178deg,var(--cream2) 0%,var(--cream) 58%,#fff 100%);
+  padding:0 0 0;overflow:hidden;
+}
+/* onda de topo — decorativa, some de leitores de tela */
+.wave-top{display:block;width:100%;height:auto;color:var(--cream3)}
+.wave-top path{fill:currentColor;opacity:.5}
+
+.chr-inner{
+  max-width:1280px;margin:0 auto;padding:8px 24px 0;
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+}
+
+/* — logo — troque o <span> por <img src="logo.svg" alt="Chuchu Rosa"> — */
+/* logo real da marca. Substituir por logo.svg assim que houver o vetor —
+   este PNG foi extraído do banner e tem resolução limitada. */
+.chr-logo{display:block;width:clamp(210px,26vw,380px);height:auto}
+
+/* — fita da tagline — */
+.chr-ribbon{
+  margin-top:16px;
+  font-family:var(--fd);font-style:italic;font-weight:400;
+  font-size:clamp(1rem,2.2vw,1.5rem);letter-spacing:-.01em;
+  color:var(--rose);
+}
+.chr-ribbon-2{
+  font-family:var(--fb);font-weight:600;color:rgba(15,10,15,.55);
+  font-size:clamp(.72rem,1.5vw,.86rem);
+  letter-spacing:.16em;text-transform:uppercase;
+  margin-top:11px;
+}
+.chr-heart{
+  display:flex;align-items:center;gap:12px;margin-top:16px;
+  color:var(--gold);width:min(300px,66%);
+}
+.chr-heart::before,.chr-heart::after{content:'';flex:1;height:1px;background:currentColor;opacity:.6}
+.chr-heart svg{width:12px;height:12px;flex:none;color:var(--pink);opacity:.8}
+
+/* — fileira de crianças recortadas — */
+/* Cada .kid é um slot. Coloque o PNG com fundo transparente dentro.
+   object-fit:contain + object-position:bottom mantém todos "pisando"
+   na mesma linha, mesmo com recortes de alturas diferentes. */
+.chr-cast{
+  width:100%;margin-top:26px;max-width:900px;
+  display:flex;align-items:flex-end;justify-content:center;
+  gap:clamp(10px,1.6vw,20px);
+}
+.kid{
+  flex:1 1 0;min-width:0;
+  height:clamp(220px,25vw,340px);
+  display:flex;align-items:flex-end;justify-content:center;
+}
+/* Estas fotos têm fundo (não são recortes PNG), então entram numa
+   moldura em arco em vez de flutuarem soltas. */
+.kid img{
+  width:100%;height:100%;
+  object-fit:cover;object-position:var(--pos,center 30%);
+  display:block;
+  border-radius:130px 130px 18px 18px;
+  box-shadow:0 18px 38px -14px rgba(15,10,15,.28);
+}
+/* escalonamento leve: os das pontas um pouco menores, dá curvatura à fila */
+.kid:nth-child(2){height:clamp(240px,28vw,380px)}
+
+/* placeholder enquanto as fotos não chegam */
+.kid .slot{
+  width:100%;height:86%;border-radius:44% 44% 18% 18%/38% 38% 12% 12%;
+  background:repeating-linear-gradient(135deg,var(--cream2) 0 11px,var(--cream3) 11px 22px);
+  border:2px dashed rgba(201,169,110,.5);
+  display:flex;align-items:flex-end;justify-content:center;padding-bottom:14px;
+  font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(15,10,15,.34);text-align:center;
+}
+
+/* — onda inferior + selos — */
+.chr-base{position:relative;margin-top:-1px}
+.wave-bot{display:block;width:100%;height:auto;color:#fff}
+.wave-bot path{fill:currentColor}
+.wave-bot .edge{fill:none;stroke:var(--gold);stroke-width:1.5;opacity:.7}
+
+.chr-badges{
+  background:#fff;padding:6px 24px 26px;
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
+  gap:clamp(10px,2.4vw,30px);
+}
+.badge{display:flex;align-items:center;gap:11px}
+.badge .ico{
+  width:clamp(34px,4vw,46px);height:clamp(34px,4vw,46px);flex:none;
+  border:1.5px solid rgba(201,169,110,.7);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;color:var(--rose);
+}
+.badge .ico svg{width:52%;height:52%}
+.badge b{
+  font-family:var(--fb);font-weight:600;color:rgba(15,10,15,.72);
+  font-size:clamp(.63rem,1.3vw,.76rem);letter-spacing:.14em;
+  text-transform:uppercase;line-height:1.45;text-align:left;
+}
+.badge-sep{color:var(--gold);display:flex;align-items:center;opacity:.65}
+.badge-sep svg{width:13px;height:13px}
+@media(max-width:760px){.badge-sep{display:none}}
+
+/* ══════════ TICKER — a faixa que a Ellen quis junto ══════════ */
+.chr-ticker{
+  background:var(--ink);color:#fff;overflow:hidden;
+  padding:15px 0;position:relative;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);
+          mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);
+}
+.tk-track{display:flex;width:max-content;animation:tk 34s linear infinite}
+.chr-ticker:hover .tk-track{animation-play-state:paused}
+@keyframes tk{to{transform:translateX(-50%)}}
+.tk-seq{display:flex;align-items:center;flex:none}
+.tk-i{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:0 clamp(18px,3vw,38px);
+  font-family:var(--fb);font-weight:500;
+  font-size:clamp(.7rem,1.35vw,.82rem);letter-spacing:.18em;text-transform:uppercase;
+  white-space:nowrap;color:rgba(255,255,255,.86);
+}
+.tk-i svg{width:15px;height:15px;flex:none;color:var(--gold)}
+.tk-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);flex:none;opacity:.8}
+@media(prefers-reduced-motion:reduce){
+  .tk-track{animation:none;width:100%;justify-content:center;flex-wrap:wrap}
+  .tk-seq:nth-child(2){display:none}
+}
+
+
+/* ══════════ RESPONSIVO ══════════ */
+/* A fila de 6 não cabe em telas pequenas sem virar seis tirinhas ilegíveis.
+   Abaixo de 900px sobram 4; abaixo de 620px, 3. Os escondidos são só
+   decorativos, então não há perda de conteúdo. */
+@media(max-width:900px){.chr-inner{padding-inline:16px}}
+@media(max-width:620px){
+  .kid:nth-child(3){display:none}
+  .kid,.kid:nth-child(2){height:clamp(170px,46vw,230px)}
+  .chr-cast{gap:8px}
+  .kid img{border-radius:90px 90px 14px 14px}
+  .badge{gap:8px}
+  .chr-badges{gap:14px 18px;padding-bottom:20px}
+}
+/* os selos quebram em linhas sozinhos; nada é escondido */
+
+/* ── TRILHO DE FILTROS ──
+   Cartão que termina onde o conteúdo termina — não uma faixa tingida
+   descendo até o rodapé. Sticky, então acompanha a rolagem da grade. */
+.rail{width:264px;flex-shrink:0;position:sticky;top:22px}
+@media(max-width:980px){.rail{width:auto;position:static;margin-bottom:26px}}
+.rail-card{
+  background:#fff;border-radius:18px;padding:8px;
+  box-shadow:0 1px 2px rgba(15,10,15,.05),0 14px 34px -14px rgba(15,10,15,.16);
+}
+.rail-top{display:flex;align-items:baseline;justify-content:space-between;padding:14px 14px 10px}
+.rail-top span{font-size:.63rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(15,10,15,.38)}
+.rail-clear{
+  border:0;background:none;cursor:pointer;font-family:var(--fb);
+  font-size:.75rem;font-weight:600;color:var(--rose);padding:0;
+}
+.rail-clear:hover{text-decoration:underline}
+.rail-clear[hidden]{display:none}
+
+.rail-grp{padding:2px 8px 10px}
+.rail-h{
+  display:flex;align-items:baseline;gap:6px;
+  font-size:.63rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(15,10,15,.38);padding:10px 6px 8px;
+}
+.rail-h em{font-style:normal;color:rgba(15,10,15,.24)}
+.rail-div{height:1px;background:rgba(15,10,15,.07);margin:2px 14px}
+
+.rail-search{position:relative;padding:0 6px 8px}
+.rail-search input{
+  width:100%;font-family:var(--fb);font-size:.85rem;color:var(--ink);
+  padding:10px 12px 10px 32px;border-radius:10px;
+  border:1px solid rgba(15,10,15,.09);background:var(--cream);
+}
+.rail-search input:focus{outline:2px solid rgba(229,37,100,.35);border-color:transparent}
+.rail-search svg{position:absolute;left:18px;top:11px;opacity:.35;pointer-events:none}
+
+.rail-list{list-style:none}
+.rail-list.scroll{max-height:280px;overflow-y:auto;scrollbar-width:thin}
+.rail-list li button{
+  width:100%;border:0;background:none;cursor:pointer;font-family:var(--fb);
+  display:flex;align-items:center;gap:9px;text-align:left;
+  padding:8px 10px;border-radius:9px;
+  font-size:.87rem;font-weight:500;color:rgba(15,10,15,.72);
+  transition:background .18s,color .18s;
+}
+.rail-list li button:hover{background:rgba(229,37,100,.06);color:var(--ink)}
+.rail-list li button:focus-visible{outline:2px solid var(--pink);outline-offset:-2px}
+.rail-list .n{margin-left:auto;font-size:.72rem;color:rgba(15,10,15,.32);font-variant-numeric:tabular-nums}
+/* quadrado = tipo de peça · círculo = tema. Duas formas, dois eixos. */
+.mk{width:6px;height:6px;flex:none;background:var(--rose);opacity:.5}
+.mk.sq{border-radius:1.5px}
+.mk.ci{border-radius:50%;background:var(--gold);opacity:.6}
+.rail-list li button[aria-pressed="true"]{background:var(--pink);color:#fff;font-weight:600}
+.rail-list li button[aria-pressed="true"] .n{color:rgba(255,255,255,.8)}
+.rail-list li button[aria-pressed="true"] .mk{background:#fff;opacity:1}
+/* combinação sem resultado: apagada, nunca escondida */
+.rail-list li button[disabled]{opacity:.3;cursor:default}
+.rail-list li button[disabled] .n{text-decoration:line-through}
+
+.price{display:flex;gap:8px;padding:2px 6px 8px}
+.price input{
+  width:100%;font-family:var(--fb);font-size:.85rem;text-align:center;color:var(--ink);
+  padding:10px 8px;border-radius:10px;
+  border:1px solid rgba(15,10,15,.09);background:var(--cream);
+}
+.price input:focus{outline:2px solid rgba(229,37,100,.35);border-color:transparent}
+
+
+@media(max-width:980px){
+  /* como drawer, o cartão perde a moldura e ocupa o painel inteiro */
+  .rail{position:static;width:auto}
+  .rail-card{box-shadow:none;border-radius:0;padding:0 10px 24px;background:transparent}
+  .rail-card .rail-top{display:none}
+  .rail-list.scroll{max-height:none}
+}
+/* o trilho substitui .sidebar: neutraliza o fundo tingido antigo */
+.shop-wrap{background-image:none !important}
+[data-theme="dark"] .shop-wrap{background-image:none !important}
+[data-theme="dark"] .rail-card{background:var(--cream2)}
+[data-theme="dark"] .rail-search input,
+[data-theme="dark"] .price input{background:rgba(240,232,236,.05);color:var(--dark);border-color:rgba(240,232,236,.12)}
+[data-theme="dark"] .rail-list li button{color:rgba(240,232,236,.72)}
+[data-theme="dark"] .chr-hero{
+  background:
+    radial-gradient(ellipse 70% 60% at 50% -8%,rgba(229,37,100,.12),transparent 62%),
+    radial-gradient(ellipse 50% 50% at 8% 96%,rgba(201,169,110,.10),transparent 60%),
+    linear-gradient(178deg,var(--cream2) 0%,var(--cream) 62%,var(--cream) 100%);
+}
+[data-theme="dark"] .wave-top{color:var(--cream3)}
+[data-theme="dark"] .wave-bot{color:var(--cream)}
+[data-theme="dark"] .chr-badges{background:var(--cream)}
+[data-theme="dark"] .chr-ribbon-2{color:rgba(240,232,236,.5)}
+[data-theme="dark"] .badge b{color:rgba(240,232,236,.78)}
+[data-theme="dark"] .kid img{box-shadow:0 18px 38px -14px rgba(0,0,0,.6)}
+
 </style>
 <link rel="icon" type="image/x-icon" href="img/favicon.ico">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
@@ -1370,22 +1616,97 @@ body::before{
 
 <div id="sugestaoBanner" style="display:none"></div>
 <div id="sugestaoSection" style="display:none"></div>
-<div class="shop-hero">
-  <div class="hero-inner">
-    <div class="hero-eyebrow">A loja Chuchu Rosa</div>
-    <h1>Peças que viram<br><em>memória de infância</em></h1>
-    <div class="hero-count"><b id="heroProdCount">—</b> peças de design exclusivo, prontas para encomendar</div>
+<section class="chr-hero" aria-label="Chuchu Rosa — fantasias e brinquedos em feltro">
+
+  <svg class="wave-top" viewBox="0 0 1440 70" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <path d="M0,26 C180,64 320,-4 520,16 C720,36 840,72 1040,54 C1200,40 1320,8 1440,22 L1440,0 L0,0 Z"/>
+  </svg>
+
+  <div class="chr-inner">
+    <img class="chr-logo" src="logo-chuchu-rosa.png" alt="Chuchu Rosa" width="510" height="193">
+
+    <div class="chr-ribbon">Fantasias que encantam, brincadeiras que transformam</div>
+    <div class="chr-ribbon-2">Feito à mão, peça por peça</div>
+    <div class="chr-heart">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-8-5.2-8-10.4A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 3.6C20 15.8 12 21 12 21z"/></svg>
+    </div>
+
+    <!-- ── SLOTS DAS FOTOS ──
+         Substitua cada .slot por:
+         <img src="kids/1.png" alt="">   (PNG com fundo transparente)
+         Recorte com o pé/base alinhado ao rodapé da imagem. -->
+    <div class="chr-cast">
+      <div class="kid"><img src="https://pedrodeathayde.github.io/loja-chuchurosa/img/hero-leao-960.webp" alt="Criança com fantasia de leão em feltro" loading="eager" style="--pos:center 26%"></div>
+      <div class="kid"><img src="https://pedrodeathayde.github.io/loja-chuchurosa/img/bebe-urso-cinza-960.webp" alt="Bebê com touca de urso cinza em feltro" loading="lazy" style="--pos:center 30%"></div>
+      <div class="kid"><img src="https://pedrodeathayde.github.io/loja-chuchurosa/img/colecao-raposa-960.webp" alt="Peças da coleção raposa em feltro" loading="lazy" style="--pos:center 38%"></div>
+    </div>
   </div>
-  <div class="hero-mosaic" id="heroMosaic">
-    <div class="hero-tile hero-tile-a" data-slot="0"><img alt="" loading="eager"></div>
-    <div class="hero-tile hero-tile-b" data-slot="1"><img alt="" loading="lazy"></div>
-    <div class="hero-tile hero-tile-c" data-slot="2"><img alt="" loading="lazy"></div>
+
+  <div class="chr-base">
+    <svg class="wave-bot" viewBox="0 0 1440 64" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <path d="M0,30 C200,-2 380,54 620,40 C860,26 1020,58 1220,42 C1320,34 1390,26 1440,30 L1440,64 L0,64 Z"/>
+      <path class="edge" d="M0,30 C200,-2 380,54 620,40 C860,26 1020,58 1220,42 C1320,34 1390,26 1440,30"/>
+    </svg>
+  </div>
+
+  <div class="chr-badges">
+    <div class="badge">
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-8-5.2-8-10.4A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 3.6C20 15.8 12 21 12 21z"/></svg></span>
+      <b>Feito<br>com amor</b>
+    </div>
+    <span class="badge-sep"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8-5.2-8-10.4A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 3.6C20 15.8 12 21 12 21z"/></svg></span>
+    <div class="badge">
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21c0-8 4-13 14-14 0 9-5 14-14 14z"/><path d="M5 21c2-5 5-8 9-10"/></svg></span>
+      <b>Materiais<br>de qualidade</b>
+    </div>
+    <span class="badge-sep"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8-5.2-8-10.4A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 3.6C20 15.8 12 21 12 21z"/></svg></span>
+    <div class="badge">
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.4-3 8.1-7 9-4-.9-7-4.6-7-9V6z"/></svg></span>
+      <b>Conforto<br>para brincar</b>
+    </div>
+    <span class="badge-sep"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8-5.2-8-10.4A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 3.6C20 15.8 12 21 12 21z"/></svg></span>
+    <div class="badge">
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l2.3 4.9 5.2.7-3.8 3.6 1 5.3-4.7-2.6-4.7 2.6 1-5.3L4.5 9.6l5.2-.7z"/></svg></span>
+      <b>Estímulo à<br>imaginação</b>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TICKER ══ duas sequências idênticas: a segunda cobre a emenda ══ -->
+<div class="chr-ticker" role="marquee" aria-label="Categorias e informações de envio">
+  <div class="tk-track">
+    <div class="tk-seq">
+      <span class="tk-i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-8-5.2-8-10.4A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 3.6C20 15.8 12 21 12 21z"/></svg>Fantasias</span>
+      <span class="tk-dot"></span>
+      <span class="tk-i">Acessórios</span>
+      <span class="tk-dot"></span>
+      <span class="tk-i">Naninhas</span>
+      <span class="tk-dot"></span>
+      <span class="tk-i">Brinquedos</span>
+      <span class="tk-dot"></span>
+      <span class="tk-i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h11v9H2z"/><path d="M13 9h4l3 3v3h-7z"/><circle cx="6" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/></svg>Enviamos para todo o Brasil</span>
+      <span class="tk-dot"></span>
+      <span class="tk-i">Feito à mão no interior de SP</span>
+      <span class="tk-dot"></span>
+    </div>
+    <div class="tk-seq" aria-hidden="true">
+      <span class="tk-i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-8-5.2-8-10.4A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 3.6C20 15.8 12 21 12 21z"/></svg>Fantasias</span>
+      <span class="tk-dot"></span>
+      <span class="tk-i">Acessórios</span>
+      <span class="tk-dot"></span>
+      <span class="tk-i">Naninhas</span>
+      <span class="tk-dot"></span>
+      <span class="tk-i">Brinquedos</span>
+      <span class="tk-dot"></span>
+      <span class="tk-i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h11v9H2z"/><path d="M13 9h4l3 3v3h-7z"/><circle cx="6" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/></svg>Enviamos para todo o Brasil</span>
+      <span class="tk-dot"></span>
+      <span class="tk-i">Feito à mão no interior de SP</span>
+      <span class="tk-dot"></span>
+    </div>
   </div>
 </div>
 
-<div class="hero-shortcuts-wrap">
-  <div class="hero-badges" id="heroBadges"></div>
-</div>
+
 
 <div id="shopTicker" style="display:none">
   <div class="shop-ticker">
@@ -1402,39 +1723,45 @@ body::before{
 </div>
 
 <div class="shop-wrap">
-  <aside class="sidebar" id="sidebar" role="dialog" aria-modal="true" aria-label="Filtros">
-   <div class="sidebar-inner">
-    <div class="sidebar-head">
-      <span class="sidebar-title">Filtros<span class="active-count" id="activeCount" style="display:none"></span></span>
-      <button class="sidebar-close" onclick="closeSidebar()" aria-label="Fechar filtros">✕</button>
-    </div>
-
-    <button type="button" class="sidebar-all-btn active" data-cat="Todas" aria-pressed="true" id="allProductsBtn">
-      <span>Todos os produtos</span>
-      <span class="cnt" id="countTodas"></span>
-    </button>
-
-    <section class="sidebar-section" data-sec="cats">
-      <button class="sidebar-label" type="button" aria-expanded="true" aria-controls="secCats"><svg class="sidebar-label-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h6M3 10h14M3 14h10"/></svg>Categorias <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></button>
-      <div class="sidebar-body" id="secCats">
-        <ul class="cat-list" id="catList"></ul>
+  <aside class="rail sidebar" id="sidebar" aria-label="Filtros">
+    <div class="rail-card">
+      <div class="sidebar-head">
+        <span class="sidebar-title">Filtros<span class="active-count" id="activeCount" style="display:none"></span></span>
+        <button class="sidebar-close" onclick="closeSidebar()" aria-label="Fechar filtros">✕</button>
       </div>
-    </section>
+      <div class="rail-top">
+        <span>Filtros</span>
+        <button class="rail-clear" id="clearFiltersBtn" onclick="clearAllFilters()" hidden>Limpar</button>
+      </div>
 
-    <section class="sidebar-section" data-sec="preco">
-      <button class="sidebar-label" type="button" aria-expanded="true" aria-controls="secPreco"><svg class="sidebar-label-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2v16M14.5 5.5c0-1.4-2-2.5-4.5-2.5S5.5 4.1 5.5 5.5 7.5 8 10 8s4.5 1.1 4.5 2.5-2 2.5-4.5 2.5-4.5-1.1-4.5-2.5"/></svg>Faixa de preço <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></button>
-      <div class="sidebar-body" id="secPreco">
-        <div class="price-row">
-          <input class="price-input" type="number" id="priceMin" placeholder="Mín" min="0" inputmode="numeric">
-          <input class="price-input" type="number" id="priceMax" placeholder="Máx" min="0" inputmode="numeric">
+      <!-- EIXO 1 — o que a peça É -->
+      <div class="rail-grp">
+        <div class="rail-h">Tipo de peça</div>
+        <ul class="rail-list" id="catList"></ul>
+      </div>
+
+      <div class="rail-div"></div>
+
+      <!-- EIXO 2 — qual o TEMA -->
+      <div class="rail-grp">
+        <div class="rail-h">Tema <em id="temaTotal"></em></div>
+        <div class="rail-search">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <input id="temaSearch" type="search" placeholder="Buscar tema…" aria-label="Buscar tema">
+        </div>
+        <ul class="rail-list scroll" id="temaList"></ul>
+      </div>
+
+      <div class="rail-div"></div>
+
+      <div class="rail-grp">
+        <div class="rail-h">Faixa de preço</div>
+        <div class="price">
+          <input class="price-input" type="number" id="priceMin" placeholder="Mín" min="0" inputmode="numeric" aria-label="Preço mínimo">
+          <input class="price-input" type="number" id="priceMax" placeholder="Máx" min="0" inputmode="numeric" aria-label="Preço máximo">
         </div>
       </div>
-    </section>
-
-    <div class="sidebar-footer">
-      <button class="clear-filters-btn" id="clearFiltersBtn" onclick="clearAllFilters()">✕ Limpar filtros</button>
     </div>
-   </div>
   </aside>
 
   <main class="shop-main">
@@ -1454,7 +1781,6 @@ body::before{
       </div>
     </div>
     <div class="active-filters" id="activeFilters"></div>
-    <div class="cat-tabs" id="catTabs"></div>
     <div class="prod-grid" id="prodGrid"></div>
     <div class="scroll-sentinel" id="scrollSentinel"><span class="scroll-spinner"></span> Carregando mais peças…</div>
   </main>
@@ -1987,7 +2313,7 @@ function selectCategoryOnly(cat){
   currentCat=selectedCats.length?selectedCats[0]:'Todas';
   searchQ='';
   activeDesigns=[];
-  document.querySelectorAll('#heroBadges .hbadge').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#temaList .hbadge').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-pressed','false');});
   syncDesignSidebarUI();
   const si=document.getElementById('searchInput'); if(si) si.value='';
   syncCatUI();
@@ -2050,12 +2376,12 @@ async function setCatTab(el,cat){
   document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
   activeDesigns=[];
-  document.querySelectorAll('#heroBadges .hbadge').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#temaList .hbadge').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-pressed','false');});
   selectCategoryOnly(cat);
 }
 
 async function loadDesignBadges(){
-  const badgeRow=document.getElementById('heroBadges');
+  const badgeRow=document.getElementById('temaList');
   if(!badgeRow)return;
   // Fallback designs if DB not available
   const fallback=[
@@ -2079,32 +2405,55 @@ async function loadDesignBadges(){
       .toLowerCase().replace(/[^a-z]/g,' ').trim().split(/\s+/)[0];
   }
 
-  // ✨ Todos primeiro, depois os designs
   badgeRow.innerHTML=designs.map(d=>
-    `<span class="hbadge" data-filter="${toSlug(d.nome)}" data-type="search">${d.emoji||''} ${d.nome}</span>`
+    `<li><button type="button" class="hbadge" data-filter="${toSlug(d.nome)}" data-name="${d.nome}" data-type="search" aria-pressed="false"><span class="mk ci"></span>${d.nome}<span class="n"></span></button></li>`
   ).join('');
+  const tot=document.getElementById('temaTotal');
+  if(tot) tot.textContent=designs.length;
 }
 loadDesignBadges();
 
+// busca dentro do eixo Tema — 28 itens sem busca é impraticável
+document.getElementById('temaSearch').addEventListener('input',e=>{
+  const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const q=norm(e.target.value);
+  document.querySelectorAll('#temaList li').forEach(li=>{
+    li.hidden = q && !norm(li.textContent).includes(q);
+  });
+});
+
+// "Limpar" só aparece quando há o que limpar
+function syncClearBtn(){
+  const btn=document.getElementById('clearFiltersBtn');
+  if(!btn)return;
+  const has = (typeof selectedCats!=='undefined' && selectedCats.length)
+           || (typeof activeDesigns!=='undefined' && activeDesigns.length)
+           || (typeof priceMin!=='undefined' && priceMin)
+           || (typeof priceMax!=='undefined' && priceMax);
+  btn.hidden = !has;
+}
+
 function syncDesignSidebarUI(){
+  syncClearBtn();
   // Mantido como no-op — chamado em vários pontos do fluxo de filtros.
-  // Os designs agora vivem só em #heroBadges, que já controla seu próprio
+  // Os designs agora vivem no eixo Tema do trilho (#temaList).
   // estado .active diretamente nos cliques.
 }
 
-document.getElementById('heroBadges').addEventListener('click',e=>{
+document.getElementById('temaList').addEventListener('click',e=>{
   const badge=e.target.closest('.hbadge');
   if(!badge)return;
 
   const wasActive=badge.classList.contains('active');
-  const activeCount=document.querySelectorAll('#heroBadges .hbadge.active').length;
+  const activeCount=document.querySelectorAll('#temaList .hbadge.active').length;
   if(wasActive && activeCount===1){
     badge.classList.remove('active');
     badge.blur(); // força reset visual no mobile
   } else {
     badge.classList.toggle('active');
   }
-  activeDesigns=[...document.querySelectorAll('#heroBadges .hbadge.active')]
+  [...document.querySelectorAll('#temaList .hbadge')].forEach(b=>b.setAttribute('aria-pressed',b.classList.contains('active')));
+  activeDesigns=[...document.querySelectorAll('#temaList .hbadge.active')]
     .map(b=>b.dataset.filter).filter(Boolean);
   syncDesignSidebarUI();
 
@@ -2176,7 +2525,7 @@ function restoreSavedFilters(){
   const pMinEl=document.getElementById('priceMin'); if(pMinEl) pMinEl.value=priceMin??'';
   const pMaxEl=document.getElementById('priceMax'); if(pMaxEl) pMaxEl.value=priceMax??'';
   if(activeDesigns.length){
-    document.querySelectorAll('#heroBadges .hbadge').forEach(b=>{
+    document.querySelectorAll('#temaList .hbadge').forEach(b=>{
       b.classList.toggle('active', activeDesigns.includes(b.dataset.filter));
     });
     syncDesignSidebarUI();
@@ -2207,26 +2556,12 @@ async function loadCats(){
     ul.innerHTML='';
     if(existing)ul.appendChild(existing);
     // Also build mobile tabs
-    const tabsEl=document.getElementById('catTabs');
-    if(tabsEl){
-      tabsEl.innerHTML=('<button class="cat-tab active" onclick="setCatTab(this,\'Todas\')">Todas</button>'
-        +cats.map(c=>'<button class="cat-tab" onclick="setCatTab(this,\''+c.nome+'\')">'+(c.emoji||'🏷️')+' '+c.nome+'</button>').join(''));
-    }
 
     cats.forEach(c=>{
       const li=document.createElement('li');
-      li.className='cat-item';
-      li.dataset.cat=c.nome;
-      li.setAttribute('role','button');
-      li.setAttribute('tabindex','0');
-      li.setAttribute('aria-pressed','false');
       const safeId='count_'+c.nome.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]/g,'');
-      li.innerHTML=`<span class="cat-icon">${c.emoji||'🏷️'}</span> <span class="cat-name">${c.nome}</span><span class="cat-count" id="${safeId}"></span><button class="cat-expand" type="button" aria-label="Ver subtemas de ${c.nome}" onclick="event.stopPropagation();toggleSubtags(this,'${c.nome.replace(/'/g,"\\'")}')">▾</button>`;
+      li.innerHTML=`<button type="button" class="cat-item" data-cat="${c.nome}" aria-pressed="false"><span class="mk sq"></span>${c.nome}<span class="n" id="${safeId}"></span></button>`;
       ul.appendChild(li);
-      const sub=document.createElement('ul');
-      sub.className='subtag-list';
-      sub.id='subtags_'+safeId;
-      li.appendChild(sub);
     });
   }catch(e){console.warn('loadCats failed',e);}
 }
@@ -2256,8 +2591,9 @@ function toggleSubtags(btn,catName){
 }
 function filterByDesignName(name){
   activeDesigns=[name.toLowerCase()];
-  document.querySelectorAll('#heroBadges .hbadge').forEach(b=>{
-    b.classList.toggle('active', b.dataset.filter===name.toLowerCase());
+  document.querySelectorAll('#temaList .hbadge').forEach(b=>{
+    const on = b.dataset.filter===name.toLowerCase();
+    b.classList.toggle('active', on); b.setAttribute('aria-pressed', on);
   });
   syncDesignSidebarUI();
   saveFiltersToURL();
@@ -2312,9 +2648,9 @@ function renderActiveFilters(){
   });
   if(typeof activeDesigns!=='undefined'){
     activeDesigns.forEach(slug=>{
-      const badge=document.querySelector(`#heroBadges .hbadge[data-filter="${slug}"]`);
+      const badge=document.querySelector(`#temaList .hbadge[data-filter="${slug}"]`);
       const label=badge?badge.textContent.trim():slug;
-      chips.push({label,onRemove:`document.querySelector('#heroBadges .hbadge[data-filter="${slug}"]')?.click()`});
+      chips.push({label,onRemove:`document.querySelector('#temaList .hbadge[data-filter="${slug}"]')?.click()`});
     });
   }
   if(priceMin!==null||priceMax!==null){
@@ -2711,7 +3047,7 @@ function clearAllFilters(){
   document.getElementById('priceMin').value='';
   document.getElementById('priceMax').value='';
   const si=document.getElementById('searchInput'); if(si) si.value='';
-  document.querySelectorAll('#heroBadges .hbadge').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#temaList .hbadge').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-pressed','false');});
   document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
   document.querySelector('.cat-tab')?.classList.add('active');
   syncCatUI();
