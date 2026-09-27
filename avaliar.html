@@ -232,15 +232,14 @@ const params=new URLSearchParams(location.search);
 const pedidoId=params.get('pedido');
 const token=params.get('token');
 
-let pedido=null, estrelas=0, fotoFiles=[];
-let modoToken=false;
+let estrelas=0, fotoFiles=[];
 const ICON_BAG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 11.1a2 2 0 0 1-2 1.9H8.2a2 2 0 0 1-2-1.9Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>';   // link com token: usa as funções de supabase/2026-09-27-lgpd.sql
 
-// chamada RPC; missing=true quando a função ainda não existe no banco
+// chamada RPC
 async function rpc(name,args){
   const r=await fetch(`${SB}/rest/v1/rpc/${name}`,{method:'POST',headers:{...HDR,'Content-Type':'application/json'},body:JSON.stringify(args)});
   let data=null;try{data=await r.json();}catch(e){}
-  return {ok:r.ok,data,missing:r.status===404&&(!data||data.code==='PGRST202')};
+  return {ok:r.ok,data};
 }
 function renderItens(items){
   const prodList=document.getElementById('prodList');
@@ -307,40 +306,13 @@ async function compressImage(file,maxW=1000,q=0.82){
 async function init(){
   if(!pedidoId){showError();return;}
   try{
-    if(token){
-      const res=await rpc('avaliacao_contexto',{p_pedido_id:parseInt(pedidoId),p_token:token});
-      if(!res.missing){
-        if(!res.ok||!res.data){showError();return;}
-        if(res.data.ja_avaliado){showError('Este pedido já foi avaliado. Obrigada por contar como foi!');return;}
-        modoToken=true;
-        if(res.data.primeiro_nome)document.getElementById('clienteNome').value=res.data.primeiro_nome;
-        renderItens(res.data.itens);
-        document.getElementById('loading').style.display='none';
-        document.getElementById('formArea').style.display='block';
-        return;
-      }
-    }
-    // TODO remover depois que o SQL de LGPD rodar: fluxo antigo, sem token
-    const r=await fetch(`${SB}/rest/v1/rpc/rastrear_pedido`,{
-      method:'POST',headers:{...HDR,'Content-Type':'application/json'},
-      body:JSON.stringify({p_id:parseInt(pedidoId),p_tracking_code:null})
-    });
-    const d=await r.json();
-    if(!Array.isArray(d)||!d[0]){showError();return;}
-    pedido=d[0];
-
-    // Load items via secure RPC
-    const ri=await fetch(`${SB}/rest/v1/rpc/itens_do_pedido`,{
-      method:'POST',headers:{...HDR,'Content-Type':'application/json'},
-      body:JSON.stringify({p_pedido_id:parseInt(pedidoId)})
-    });
-    const items=await ri.json();
-
-    // Pre-fill name
-    if(pedido.visitante_nome)document.getElementById('clienteNome').value=pedido.visitante_nome;
-
-    renderItens(items);
-
+    // link do e-mail precisa ter o token (supabase/2026-09-27-lgpd.sql)
+    if(!token){showError();return;}
+    const res=await rpc('avaliacao_contexto',{p_pedido_id:parseInt(pedidoId),p_token:token});
+    if(!res.ok||!res.data){showError();return;}
+    if(res.data.ja_avaliado){showError('Este pedido já foi avaliado. Obrigada por contar como foi!');return;}
+    if(res.data.primeiro_nome)document.getElementById('clienteNome').value=res.data.primeiro_nome;
+    renderItens(res.data.itens);
     document.getElementById('loading').style.display='none';
     document.getElementById('formArea').style.display='block';
   }catch(e){showError();}
@@ -373,38 +345,15 @@ async function enviarAvaliacao(){
       if(up.ok)fotoUrl=`${SB}/storage/v1/object/public/avaliacoes/${fname}`;
     }
 
-    if(modoToken){
-      const res=await rpc('enviar_avaliacao',{
-        p_pedido_id:parseInt(pedidoId),p_token:token,p_nome:nome,p_estrelas:estrelas,
-        p_comentario:document.getElementById('comentario').value.trim()||null,p_foto_url:fotoUrl
-      });
-      if(!res.ok){
-        const m=res.data?.message||'';
-        if(m==='ja_avaliado'){showError('Este pedido já foi avaliado. Obrigada por contar como foi!');document.getElementById('formArea').style.display='none';return;}
-        throw new Error(m||'Erro ao salvar');
-      }
-      document.getElementById('formArea').style.display='none';
-      document.getElementById('successArea').style.display='block';
-      return;
-    }
-
-    // TODO remover depois que o SQL de LGPD rodar: gravação direta antiga
-    const payload={
-      pedido_id:parseInt(pedidoId),
-      produto_id:null, // geral do pedido
-      cliente_nome:nome,
-      cliente_email:pedido.visitante_email||null,
-      estrelas,
-      comentario:document.getElementById('comentario').value.trim()||null,
-      foto_url:fotoUrl,
-      aprovada:false
-    };
-
-    const res=await fetch(`${SB}/rest/v1/avaliacoes`,{
-      method:'POST',headers:{...HDR,'Prefer':'return=minimal'},body:JSON.stringify(payload)
+    const res=await rpc('enviar_avaliacao',{
+      p_pedido_id:parseInt(pedidoId),p_token:token,p_nome:nome,p_estrelas:estrelas,
+      p_comentario:document.getElementById('comentario').value.trim()||null,p_foto_url:fotoUrl
     });
-
-    if(!res.ok)throw new Error('Erro ao salvar');
+    if(!res.ok){
+      const m=res.data?.message||'';
+      if(m==='ja_avaliado'){showError('Este pedido já foi avaliado. Obrigada por contar como foi!');document.getElementById('formArea').style.display='none';return;}
+      throw new Error(m||'Erro ao salvar');
+    }
     document.getElementById('formArea').style.display='none';
     document.getElementById('successArea').style.display='block';
   }catch(e){

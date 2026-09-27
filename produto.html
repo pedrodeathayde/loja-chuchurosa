@@ -1027,25 +1027,9 @@ async function loadReviews(){
     // view sem e-mail (supabase/2026-09-27-lgpd.sql): avaliações do produto e as
     // avaliações gerais dos pedidos que o incluíram, numa consulta só
     const COLS='id,pedido_id,produto_id,cliente_nome,estrelas,comentario,foto_url,created_at';
-    let reviews;
     const rv=await fetch(`${SB}/rest/v1/avaliacoes_publicas?or=(produto_id.eq.${id},produtos_do_pedido.cs.{${id}})&select=${COLS}&order=created_at.desc`,{headers:HDR});
-    if(rv.status!==404){
-      reviews=await rv.json();
-      if(!Array.isArray(reviews))reviews=[];
-    }else{
-      // TODO remover depois que o SQL de LGPD rodar: leitura antiga, já sem e-mail
-      const r=await fetch(`${SB}/rest/v1/avaliacoes?produto_id=eq.${id}&aprovada=eq.true&select=${COLS}&order=created_at.desc`,{headers:HDR});
-      reviews=await r.json();
-      if(!Array.isArray(reviews))reviews=[];
-      const riPedidos=await fetch(`${SB}/rest/v1/itens_pedido?produto_id=eq.${id}&select=pedido_id`,{headers:HDR});
-      const pedidoIds=await riPedidos.json();
-      if(Array.isArray(pedidoIds)&&pedidoIds.length){
-        const ids=pedidoIds.map(p=>p.pedido_id).join(',');
-        const rg=await fetch(`${SB}/rest/v1/avaliacoes?pedido_id=in.(${ids})&aprovada=eq.true&select=${COLS}&order=created_at.desc`,{headers:HDR});
-        const general=await rg.json();
-        if(Array.isArray(general)) reviews=[...reviews,...general];
-      }
-    }
+    let reviews=await rv.json();
+    if(!Array.isArray(reviews))reviews=[];
 
     // Deduplicate
     const seen=new Set();

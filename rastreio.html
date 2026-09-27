@@ -201,11 +201,11 @@ function showTrackError(msg){
   document.getElementById('trackErrorMsg').textContent=msg;
   document.getElementById('trackError').style.display='flex';
 }
-// chamada RPC; missing=true quando a função ainda não existe no banco
+// chamada RPC
 async function rpc(name,args){
   const r=await fetch(`${SB}/rest/v1/rpc/${name}`,{method:'POST',headers:{...HDR,'Content-Type':'application/json'},body:JSON.stringify(args)});
   let data=null;try{data=await r.json();}catch(e){}
-  return {ok:r.ok,data,missing:r.status===404&&(!data||data.code==='PGRST202')};
+  return {ok:r.ok,data};
 }
 const isNumeroPedido=v=>/^#?\d{1,9}$/.test(v.trim());
 function syncEmailField(){
@@ -225,37 +225,11 @@ async function buscarPedido(val){
   let pedido=null;
   // rastreio sem dados pessoais (supabase/2026-09-27-lgpd.sql)
   const res=await rpc('rastrear_pedido_publico',{p_codigo:val,p_email:email||null});
-  if(!res.missing){
-    if(!res.ok)throw new Error('rpc');
-    pedido=Array.isArray(res.data)&&res.data[0]?res.data[0]:null;
-  }else{
-    // TODO remover depois que o SQL de LGPD rodar: função antiga
-    pedido=await buscarPedidoLegado(val);
-  }
+  if(!res.ok)throw new Error('rpc');
+  pedido=Array.isArray(res.data)&&res.data[0]?res.data[0]:null;
 
   if(!pedido){showTrackError(isNumeroPedido(val)?'Não encontramos um pedido com esse número e e-mail. Confira os dados e tente de novo.':'Pedido não encontrado. Confira o código e tente de novo.');return;}
   mostrarPedido(pedido);
-}
-
-async function buscarPedidoLegado(val){
-  let pedido=null;
-  const r1=await fetch(SB+'/rest/v1/rpc/rastrear_pedido',{
-    method:'POST',headers:{...HDR,'Content-Type':'application/json'},
-    body:JSON.stringify({p_tracking_code:val,p_id:null})
-  });
-  const d1=await r1.json();
-  if(Array.isArray(d1)&&d1[0])pedido=d1[0];
-
-  if(!pedido&&/^#?\d+$/.test(val)){
-    const id=parseInt(val.replace('#',''));
-    const r2=await fetch(SB+'/rest/v1/rpc/rastrear_pedido',{
-      method:'POST',headers:{...HDR,'Content-Type':'application/json'},
-      body:JSON.stringify({p_id:id,p_tracking_code:null})
-    });
-    const d2=await r2.json();
-    if(Array.isArray(d2)&&d2[0])pedido=d2[0];
-  }
-  return pedido;
 }
 
 function mostrarPedido(pedido){

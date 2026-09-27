@@ -557,12 +557,7 @@ async function onLogin(session){
 
   // Vincular pedidos antigos pelo email (função no servidor: supabase/2026-09-27-lgpd.sql)
   if(currentUser.email){
-    const rv=await fetch(SB+'/rest/v1/rpc/vincular_meus_pedidos',{method:'POST',headers:HDR,body:'{}'});
-    if(rv.status===404){
-      // TODO remover depois que o SQL de LGPD rodar
-      await sbPatch(`/rest/v1/pedidos?visitante_email=eq.${encodeURIComponent(currentUser.email)}&user_id=is.null`,
-        {user_id:currentUser.id});
-    }
+    await fetch(SB+'/rest/v1/rpc/vincular_meus_pedidos',{method:'POST',headers:HDR,body:'{}'});
   }
 
   // Upsert na tabela clientes — cria ou vincula registro existente
@@ -943,21 +938,10 @@ async function enviarReviewInline(oid){
     const nomePublico=String(meta.nome||meta.full_name||'').trim().split(/\s+/)[0]||'Cliente';
     const comentario=document.getElementById('review-text-'+oid)?.value.trim()||null;
     // função no servidor confere se o pedido é desta conta (supabase/2026-09-27-lgpd.sql)
-    let r=await fetch(`${SB}/rest/v1/rpc/enviar_avaliacao_conta`,{
+    const r=await fetch(`${SB}/rest/v1/rpc/enviar_avaliacao_conta`,{
       method:'POST',headers:HDR,
       body:JSON.stringify({p_pedido_id:parseInt(oid),p_nome:nomePublico,p_estrelas:stars,p_comentario:comentario,p_foto_url:fotoUrl})
     });
-    if(r.status===404){
-      // TODO remover depois que o SQL de LGPD rodar: gravação direta antiga
-      r=await fetch(`${SB}/rest/v1/avaliacoes`,{
-        method:'POST',
-        headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-        body:JSON.stringify({
-          pedido_id:oid,cliente_nome:nomePublico,cliente_email:currentUser?.email,
-          estrelas:stars,comentario,foto_url:fotoUrl,aprovada:false
-        })
-      });
-    }
     if(!r.ok)throw new Error('avaliacao');
 
     // Show done, hide button and form

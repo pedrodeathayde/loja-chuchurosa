@@ -633,35 +633,6 @@ async function fetchCep(cep){
 renderSummary();
 selectPM('pix');
 
-// TODO remover depois que o SQL de LGPD rodar: gravação direta antiga
-async function criarPedidoLegado(pedidoPayload, itens, clientePayload){
-  let clienteId = null;
-  if(clientePayload){
-    const cRes = await fetch(SB+'/rest/v1/clientes',{
-      method:'POST', headers:{...HDR,'Prefer':'return=representation'}, body:JSON.stringify(clientePayload)
-    });
-    if(cRes.ok){ const cd = await cRes.json(); clienteId = cd[0]?.id || null; }
-  }
-  const payload = {...pedidoPayload, status:'pendente'};
-  if(clienteId){
-    payload.cliente_id = clienteId;
-    delete payload.visitante_nome; delete payload.visitante_email; delete payload.visitante_telefone;
-  }
-  const pRes = await fetch(SB+'/rest/v1/pedidos',{
-    method:'POST', headers:{...HDR,'Prefer':'return=representation'}, body:JSON.stringify(payload)
-  });
-  if(!pRes.ok) throw new Error('Erro ao salvar pedido');
-  const pData = await pRes.json();
-  const id = pData[0]?.id;
-  if(itens.length){
-    await fetch(SB+'/rest/v1/itens_pedido',{
-      method:'POST', headers:HDR,
-      body:JSON.stringify(itens.map(({produto_id,tamanho,cor,...i})=>({...i,pedido_id:id})))
-    });
-  }
-  return id;
-}
-
 // ── MOBILE PROGRESS BAR — track scroll across sections ────────────
 (function(){
   const sections=[
@@ -805,8 +776,6 @@ async function placeOrder(){
     if(rRes.ok){
       // o servidor recalcula preços e total; a tela mostra o valor que foi gravado
       orderId = rData.id; total = +rData.total;
-    }else if(rRes.status===404 && (!rData || rData.code==='PGRST202')){
-      orderId = await criarPedidoLegado(pedidoPayload, itens, clientePayload);
     }else{
       throw new Error('Erro ao salvar pedido');
     }
