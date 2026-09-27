@@ -54,6 +54,9 @@
 @media(max-width:768px){
   input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea{font-size:16px!important}
 }
+/* campos dentro de linhas flex podem encolher (senão a largura mínima
+   do campo, que cresce com a fonte, empurra a coluna para fora da tela) */
+input,select,textarea{min-width:0}
 
 /* ── tipografia ────────────────────────────────────────────────────── */
 .t-display{font-family:var(--fd);font-weight:600;font-size:var(--fs-display);line-height:var(--lh-tight);letter-spacing:-.02em}

@@ -530,12 +530,12 @@ function renderSummary(){
   document.getElementById('osSummary').innerHTML = cart.map(i=>`
     <div class="os-item">
       <div class="os-img">
-        ${i.url?`<img src="${i.url}" loading="lazy">`:''}
-        <div class="os-img-ph"${i.url?' style="display:none"':''}>🌸</div>
+        ${(i.url||i.img)?`<img src="${i.url||i.img}" loading="lazy" alt="">`:''}
+        <div class="os-img-ph"${(i.url||i.img)?' style="display:none"':''}>🌸</div>
       </div>
       <div>
         <div class="os-name">${i.name}</div>
-        <div class="os-qty">Qtd: ${i.qty}</div>
+        ${i.variacao?`<div class="os-qty">${i.variacao}</div>`:''}<div class="os-qty">Qtd: ${i.qty}</div>
       </div>
       <div class="os-price">${i.price?fmt(i.price*i.qty):'—'}</div>
     </div>`).join('');
@@ -777,7 +777,8 @@ async function placeOrder(){
     };
     const itens = cart.filter(i=>i.price).map(i=>({
       produto_id:Number.isFinite(+i.id)?+i.id:null,
-      nome_produto:i.name,
+      // tamanho/cor escolhidos na página do produto vão junto no nome do item
+      nome_produto:i.variacao?`${i.name} (${i.variacao})`:i.name,
       preco_unitario:i.price,
       quantidade:i.qty,
     }));
