@@ -8,9 +8,8 @@
 <title>Admin — Chuchu Rosa</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#e52564">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="js/vendor/supabase-2.117.2.min.js"></script>
+<link rel="stylesheet" href="css/fonts.css">
 <style>
 :root{
   --dark:#0c090d;--dark2:#171119;--dark3:#201624;
@@ -150,7 +149,7 @@ img{display:block;max-width:100%}
 .aside{background:var(--dark);color:#fff;display:flex;flex-direction:column;position:relative;z-index:10;height:100vh;overflow:hidden}
 .aside-logo{padding:20px;border-bottom:1px solid rgba(244,121,154,.1);display:flex;align-items:center;gap:10px}
 .aside-badge{background:rgba(244,121,154,.15);color:var(--pink2);font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:6px}
-.aside-nav{flex:1;padding:16px 10px;overflow-y:auto;overflow-x:hidden}
+.aside-nav{flex:1;min-height:0;padding:16px 10px 24px;overflow-y:auto;overflow-x:hidden}
 .ng-label{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.2);padding:10px 10px 6px}
 .ni{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:10px;cursor:pointer;transition:all .2s;font-size:.86rem;font-weight:500;color:rgba(255,255,255,.5);margin-bottom:2px;border:none;background:none;width:100%;text-align:left}
 .ni:hover{background:rgba(244,121,154,.08);color:#fff}
@@ -158,7 +157,7 @@ img{display:block;max-width:100%}
 .ni.no-hover:hover{background:none;color:rgba(255,255,255,.5)}
 .ni.active:hover{background:rgba(244,121,154,.14);color:var(--pink2)}
 .ni.active{background:rgba(244,121,154,.14);color:var(--pink2)}
-.ni-icon{font-size:.95rem;width:18px;text-align:center;flex-shrink:0}
+.ni-icon{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
 .ni-badge{margin-left:auto;background:rgba(244,121,154,.2);color:var(--pink2);border-radius:6px;font-size:.68rem;font-weight:700;padding:2px 6px}
 .ni-badge.red{background:rgba(239,68,68,.2);color:#fca5a5}
 .aside-foot{padding:14px 10px;border-top:1px solid rgba(244,121,154,.08)}
@@ -210,7 +209,7 @@ img{display:block;max-width:100%}
 .tbl-row:last-child{border:none}
 .tbl-row:hover{background:rgba(244,121,154,.025)}
 /* Products cols: img nome cats preco prazo status acoes */
-.pc-grid{grid-template-columns:28px 56px minmax(180px,1.5fr) 110px 100px 56px 110px 190px;gap:10px}
+.pc-grid{grid-template-columns:28px 56px minmax(180px,1.5fr) 110px 100px 110px 170px;gap:10px}
 .mob-meta-row{display:none}
 .tr-img{width:52px;height:52px;border-radius:10px;overflow:hidden;background:var(--cream);position:relative;flex-shrink:0}
 .tr-img img,.tr-img-ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -226,6 +225,7 @@ img{display:block;max-width:100%}
 .pill.oculto{background:rgba(13,9,13,.08);color:rgba(13,9,13,.4)}
 .pill.destaque{background:rgba(244,121,154,.12);color:var(--rose)}
 .pill.pendente{background:rgba(245,158,11,.1);color:var(--yellow)}
+.pill.pago{background:rgba(34,197,94,.1);color:var(--green)}
 .pill.confirmado{background:rgba(34,197,94,.1);color:var(--green)}
 .pill.em_producao{background:rgba(244,121,154,.12);color:var(--rose)}
 .pill.pronto{background:rgba(99,102,241,.1);color:var(--blue)}
@@ -243,6 +243,25 @@ img{display:block;max-width:100%}
 .ibtn.tog:hover{background:rgba(34,197,94,.18)}
 .ibtn.eye{background:rgba(13,9,13,.06);color:rgba(13,9,13,.5)}
 .ibtn.eye:hover{background:rgba(13,9,13,.12)}
+.ibtn svg{flex-shrink:0}
+.ibtn.ibtn-lbl{width:auto!important;padding:0 10px!important;gap:5px;font-size:.76rem;font-weight:600}
+.row-menu{position:relative}
+.row-menu-pop{position:absolute;right:0;top:calc(100% + 4px);z-index:30;background:#fff;border:1px solid rgba(244,121,154,.18);border-radius:10px;box-shadow:0 10px 30px rgba(15,10,15,.14);padding:4px;min-width:190px;display:flex;flex-direction:column}
+.row-menu-pop[hidden]{display:none}
+.row-menu-pop button{background:none;border:none;text-align:left;padding:9px 12px;border-radius:8px;font:inherit;font-size:.82rem;cursor:pointer;color:var(--dark)}
+.row-menu-pop button:hover,.row-menu-pop button:focus-visible{background:rgba(244,121,154,.08)}
+.row-menu-pop button.danger{color:var(--red)}
+[data-theme="dark"] .row-menu-pop{background:#1f171d;border-color:rgba(240,232,236,.12)}
+[data-theme="dark"] .row-menu-pop button{color:#f0e8ec}
+.loja-nova{margin:0 32px 20px;background:#fff;border:1px solid rgba(244,121,154,.18);border-left:4px solid var(--pink);border-radius:14px;padding:18px 22px}
+.loja-nova h2{font-family:var(--fh);font-size:1.15rem;font-weight:600;margin:0 0 4px}
+.loja-nova p{font-size:.86rem;color:rgba(15,10,15,.64);margin:0 0 10px}
+.loja-nova ul{margin:0;padding-left:18px;display:grid;gap:6px;font-size:.86rem}
+.btn-link-adm{background:none;border:none;padding:0;font:inherit;color:#da215e;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+[data-theme="dark"] .loja-nova{background:#1f171d}
+[data-theme="dark"] .loja-nova p{color:rgba(240,232,236,.7)}
+@media(max-width:768px){.loja-nova{margin:0 16px 16px}}
+.no-desc{color:#8a5a00;font-weight:600}
 
 /* INLINE EDIT */
 .inline-price{border:1.5px solid rgba(13,9,13,.08);border-radius:8px;padding:4px 8px;font-family:var(--fb);font-size:.9rem;font-weight:700;background:rgba(13,9,13,.02);width:100%;max-width:90px;transition:border-color .2s;cursor:pointer;box-sizing:border-box}
@@ -512,6 +531,8 @@ img{display:block;max-width:100%}
   .aside{display:flex;position:fixed;left:-260px;top:0;bottom:0;width:260px;z-index:50;transition:left .25s}
   .aside.open{left:0}
   .aside-overlay.open{display:block}
+  /* os botões flutuantes de menu e tema não podem cobrir o resumo e o título */
+  .mini-stats{min-height:60px;align-items:center;padding:0 60px;overflow-x:auto;white-space:nowrap}
 }
 
 .status-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
@@ -524,6 +545,8 @@ img{display:block;max-width:100%}
 .status-btn[data-s="enviado"]{border-color:#06b6d4;color:#06b6d4}.status-btn[data-s="enviado"].active{background:#06b6d4}
 .status-btn[data-s="entregue"]{border-color:#10b981;color:#10b981}.status-btn[data-s="entregue"].active{background:#10b981}
 .status-btn[data-s="cancelado"]{border-color:#ef4444;color:#ef4444}.status-btn[data-s="cancelado"].active{background:#ef4444}
+/* botão ativo: texto branco (as regras de cor por status acima venciam e o texto sumia no fundo) */
+.status-btn.active[data-s]{color:#fff}
 .pgto-btn{padding:7px 14px;border-radius:100px;border:1.5px solid transparent;font-family:var(--fb);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;background:#fff}
 .pgto-btn[data-p="pendente"]{border-color:#f59e0b;color:#f59e0b}.pgto-btn[data-p="pendente"].active{background:#f59e0b;color:#fff}
 .pgto-btn[data-p="pago"]{border-color:#10b981;color:#10b981}.pgto-btn[data-p="pago"].active{background:#10b981;color:#fff}
@@ -605,7 +628,6 @@ img{display:block;max-width:100%}
   }
   .tbl-row.pc-grid>.col-price{grid-column:3;justify-self:start}
   .tbl-row.pc-grid>.col-status{grid-column:3;justify-self:end}
-  .tbl-row.pc-grid>.col-prazo{display:none!important}
   .tbl-row.pc-grid>.ibtns{
     grid-column:1/4;grid-row:4;display:flex;gap:6px;flex-shrink:0;
     margin-top:8px;padding-top:0;border-top:none;
@@ -876,28 +898,28 @@ img{display:block;max-width:100%}
     </div>
     <nav class="aside-nav">
       <div class="ng-label">Principal</div>
-      <button class="ni active" data-page="dashboard" onclick="goPage('dashboard')"><span class="ni-icon">📊</span>Dashboard</button>
-      <button class="ni" data-page="produtos" onclick="goPage('produtos')"><span class="ni-icon">🌸</span>Produtos<span class="ni-badge" id="nb-prods">0</span></button>
-      <button class="ni" data-page="pedidos" onclick="goPage('pedidos')"><span class="ni-icon">📦</span>Pedidos<span class="ni-badge" id="nb-ped">0</span></button>
-      <button class="ni" data-page="clientes" onclick="goPage('clientes')"><span class="ni-icon">👥</span>Clientes</button>
-      <button class="ni" data-page="relatorio" onclick="goPage('relatorio');renderRelatorio()"><span class="ni-icon">📈</span>Relatórios</button>
-      <button class="ni" data-page="email" onclick="goPage('email');renderEmailList()"><span class="ni-icon">📧</span>Lista de e-mail</button>
+      <button class="ni active" data-page="dashboard" onclick="goPage('dashboard')"><span class="ni-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z"/></svg></span>Dashboard</button>
+      <button class="ni" data-page="produtos" onclick="goPage('produtos')"><span class="ni-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span>Produtos<span class="ni-badge" id="nb-prods">0</span></button>
+      <button class="ni" data-page="pedidos" onclick="goPage('pedidos')"><span class="ni-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg></span>Pedidos<span class="ni-badge" id="nb-ped">0</span></button>
+      <button class="ni" data-page="clientes" onclick="goPage('clientes')"><span class="ni-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="4"/><path d="M1 21a8 8 0 0 1 16 0M17 4a4 4 0 0 1 0 8M23 21a8 8 0 0 0-5-7.4"/></svg></span>Clientes</button>
+      <button class="ni" data-page="relatorio" onclick="goPage('relatorio')"><span class="ni-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 6-6"/></svg></span>Relatórios</button>
+      <button class="ni" data-page="email" onclick="goPage('email')"><span class="ni-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 6 10 7 10-7"/></svg></span>Lista de e-mail</button>
       <div class="ng-label" style="margin-top:8px">Configurações</div>
-      <button class="ni" data-page="categorias" onclick="goPage('categorias')"><span class="ni-icon">🏷️</span>Categorias</button>
-      <button class="ni" data-page="designs" onclick="goPage('designs')"><span class="ni-icon">🎨</span>Designs</button>
-      <button class="ni" data-page="cupons" onclick="goPage('cupons')"><span class="ni-icon">🎟️</span>Cupons</button>
-      <button class="ni" data-page="agenda" onclick="goPage('agenda');loadAgenda()"><span class="ni-icon">📋</span>Agenda</button>
-      <button class="ni" data-page="lista-compras" onclick="goPage('lista-compras');loadListaCompras()"><span class="ni-icon">🛒</span>Lista de compras</button>
-      <button class="ni" data-page="sugerir" onclick="goPage('sugerir');renderSugerir()"><span class="ni-icon">💌</span>Sugerir produtos</button>
-      <button class="ni" data-page="frete" onclick="goPage('frete');loadFreteConfig()"><span class="ni-icon">🚚</span>Frete</button>
-      <button class="ni" data-page="ticker" onclick="goPage('ticker');loadTicker()"><span class="ni-icon">📢</span>Ticker</button>
-      <button class="ni" data-page="banners" onclick="goPage('banners')"><span class="ni-icon">📢</span>Banners</button>
-      <button class="ni" data-page="avaliacoes" onclick="goPage('avaliacoes');loadAvaliacoes()"><span class="ni-icon">⭐</span>Avaliações<span class="ni-badge" id="nb-aval" style="display:none">0</span></button>
-      <button class="ni" data-page="historico" onclick="goPage('historico');renderHist();renderAccessLog()"><span class="ni-icon">🔒</span>Histórico de login</button>
-      <button class="ni" data-page="notif" onclick="goPage('notif')"><span class="ni-icon">🔔</span>Notificações</button>
+      <button class="ni" data-page="categorias" onclick="goPage('categorias')"><span class="ni-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span>Categorias</button>
+      <button class="ni" data-page="designs" onclick="goPage('designs')"><span class="ni-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="8" cy="10" r="1.2"/><circle cx="12" cy="7.5" r="1.2"/><circle cx="16" cy="10" r="1.2"/></svg></span>Designs</button>
+      <button class="ni" data-page="cupons" onclick="goPage('cupons')"><span class="ni-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9a3 3 0 0 0 0 6v4h18v-4a3 3 0 0 1 0-6V5H3z"/><path d="M13 5v14" stroke-dasharray="2 2"/></svg></span>Cupons</button>
+      <button class="ni" data-page="agenda" onclick="goPage('agenda')"><span class="ni-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>Agenda</button>
+      <button class="ni" data-page="lista-compras" onclick="goPage('lista-compras')"><span class="ni-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg></span>Lista de compras</button>
+      <button class="ni" data-page="sugerir" onclick="goPage('sugerir')"><span class="ni-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg></span>Sugerir produtos</button>
+      <button class="ni" data-page="frete" onclick="goPage('frete')"><span class="ni-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>Frete</button>
+      <button class="ni" data-page="ticker" onclick="goPage('ticker')"><span class="ni-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16M4 12l4-4M4 12l4 4"/><path d="M14 6h6M14 18h6"/></svg></span>Ticker</button>
+      <button class="ni" data-page="banners" onclick="goPage('banners')"><span class="ni-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1zM16 8a5 5 0 0 1 0 8"/></svg></span>Banners</button>
+      <button class="ni" data-page="avaliacoes" onclick="goPage('avaliacoes')"><span class="ni-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg></span>Avaliações<span class="ni-badge" id="nb-aval" style="display:none">0</span></button>
+      <button class="ni" data-page="historico" onclick="goPage('historico')"><span class="ni-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>Histórico de login</button>
+      <button class="ni" data-page="notif" onclick="goPage('notif')"><span class="ni-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>Notificações</button>
       <div class="ng-label" style="margin-top:8px">Loja</div>
-      <button class="ni" onclick="window.open('loja.html','_blank')"><span class="ni-icon">🛍️</span>Ver loja ↗</button>
-      <button class="ni" onclick="window.open('index.html','_blank')"><span class="ni-icon">🏠</span>Ver site ↗</button>
+      <button class="ni" onclick="window.open('loja.html','_blank')"><span class="ni-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0"/></svg></span>Ver loja ↗</button>
+      <button class="ni" onclick="window.open('index.html','_blank')"><span class="ni-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span>Ver site ↗</button>
     </nav>
     <div class="aside-foot" style="display:flex;gap:8px;align-items:center">
       <button class="btn-logout" onclick="doLogout()" style="flex:1">Sair da conta</button>
@@ -912,9 +934,9 @@ img{display:block;max-width:100%}
   <main class="main">
     <div class="mini-stats" id="miniStats">
       <div class="mini-stat"><span class="mini-stat-dot"></span><span>Hoje: <b id="ms-hoje">—</b></span></div>
-      <div class="mini-stat">Semana: <b id="ms-semana">—</b></div>
+      <div class="mini-stat" title="Pedidos pagos nos últimos 7 dias">Semana (pago): <b id="ms-semana">—</b></div>
       <div class="mini-stat">Em produção: <b id="ms-prod">—</b></div>
-      <div class="mini-stat" id="ms-novos-wrap" style="display:none">🔔 <b id="ms-novos" style="color:var(--pink)">0 novos</b></div>
+      <div class="mini-stat" id="ms-novos-wrap" style="display:none"><b id="ms-novos" style="color:var(--pink)">0 novos</b></div>
     </div>
     <button onclick="toggleTheme()" title="Alternar tema" class="theme-toggle-float">
       <svg id="themeIconMoon2" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -925,7 +947,8 @@ img{display:block;max-width:100%}
 
     <!-- DASHBOARD -->
     <div class="page active" id="page-dashboard">
-      <div class="page-header"><div><h1>Dashboard 📊</h1><p>Visão geral da loja Chuchu Rosa</p></div></div>
+      <div class="page-header"><div><h1>Dashboard</h1><p>Visão geral da loja Chuchu Rosa</p></div></div>
+      <section class="loja-nova" id="dashLojaNova" hidden></section>
       <div class="stats-row">
         <div class="sc pink" onclick="goPage('pedidos')" style="cursor:pointer"><div class="sc-label">Pedidos hoje</div><div class="sc-val" id="dPedHoje">—</div><div class="sc-sub" id="dPedCmp">—</div></div>
         <div class="sc green" onclick="goPage('pedidos')" style="cursor:pointer"><div class="sc-label">Receita do mês</div><div class="sc-val" id="dReceita">—</div><div class="sc-sub" id="dReceitaCmp">—</div></div>
@@ -986,7 +1009,7 @@ img{display:block;max-width:100%}
     <!-- PRODUTOS -->
     <div class="page" id="page-produtos">
       <div class="page-header">
-        <div><h1>Produtos 🌸</h1><p><span id="prodCount">0</span> produtos encontrados</p></div>
+        <div><h1>Produtos</h1><p><span id="prodCount">0</span> produtos encontrados</p></div>
         <div style="display:flex;gap:8px">
           <button class="btn-p" onclick="openNewProd()">+ Novo produto</button>
         </div>
@@ -1023,7 +1046,7 @@ img{display:block;max-width:100%}
 
     <!-- PEDIDOS -->
     <div class="page" id="page-pedidos">
-      <div class="page-header"><div><h1>Pedidos 📦</h1><p>Gerencie todos os pedidos</p></div><button class="btn-s" onclick="exportOrdersCSV()">⬇️ Exportar CSV</button></div>
+      <div class="page-header"><div><h1>Pedidos</h1><p>Gerencie todos os pedidos</p></div><button class="btn-s" onclick="exportOrdersCSV()">⬇️ Exportar CSV</button></div>
       <input type="text" class="filter-search" id="orderSearch" placeholder="🔍 Nome, email, #pedido..." oninput="filterOrders()" style="width:100%;margin-bottom:10px">
       <div class="order-filters">
         <span class="filter-chip active" data-status="" onclick="setOrderFilter(this,'')">Todos</span>
@@ -1041,7 +1064,7 @@ img{display:block;max-width:100%}
 
     <!-- CLIENTES -->
     <div class="page" id="page-clientes">
-      <div class="page-header"><div><h1>Clientes 👥</h1><p>Base de clientes cadastrados</p></div></div>
+      <div class="page-header"><div><h1>Clientes</h1><p>Base de clientes cadastrados</p></div></div>
       <div class="client-header">
         <div class="client-search-wrap">
           <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -1060,7 +1083,7 @@ img{display:block;max-width:100%}
     <!-- AGENDA -->
     <div class="page" id="page-agenda">
       <div class="page-header">
-        <div><h1>Agenda de Produção 📋</h1><p>O que precisa ser produzido</p></div>
+        <div><h1>Agenda de Produção</h1><p>O que precisa ser produzido</p></div>
         <button class="btn-s" onclick="loadAgenda()">🔄 Atualizar</button>
       </div>
       <div id="agendaContent">
@@ -1072,7 +1095,7 @@ img{display:block;max-width:100%}
     <!-- HISTÓRICO -->
     <div class="page" id="page-historico">
       <div class="page-header">
-        <div><h1>Histórico 📋</h1><p>Alterações recentes</p></div>
+        <div><h1>Histórico</h1><p>Alterações recentes</p></div>
         <button class="btn-s" onclick="clearHist()">🗑 Limpar</button>
       </div>
       <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:24px">
@@ -1086,7 +1109,7 @@ img{display:block;max-width:100%}
     <!-- RELATÓRIO -->
     <div class="page" id="page-relatorio">
       <div class="page-header">
-        <div><h1>Relatórios 📊</h1><p>Receitas e desempenho</p></div>
+        <div><h1>Relatórios</h1><p>Receitas e desempenho</p></div>
         <div style="display:flex;gap:8px">
           <select id="relPeriod" onchange="renderRelatorio()" style="padding:8px 14px;border:1.5px solid rgba(229,37,100,.18);border-radius:10px;font-family:var(--fb);font-size:.82rem;outline:none">
             <option value="7">Últimos 7 dias</option>
@@ -1104,7 +1127,7 @@ img{display:block;max-width:100%}
     <!-- EMAIL -->
     <div class="page" id="page-email">
       <div class="page-header">
-        <div><h1>Lista de E-mail 📧</h1><p>Todos os clientes cadastrados</p></div>
+        <div><h1>Lista de E-mail</h1><p>Todos os clientes cadastrados</p></div>
         <div style="display:flex;gap:8px">
           <button class="btn-s" onclick="exportEmailCSV()">⬇️ Exportar CSV</button>
           <button class="btn-s" onclick="copyAllEmails()">📋 Copiar todos</button>
@@ -1132,7 +1155,7 @@ img{display:block;max-width:100%}
     <!-- LISTA DE COMPRAS -->
     <div class="page" id="page-lista-compras">
       <div class="page-header" style="flex-wrap:wrap;gap:12px">
-        <div style="flex:1;min-width:200px"><h1>Lista de Compras 🛒</h1><p>Itens para repor ou comprar</p></div>
+        <div style="flex:1;min-width:200px"><h1>Lista de Compras</h1><p>Itens para repor ou comprar</p></div>
         <div style="display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap">
           <button class="btn-s" onclick="enviarListaWA()">💬 Enviar pelo WhatsApp</button>
           <button class="btn-p" onclick="adicionarItemLista()">+ Adicionar item</button>
@@ -1161,7 +1184,7 @@ img{display:block;max-width:100%}
     <!-- SUGERIR PRODUTOS -->
     <div class="page" id="page-sugerir">
       <div class="page-header">
-        <div><h1>Sugerir Produtos 💌</h1><p>Monte uma seleção e compartilhe com um cliente</p></div>
+        <div><h1>Sugerir Produtos</h1><p>Monte uma seleção e compartilhe com um cliente</p></div>
       </div>
       <!-- Painel de compartilhamento — aparece no topo no mobile -->
       <div id="sugerirPainel" style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:16px;margin-bottom:16px;display:none">
@@ -1201,7 +1224,7 @@ img{display:block;max-width:100%}
     <!-- TICKER -->
     <div class="page" id="page-ticker">
       <div class="page-header">
-        <div><h1>Barra de Texto 📢</h1><p>Barra rosa rolante na loja</p></div>
+        <div><h1>Barra de Texto</h1><p>Barra rosa rolante na loja</p></div>
         <button class="btn-p" onclick="saveTicker()">💾 Salvar</button>
       </div>
       <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(229,37,100,.08);padding:24px;max-width:700px">
@@ -1226,7 +1249,7 @@ img{display:block;max-width:100%}
     <!-- AVALIAÇÕES -->
     <div class="page" id="page-avaliacoes">
       <div class="page-header">
-        <div><h1>Avaliações ⭐</h1><p>Modere as avaliações antes de publicar na loja</p></div>
+        <div><h1>Avaliações</h1><p>Modere as avaliações antes de publicar na loja</p></div>
         <div style="display:flex;gap:8px">
           <select id="avalFilter" class="tfilter" onchange="renderAvaliacoes()">
             <option value="pendentes">Pendentes</option>
@@ -1241,7 +1264,7 @@ img{display:block;max-width:100%}
     <!-- FRETE -->
     <div class="page" id="page-frete">
       <div class="page-header">
-        <div><h1>Frete & Envio 📦</h1><p>Melhor Envio + dimensões de pacotes</p></div>
+        <div><h1>Frete & Envio</h1><p>Melhor Envio + dimensões de pacotes</p></div>
         <button class="btn-p" onclick="saveFreteCfg()">💾 Salvar</button>
       </div>
 
@@ -1306,7 +1329,7 @@ img{display:block;max-width:100%}
     <!-- DESIGNS -->
     <div class="page" id="page-designs">
       <div class="page-header">
-        <div><h1>Designs 🎨</h1><p>Temas e estilos dos produtos</p></div>
+        <div><h1>Designs</h1><p>Temas e estilos dos produtos</p></div>
         <button class="btn-p" onclick="addDesign()">+ Novo design</button>
       </div>
       <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(244,121,154,.08);padding:24px">
@@ -1322,7 +1345,7 @@ img{display:block;max-width:100%}
     <!-- CATEGORIAS -->
     <div class="page" id="page-categorias">
       <div class="page-header">
-        <div><h1>Categorias 🏷️</h1><p>Gerencie as coleções da loja</p></div>
+        <div><h1>Categorias</h1><p>Gerencie as coleções da loja</p></div>
         <button class="btn-p" onclick="addCat()">+ Nova categoria</button>
       </div>
       <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(244,121,154,.08);padding:24px">
@@ -1339,7 +1362,7 @@ img{display:block;max-width:100%}
     <!-- CUPONS -->
     <div class="page" id="page-cupons">
       <div class="page-header">
-        <div><h1>Cupons 🎟️</h1><p>Descontos e promoções</p></div>
+        <div><h1>Cupons</h1><p>Descontos e promoções</p></div>
         <button class="btn-p" onclick="openNewCupom()">+ Novo cupom</button>
       </div>
       <div id="cupomList"><div class="ld"><div class="spin"></div></div></div>
@@ -1351,7 +1374,7 @@ img{display:block;max-width:100%}
     <!-- NOTIFICAÇÕES -->
     <div class="page" id="page-notif">
       <div class="page-header">
-        <div><h1>Notificações 🔔</h1><p>Alertas de novos pedidos</p></div>
+        <div><h1>Notificações</h1><p>Alertas de novos pedidos</p></div>
         <button class="btn-p" onclick="saveNotifConfig()">💾 Salvar</button>
       </div>
       <div style="background:#fff;border-radius:var(--rl);border:1px solid rgba(244,121,154,.08);padding:28px;max-width:560px">
@@ -1389,7 +1412,7 @@ img{display:block;max-width:100%}
     <!-- BANNERS -->
     <div class="page" id="page-banners">
       <div class="page-header">
-        <div><h1>Banners 📢</h1><p>Avisos e destaques no topo do site</p></div>
+        <div><h1>Banners</h1><p>Avisos e destaques no topo do site</p></div>
         <button class="btn-p" onclick="openNewBanner()">+ Novo banner</button>
       </div>
       <div id="bannerList"></div>
@@ -1406,9 +1429,9 @@ img{display:block;max-width:100%}
         <div class="frow"><div class="fg"><label>Nome *</label><input type="text" id="mNome" placeholder="Ex: Fantasia de Flamingo"></div></div>
         <div class="frow"><div class="fg"><label>Descrição</label><textarea id="mDesc" placeholder="Materiais, tamanhos, detalhes..."></textarea></div></div>
         <div class="frow c3">
-          <div class="fg"><label>Preço (R$)</label><input type="number" id="mPreco" placeholder="89.90" min="0" step="0.01"></div>
-          <div class="fg"><label>Preço promocional (R$)</label><input type="number" id="mPrecoPromo" placeholder="79.90" min="0" step="0.01"></div>
-          <div class="fg"><label>Prazo produção (dias úteis)</label><input type="number" id="mPrazo" value="7" min="1"></div>
+          <div class="fg"><label>Preço (R$)</label><input type="number" id="mPreco" placeholder="0,00" min="0" step="0.01"></div>
+          <div class="fg"><label>Preço promocional (R$)</label><input type="number" id="mPrecoPromo" placeholder="Opcional" min="0" step="0.01"></div>
+          <div class="fg"><label>Prazo de produção</label><input type="text" value="3 a 5 dias úteis (fixo)" readonly aria-readonly="true" tabindex="-1" style="opacity:.7;cursor:default"></div>
         </div>
         <div class="frow"><div class="fg"><label>Nota interna</label><textarea id="mNota" placeholder="Observações internas (não aparece na loja)" style="min-height:56px"></textarea></div></div>
       </div>
@@ -1523,7 +1546,6 @@ img{display:block;max-width:100%}
   <span style="color:rgba(255,255,255,.5);font-size:.8rem">selecionados</span>
   <div class="bulk-sep"></div>
   <button class="bulk-btn" onclick="openBulkModal('preco')">💰 Preço</button>
-  <button class="bulk-btn" onclick="openBulkModal('prazo')">⏱ Prazo</button>
   <button class="bulk-btn" onclick="openBulkModal('categoria')">🏷️ Categoria</button>
   <button class="bulk-btn" onclick="openBulkModal('design')">🎨 Design</button>
   <button class="bulk-btn" onclick="bulkToggle('ativo')">✅ Ativar</button>
@@ -1801,6 +1823,8 @@ function goPage(name){
   setTimeout(()=>document.querySelectorAll('.ni').forEach(n=>n.classList.remove('no-hover')),300);
   document.getElementById('page-'+name)?.classList.add('active');
   document.querySelector(`.ni[data-page="${name}"]`)?.classList.add('active');
+  const loader={relatorio:()=>renderRelatorio(),email:()=>renderEmailList(),agenda:()=>loadAgenda(),'lista-compras':()=>loadListaCompras(),sugerir:()=>renderSugerir(),frete:()=>loadFreteConfig(),ticker:()=>loadTicker(),avaliacoes:()=>loadAvaliacoes(),historico:()=>{renderHist();renderAccessLog();}}[name];
+  if(loader){try{loader();}catch(e){console.error('goPage',name,e);}}
   if(name==='pedidos') dismissNovos();
   else if(_ordersObserver){_ordersObserver.disconnect();_ordersObserver=null;} // evita observer solto num elemento fora do DOM
   // Hide bulk bar when leaving produtos
@@ -1840,17 +1864,13 @@ async function init(){
 // HTML toda vez que o admin abre. Resultado é cacheado por slug na sessão.
 const _storageSearchCache=new Map();
 async function searchBucketPhotos(prefix,limit=10){
+  // busca na tabela `fotos` pelo slug na URL (nunca lista o bucket inteiro)
   if(!prefix)return [];
   if(_storageSearchCache.has(prefix))return _storageSearchCache.get(prefix);
   try{
-    const r=await fetch(`${SB}/storage/v1/object/list/Fotos`,{
-      method:'POST',
-      headers:{...HDR,'Content-Type':'application/json'},
-      body:JSON.stringify({prefix:'',search:prefix,limit,sortBy:{column:'name',order:'asc'}})
-    });
-    if(!r.ok){_storageSearchCache.set(prefix,[]);return [];}
-    const files=await r.json();
-    const urls=Array.isArray(files)?files.map(f=>`${SB}/storage/v1/object/public/Fotos/${encodeURIComponent(f.name)}`):[];
+    const q=encodeURIComponent('*'+prefix.replace(/[*,()]/g,'')+'*');
+    const rows=await sbGet(`/rest/v1/fotos?select=url&url=ilike.${q}&order=ordem&limit=${+limit||10}`);
+    const urls=Array.isArray(rows)?rows.map(r=>r.url).filter(Boolean):[];
     _storageSearchCache.set(prefix,urls);
     return urls;
   }catch(e){console.error('searchBucketPhotos',e);return [];}
@@ -1906,7 +1926,7 @@ function filterProds(){
   const design=(document.getElementById('pdesign')?.value)||'';
   filtProds=allProds.filter(p=>{
     const mq=!q||fuzzyMatch(p.name||p.nome||'',q);
-    const mc=!cat||(p.collections||[]).includes(cat);
+    const mc=!cat||(p.collections||[]).some(c=>String(c).toLowerCase()===String(cat).toLowerCase());
     const ms=!st||(st==='ativo'&&p.ativo&&!p.esgotado&&!p.oculto)||(st==='esgotado'&&p.esgotado)||(st==='oculto'&&p.oculto)||(st==='destaque'&&p.destaque)||(st==='sempreco'&&!p.price);
     const md=!design||((Array.isArray(p.design)?p.design:[p.design]).filter(Boolean).includes(design));
     return mq&&mc&&ms&&md;
@@ -1918,10 +1938,10 @@ function filterProds(){
 function renderProdTable(){
   const el=document.getElementById('prodTable');
   if(!filtProds.length){el.innerHTML='<div class="empty"><div class="empty-icon">🌸</div><p>Nenhum produto</p></div>';return;}
-  el.innerHTML=`<div class="tbl-head pc-grid"><span></span><span>Foto</span><span>Produto</span><span>Design</span><span>Preço</span><span>Prazo</span><span>Status</span><span>Ações</span></div>`
+  el.innerHTML=`<div class="tbl-head pc-grid"><span></span><span>Foto</span><span>Produto</span><span>Design</span><span>Preço</span><span>Status</span><span>Ações</span></div>`
     +filtProds.map(p=>{
       const url=getUrl(p.name||'',p.id);
-      const cats=(p.collections||[]).slice(0,2).join(', ');
+      const cats=uniqCI(p.collections||[]).slice(0,2).join(', ');
       const sel=selectedIds.has(p.id);
       const pill=p.esgotado?'<span class="pill esgotado">⊘ Esgotado</span>':p.oculto?'<span class="pill oculto">○ Oculto</span>':p.destaque?'<span class="pill destaque">⭐ Destaque</span>':p.ativo?'<span class="pill active">● Ativo</span>':'<span class="pill inactive">○ Inativo</span>';
       return `<div class="tbl-row pc-grid${sel?' selected':''}">
@@ -1932,19 +1952,21 @@ function renderProdTable(){
         </div>
         <div class="col-name">
           <div class="tr-name" onclick="event.stopPropagation();previewProdLoja(${p.id})" style="cursor:pointer" title="Ver na loja">${esc(p.name)||p.nome||'(sem nome)'}</div>
-          <div class="tr-cat">${cats||'—'}</div>
+          <div class="tr-cat">${esc(cats)||'—'}${(p.descricao||p.description||'').trim()?'':' · <span class="no-desc">sem descrição</span>'}</div>
         </div>
         <div class="col-design" style="font-size:.72rem;color:rgba(13,9,13,.45);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${Array.isArray(p.design)?p.design.slice(0,1).join(', '):(p.design||'—')}</div>
         <div class="col-price"><input class="inline-price" value="${p.price||''}" placeholder="Sem preço" data-id="${p.id}" onblur="saveInlinePrice(this)" onkeydown="if(event.key==='Enter')this.blur()"></div>
-        <div class="col-prazo" style="font-size:.82rem">${p.prazo_producao_dias||7}d</div>
         <div class="col-status">${pill}</div>
         <div class="ibtns">
-          <button class="ibtn" data-pid="${p.id}" onclick="event.stopPropagation();var btn=this;abrirFotosById(+btn.dataset.pid)" title="Fotos">📷</button>
-          <button class="ibtn edit" onclick="editProd(${p.id})" title="Editar">✏️</button>
-          <button class="ibtn eye" onclick="toggleField(${p.id},'oculto',${!p.oculto})" title="${p.oculto?'Mostrar':'Ocultar'}">${p.oculto?'👁':'🙈'}</button>
-          <button class="ibtn ${p.esgotado?'edit':'del'}" onclick="toggleField(${p.id},'esgotado',${!p.esgotado})" title="${p.esgotado?'Disponível':'Esgotado'}">${p.esgotado?'✅':'⊘'}</button>
-          <button class="ibtn del" onclick="deleteProd(${Number(p.id)},'${escJs(p.name)}')" title="Excluir">🗑</button>
-          <button class="ibtn ${p.destaque?'edit':''}" onclick="toggleField(${p.id},'destaque',${!p.destaque})" title="${p.destaque?'Remover destaque':'Destacar'}">⭐</button>
+          <button class="ibtn edit ibtn-lbl" onclick="editProd(${p.id})" aria-label="Editar ${esc(p.name||'')}">${ICO.edit}<span>Editar</span></button>
+          <button class="ibtn" onclick="event.stopPropagation();abrirFotosById(${Number(p.id)})" title="Fotos" aria-label="Fotos">${ICO.foto}</button>
+          <button class="ibtn ${p.destaque?'edit':''}" onclick="toggleField(${p.id},'destaque',${!p.destaque})" title="${p.destaque?'Remover destaque':'Destacar'}" aria-label="${p.destaque?'Remover destaque':'Destacar'}" aria-pressed="${!!p.destaque}">${ICO.star}</button>
+          <div class="row-menu"><button class="ibtn" onclick="event.stopPropagation();toggleRowMenu(this)" title="Mais ações" aria-label="Mais ações" aria-haspopup="true" aria-expanded="false">${ICO.more}</button>
+            <div class="row-menu-pop" role="menu" hidden>
+              <button role="menuitem" onclick="confirmToggle(${p.id},'oculto',${!p.oculto})">${p.oculto?'Mostrar na loja':'Ocultar da loja'}</button>
+              <button role="menuitem" onclick="confirmToggle(${p.id},'esgotado',${!p.esgotado})">${p.esgotado?'Marcar como disponível':'Marcar como esgotado'}</button>
+              <button role="menuitem" class="danger" onclick="deleteProd(${Number(p.id)},'${escJs(p.name)}')">Excluir produto</button>
+            </div></div>
         </div>
       </div>`;
     }).join('');
@@ -1960,6 +1982,29 @@ async function saveInlinePrice(input){
   toast(price?`Preço salvo: R$ ${price.toFixed(2)}`:'Preço removido','ok');
 }
 
+// categorias iguais com caixa diferente ("almofadas"/"Almofadas") aparecem uma vez só
+function uniqCI(arr){const seen=new Set();return arr.filter(c=>{const k=String(c).trim().toLowerCase();if(!k||seen.has(k))return false;seen.add(k);return true;});}
+const ICO={
+  edit:'<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
+  foto:'<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>',
+  star:'<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>',
+  more:'<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>'
+};
+function closeRowMenus(){document.querySelectorAll('.row-menu-pop').forEach(m=>{m.hidden=true;m.previousElementSibling?.setAttribute('aria-expanded','false');});}
+function toggleRowMenu(btn){
+  const pop=btn.nextElementSibling;const willOpen=pop.hidden;
+  closeRowMenus();
+  if(willOpen){pop.hidden=false;btn.setAttribute('aria-expanded','true');pop.querySelector('button')?.focus();}
+}
+document.addEventListener('click',e=>{if(!e.target.closest('.row-menu'))closeRowMenus();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeRowMenus();});
+function confirmToggle(id,field,val){
+  closeRowMenus();
+  const p=allProds.find(x=>x.id==id);const nome=p?.name||'Produto';
+  const txt={oculto:val?['Ocultar da loja?',`"${nome}" deixa de aparecer na loja.`,'Ocultar']:['Mostrar na loja?',`"${nome}" volta a aparecer na loja.`,'Mostrar'],
+    esgotado:val?['Marcar como esgotado?',`"${nome}" sai da loja até ser marcado como disponível.`,'Marcar esgotado']:['Marcar como disponível?',`"${nome}" volta a poder ser vendido.`,'Marcar disponível']}[field];
+  showConfirm({icon:'⚠️',title:txt[0],text:txt[1],okLabel:txt[2],onConfirm:()=>toggleField(id,field,val)});
+}
 async function toggleField(id,field,val){
   await sbPatch(`/rest/v1/produtos?id=eq.${id}`,{[field]:val});
   const p=allProds.find(x=>x.id==id);
@@ -1994,7 +2039,6 @@ function openNewProd(){
   document.getElementById('mDesc').value='';
   document.getElementById('mPreco').value='';
   document.getElementById('mPrecoPromo').value='';
-  document.getElementById('mPrazo').value='7';
   document.getElementById('mNota').value='';
   document.getElementById('designsGrid').innerHTML=buildDesignsGrid([]);
   document.getElementById('colsGrid').innerHTML=buildCols([]);
@@ -2029,7 +2073,6 @@ async function editProd(id){
   document.getElementById('mDesc').value=p.descricao||'';
   document.getElementById('mPreco').value=p.price||'';
   document.getElementById('mPrecoPromo').value=p.preco_promocional||'';
-  document.getElementById('mPrazo').value=p.prazo_producao_dias||7;
   document.getElementById('mNota').value=p.nota_interna||'';
   document.getElementById('designsGrid').innerHTML=buildDesignsGrid(Array.isArray(p.design)?p.design:(p.design?[p.design]:[]));
   const cols=Array.isArray(p.collections)?p.collections:(p.collections?[p.collections]:[]);
@@ -2050,7 +2093,7 @@ async function loadPhotos(nome){
   const grid=document.getElementById('photoGrid');
   grid.innerHTML='<div class="ld" style="grid-column:1/-1"><div class="spin"></div></div>';
   const urls=await searchBucketPhotos(slug,10);
-  if(!urls.length){grid.innerHTML='<div style="font-size:.78rem;color:rgba(13,9,13,.35);grid-column:1/-1;padding:8px">Nenhuma foto encontrada no bucket para este produto</div>';return;}
+  if(!urls.length){grid.innerHTML='<div style="font-size:.78rem;color:rgba(13,9,13,.35);grid-column:1/-1;padding:8px">Nenhuma foto cadastrada para este produto</div>';return;}
   grid.innerHTML=urls.map((u,i)=>`
     <div class="ph-card ${i===0?'cover':''}" onclick="setCover(this)">
       <img src="${u}" loading="lazy">
@@ -2079,7 +2122,7 @@ async function saveProd(){
     descricao:document.getElementById('mDesc').value.trim()||null,
     price:document.getElementById('mPreco').value?+document.getElementById('mPreco').value:null,
     preco_promocional:document.getElementById('mPrecoPromo').value?+document.getElementById('mPrecoPromo').value:null,
-    prazo_producao_dias:+document.getElementById('mPrazo').value||7,
+    prazo_producao_dias:5,
     nota_interna:document.getElementById('mNota').value.trim()||null,
       design:getSelDesigns().length?getSelDesigns():null,
     collections:getSelCols(),
@@ -2157,7 +2200,7 @@ function renderOrderTable(){
       <div><div style="font-size:.85rem;font-weight:600">${esc(p.visitante_nome)||'—'}</div><div style="font-size:.7rem;color:rgba(13,9,13,.38)">${esc(p.visitante_email)||''}</div></div>
       <span style="font-weight:700">${fmt(p.total)}</span>
       <span style="font-size:.75rem">${p.mp_status||'—'}</span>
-      <span><span class="pill ${p.status}">${{pendente:'⏳ Pendente',confirmado:'✅ Confirmado',em_producao:'🔨 Em produção',pronto:'📦 Pronto',enviado:'🚚 Enviado',entregue:'📬 Entregue',cancelado:'❌ Cancelado'}[p.status]||p.status}</span></span>
+      <span><span class="pill ${p.status}">${{pendente:'⏳ Pendente',confirmado:'✅ Confirmado',em_producao:'🔨 Em produção',pronto:'📦 Pronto',enviado:'🚚 Enviado',entregue:'📬 Entregue',cancelado:'❌ Cancelado',pago:'💚 Pago'}[p.status]||p.status}</span></span>
       <span style="font-size:.72rem;color:rgba(13,9,13,.38)">${fmtDate(p.created_at)}</span>
     </div>`).join('')
     // sentinela do scroll infinito: só existe sem filtro/busca ativos —
@@ -2197,7 +2240,7 @@ async function openOrder(id){
       ${clientOrders.length?`<div style="margin-top:10px;font-size:.75rem;color:rgba(13,9,13,.45)">Outros pedidos: ${clientOrders.map(o=>`<span onclick="closeOrderModal();setTimeout(()=>openOrder(${o.id}),100)" style="cursor:pointer;color:var(--rose);text-decoration:underline">#${o.id}</span>`).join(', ')}</div>`:''}
     </div>
     <div class="msec"><h3>Itens</h3>
-      ${itens.length?itens.map(i=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(244,121,154,.08);font-size:.86rem"><span>${i.nome_produto} <span style="color:rgba(13,9,13,.38)">×${i.quantidade}</span></span><b>${fmt(i.subtotal)}</b></div>`).join('')+'<div style="display:flex;justify-content:space-between;margin-top:10px;font-weight:700"><span>Total</span><span style="color:var(--rose)">${fmt(p.total)}</span></div>'
+      ${itens.length?itens.map(i=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(244,121,154,.08);font-size:.86rem"><span>${i.nome_produto} <span style="color:rgba(13,9,13,.38)">×${i.quantidade}</span></span><b>${fmt(i.subtotal)}</b></div>`).join('')+`<div style="display:flex;justify-content:space-between;margin-top:10px;font-weight:700"><span>Total</span><span style="color:var(--rose)">${fmt(p.total)}</span></div>`
       :`<p style="font-size:.82rem;color:rgba(13,9,13,.38)">Itens sem registro</p>`}
       ${p.observacoes?`<div style="margin-top:10px;background:rgba(244,121,154,.06);border-radius:8px;padding:10px;font-size:.82rem;color:rgba(13,9,13,.55)"><b>Obs:</b> ${esc(p.observacoes)}</div>`:''}
     </div>
@@ -2273,13 +2316,12 @@ async function loadClients(){
     if(chunk.length < batch) break;
     offset += batch;
   }
-  const od = await sbGet('/rest/v1/pedidos?select=cliente_id,total,status');
+  // contagem agregada no banco (RPC admin_pedidos_por_cliente)
+  const agg = await fetch(`${SB}/rest/v1/rpc/admin_pedidos_por_cliente`,{method:'POST',headers:HDR,body:'{}'})
+    .then(r=>r.ok?r.json():null).catch(()=>null);
   allClients = all;
-  const orders = Array.isArray(od)?od:[];
-  allClients.forEach(c=>{
-    const cOrders=orders.filter(o=>o.cliente_id===c.id);
-    c._pedidos=cOrders.length;
-  });
+  const cnt = new Map((Array.isArray(agg)?agg:[]).map(r=>[r.cliente_id,+r.pedidos||0]));
+  allClients.forEach(c=>{ c._pedidos=cnt.get(c.id)||0; });
   clientsShown = CLIENTS_BATCH;
   renderClients();
   initClientScroll();
@@ -3092,9 +3134,11 @@ function updateMiniStats(){
   const semana=agora-7*24*60*60*1000;
   const recentes=allOrders.filter(o=>new Date(o.created_at).toDateString()===hoje);
   const novos=allOrders.filter(o=>new Date(o.created_at).getTime()>agora-2*60*60*1000&&o.status==='pendente');
-  const receitaHoje=recentes.filter(o=>o.status!=='cancelado').reduce((s,o)=>s+(o.total||0),0);
-  const receitaSemana=allOrders.filter(o=>new Date(o.created_at).getTime()>semana&&o.status!=='cancelado').reduce((s,o)=>s+(o.total||0),0);
-  const emProd=allOrders.filter(o=>o.status==='producao').length;
+  // mesma definição de receita do dashboard: pago e não cancelado
+  const faturou=o=>o.pagamento_status==='pago'&&o.status!=='cancelado';
+  const receitaHoje=recentes.filter(faturou).reduce((s,o)=>s+(o.total||0),0);
+  const receitaSemana=allOrders.filter(o=>new Date(o.created_at).getTime()>semana&&faturou(o)).reduce((s,o)=>s+(o.total||0),0);
+  const emProd=allOrders.filter(o=>o.status==='em_producao').length;
   document.getElementById('ms-hoje').textContent=receitaHoje?fmt(receitaHoje):`${recentes.length} pedidos`;
   document.getElementById('ms-semana').textContent=fmt(receitaSemana);
   document.getElementById('ms-prod').textContent=emProd;
@@ -3492,7 +3536,9 @@ async function notifyCustomer(pedido,tipo){
       body:JSON.stringify({
         to:pedido.visitante_email,
         tipo,
-        data:{nome:pedido.visitante_nome,pedido_id:pedido.id,tracking_code:pedido.tracking_code||null}
+        data:{nome:pedido.visitante_nome,pedido_id:pedido.id,tracking_code:pedido.tracking_code||null,
+          // link de avaliação: avaliar.html?pedido=ID&token=avaliacao_token (supabase/2026-09-27-lgpd.sql)
+          avaliacao_token:pedido.avaliacao_token||null}
       })
     }).catch(()=>{});
   }catch(e){}
@@ -4346,12 +4392,33 @@ async function renderDash(){
     setCmp('dPedCmp',pctChange(pedidosMes,pedidosMesAnterior),'vs mês anterior');
   }
 
+  renderLojaNova();
   renderChart();
   renderRecentOrders();
   renderPendingActions();
   renderTopProducts();
   renderViewStats();
   renderConversao();
+}
+
+function renderLojaNova(){
+  const box=document.getElementById('dashLojaNova');
+  if(!box)return;
+  if(allOrders.length){box.hidden=true;return;}
+  const semPreco=allProds.filter(p=>!p.price).length;
+  const semFoto=allProds.filter(p=>!(fotosDB[p.id]&&fotosDB[p.id].length)).length;
+  const semDesc=allProds.filter(p=>!((p.descricao||p.description||'').trim())).length;
+  const pl=n=>n>1?'s':'';
+  const passos=[
+    semPreco?`<li><button class="btn-link-adm" onclick="goPage('produtos')">${semPreco} produto${pl(semPreco)} sem preço</button> — não aparece${semPreco>1?'m':''} na loja.</li>`:'',
+    semDesc?`<li><button class="btn-link-adm" onclick="goPage('produtos')">${semDesc} produto${pl(semDesc)} sem descrição</button></li>`:'',
+    semFoto&&Object.keys(fotosDB).length?`<li><button class="btn-link-adm" onclick="goPage('produtos')">${semFoto} produto${pl(semFoto)} sem foto</button></li>`:'',
+    `<li><button class="btn-link-adm" onclick="goPage('frete')">Conferir frete e dimensões de pacote</button></li>`,
+    `<li><button class="btn-link-adm" onclick="goPage('notif')">Configurar alertas de novo pedido</button></li>`,
+    `<li><a class="btn-link-adm" href="loja.html" target="_blank" rel="noopener">Fazer um pedido de teste</a> e cancelar depois.</li>`
+  ].filter(Boolean).join('');
+  box.innerHTML=`<h2>Loja nova — ainda sem pedidos</h2><p>Os números do painel aparecem a partir do primeiro pedido. Próximos passos:</p><ul>${passos}</ul>`;
+  box.hidden=false;
 }
 
 function setCmp(elId,cmp,suffix){
@@ -4877,7 +4944,7 @@ function compartilharSugestao(canal){
   if(!sugestaoCarrinho.length){toast('Selecione pelo menos um produto','err');return;}
   const msg_extra = (document.getElementById('shareModalMsg')?.value || document.getElementById('sugerirMsgExtraDesk')?.value || document.getElementById('sugerirMsgExtra')?.value || '').trim();
   const ids = sugestaoCarrinho.map(p=>p.id).join(',');
-  const BASE = 'https://pedrodeathayde.github.io/loja-chuchurosa/loja.html';
+  const BASE = new URL('loja.html', location.href).href.split('?')[0];
   const link = BASE + '?sugestao=' + ids;
   const total = sugestaoCarrinho.reduce((s,p)=>s+p.price,0);
 
