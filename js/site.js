@@ -83,6 +83,9 @@
   paintCount();
   window.addEventListener('storage',function(e){if(e.key==='cr_cart')paintCount();});
 
+  // ── ano atual no rodapé ──
+  document.querySelectorAll('[data-ano-atual]').forEach(function(el){el.textContent=new Date().getFullYear();});
+
   // ── links vindos de outras páginas: loja.html?buscar=1 / ?carrinho=1 ──
   var params=new URLSearchParams(location.search);
   if(params.has('buscar')&&searchInput){
