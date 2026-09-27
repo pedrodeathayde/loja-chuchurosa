@@ -2115,9 +2115,9 @@ function addToCart(e,id){
   if(btn&&btn.classList){btn.classList.remove('bounce');void btn.offsetWidth;btn.classList.add('bounce');}
   const ex=cart.find(x=>String(x.id)===String(id));
   if(ex)ex.qty++;
-  else cart.push({id:p.id,name:p.name,price:p.price,url:p.url,prazo:p.prazo_producao_dias||7,qty:1});
+  else cart.push({id:p.id,name:p.name,price:+(p.preco_promocional||p.price||0),url:p.url,qty:1});
   saveCart();
-  showToastRich(p.name,p.url,`R$ ${(p.price||0).toFixed(2).replace('.',',')} · Adicionado ao carrinho`);
+  showToastRich(p.name,p.url,`R$ ${(+(p.preco_promocional||p.price||0)).toFixed(2).replace('.',',')} · Adicionado ao carrinho`);
 }
 function removeFromCart(id){ cart=cart.filter(x=>String(x.id)!==String(id)); saveCart(); renderCartDrawer(); }
 function changeQty(id,d){ const i=cart.find(x=>String(x.id)===String(id)); if(!i)return; i.qty+=d; if(i.qty<=0)removeFromCart(id); else{saveCart();renderCartDrawer();} }

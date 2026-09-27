@@ -8,7 +8,7 @@
 <title>Checkout — Chuchu Rosa</title>
 <meta name="description" content="Finalizar compra — Chuchu Rosa">
   <meta name="robots" content="noindex, nofollow">
-  <link rel="canonical" href="https://loja.chuchurosa.com.br/checkout">
+  <link rel="canonical" href="https://chuchurosa.com.br/checkout.html">
 <link rel="preload" href="fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/fonts.css">
@@ -656,7 +656,7 @@ async function criarPedidoLegado(pedidoPayload, itens, clientePayload){
   if(itens.length){
     await fetch(SB+'/rest/v1/itens_pedido',{
       method:'POST', headers:HDR,
-      body:JSON.stringify(itens.map(({produto_id,...i})=>({...i,pedido_id:id})))
+      body:JSON.stringify(itens.map(({produto_id,tamanho,cor,...i})=>({...i,pedido_id:id})))
     });
   }
   return id;
@@ -757,8 +757,8 @@ async function placeOrder(){
   const tel   = document.getElementById('fTel').value.trim();
   const subtotal = cart.reduce((s,i)=>s+(i.price||0)*i.qty,0);
   const desconto = payMethod==='pix' ? subtotal*0.05 : 0;
-  const total    = subtotal - desconto;
-  const maxPrazo = Math.max(...cart.map(i=>i.prazo||7));
+  let total      = subtotal - desconto;
+  const maxPrazo = 5; // prazo de produção fixo da marca: 3 a 5 dias úteis (grava o teto)
 
   try {
     const clientePayload = mode==='conta' ? {
@@ -788,6 +788,7 @@ async function placeOrder(){
     };
     const itens = cart.filter(i=>i.price).map(i=>({
       produto_id:Number.isFinite(+i.id)?+i.id:null,
+      tamanho:i.tamanho||null, cor:i.cor||null,
       // tamanho/cor escolhidos na página do produto vão junto no nome do item
       nome_produto:i.variacao?`${i.name} (${i.variacao})`:i.name,
       preco_unitario:i.price,
@@ -802,7 +803,8 @@ async function placeOrder(){
     });
     let rData=null; try{ rData = await rRes.json(); }catch(e){}
     if(rRes.ok){
-      orderId = rData;
+      // o servidor recalcula preços e total; a tela mostra o valor que foi gravado
+      orderId = rData.id; total = +rData.total;
     }else if(rRes.status===404 && (!rData || rData.code==='PGRST202')){
       orderId = await criarPedidoLegado(pedidoPayload, itens, clientePayload);
     }else{

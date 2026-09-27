@@ -182,17 +182,32 @@ grant select on public.avaliacoes_publicas to anon, authenticated;
 
 
 -- ── 5. checkout: pedido criado no servidor ────────────────────────────
--- p_pedido: campos do pedido (endereço, totais, observações, forma de pagamento)
--- p_itens:  [{produto_id, nome_produto, preco_unitario, quantidade}]
+-- O preço NUNCA vem do navegador: cada item é precificado aqui a partir de
+-- produtos (preço promocional, se houver, senão o normal) + preco_extra da
+-- variação escolhida. Subtotal, desconto do PIX (5%) e total também.
+-- p_pedido: endereço, observações, forma de pagamento (mp_status), frete
+-- p_itens:  [{produto_id, tamanho, cor, quantidade}]
 -- p_cliente: cadastro completo quando a pessoa escolhe "criar conta" (opcional)
-create or replace function public.criar_pedido(p_pedido jsonb, p_itens jsonb, p_cliente jsonb default null)
-returns bigint
+-- Devolve {id, subtotal, desconto, total}.
+drop function if exists public.criar_pedido(jsonb, jsonb, jsonb);
+create function public.criar_pedido(p_pedido jsonb, p_itens jsonb, p_cliente jsonb default null)
+returns json
 language plpgsql security definer set search_path = public
 as $$
 declare
   v_cliente_id bigint;
   v_pedido_id  bigint;
   v_item       jsonb;
+  v_prod       record;
+  v_qtd        int;
+  v_tam        text;
+  v_cor        text;
+  v_extra      numeric;
+  v_preco      numeric;
+  v_subtotal   numeric := 0;
+  v_desconto   numeric := 0;
+  v_frete      numeric;
+  v_total      numeric;
 begin
   if jsonb_typeof(p_itens) is distinct from 'array' or jsonb_array_length(p_itens) = 0 then
     raise exception 'pedido_sem_itens' using errcode = 'P0001';
@@ -210,15 +225,16 @@ begin
     end;
   end if;
 
+  -- totais são preenchidos depois de precificar os itens (tudo na mesma transação)
   insert into pedidos (
     status, subtotal, frete, total, prazo_entrega_dias, observacoes, mp_status,
     endereco_cep, endereco_logradouro, endereco_numero, endereco_complemento,
     endereco_bairro, endereco_cidade, endereco_estado,
     cliente_id, visitante_nome, visitante_email, visitante_telefone)
   values (
-    'pendente',
-    (p_pedido->>'subtotal')::numeric, coalesce((p_pedido->>'frete')::numeric, 0), (p_pedido->>'total')::numeric,
-    (p_pedido->>'prazo_entrega_dias')::int, nullif(p_pedido->>'observacoes', ''), p_pedido->>'mp_status',
+    'pendente', 0, 0, 0,
+    5,   -- prazo de produção fixo da marca: 3 a 5 dias úteis (grava o teto)
+    nullif(p_pedido->>'observacoes', ''), p_pedido->>'mp_status',
     p_pedido->>'endereco_cep', p_pedido->>'endereco_logradouro', p_pedido->>'endereco_numero',
     nullif(p_pedido->>'endereco_complemento', ''), p_pedido->>'endereco_bairro',
     p_pedido->>'endereco_cidade', p_pedido->>'endereco_estado',
@@ -229,16 +245,54 @@ begin
   returning id into v_pedido_id;
 
   for v_item in select * from jsonb_array_elements(p_itens) loop
-    if coalesce((v_item->>'quantidade')::int, 0) not between 1 and 99
-       or coalesce((v_item->>'preco_unitario')::numeric, -1) < 0 then
+    v_qtd := coalesce((v_item->>'quantidade')::int, 0);
+    if v_qtd not between 1 and 99 then
       raise exception 'item_invalido' using errcode = 'P0001';
     end if;
+
+    select p.id, p.name, p.price, p.preco_promocional into v_prod
+    from produtos p
+    where p.id = nullif(v_item->>'produto_id', '')::bigint
+      and p.ativo is not false and p.oculto is not true and p.esgotado is not true;
+    if not found then
+      raise exception 'produto_indisponivel' using errcode = 'P0001';
+    end if;
+
+    v_preco := coalesce(nullif(v_prod.preco_promocional, 0), v_prod.price);
+    if v_preco is null or v_preco <= 0 then
+      raise exception 'produto_sem_preco' using errcode = 'P0001';   -- itens "sob consulta" não são vendidos pelo checkout
+    end if;
+
+    v_tam := nullif(trim(v_item->>'tamanho'), '');
+    v_cor := nullif(trim(v_item->>'cor'), '');
+    v_extra := null;
+    if v_tam is not null then
+      select v.preco_extra into v_extra
+      from produto_variacoes v
+      where v.produto_id = v_prod.id and v.ativo is not false and v.tamanho = v_tam
+        and (v_cor is null or v.cor = v_cor)
+      order by v.id limit 1;
+    end if;
+    v_preco := v_preco + coalesce(v_extra, 0);
+
     insert into itens_pedido (pedido_id, produto_id, nome_produto, preco_unitario, quantidade)
-    values (v_pedido_id, nullif(v_item->>'produto_id', '')::bigint, v_item->>'nome_produto',
-            (v_item->>'preco_unitario')::numeric, (v_item->>'quantidade')::int);
+    values (v_pedido_id, v_prod.id,
+            v_prod.name || case when v_tam is not null or v_cor is not null
+                                then ' (' || concat_ws(' / ', v_tam, v_cor) || ')' else '' end,
+            v_preco, v_qtd);
+    v_subtotal := v_subtotal + v_preco * v_qtd;
   end loop;
 
-  return v_pedido_id;
+  if p_pedido->>'mp_status' = 'pix' then
+    v_desconto := round(v_subtotal * 0.05, 2);
+  end if;
+  v_frete := greatest(coalesce((p_pedido->>'frete')::numeric, 0), 0);
+  v_total := v_subtotal - v_desconto + v_frete;
+
+  update pedidos set subtotal = v_subtotal, frete = v_frete, total = v_total
+  where id = v_pedido_id;
+
+  return json_build_object('id', v_pedido_id, 'subtotal', v_subtotal, 'desconto', v_desconto, 'total', v_total);
 end
 $$;
 
