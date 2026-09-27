@@ -226,6 +226,7 @@ img{display:block;max-width:100%}
 .pill.oculto{background:rgba(13,9,13,.08);color:rgba(13,9,13,.4)}
 .pill.destaque{background:rgba(244,121,154,.12);color:var(--rose)}
 .pill.pendente{background:rgba(245,158,11,.1);color:var(--yellow)}
+.pill.pago{background:rgba(34,197,94,.1);color:var(--green)}
 .pill.confirmado{background:rgba(34,197,94,.1);color:var(--green)}
 .pill.em_producao{background:rgba(244,121,154,.12);color:var(--rose)}
 .pill.pronto{background:rgba(99,102,241,.1);color:var(--blue)}
@@ -512,6 +513,8 @@ img{display:block;max-width:100%}
   .aside{display:flex;position:fixed;left:-260px;top:0;bottom:0;width:260px;z-index:50;transition:left .25s}
   .aside.open{left:0}
   .aside-overlay.open{display:block}
+  /* os botões flutuantes de menu e tema não podem cobrir o resumo e o título */
+  .mini-stats{min-height:60px;align-items:center;padding:0 60px;overflow-x:auto;white-space:nowrap}
 }
 
 .status-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
@@ -524,6 +527,8 @@ img{display:block;max-width:100%}
 .status-btn[data-s="enviado"]{border-color:#06b6d4;color:#06b6d4}.status-btn[data-s="enviado"].active{background:#06b6d4}
 .status-btn[data-s="entregue"]{border-color:#10b981;color:#10b981}.status-btn[data-s="entregue"].active{background:#10b981}
 .status-btn[data-s="cancelado"]{border-color:#ef4444;color:#ef4444}.status-btn[data-s="cancelado"].active{background:#ef4444}
+/* botão ativo: texto branco (as regras de cor por status acima venciam e o texto sumia no fundo) */
+.status-btn.active[data-s]{color:#fff}
 .pgto-btn{padding:7px 14px;border-radius:100px;border:1.5px solid transparent;font-family:var(--fb);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;background:#fff}
 .pgto-btn[data-p="pendente"]{border-color:#f59e0b;color:#f59e0b}.pgto-btn[data-p="pendente"].active{background:#f59e0b;color:#fff}
 .pgto-btn[data-p="pago"]{border-color:#10b981;color:#10b981}.pgto-btn[data-p="pago"].active{background:#10b981;color:#fff}
@@ -2157,7 +2162,7 @@ function renderOrderTable(){
       <div><div style="font-size:.85rem;font-weight:600">${esc(p.visitante_nome)||'—'}</div><div style="font-size:.7rem;color:rgba(13,9,13,.38)">${esc(p.visitante_email)||''}</div></div>
       <span style="font-weight:700">${fmt(p.total)}</span>
       <span style="font-size:.75rem">${p.mp_status||'—'}</span>
-      <span><span class="pill ${p.status}">${{pendente:'⏳ Pendente',confirmado:'✅ Confirmado',em_producao:'🔨 Em produção',pronto:'📦 Pronto',enviado:'🚚 Enviado',entregue:'📬 Entregue',cancelado:'❌ Cancelado'}[p.status]||p.status}</span></span>
+      <span><span class="pill ${p.status}">${{pendente:'⏳ Pendente',confirmado:'✅ Confirmado',em_producao:'🔨 Em produção',pronto:'📦 Pronto',enviado:'🚚 Enviado',entregue:'📬 Entregue',cancelado:'❌ Cancelado',pago:'💚 Pago'}[p.status]||p.status}</span></span>
       <span style="font-size:.72rem;color:rgba(13,9,13,.38)">${fmtDate(p.created_at)}</span>
     </div>`).join('')
     // sentinela do scroll infinito: só existe sem filtro/busca ativos —
@@ -2197,7 +2202,7 @@ async function openOrder(id){
       ${clientOrders.length?`<div style="margin-top:10px;font-size:.75rem;color:rgba(13,9,13,.45)">Outros pedidos: ${clientOrders.map(o=>`<span onclick="closeOrderModal();setTimeout(()=>openOrder(${o.id}),100)" style="cursor:pointer;color:var(--rose);text-decoration:underline">#${o.id}</span>`).join(', ')}</div>`:''}
     </div>
     <div class="msec"><h3>Itens</h3>
-      ${itens.length?itens.map(i=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(244,121,154,.08);font-size:.86rem"><span>${i.nome_produto} <span style="color:rgba(13,9,13,.38)">×${i.quantidade}</span></span><b>${fmt(i.subtotal)}</b></div>`).join('')+'<div style="display:flex;justify-content:space-between;margin-top:10px;font-weight:700"><span>Total</span><span style="color:var(--rose)">${fmt(p.total)}</span></div>'
+      ${itens.length?itens.map(i=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(244,121,154,.08);font-size:.86rem"><span>${i.nome_produto} <span style="color:rgba(13,9,13,.38)">×${i.quantidade}</span></span><b>${fmt(i.subtotal)}</b></div>`).join('')+`<div style="display:flex;justify-content:space-between;margin-top:10px;font-weight:700"><span>Total</span><span style="color:var(--rose)">${fmt(p.total)}</span></div>`
       :`<p style="font-size:.82rem;color:rgba(13,9,13,.38)">Itens sem registro</p>`}
       ${p.observacoes?`<div style="margin-top:10px;background:rgba(244,121,154,.06);border-radius:8px;padding:10px;font-size:.82rem;color:rgba(13,9,13,.55)"><b>Obs:</b> ${esc(p.observacoes)}</div>`:''}
     </div>
