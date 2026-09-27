@@ -623,6 +623,35 @@ async function fetchCep(cep){
 renderSummary();
 selectPM('pix');
 
+// TODO remover depois que o SQL de LGPD rodar: gravação direta antiga
+async function criarPedidoLegado(pedidoPayload, itens, clientePayload){
+  let clienteId = null;
+  if(clientePayload){
+    const cRes = await fetch(SB+'/rest/v1/clientes',{
+      method:'POST', headers:{...HDR,'Prefer':'return=representation'}, body:JSON.stringify(clientePayload)
+    });
+    if(cRes.ok){ const cd = await cRes.json(); clienteId = cd[0]?.id || null; }
+  }
+  const payload = {...pedidoPayload, status:'pendente'};
+  if(clienteId){
+    payload.cliente_id = clienteId;
+    delete payload.visitante_nome; delete payload.visitante_email; delete payload.visitante_telefone;
+  }
+  const pRes = await fetch(SB+'/rest/v1/pedidos',{
+    method:'POST', headers:{...HDR,'Prefer':'return=representation'}, body:JSON.stringify(payload)
+  });
+  if(!pRes.ok) throw new Error('Erro ao salvar pedido');
+  const pData = await pRes.json();
+  const id = pData[0]?.id;
+  if(itens.length){
+    await fetch(SB+'/rest/v1/itens_pedido',{
+      method:'POST', headers:HDR,
+      body:JSON.stringify(itens.map(({produto_id,...i})=>({...i,pedido_id:id})))
+    });
+  }
+  return id;
+}
+
 // ── MOBILE PROGRESS BAR — track scroll across sections ────────────
 (function(){
   const sections=[
@@ -721,33 +750,18 @@ async function placeOrder(){
   const maxPrazo = Math.max(...cart.map(i=>i.prazo||7));
 
   try {
-    // 1. Save cliente (visitante or new account)
-    let clienteId = null;
-    if(mode==='conta'){
-      const cRes = await fetch(SB+'/rest/v1/clientes',{
-        method:'POST',
-        headers:{...HDR,'Prefer':'return=representation'},
-        body:JSON.stringify({
-          nome, email, telefone:tel,
-          cpf:document.getElementById('fCpf').value.trim()||null,
-          cep:document.getElementById('fCep').value.trim(),
-          logradouro:document.getElementById('fLogradouro').value.trim(),
-          numero:document.getElementById('fNumero').value.trim(),
-          complemento:document.getElementById('fCompl').value.trim()||null,
-          bairro:document.getElementById('fBairro').value.trim(),
-          cidade:document.getElementById('fCidade').value.trim(),
-          estado:document.getElementById('fEstado').value.trim(),
-        })
-      });
-      if(cRes.ok){
-        const cd = await cRes.json();
-        clienteId = cd[0]?.id || null;
-      }
-    }
-
-    // 2. Save pedido
+    const clientePayload = mode==='conta' ? {
+      nome, email, telefone:tel,
+      cpf:document.getElementById('fCpf').value.trim()||null,
+      cep:document.getElementById('fCep').value.trim(),
+      logradouro:document.getElementById('fLogradouro').value.trim(),
+      numero:document.getElementById('fNumero').value.trim(),
+      complemento:document.getElementById('fCompl').value.trim()||null,
+      bairro:document.getElementById('fBairro').value.trim(),
+      cidade:document.getElementById('fCidade').value.trim(),
+      estado:document.getElementById('fEstado').value.trim(),
+    } : null;
     const pedidoPayload = {
-      status:'pendente',
       subtotal, frete:0, total,
       prazo_entrega_dias:maxPrazo,
       observacoes:document.getElementById('fObs').value.trim()||null,
@@ -759,36 +773,28 @@ async function placeOrder(){
       endereco_bairro:document.getElementById('fBairro').value.trim(),
       endereco_cidade:document.getElementById('fCidade').value.trim(),
       endereco_estado:document.getElementById('fEstado').value.trim(),
+      visitante_nome:nome, visitante_email:email, visitante_telefone:tel,
     };
-    if(clienteId) pedidoPayload.cliente_id = clienteId;
-    else {
-      pedidoPayload.visitante_nome = nome;
-      pedidoPayload.visitante_email = email;
-      pedidoPayload.visitante_telefone = tel;
-    }
-
-    const pRes = await fetch(SB+'/rest/v1/pedidos',{
-      method:'POST',
-      headers:{...HDR,'Prefer':'return=representation'},
-      body:JSON.stringify(pedidoPayload)
-    });
-    if(!pRes.ok) throw new Error('Erro ao salvar pedido');
-    const pData = await pRes.json();
-    orderId = pData[0]?.id;
-
-    // 3. Save itens
     const itens = cart.filter(i=>i.price).map(i=>({
-      pedido_id:orderId,
+      produto_id:Number.isFinite(+i.id)?+i.id:null,
       nome_produto:i.name,
       preco_unitario:i.price,
       quantidade:i.qty,
     }));
-    if(itens.length){
-      await fetch(SB+'/rest/v1/itens_pedido',{
-        method:'POST',
-        headers:HDR,
-        body:JSON.stringify(itens)
-      });
+
+    // pedido criado no servidor (supabase/2026-09-27-lgpd.sql): o navegador
+    // não precisa ler as tabelas de pedidos e clientes
+    const rRes = await fetch(SB+'/rest/v1/rpc/criar_pedido',{
+      method:'POST', headers:HDR,
+      body:JSON.stringify({p_pedido:pedidoPayload, p_itens:itens, p_cliente:clientePayload})
+    });
+    let rData=null; try{ rData = await rRes.json(); }catch(e){}
+    if(rRes.ok){
+      orderId = rData;
+    }else if(rRes.status===404 && (!rData || rData.code==='PGRST202')){
+      orderId = await criarPedidoLegado(pedidoPayload, itens, clientePayload);
+    }else{
+      throw new Error('Erro ao salvar pedido');
     }
 
     // 4. Redirect to Mercado Pago (when MP token is configured)

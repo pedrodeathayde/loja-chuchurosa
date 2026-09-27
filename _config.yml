@@ -1,0 +1,7 @@
+# GitHub Pages (Jekyll): arquivos do repositório que NÃO vão para o site publicado.
+# Rascunhos, scripts de banco e documentação interna ficam só no repositório.
+exclude:
+  - docs
+  - supabase
+  - schema.sql
+  - README.md
