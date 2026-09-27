@@ -51,6 +51,10 @@ $$;
 alter table public.pedidos
   add column if not exists avaliacao_token uuid not null default gen_random_uuid();
 create unique index if not exists pedidos_avaliacao_token_key on public.pedidos (avaliacao_token);
+-- a coluna pode já existir como text: garante valor em todos os pedidos
+update public.pedidos set avaliacao_token = gen_random_uuid()
+ where avaliacao_token is null or btrim(avaliacao_token::text) = '';
+alter table public.pedidos alter column avaliacao_token set default gen_random_uuid();
 
 
 -- ── 2. rastreio público sem dados pessoais ────────────────────────────
@@ -95,7 +99,7 @@ as $$
   )
   from pedidos p
   left join clientes c on c.id = p.cliente_id
-  where p.id = p_pedido_id and p.avaliacao_token = p_token
+  where p.id = p_pedido_id and p.avaliacao_token::text = p_token::text
 $$;
 
 -- inserção comum (não exposta: só as duas funções abaixo chamam)
@@ -139,7 +143,7 @@ declare v_email text;
 begin
   select coalesce(p.visitante_email, c.email) into v_email
   from pedidos p left join clientes c on c.id = p.cliente_id
-  where p.id = p_pedido_id and p.avaliacao_token = p_token;
+  where p.id = p_pedido_id and p.avaliacao_token::text = p_token::text;
   if not found then
     raise exception 'link_invalido' using errcode = 'P0001';
   end if;
