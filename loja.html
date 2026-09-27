@@ -722,6 +722,8 @@ nav.elevated{
     border-right:1px solid rgba(244,121,154,.15);
   }
   .sidebar.mobile-open{display:block;transform:translateX(0)}
+  /* .rail (max-width:980px) deixa o trilho estático; como gaveta ele precisa continuar fixo */
+  .rail.sidebar{position:fixed;top:0;width:280px;margin-bottom:0}
   .sidebar-inner{
     position:static;max-height:none;overflow:visible;
     padding:0 20px 28px;
@@ -754,7 +756,7 @@ nav.elevated{
   }
   [data-theme="dark"] .sidebar-close{background:rgba(244,121,154,.12);color:var(--pink2)}
   .sidebar #catList{margin-top:16px}
-  body.sidebar-open{overflow:hidden;position:fixed;width:100%}
+  html:has(body.sidebar-open),body.sidebar-open{overflow:hidden}
   .shop-wrap{display:block;background-image:none}
   [data-theme="dark"] .shop-wrap{background-image:none}
   .shop-main{padding:12px}

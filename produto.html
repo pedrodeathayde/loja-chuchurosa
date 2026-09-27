@@ -2065,8 +2065,6 @@ function doWhatsApp(){
 
 // ── FAVORITES ─────────────────────────────────────────────────────────
 async function checkFav(){
-  const {data:{session}}=await (await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js')).createClient(SB,KEY).auth.getSession().catch(()=>({data:{session:null}}));
-  // simpler: check via anon
   try{
     const sb=window._sb||(window._sb=supabase.createClient(SB,KEY));
     const {data:{session}}=await sb.auth.getSession();
