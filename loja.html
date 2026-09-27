@@ -846,6 +846,8 @@ img{display:block;max-width:100%;height:auto}
 }
 .pcard:hover .lb-trigger{opacity:1}
 .lb-trigger:hover{background:rgba(229,37,100,.7)!important}
+.lb-trigger .ico-heart{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linejoin:round}
+.lb-trigger.active .ico-heart{fill:var(--pink);stroke:var(--pink)}
 
 /* ── BACK TO TOP ── */
 .btt{
@@ -1793,6 +1795,8 @@ const SB  = 'https://oznpfqsgurztffwfyfec.supabase.co';
 const SUPPORTS_HOVER = window.matchMedia && window.matchMedia('(hover:hover)').matches;
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96bnBmcXNndXJ6dGZmd2Z5ZmVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjAyNjEsImV4cCI6MjA5NTY5NjI2MX0.wO7vQ3cDy9bRX6mifvgp4B_cNjVhY_YLq4qkLvwigQA';
 const HDR = {apikey:KEY,Authorization:'Bearer '+KEY,Accept:'application/json'};
+// coração dos cards (favoritos)
+const HEART_SVG='<svg class="ico-heart" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.3C1.6 7.8 3.9 4.5 7.3 4.5c2 0 3.6 1.1 4.7 2.7 1.1-1.6 2.7-2.7 4.7-2.7 3.4 0 5.7 3.3 4.5 6.7-1.7 4.7-9.2 9.3-9.2 9.3Z"/></svg>';
 const CAT_LABELS={
   passaros:'Pássaros',flores:'Flores',raposas:'Raposas',decoracao:'Decoração',
   almofadas:'Almofadas',bebes:'Bebês',asas:'Asas',natal:'Natal',
@@ -2037,7 +2041,7 @@ function renderGrid(){
         ${imgFirst}${imgSecond}
         <div class="pcard-ph" ${p.url?'style="display:none"':''}><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8" stroke-width="1"/></svg></div>
         ${esgotadoBadge}${badge}
-${p.url?`<button class="lb-trigger" onclick="event.preventDefault();event.stopPropagation();toggleFavLoja(${p.id},this)" title="Favoritar" aria-label="${favs.has(p.id)?'Remover dos favoritos':'Adicionar aos favoritos'}" aria-pressed="${favs.has(p.id)?'true':'false'}">${favs.has(p.id)?'❤️':'🤍'}</button>`:''}
+${p.url?`<button class="lb-trigger${favs.has(p.id)?' active':''}" type="button" onclick="event.preventDefault();event.stopPropagation();toggleFavLoja(${p.id},this)" title="Favoritar" aria-label="${favs.has(p.id)?'Remover dos favoritos':'Adicionar aos favoritos'}" aria-pressed="${favs.has(p.id)?'true':'false'}">${HEART_SVG}</button>`:''}
       </div>
       <div class="pcard-body">
         <div class="pcard-cat">${cats}</div>
@@ -3016,7 +3020,7 @@ function syncFavIcons(){
     const m=onclickAttr.match(/toggleFavLoja\((\d+)/);
     if(!m)return;
     const id=Number(m[1]);
-    btn.innerHTML=favs.has(id)?'❤️':'🤍';
+    btn.classList.toggle('active',favs.has(id));btn.setAttribute('aria-pressed',favs.has(id)?'true':'false');
   });
 }
 
@@ -3046,14 +3050,14 @@ function toggleFavLoja(id,btn){
   if(btn&&btn.classList){btn.classList.remove('bounce');void btn.offsetWidth;btn.classList.add('bounce');}
   if(favs.has(id)){
     favs.delete(id);
-    btn.innerHTML='🤍';
+    btn.setAttribute('aria-pressed','false');
     btn.classList.remove('active');
     saveFavDB(id,'remove');
   } else {
     favs.add(id);
-    btn.innerHTML='❤️';
+    btn.setAttribute('aria-pressed','true');
     btn.classList.add('active');
-    if(p)showToastRich(p.name,p.url,'❤️ Adicionado aos favoritos');
+    if(p)showToastRich(p.name,p.url,'Adicionado aos favoritos');
     saveFavDB(id,'add');
   }
   saveFavs();
