@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Fantasias, Decoração e Ambientes Sob Medida | Chuchu Rosa — Desde 2009</title>
-<meta name="description" content="Fantasias, decoração divertida, ambientes e peças infantis feitas sob medida no ateliê da Ellen desde 2009. Escolha cores e tamanho pelo WhatsApp. Prazo médio de 5 dias úteis e envio para todo o Brasil.">
+<meta name="description" content="Fantasias, decoração divertida, ambientes e peças infantis feitas sob medida no ateliê da Ellen desde 2009. Escolha cores e tamanho pelo WhatsApp. Produção em 3 a 5 dias úteis e envio para todo o Brasil.">
 
 <!-- Open Graph / WhatsApp / Facebook / Instagram preview -->
 <meta property="og:type" content="website">
@@ -36,9 +36,10 @@
       href="img/hero-01-1200.webp"
       imagesrcset="img/hero-01-720.webp 720w, img/hero-01-1200.webp 1200w"
       imagesizes="(max-width:900px) 100vw, 47vw">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&amp;family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/base.css">
 <style>
 :root{
   --ink:#0f0a0f;--ink2:#1a1020;
@@ -74,106 +75,9 @@ a{text-decoration:none;color:inherit}
 .rr{opacity:0;transform:translateX(32px);transition:opacity .85s .1s,transform .85s .1s}
 .rr.on{opacity:1;transform:none}
 
-/* ── NAV ── */
-nav{
-  position:sticky;top:0;left:0;right:0;z-index:300;
-  height:70px;padding:0 48px;
-  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px;
-  background:var(--cream);
-  border-bottom:1px solid rgba(201,169,110,.28);
-  transition:background .45s ease,border-color .45s ease,box-shadow .45s ease,height .35s cubic-bezier(.22,.61,.36,1);
-}
-nav::after{
-  content:'';position:absolute;left:0;right:0;bottom:-1px;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(201,169,110,.55),transparent);
-  pointer-events:none;
-}
-#navLogo{justify-self:start}
-nav .nc{justify-self:end}
+/* barra de progresso de leitura */
 .scroll-progress{position:fixed;top:0;left:0;height:2px;width:0%;z-index:301;background:linear-gradient(90deg,var(--pink),var(--gold));transition:width .1s linear}
 @media(prefers-reduced-motion:reduce){.scroll-progress{display:none}}
-nav.s{
-  height:58px;
-  background:rgba(253,248,244,.82);
-  backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);
-  border-bottom-color:rgba(15,10,15,.08);
-  box-shadow:0 4px 28px rgba(15,10,15,.06);
-}
-nav.s #navLogo img{transform:scale(.88)}
-#navLogo{transition:transform .45s ease}
-#navLogo img{transition:transform .35s cubic-bezier(.22,.61,.36,1)}
-
-.nl{display:flex;gap:6px;list-style:none;align-items:center}
-.nl a{
-  font-family:var(--fb);font-weight:500;
-  font-size:.8rem;letter-spacing:.13em;
-  text-transform:uppercase;
-  color:var(--ink);opacity:.62;
-  display:block;padding:8px 15px;
-  transition:opacity .25s,color .25s;position:relative;
-}
-.nl a::after{
-  content:'';position:absolute;left:15px;right:15px;bottom:2px;height:1px;
-  background:linear-gradient(90deg,var(--pink),var(--gold));
-  border-radius:2px;
-  transform:scaleX(0);transform-origin:center;
-  transition:transform .38s cubic-bezier(.22,.61,.36,1);
-}
-.nl a:hover{opacity:1;color:var(--rose)}
-.nl a:hover::after,.nl a.active::after{transform:scaleX(1)}
-.nl a.active{opacity:1;color:var(--rose);font-weight:600}
-.nl a:focus-visible,.nc a:focus-visible,.nh:focus-visible,#navLogo:focus-visible{
-  outline:2px solid var(--pink);outline-offset:3px;border-radius:100px;
-}
-@media(prefers-reduced-motion:reduce){
-  nav,nav *{transition-duration:.01ms !important}
-}
-.nc a{
-  display:inline-flex;align-items:center;gap:8px;
-  background:var(--pink);color:#fff;
-  padding:10px 24px;border-radius:100px;
-  border:1px solid var(--pink);
-  font-family:var(--fb);
-  font-size:.7rem;font-weight:700;
-  letter-spacing:.11em;text-transform:uppercase;
-  box-shadow:0 4px 16px rgba(229,37,100,.24),inset 0 0 0 1px rgba(255,255,255,.18);
-  transition:background .25s,box-shadow .25s,transform .25s;
-}
-.nc a:hover{
-  background:var(--rose);border-color:var(--rose);
-  transform:translateY(-1px);
-  box-shadow:0 8px 24px rgba(229,37,100,.4);
-}
-.nh{display:none;flex-direction:column;gap:4px;cursor:pointer;border:none;background:transparent;padding:6px}
-.nh span{display:block;width:20px;height:2px;background:var(--ink);border-radius:2px;transition:.3s}
-.nh.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
-.nh.open span:nth-child(2){opacity:0;transform:scaleX(0)}
-.nh.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
-/* Mobile menu drawer */
-.mob-menu{
-  display:none;position:fixed;top:64px;left:0;right:0;z-index:299;
-  background:rgba(15,10,15,.97);backdrop-filter:blur(24px);
-  border-bottom:1px solid rgba(244,121,154,.1);
-  padding:24px 20px 28px;
-  transform:translateY(-12px);opacity:0;pointer-events:none;
-  transition:transform .3s,opacity .3s;
-}
-.mob-menu.open{transform:translateY(0);opacity:1;pointer-events:all}
-.mob-menu ul{list-style:none;display:flex;flex-direction:column;gap:4px;margin-bottom:20px}
-.mob-menu ul a{
-  display:block;padding:12px 12px;border-radius:10px;
-  font-family:var(--fb);font-weight:500;font-size:1.05rem;letter-spacing:-.005em;
-  color:rgba(255,255,255,.68);transition:all .15s;
-}
-.mob-menu ul a:hover{background:rgba(229,37,100,.08);color:#fff}
-.mob-menu .mob-cta{
-  display:block;width:100%;text-align:center;
-  background:var(--pink);color:#fff;
-  padding:14px;border-radius:100px;
-  font-family:var(--fb);
-  font-size:.7rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
-  box-shadow:0 4px 18px rgba(229,37,100,.3);
-}
 
 /* ── SHARED BUTTON (used across hero, spaces, cta-final) ── */
 .btn-p{
@@ -1066,7 +970,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
           "text": "Pelo WhatsApp, vocês definem cores, tamanho e detalhes exclusivos da sua peça.",
           "url": "https://chuchurosa.com.br/#como-funciona" },
         { "@type": "HowToStep", "position": 3, "name": "Produção",
-          "text": "Sua peça entra em produção sob medida, com prazo médio de 5 dias úteis após a confirmação.",
+          "text": "Sua peça entra em produção sob medida, com prazo de 3 a 5 dias úteis após a confirmação.",
           "url": "https://chuchurosa.com.br/#como-funciona" },
         { "@type": "HowToStep", "position": 4, "name": "Receba",
           "text": "Embalagem caprichada e envio rastreado para qualquer lugar do Brasil.",
@@ -1078,7 +982,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
       "@id": "https://chuchurosa.com.br/#faq",
       "mainEntity": [
         { "@type": "Question", "name": "Quanto tempo leva para ficar pronta uma fantasia sob medida?",
-          "acceptedAnswer": { "@type": "Answer", "text": "O prazo médio de produção é de 5 dias úteis após a confirmação do pedido, somado ao prazo de envio dos Correios ou transportadora escolhida." } },
+          "acceptedAnswer": { "@type": "Answer", "text": "O prazo de produção é de 3 a 5 dias úteis após a confirmação do pedido, somado ao prazo de envio dos Correios ou transportadora escolhida." } },
         { "@type": "Question", "name": "Vocês entregam em todo o Brasil?",
           "acceptedAnswer": { "@type": "Answer", "text": "Sim. Todas as peças são enviadas com código de rastreio para qualquer cidade do Brasil, via Melhor Envio." } },
         { "@type": "Question", "name": "Dá para escolher as cores e o tamanho da peça?",
@@ -1098,31 +1002,34 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
 <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
-<!-- NAV -->
-<nav id="nav" aria-label="Navegação principal">
-  <a href="#" id="navLogo" style="display:flex;align-items:center"><img src="img/logo-nav.webp" alt="Chuchu Rosa" style="height:34px;width:auto;display:block"></a>
-  <ul class="nl">
-    <li><a href="#sobre">O estúdio</a></li>
-    <li><a href="#colecoes">Coleções</a></li>
-    <li><a href="#como-funciona">O processo</a></li>
-    <li><a href="#depoimentos">Depoimentos</a></li>
-    <li><a href="#ambientes">Ambientes</a></li>
-  </ul>
-  <div class="nc"><a href="loja.html">Ver loja →</a></div>
-  <button class="nh" id="nh" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobMenu"><span></span><span></span><span></span></button>
-</nav>
-
-<div class="mob-menu" id="mobMenu" hidden>
-  <ul>
-    <li><a href="#sobre" onclick="closeMob()">O estúdio</a></li>
-    <li><a href="#colecoes" onclick="closeMob()">Coleções</a></li>
-    <li><a href="#como-funciona" onclick="closeMob()">O processo</a></li>
-    <li><a href="#depoimentos" onclick="closeMob()">Depoimentos</a></li>
-    <li><a href="#ambientes" onclick="closeMob()">Ambientes</a></li>
-    <li><a href="#contato" onclick="closeMob()">Contato</a></li>
-    <li><a href="sobre.html">Nossa história</a></li>
-  </ul>
-  <a href="loja.html" class="mob-cta">Ver loja →</a>
+<header class="site-nav" id="siteNav" data-page="">
+  <div class="sn-inner">
+    <button class="sn-icon sn-burger" id="snBurger" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="snDrawer"><span></span><span></span><span></span></button>
+    <a class="sn-logo" href="index.html" aria-label="Chuchu Rosa — página inicial"><img src="img/logo-nav.webp" alt="Chuchu Rosa" width="94" height="34"></a>
+    <div class="sn-links" role="navigation" aria-label="Principal">
+      <a href="loja.html" data-nav="loja">Loja</a>
+      <a href="index.html#colecoes" data-nav="colecoes">Coleções</a>
+      <a href="sobre.html" data-nav="sobre">Sobre</a>
+      <a href="rastreio.html" data-nav="rastreio">Rastrear pedido</a>
+    </div>
+    <div class="sn-actions">
+      <a class="sn-icon" href="loja.html?buscar=1" aria-label="Buscar produtos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></a>
+      <a class="sn-icon sn-account" href="minha-conta.html" data-nav="conta" aria-label="Minha conta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-1.5a4.5 4.5 0 0 0-4.5-4.5h-7A4.5 4.5 0 0 0 4 19.5V21"/><circle cx="12" cy="7.5" r="4"/></svg></a>
+      <a class="sn-cart" href="loja.html?carrinho=1" aria-label="Carrinho"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 11.1a2 2 0 0 1-2 1.9H8.2a2 2 0 0 1-2-1.9Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg><span class="sn-count" data-cart-count></span></a>
+    </div>
+  </div>
+</header>
+<div class="sn-scrim" id="snScrim" hidden></div>
+<div class="sn-drawer" id="snDrawer" hidden>
+  <div class="sn-drawer-links" role="navigation" aria-label="Menu">
+    <a href="loja.html" data-nav="loja">Loja</a>
+    <a href="index.html#colecoes" data-nav="colecoes">Coleções</a>
+    <a href="sobre.html" data-nav="sobre">Sobre</a>
+    <a href="rastreio.html" data-nav="rastreio">Rastrear pedido</a>
+  </div>
+  <div class="sn-drawer-sub">
+    <a href="minha-conta.html" data-nav="conta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-1.5a4.5 4.5 0 0 0-4.5-4.5h-7A4.5 4.5 0 0 0 4 19.5V21"/><circle cx="12" cy="7.5" r="4"/></svg>Minha conta</a>
+  </div>
 </div>
 
 <!-- HERO — editorial claro, foto rotativa -->
@@ -1145,8 +1052,8 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
         <div class="hm-l">Design original</div>
       </div>
       <div>
-        <div class="hm-n">5<sup>dias</sup></div>
-        <div class="hm-l">Prazo médio</div>
+        <div class="hm-n">3–5<sup>dias</sup></div>
+        <div class="hm-l">Prazo de produção</div>
       </div>
     </div>
   </div>
@@ -1223,8 +1130,8 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 
 <!-- TICKER -->
 <div class="ticker"><div class="ticker-t">
-  <span class="ti">Design original</span><span class="ti">Frete para todo o Brasil</span><span class="ti">Prazo médio de 5 dias úteis</span><span class="ti"><span data-anos>16</span> anos de história</span><span class="ti">Sob medida, do croqui à peça</span>
-  <span class="ti">Design original</span><span class="ti">Frete para todo o Brasil</span><span class="ti">Prazo médio de 5 dias úteis</span><span class="ti"><span data-anos>16</span> anos de história</span><span class="ti">Sob medida, do croqui à peça</span>
+  <span class="ti">Design original</span><span class="ti">Frete para todo o Brasil</span><span class="ti">Produção em 3 a 5 dias úteis</span><span class="ti"><span data-anos>16</span> anos de história</span><span class="ti">Sob medida, do croqui à peça</span>
+  <span class="ti">Design original</span><span class="ti">Frete para todo o Brasil</span><span class="ti">Produção em 3 a 5 dias úteis</span><span class="ti"><span data-anos>16</span> anos de história</span><span class="ti">Sob medida, do croqui à peça</span>
 </div></div>
 
 <!-- ABOUT — CLARO -->
@@ -1243,12 +1150,12 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
         <div class="about-pts">
           <div class="pt"><div class="pt-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="1.8"><path d="M12 19l7-7a4.2 4.2 0 0 0-6-6l-7 7v6h6z"/><path d="M14.5 5.5l4 4"/></svg></div><div><div class="pt-title">Design original</div><div class="pt-desc">Modelagens e estampas próprias — coleções que você não encontra em nenhuma outra marca.</div></div></div>
           <div class="pt"><div class="pt-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></div><div><div class="pt-title">Pensado por fase</div><div class="pt-desc">Cada peça considera o que a criança consegue vestir, segurar e imaginar naquela idade.</div></div></div>
-          <div class="pt"><div class="pt-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="1.8"><path d="M3 8h13v9H3zM16 11h3l2 2v4h-5M6 20a1.6 1.6 0 1 0 0-3.2A1.6 1.6 0 0 0 6 20zm12 0a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2z"/></svg></div><div><div class="pt-title">Entrega em todo o Brasil</div><div class="pt-desc">Produção dedicada com prazo médio de 5 dias úteis e envio rastreado.</div></div></div>
+          <div class="pt"><div class="pt-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="1.8"><path d="M3 8h13v9H3zM16 11h3l2 2v4h-5M6 20a1.6 1.6 0 1 0 0-3.2A1.6 1.6 0 0 0 6 20zm12 0a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2z"/></svg></div><div><div class="pt-title">Entrega em todo o Brasil</div><div class="pt-desc">Produção dedicada em 3 a 5 dias úteis e envio rastreado.</div></div></div>
         </div>
         <div class="about-stats">
           <div class="ast"><div class="ast-n" data-count-to="319" data-prod-count id="statProdCount"><span class="num">0</span></div><div class="ast-l">Produtos no acervo</div></div>
-          <div class="ast"><div class="ast-n" data-count-to="16"><span class="num">0</span><sup>+</sup></div><div class="ast-l">Anos de estúdio</div></div>
-          <div class="ast"><div class="ast-n" data-count-to="5"><span class="num">0</span></div><div class="ast-l">Dias úteis de prazo</div></div>
+          <div class="ast"><div class="ast-n" data-count-to="16" data-count-anos><span class="num">0</span><sup>+</sup></div><div class="ast-l">Anos de estúdio</div></div>
+          <div class="ast"><div class="ast-n"><span class="num">3–5</span></div><div class="ast-l">Dias úteis de produção</div></div>
         </div>
         <a href="sobre.html" class="about-link">Conheça a história do estúdio →</a>
       </div>
@@ -1337,7 +1244,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
           <div class="s-halo" aria-hidden="true"></div>
           <div class="s-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.5 15.5M14.5 14.5L20 20M8.5 8.5L11 11"/></svg></div>
           <div class="s-title">Produção</div>
-          <div class="s-desc">Sua peça entra em produção sob medida — prazo médio de 5 dias úteis após a confirmação.</div>
+          <div class="s-desc">Sua peça entra em produção sob medida — prazo de 3 a 5 dias úteis após a confirmação.</div>
         </div>
         <div class="step" data-step="4" style="--step-c:#7fb88f">
           <div class="s-halo" aria-hidden="true"></div>
@@ -1657,45 +1564,18 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
   let anos = now.getFullYear() - FUND.getFullYear();
   if (now.getMonth() < 7 || (now.getMonth() === 7 && now.getDate() < 8)) anos--;
   document.querySelectorAll('[data-anos]').forEach(el => el.textContent = anos);
+  // contador animado usa a mesma idade calculada (nunca o número fixo do HTML)
+  document.querySelectorAll('[data-count-anos]').forEach(el => el.setAttribute('data-count-to', anos));
   document.querySelectorAll('[data-ano-atual]').forEach(el => el.textContent = now.getFullYear());
 })();
 
-// ── HAMBURGER (acessível) ──
-const nh=document.getElementById('nh');
-const mob=document.getElementById('mobMenu');
-function openMob(){
-  mob.hidden=false;
-  requestAnimationFrame(()=>{nh.classList.add('open');mob.classList.add('open')});
-  nh.setAttribute('aria-expanded','true');
-  nh.setAttribute('aria-label','Fechar menu');
-}
-function closeMob(){
-  if(nh.getAttribute('aria-expanded')!=='true') return;
-  nh.classList.remove('open');mob.classList.remove('open');
-  nh.setAttribute('aria-expanded','false');
-  nh.setAttribute('aria-label','Abrir menu');
-  setTimeout(()=>{if(!mob.classList.contains('open'))mob.hidden=true},320);
-}
-nh.addEventListener('click',()=>{
-  nh.getAttribute('aria-expanded')==='true' ? closeMob() : openMob();
-});
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'&&nh.getAttribute('aria-expanded')==='true'){closeMob();nh.focus();}
-});
-document.addEventListener('click',e=>{
-  if(nh.getAttribute('aria-expanded')!=='true') return;
-  if(!mob.contains(e.target)&&!nh.contains(e.target)) closeMob();
-});
-
-// ── SCROLL: nav + barra de progresso num único rAF ──
+// ── SCROLL: barra de progresso num único rAF ──
 if('scrollRestoration' in history){ history.scrollRestoration = 'manual'; }
-const nav=document.getElementById('nav');
 const progressBar=document.getElementById('scrollProgress');
 let scrollQueued=false;
 function onScrollFrame(){
   scrollQueued=false;
   const h=document.documentElement;
-  nav.classList.toggle('s',h.scrollTop>60);
   const max=h.scrollHeight-h.clientHeight;
   progressBar.style.width=(max>0?(h.scrollTop/max)*100:0)+'%';
 }
@@ -1703,26 +1583,6 @@ window.addEventListener('scroll',()=>{
   if(!scrollQueued){scrollQueued=true;requestAnimationFrame(onScrollFrame);}
 },{passive:true});
 onScrollFrame();
-
-// ── SCROLLSPY: marca o item da seção visível ──
-(function(){
-  const links=[...document.querySelectorAll('.nl a[href^="#"]')];
-  const map=new Map();
-  links.forEach(a=>{
-    const s=document.querySelector(a.getAttribute('href'));
-    if(s) map.set(s,a);
-  });
-  if(!map.size) return;
-  const spy=new IntersectionObserver(es=>{
-    es.forEach(e=>{
-      if(e.isIntersecting){
-        links.forEach(l=>l.classList.remove('active'));
-        map.get(e.target)?.classList.add('active');
-      }
-    });
-  },{rootMargin:'-45% 0px -50% 0px',threshold:0});
-  map.forEach((_,s)=>spy.observe(s));
-})();
 
 // ── REVEAL ──
 const ro=new IntersectionObserver(es=>{
@@ -1880,5 +1740,6 @@ fetch(SB+'/rest/v1/produtos?select=id&ativo=eq.true&oculto=eq.false',{
   });
 })();
 </script>
+<script src="js/site.js" defer></script>
 </body>
 </html>
