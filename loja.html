@@ -386,6 +386,22 @@ img{display:block;max-width:100%;height:auto}
   background:rgba(253,248,245,.92);
 }
 [data-theme="dark"] .topbar{background:rgba(21,16,26,.92)}
+/* celular: busca sempre visível numa segunda linha do header */
+@media(max-width:768px){
+  .site-nav[data-page="loja"]{margin-bottom:60px}
+  .site-nav[data-page="loja"] .sn-search-btn{display:none}
+  .site-nav[data-page="loja"] .sn-search{
+    display:block;position:absolute;left:0;right:0;top:100%;width:auto;margin:0;height:60px;
+    padding:6px 12px 10px;background:rgba(253,248,244,.97);
+    -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+    border-bottom:1px solid rgba(201,169,110,.3);
+  }
+  .site-nav[data-page="loja"] .sn-search>svg{left:28px}
+  .site-nav[data-page="loja"] .sn-search input{height:44px;background:#fff;border-color:rgba(15,10,15,.12)}
+  [data-theme="dark"] .site-nav[data-page="loja"] .sn-search{background:rgba(24,16,28,.97);border-bottom-color:rgba(240,232,236,.08)}
+  [data-theme="dark"] .site-nav[data-page="loja"] .sn-search input{background:rgba(240,232,236,.06)}
+  .topbar{top:calc(var(--nav-h) + 60px)}
+}
 .topbar-count{font-family:var(--fd);font-size:.92rem;color:var(--muted);font-weight:500}
 .topbar-count b{color:var(--dark);font-weight:700}
 .topbar-tools{display:flex;align-items:center;gap:12px;margin-left:auto}
@@ -1413,6 +1429,12 @@ body::before{
    descendo até o rodapé. Sticky, então acompanha a rolagem da grade. */
 .rail{width:264px;flex-shrink:0;position:sticky;top:calc(var(--nav-h) + 16px)}
 @media(max-width:980px){.rail{width:auto;position:static;margin-bottom:26px}}
+/* computador: o aside estica até o fim da grade e o cartão de filtros fica
+   fixo abaixo do header, com rolagem própria quando é mais alto que a tela */
+@media(min-width:981px){
+  .rail{position:relative;top:auto;align-self:stretch}
+  .rail-card{position:sticky;top:calc(var(--nav-h) + 16px);max-height:calc(100vh - var(--nav-h) - 32px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+}
 .rail-card{
   background:#fff;border-radius:18px;padding:8px;
   box-shadow:0 1px 2px rgba(15,10,15,.05),0 14px 34px -14px rgba(15,10,15,.16);
@@ -1453,7 +1475,7 @@ body::before{
   font-size:.87rem;font-weight:500;color:rgba(15,10,15,.72);
   transition:background .18s,color .18s;
 }
-.rail-list li button:hover{background:rgba(229,37,100,.06);color:var(--ink)}
+@media(hover:hover){.rail-list li button:hover{background:rgba(229,37,100,.06);color:var(--ink)}}
 .rail-list li button:focus-visible{outline:2px solid var(--pink);outline-offset:-2px}
 .rail-list .n{margin-left:auto;font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums}
 /* quadrado = tipo de peça · círculo = tema. Duas formas, dois eixos. */
