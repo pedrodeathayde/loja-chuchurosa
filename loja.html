@@ -454,24 +454,24 @@ img{display:block;max-width:100%;height:auto}
   grid-template-columns:repeat(2,1fr);
   gap:10px;
 }
-/* Tablet/PC pequeno: 3 colunas */
+/* Cards maiores: 3 colunas sem a lateral (640–980), 2 com a lateral em
+   telas médias, 3 no computador comum, 4 em telas grandes */
 @media(min-width:640px){
   .prod-grid{grid-template-columns:repeat(3,1fr);gap:18px}
 }
-/* Desktop: 4 colunas */
+@media(min-width:981px){
+  .prod-grid{grid-template-columns:repeat(2,1fr);gap:22px}
+}
 @media(min-width:1200px){
-  .prod-grid{grid-template-columns:repeat(4,1fr);gap:24px}
+  .prod-grid{grid-template-columns:repeat(3,1fr);gap:26px}
 }
-/* Telas grandes: 5 colunas */
-@media(min-width:1600px){
-  .prod-grid{grid-template-columns:repeat(5,1fr);gap:26px}
+@media(min-width:1700px){
+  .prod-grid{grid-template-columns:repeat(4,1fr);gap:28px}
 }
-/* Ultra-wide: preenche o quanto couber em vez de travar em 5 —
-   cada card nunca fica menor que 230px, então a grade ganha colunas
-   extras conforme a tela cresce, sem virar cards minúsculos. */
-@media(min-width:2000px){
-  .prod-grid{grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:28px}
+@media(min-width:2200px){
+  .prod-grid{grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:30px}
 }
+
 
 /* ── PRODUCT CARD (parts not in premium block below) ── */
 .pcard-ph{
@@ -524,10 +524,22 @@ img{display:block;max-width:100%;height:auto}
   cursor:pointer;white-space:nowrap;
 }
 .pcard-swatches{display:flex;gap:4px;margin-bottom:6px;flex-wrap:wrap}
+.pcard-swatches{gap:2px;margin:0 -4px 8px}
 .swatch{
-  width:12px;height:12px;border-radius:50%;
-  border:1.5px solid rgba(15,10,15,.1);flex-shrink:0;
+  width:30px;height:30px;padding:0;border:0;background:none;cursor:pointer;flex-shrink:0;
+  display:inline-flex;align-items:center;justify-content:center;border-radius:50%;
 }
+.swatch i{
+  width:18px;height:18px;border-radius:50%;display:block;
+  box-shadow:inset 0 0 0 1px rgba(15,10,15,.14);
+  transition:box-shadow .15s,transform .15s;
+}
+.swatch:hover i{transform:scale(1.12)}
+.swatch[aria-checked="true"] i{box-shadow:inset 0 0 0 1px rgba(15,10,15,.14),0 0 0 2px var(--white),0 0 0 3.5px var(--ink)}
+.swatch:focus-visible{outline:2px solid var(--pink);outline-offset:1px}
+.pcard-swatches.pede-cor{animation:pedeCor .5s ease}
+@keyframes pedeCor{0%,100%{transform:none}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.pcard-cor-nome{font-size:.75rem;color:var(--muted);margin:-4px 0 8px;min-height:1.1em}
 
 /* LIST VIEW */
 
@@ -932,8 +944,12 @@ body::before{
 }
 .pcard-img .img-primary{opacity:1;transform:scale(1)}
 .pcard-img .img-secondary{opacity:0;transform:scale(1.05)}
-.pcard:hover .pcard-img .img-primary{opacity:0;transform:scale(1.05)}
-.pcard:hover .pcard-img .img-secondary{opacity:1;transform:scale(1)}
+/* troca de foto só com mouse e só quando existe a segunda foto
+   (no celular o toque ativava :hover e apagava a foto principal) */
+@media(hover:hover){
+  .pcard:hover .pcard-img:has(.img-secondary) .img-primary{opacity:0;transform:scale(1.05)}
+  .pcard:hover .pcard-img .img-secondary{opacity:1;transform:scale(1)}
+}
 .pcard:hover .pcard-img img{transform:none} /* override old rule */
 .pcard-esgotado .pcard-img{opacity:.55;filter:grayscale(.4)}
 .pcard-esgotado .pcard-name{opacity:.6}
@@ -1896,8 +1912,8 @@ async function loadFromDB(){
           if(v.cor&&!arr.includes(v.cor)) arr.push(v.cor);
         });
         // produto com tamanho ou cor para escolher não vai direto ao carrinho
-        const comVariacao=new Set(vars.filter(v=>v.cor||v.tamanho).map(v=>v.produto_id));
-        dbProducts.forEach(p=>{ p._cores=colorMap.get(p.id)||[]; p._temVariacao=comVariacao.has(p.id); });
+        const comTamanho=new Set(vars.filter(v=>v.tamanho).map(v=>v.produto_id));
+        dbProducts.forEach(p=>{ p._cores=colorMap.get(p.id)||[]; p._temTamanho=comTamanho.has(p.id); });
       }
     }
   }catch(e){}
@@ -1922,7 +1938,7 @@ function mergeProducts(){
         design:p.design,
         created_at:p.created_at,
         _cores:p._cores||[],
-        _temVariacao:!!p._temVariacao,
+        _temTamanho:!!p._temTamanho,
       }));
     // Fallback assíncrono: só para produtos sem foto na tabela `fotos`,
     // busca sob demanda no Storage em vez de carregar o índice inteiro (~1300 arquivos).
@@ -2048,31 +2064,32 @@ function renderGrid(){
     const imgFirst=p.url?`<img class="img-primary" src="${p.url}" alt="${p.name}" loading="lazy">`:'';
     const imgSecond=(p.url2&&SUPPORTS_HOVER)?`<img class="img-secondary" src="${p.url2}" alt="${p.name}" loading="lazy">`:'';
     // Swatches from variacoes (colors) — use design tags as fallback
-    const colors=(p._cores||[]).slice(0,5);
+    const colors=(p._cores||[]).slice(0,6);
     const colorMap={
       'rosa':'#f4799a','pink':'#f4799a','azul':'#5b8dee','blue':'#5b8dee',
       'verde':'#4ade80','amarelo':'#fbbf24','vermelho':'#ef4444','roxo':'#a78bfa',
       'laranja':'#fb923c','branco':'#f5f5f5','preto':'#1c1c1c','cinza':'#9ca3af',
       'dourado':'#fcd34d','prata':'#d1d5db','bege':'#e5d5b7','lilás':'#c4b5fd',
     };
-    const swatchHtml=colors.length?`<div class="pcard-swatches">${colors.map(c=>{
+    const corSel=cardCor.get(String(p.id))||'';
+    const swatchHtml=colors.length?`<div class="pcard-swatches" role="radiogroup" aria-label="Cor">${colors.map(c=>{
       const key=c.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
       const bg=Object.entries(colorMap).find(([k])=>key.includes(k))?.[1]||'#e5e7eb';
-      return `<span class="swatch" style="background:${bg}" title="${c}"></span>`;
-    }).join('')}</div>`:'';
+      return `<button type="button" class="swatch" role="radio" aria-checked="${c===corSel}" aria-label="${escAttr(c)}" title="${escAttr(c)}" data-cor="${escAttr(c)}" onclick="event.preventDefault();event.stopPropagation();escolherCor(this,'${p.id}')"><i style="background:${bg}"></i></button>`;
+    }).join('')}</div><div class="pcard-cor-nome">${corSel?escAttr(corSel):''}</div>`:'';
 
     const priceHtml=p.esgotado
       ?`<div class="pcard-price" style="font-size:.78rem;color:rgba(15,10,15,.35)">Esgotado</div>
         <button class="btn-consult" disabled style="opacity:.5;cursor:not-allowed">Indisponível</button>`
       :p.price
       ?`<div class="pcard-price${p.preco_promocional?' promo':''}">${p.preco_promocional?`<span class="pcard-price-old">${fmt(p.price)}</span>`:''}${fmt(p.preco_promocional||p.price)}</div>
-        ${p._temVariacao
+        ${p._temTamanho
           ?`<span class="btn-add btn-escolher" aria-hidden="true">Escolher</span>`
           :`<button class="btn-add" type="button" onclick="event.preventDefault();event.stopPropagation();addToCart(event,'${p.id}')" aria-label="Adicionar ${escAttr(p.name)} ao carrinho">${BAG_SVG}<span class="btn-add-t">Adicionar</span></button>`}`
       :`<div class="pcard-price pcard-price-consult">Sob consulta</div>
         <button class="btn-consult" onclick="event.preventDefault();event.stopPropagation();openWA('${p.name.replace(/'/g,"\\'")}')">Consultar</button>`;
     const esgotadoBadge=p.esgotado?'<span class="pcard-badge" style="background:rgba(15,10,15,.7)">Esgotado</span>':'';
-    return `<a class="pcard${isFeatured?' featured-card':''}${p.esgotado?' pcard-esgotado':''}" style="position:relative" href="produto.html?id=${p.id}">
+    return `<a class="pcard${isFeatured?' featured-card':''}${p.esgotado?' pcard-esgotado':''}" style="position:relative" href="produto.html?id=${p.id}${corSel?'&cor='+encodeURIComponent(corSel):''}">
       <div class="pcard-img">
         ${imgFirst}${imgSecond}
         <div class="pcard-ph" ${p.url?'style="display:none"':''}><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8" stroke-width="1"/></svg></div>
@@ -2149,14 +2166,36 @@ function addToCart(e,id){
   if(!p||p.esgotado)return;
   const btn=e.currentTarget||e.target;
   if(btn&&btn.classList){btn.classList.remove('bounce');void btn.offsetWidth;btn.classList.add('bounce');}
-  const ex=cart.find(x=>String(x.id)===String(id));
+  // produto com cores: precisa escolher no card antes de adicionar
+  const cor=cardCor.get(String(id))||null;
+  if((p._cores||[]).length&&!cor){
+    const card=btn&&btn.closest&&btn.closest('.pcard');
+    const sw=card&&card.querySelector('.pcard-swatches');
+    if(sw){sw.classList.remove('pede-cor');void sw.offsetWidth;sw.classList.add('pede-cor');sw.querySelector('.swatch')?.focus();}
+    showToast('Escolha uma cor');
+    return;
+  }
+  const key=cor?p.id+'_'+cor:String(p.id);
+  const ex=cart.find(x=>cartKey(x)===key);
   if(ex)ex.qty++;
-  else cart.push({id:p.id,name:p.name,price:+(p.preco_promocional||p.price||0),url:p.url,qty:1});
+  else cart.push({key,id:p.id,name:p.name,price:+(p.preco_promocional||p.price||0),url:p.url,variacao:cor||'',tamanho:null,cor,qty:1});
   saveCart();
-  showToastRich(p.name,p.url,`R$ ${(+(p.preco_promocional||p.price||0)).toFixed(2).replace('.',',')} · Adicionado ao carrinho`);
+  showToastRich(p.name+(cor?' — '+cor:''),p.url,`R$ ${(+(p.preco_promocional||p.price||0)).toFixed(2).replace('.',',')} · Adicionado ao carrinho`);
 }
-function removeFromCart(id){ cart=cart.filter(x=>String(x.id)!==String(id)); saveCart(); renderCartDrawer(); }
-function changeQty(id,d){ const i=cart.find(x=>String(x.id)===String(id)); if(!i)return; i.qty+=d; if(i.qty<=0)removeFromCart(id); else{saveCart();renderCartDrawer();} }
+// itens do mesmo produto com cor/tamanho diferentes são linhas separadas
+function cartKey(i){ return i.key||String(i.id); }
+function removeFromCart(k){ cart=cart.filter(x=>cartKey(x)!==String(k)); saveCart(); renderCartDrawer(); }
+function changeQty(k,d){ const i=cart.find(x=>cartKey(x)===String(k)); if(!i)return; i.qty+=d; if(i.qty<=0)removeFromCart(k); else{saveCart();renderCartDrawer();} }
+const cardCor=new Map();
+function escolherCor(el,id){
+  const grp=el.closest('.pcard-swatches');
+  const nova=el.getAttribute('aria-checked')==='true'?'':el.dataset.cor;
+  if(nova)cardCor.set(String(id),nova);else cardCor.delete(String(id));
+  grp.querySelectorAll('.swatch').forEach(b=>b.setAttribute('aria-checked',String(b===el&&!!nova)));
+  const nome=grp.nextElementSibling;if(nome&&nome.classList.contains('pcard-cor-nome'))nome.textContent=nova;
+  const a=el.closest('a.pcard');
+  if(a){const u=new URL(a.getAttribute('href'),location.href);if(nova)u.searchParams.set('cor',nova);else u.searchParams.delete('cor');a.setAttribute('href','produto.html'+u.search);}
+}
 
 function renderCartDrawer(){
   const el=document.getElementById('cartItems');
@@ -2178,16 +2217,16 @@ function renderCartDrawer(){
     <div class="cart-item">
       <div class="ci-img">${i.url?`<img src="${i.url}" loading="lazy">`:'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(15,10,15,.18)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8" stroke-width="1"/></svg></div>'}</div>
       <div>
-        <div class="ci-name">${i.name}</div>
+        <div class="ci-name">${i.name}</div>${i.variacao?`<div class="ci-var" style="font-size:.75rem;color:var(--muted)">${escAttr(i.variacao)}</div>`:''}
         <div class="ci-qty">
-          <button class="qty-btn" onclick="changeQty('${i.id}',-1)">−</button>
+          <button class="qty-btn" data-k="${escAttr(cartKey(i))}" onclick="changeQty(this.dataset.k,-1)">−</button>
           <span class="qty-val">${i.qty}</span>
-          <button class="qty-btn" onclick="changeQty('${i.id}',1)">+</button>
+          <button class="qty-btn" data-k="${escAttr(cartKey(i))}" onclick="changeQty(this.dataset.k,1)">+</button>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
         <div class="ci-price">${i.price?'R$ '+(i.price*i.qty).toFixed(2).replace('.',','):'—'}</div>
-        <button class="ci-remove" onclick="removeFromCart('${i.id}')">🗑</button>
+        <button class="ci-remove" data-k="${escAttr(cartKey(i))}" onclick="removeFromCart(this.dataset.k)">🗑</button>
       </div>
     </div>`).join('');
 }

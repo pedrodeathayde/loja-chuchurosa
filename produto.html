@@ -709,6 +709,9 @@ function renderVars(){
     html+='</div></div>';
   }
   sec.innerHTML='<h3>Variações</h3>'+html;
+  // cor escolhida no card da loja (produto.html?id=…&cor=…)
+  const corUrl=new URLSearchParams(location.search).get('cor');
+  if(corUrl){const b=[...sec.querySelectorAll('#colorOpts .var-opt')].find(x=>x.textContent===corUrl);if(b)selColor(corUrl,b);}
 }
 
 function selSize(s,el){
