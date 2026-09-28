@@ -505,6 +505,12 @@ img{display:block;max-width:100%;height:auto}
   display:flex;align-items:center;gap:5px;
 }
 .btn-add:hover{background:var(--rose)}
+.btn-add svg{width:17px;height:17px;flex-shrink:0}
+.btn-add-t,.btn-escolher{font-size:.8rem;font-weight:600;letter-spacing:.01em}
+.btn-escolher{background:transparent;color:var(--pink-strong);border:1.5px solid rgba(218,33,94,.35)}
+.pcard:hover .btn-escolher{background:rgba(218,33,94,.06)}
+/* cards estreitos: só o ícone (o nome fica no aria-label) */
+@media(max-width:600px){.btn-add .btn-add-t{display:none}.btn-add{padding:0;width:44px}.btn-escolher{width:auto;padding:0 12px}}
 .btn-add:active{transform:scale(.88)}
 @keyframes addBounce{0%{transform:scale(1)}40%{transform:scale(.8)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
 .btn-add.bounce{animation:addBounce .4s ease}
@@ -1819,6 +1825,8 @@ const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZi
 const HDR = {apikey:KEY,Authorization:'Bearer '+KEY,Accept:'application/json'};
 // coração dos cards (favoritos)
 const HEART_SVG='<svg class="ico-heart" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.3C1.6 7.8 3.9 4.5 7.3 4.5c2 0 3.6 1.1 4.7 2.7 1.1-1.6 2.7-2.7 4.7-2.7 3.4 0 5.7 3.3 4.5 6.7-1.7 4.7-9.2 9.3-9.2 9.3Z"/></svg>';
+const BAG_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 11.1a2 2 0 0 1-2 1.9H8.2a2 2 0 0 1-2-1.9Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>';
+function escAttr(t){return String(t??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
 const CAT_LABELS={
   passaros:'Pássaros',flores:'Flores',raposas:'Raposas',decoracao:'Decoração',
   almofadas:'Almofadas',bebes:'Bebês',asas:'Asas',natal:'Natal',
@@ -1871,7 +1879,7 @@ async function loadFromDB(){
   try{
     const [r,rv]=await Promise.all([
       fetch(SB+'/rest/v1/produtos?select=*&ativo=eq.true&order=name',{headers:HDR}),
-      fetch('https://oznpfqsgurztffwfyfec.supabase.co/rest/v1/produto_variacoes?select=produto_id,cor&ativo=eq.true&cor=not.is.null',{headers:HDR})
+      fetch('https://oznpfqsgurztffwfyfec.supabase.co/rest/v1/produto_variacoes?select=produto_id,cor,tamanho&ativo=eq.true',{headers:HDR})
     ]);
     if(r.ok){
       const data=await r.json();
@@ -1885,9 +1893,11 @@ async function loadFromDB(){
         vars.forEach(v=>{
           if(!colorMap.has(v.produto_id)) colorMap.set(v.produto_id,[]);
           const arr=colorMap.get(v.produto_id);
-          if(!arr.includes(v.cor)) arr.push(v.cor);
+          if(v.cor&&!arr.includes(v.cor)) arr.push(v.cor);
         });
-        dbProducts.forEach(p=>{ p._cores=colorMap.get(p.id)||[]; });
+        // produto com tamanho ou cor para escolher não vai direto ao carrinho
+        const comVariacao=new Set(vars.filter(v=>v.cor||v.tamanho).map(v=>v.produto_id));
+        dbProducts.forEach(p=>{ p._cores=colorMap.get(p.id)||[]; p._temVariacao=comVariacao.has(p.id); });
       }
     }
   }catch(e){}
@@ -1911,6 +1921,8 @@ function mergeProducts(){
         url2:(fotosDB[p.id]&&fotosDB[p.id][1])||'',
         design:p.design,
         created_at:p.created_at,
+        _cores:p._cores||[],
+        _temVariacao:!!p._temVariacao,
       }));
     // Fallback assíncrono: só para produtos sem foto na tabela `fotos`,
     // busca sob demanda no Storage em vez de carregar o índice inteiro (~1300 arquivos).
@@ -2054,7 +2066,9 @@ function renderGrid(){
         <button class="btn-consult" disabled style="opacity:.5;cursor:not-allowed">Indisponível</button>`
       :p.price
       ?`<div class="pcard-price${p.preco_promocional?' promo':''}">${p.preco_promocional?`<span class="pcard-price-old">${fmt(p.price)}</span>`:''}${fmt(p.preco_promocional||p.price)}</div>
-        <button class="btn-add" onclick="event.preventDefault();event.stopPropagation();addToCart(event,'${p.id}')">＋</button>`
+        ${p._temVariacao
+          ?`<span class="btn-add btn-escolher" aria-hidden="true">Escolher</span>`
+          :`<button class="btn-add" type="button" onclick="event.preventDefault();event.stopPropagation();addToCart(event,'${p.id}')" aria-label="Adicionar ${escAttr(p.name)} ao carrinho">${BAG_SVG}<span class="btn-add-t">Adicionar</span></button>`}`
       :`<div class="pcard-price pcard-price-consult">Sob consulta</div>
         <button class="btn-consult" onclick="event.preventDefault();event.stopPropagation();openWA('${p.name.replace(/'/g,"\\'")}')">Consultar</button>`;
     const esgotadoBadge=p.esgotado?'<span class="pcard-badge" style="background:rgba(15,10,15,.7)">Esgotado</span>':'';
