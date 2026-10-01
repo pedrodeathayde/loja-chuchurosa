@@ -1610,13 +1610,14 @@ function heroCounts(){
   }
   function start(){clearInterval(timer);if(!paused)timer=setInterval(()=>step(1),3000);}
   function build(){
-    const orig=items();n=orig.length;if(!n)return;built=true;
+    const orig=items();n=orig.length;if(!n)return;built=true;busy=false;
     [0,1].forEach(()=>orig.forEach(el=>{const c=el.cloneNode(true);c.setAttribute('aria-hidden','true');c.tabIndex=-1;track.appendChild(c);}));
-    orig.forEach(el=>{const c=el.cloneNode(true);c.setAttribute('aria-hidden','true');c.tabIndex=-1;track.insertBefore(c,track.firstChild);});
+    orig.forEach(el=>{const c=el.cloneNode(true);c.setAttribute('aria-hidden','true');c.tabIndex=-1;track.insertBefore(c,orig[0]);});
     // ordem final: [clone][original][clone][clone] → começa no bloco original
     i=n+Math.floor(n/2);requestAnimationFrame(()=>{paint(false);start();});
   }
-  new MutationObserver(()=>{if(!built&&track.children.length)build();}).observe(track,{childList:true});
+  // a lista pode ser redesenhada (dados novos): sem clones à frente = refazer o carrossel do zero
+  new MutationObserver(()=>{const f=track.firstElementChild;if(f&&!f.hasAttribute('aria-hidden'))build();}).observe(track,{childList:true});
   vp.addEventListener('mouseenter',()=>{paused=true;clearInterval(timer);});
   vp.addEventListener('mouseleave',()=>{paused=false;start();});
   let x0=null;
