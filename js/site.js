@@ -1,6 +1,11 @@
 /* Chuchu Rosa — comportamento do header único (.site-nav)
    Menu hambúrguer, busca no celular, contador do carrinho e sombra ao rolar. */
 (function(){
+  // ── idade da marca: inauguração em 8 de agosto de 2009 ──
+  var FUND=new Date(2009,7,8),hoje=new Date(),anos=hoje.getFullYear()-FUND.getFullYear();
+  if(hoje.getMonth()<7||(hoje.getMonth()===7&&hoje.getDate()<8))anos--;
+  document.querySelectorAll('[data-anos]').forEach(function(el){el.textContent=anos;});
+
   var nav=document.getElementById('siteNav');
   if(!nav)return;
 

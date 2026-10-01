@@ -137,8 +137,8 @@ input,select,textarea{min-width:0}
 .sn-links{display:flex;align-items:center;gap:2px;margin-left:20px}
 .sn-links a{
   position:relative;display:block;padding:12px 12px;
-  font-size:.78rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
-  color:rgba(15,10,15,.72);text-decoration:none;
+  font-size:.8rem;font-weight:500;letter-spacing:.13em;text-transform:uppercase;
+  color:rgba(15,10,15,.68);text-decoration:none;
   transition:color var(--dur-2) var(--ease);
 }
 .sn-links a::after{
@@ -199,30 +199,40 @@ input,select,textarea{min-width:0}
 
 .sn-scrim{position:fixed;inset:var(--nav-h) 0 0 0;z-index:298;background:rgba(15,10,15,.32);opacity:0;transition:opacity var(--dur-2) var(--ease)}
 .sn-scrim.open{opacity:1}
+/* gaveta no mesmo estilo do menu do index: painel escuro, Outfit, CTA rosa */
 .sn-drawer{
   position:fixed;left:0;right:0;top:var(--nav-h);z-index:299;
   max-height:calc(100dvh - var(--nav-h));overflow-y:auto;
-  background:var(--cream);border-bottom:1px solid rgba(201,169,110,.3);
-  box-shadow:0 24px 48px -24px rgba(15,10,15,.3);
-  padding:8px 20px 28px;
-  opacity:0;transform:translateY(-10px);
-  transition:opacity var(--dur-2) var(--ease),transform var(--dur-2) var(--ease);
+  background:rgba(15,10,15,.97);color:#fff;
+  -webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(244,121,154,.1);
+  padding:24px 20px 28px;
+  opacity:0;transform:translateY(-12px);
+  transition:opacity .3s var(--ease),transform .3s var(--ease);
 }
 .sn-drawer.open{opacity:1;transform:none}
-.sn-drawer-links{display:flex;flex-direction:column}
+.sn-drawer-links{display:flex;flex-direction:column;gap:4px}
 .sn-drawer-links a{
-  display:flex;align-items:center;justify-content:space-between;min-height:56px;
-  font-family:var(--fd);font-size:1.4rem;font-weight:600;color:var(--ink);text-decoration:none;
-  border-bottom:1px solid var(--line);
+  display:block;padding:12px;border-radius:10px;
+  font-family:var(--fb);font-weight:500;font-size:1.05rem;letter-spacing:-.005em;
+  color:rgba(255,255,255,.68);text-decoration:none;transition:background .15s,color .15s;
 }
-.sn-drawer-links a[aria-current]{color:var(--rose)}
-.sn-drawer-links a::after{content:'→';font-family:var(--fb);font-size:1rem;color:rgba(15,10,15,.35)}
-.sn-drawer-sub{display:flex;flex-direction:column;margin-top:12px}
+.sn-drawer-links a:hover{background:rgba(229,37,100,.08);color:#fff}
+.sn-drawer-links a[aria-current]{color:#fff;background:rgba(229,37,100,.12)}
+.sn-drawer-sub{display:flex;flex-direction:column;gap:4px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08)}
 .sn-drawer-sub a,.sn-drawer-sub button{
-  display:flex;align-items:center;gap:12px;min-height:48px;padding:0;border:0;background:none;cursor:pointer;
-  font-family:var(--fb);font-size:1rem;font-weight:500;color:rgba(15,10,15,.78);text-decoration:none;text-align:left;
+  display:flex;align-items:center;gap:12px;min-height:48px;padding:0 12px;border:0;border-radius:10px;background:none;cursor:pointer;
+  font-family:var(--fb);font-size:1rem;font-weight:500;color:rgba(255,255,255,.6);text-decoration:none;text-align:left;
 }
+.sn-drawer-sub a:hover,.sn-drawer-sub button:hover{background:rgba(255,255,255,.05);color:#fff}
 .sn-drawer-sub svg{width:20px;height:20px}
+.sn-drawer-cta{
+  display:block;width:100%;margin-top:20px;text-align:center;
+  background:var(--pink-strong);color:#fff;text-decoration:none;
+  padding:15px;border-radius:var(--r-pill);
+  font-family:var(--fb);font-size:.75rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+  box-shadow:0 4px 18px rgba(229,37,100,.3);
+}
 .sn-drawer .btn{margin-top:20px;width:100%}
 
 @media(max-width:1100px){
@@ -256,9 +266,7 @@ input,select,textarea{min-width:0}
 [data-theme="dark"] .sn-search input{background:rgba(240,232,236,.06);color:#f0e8ec}
 [data-theme="dark"] .sn-search input::placeholder,[data-theme="dark"] .sn-search>svg{color:rgba(240,232,236,.5)}
 [data-theme="dark"] .sn-search input:focus{background:rgba(240,232,236,.1)}
-[data-theme="dark"] .sn-drawer,[data-theme="dark"] .site-nav.search-open .sn-search{background:#1a1020;border-bottom-color:rgba(240,232,236,.08)}
-[data-theme="dark"] .sn-drawer-links a{color:#f0e8ec;border-bottom-color:rgba(240,232,236,.08)}
-[data-theme="dark"] .sn-drawer-sub a,[data-theme="dark"] .sn-drawer-sub button{color:rgba(240,232,236,.78)}
+[data-theme="dark"] .site-nav.search-open .sn-search{background:#1a1020;border-bottom-color:rgba(240,232,236,.08)}
 
 /* ══════════════════════════════════════════════════════════════════
    RODAPÉ ÚNICO
