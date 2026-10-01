@@ -514,6 +514,12 @@ a{text-decoration:none;color:inherit}
   gap:3px;overflow:hidden;
 }
 .showcase-photos .sp{overflow:hidden;position:relative;background:var(--ink);min-height:0}
+/* computador: todas as coleções com a altura da "fundo do mar" */
+@media(min-width:901px){
+  .showcase-item{height:clamp(500px,42vw,620px);min-height:0}
+  .showcase-photos{height:100%}
+  .showcase-photos .sp img{position:absolute;inset:0}
+}
 .showcase-photos .sp img{width:100%;height:100%;object-fit:cover;transition:transform .65s;opacity:.88;filter:saturate(1.1)}
 .showcase-photos .sp:hover img{transform:scale(1.05);opacity:1}
 .showcase-photos .sp:nth-child(1){grid-row:span 2}
