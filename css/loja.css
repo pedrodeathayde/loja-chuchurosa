@@ -87,7 +87,7 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
    ══════════════════════════════════════════════════════════════════ */
 .lx-hero{
   position:relative;isolation:isolate;overflow:hidden;color:#fff;background:var(--plum);
-  padding:clamp(44px,6vw,96px) 0 clamp(110px,10vw,150px);
+  padding:clamp(28px,3.4vw,48px) 0 clamp(72px,6vw,96px);
 }
 .lx-hero-bg{position:absolute;inset:0;z-index:-1;pointer-events:none}
 .lx-hero-bg::before{
@@ -127,8 +127,8 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
 .lx-eyebrow::before{content:'';width:30px;height:1px;background:linear-gradient(90deg,var(--gold-lt),transparent)}
 .lx-title{
   font-family:var(--fd);font-weight:500;color:#fff;
-  font-size:clamp(3.3rem,1.6rem + 6vw,7.4rem);line-height:.94;letter-spacing:-.035em;
-  margin:22px 0 0;
+  font-size:clamp(3rem,1.6rem + 3.6vw,5.2rem);line-height:.98;letter-spacing:-.03em;font-weight:400;
+  margin:16px 0 0;
 }
 .lx-title .ln{display:block;overflow:hidden;padding-bottom:.06em}
 .lx-title .ln>span{display:inline-block;transform:translateY(108%);animation:lxRise 1.15s var(--ease-out) forwards}
@@ -140,11 +140,11 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
 }
 @keyframes lxRise{to{transform:none}}
 .lx-lede{
-  max-width:36ch;margin:26px 0 0;font-size:clamp(1rem,.95rem + .25vw,1.15rem);line-height:1.7;
+  max-width:36ch;margin:18px 0 0;font-size:clamp(1rem,.95rem + .25vw,1.15rem);line-height:1.7;
   color:rgba(255,255,255,.74);opacity:0;animation:lxFade .9s .45s var(--ease-out) forwards;
 }
 @keyframes lxFade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-.lx-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px;opacity:0;animation:lxFade .9s .6s var(--ease-out) forwards}
+.lx-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px;opacity:0;animation:lxFade .9s .6s var(--ease-out) forwards}
 .lx-btn{
   display:inline-flex;align-items:center;justify-content:center;gap:12px;
   min-height:56px;padding:0 28px;border-radius:999px;cursor:pointer;
@@ -159,7 +159,7 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
 .lx-btn-ghost:hover{border-color:#fff;background:rgba(255,255,255,.06)}
 .lx-stats{
   display:grid;grid-template-columns:repeat(3,auto);justify-content:start;gap:clamp(20px,3vw,44px);
-  margin-top:clamp(36px,4vw,52px);padding-top:24px;border-top:1px solid rgba(255,255,255,.12);
+  margin-top:clamp(24px,2.6vw,36px);padding-top:18px;border-top:1px solid rgba(255,255,255,.12);
   opacity:0;animation:lxFade .9s .75s var(--ease-out) forwards;
 }
 .lx-stats div{display:flex;flex-direction:column-reverse;gap:6px}
@@ -168,10 +168,10 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
 .lx-stats dt{font-size:.75rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.55);max-width:14ch;line-height:1.35}
 
 /* vitrine 3D */
-.lx-vitrine{position:relative;height:clamp(470px,44vw,640px);perspective:1500px;opacity:0;animation:lxFade 1.2s .25s var(--ease-out) forwards}
+.lx-vitrine{position:relative;height:clamp(420px,36vw,540px);perspective:1500px;opacity:0;animation:lxFade 1.2s .25s var(--ease-out) forwards}
 .lx-stage{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .6s var(--ease-out)}
 .lx-card{
-  position:absolute;left:50%;top:46%;width:clamp(260px,25vw,380px);aspect-ratio:1;margin:0;
+  position:absolute;left:50%;top:46%;width:clamp(240px,21vw,330px);aspect-ratio:1;margin:0;
   border-radius:50%;overflow:hidden;background:#2a1322;cursor:pointer;
   transform:translate(-50%,-50%);will-change:transform,opacity;
   transition:transform 1s var(--ease-out),opacity 1s var(--ease-out),filter 1s var(--ease-out);
@@ -181,7 +181,7 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
   content:'';position:absolute;inset:8px;border-radius:50%;
   border:1px solid rgba(227,197,144,.5);pointer-events:none;
 }
-.lx-card img{width:100%;height:100%;object-fit:cover;object-position:50% 22%;transform:scale(1.04);transition:transform 6s ease}
+.lx-card img{width:100%;height:100%;object-fit:cover;object-position:50% 0;transform:scale(1.04);transition:transform 6s ease}
 .lx-card.is-active img{transform:scale(1.12)}
 .lx-card figcaption{
   position:absolute;left:0;right:0;bottom:0;padding:90px 20% 13%;text-align:center;
