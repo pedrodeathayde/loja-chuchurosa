@@ -1521,7 +1521,7 @@ function heroCounts(){
     }
     paint();if(fromUser)restart();
   }
-  function restart(){clearInterval(timer);timer=null;if(_reduceMotion||mobile.matches||paused)return;timer=setInterval(()=>go(i+1),DUR);}
+  function restart(){clearInterval(timer);timer=null;if(_reduceMotion||mobile.matches||paused)return;timer=setInterval(()=>{if(!v.closest('.lx-hero').classList.contains('lx-off'))go(i+1);},DUR);}
   document.getElementById('lxPrev').addEventListener('click',()=>go(i-1,true));
   document.getElementById('lxNext').addEventListener('click',()=>go(i+1,true));
   cards.forEach((c,k)=>{
@@ -1735,6 +1735,13 @@ document.querySelector('.lx-f-tabs').addEventListener('click',e=>{
   sb.querySelectorAll('.lx-f-grp').forEach(d=>d.open=true);
   sb.querySelector('.lx-f-body').scrollTop=0;
 });
+
+// ── pausa o que se mexe sozinho quando sai da tela ───────────────────
+(function(){
+  if(!('IntersectionObserver' in window))return;
+  const io=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('lx-off',!e.isIntersecting)));
+  document.querySelectorAll('.lx-hero,.chr-ticker').forEach(el=>io.observe(el));
+})();
 
 // ══ SUGESTAO DE PRODUTOS ═══════════════════════════════════════════
 (function(){

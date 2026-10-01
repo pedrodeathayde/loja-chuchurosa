@@ -56,7 +56,7 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
   .site-nav[data-page="loja"] .sn-search{
     display:block;position:absolute;left:0;right:0;top:100%;width:auto;margin:0;height:60px;
     padding:6px 12px 10px;background:rgba(253,248,244,.97);
-    -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+    
     border-bottom:1px solid rgba(201,169,110,.3);
   }
   .site-nav[data-page="loja"] .sn-search>svg{left:28px}
@@ -173,7 +173,7 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
 .lx-card{
   position:absolute;left:50%;top:46%;width:clamp(240px,21vw,330px);aspect-ratio:1;margin:0;
   border-radius:50%;overflow:hidden;background:#2a1322;cursor:pointer;
-  transform:translate(-50%,-50%);will-change:transform,opacity;
+  transform:translate(-50%,-50%);
   transition:transform 1s var(--ease-out),opacity 1s var(--ease-out),filter 1s var(--ease-out);
   box-shadow:0 50px 90px -34px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.06);
 }
@@ -331,7 +331,7 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
 }
 .lx-link:hover{color:var(--rose);border-color:var(--rose)}
 .lx-rail-vp{position:relative;width:100vw;margin-left:calc(50% - 50vw);overflow:hidden;padding:14px 0 12px}
-.lx-rail{--tile:clamp(170px,17vw,230px);display:flex;width:max-content;will-change:transform}
+.lx-rail{--tile:clamp(170px,17vw,230px);display:flex;width:max-content}
 .lx-rail>.lx-col{width:var(--tile);flex:none;transform-origin:50% 40%}
 .lx-rail>.lx-col+.lx-col{margin-left:calc(var(--tile) * -.28)}
 .lx-col{
@@ -536,7 +536,7 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
   position:sticky;top:var(--nav-h);z-index:90;
   display:flex;align-items:center;gap:14px;flex-wrap:wrap;
   padding:14px 0;margin-bottom:22px;
-  background:rgba(253,248,244,.9);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  background:rgba(253,248,244,.98);
   border-bottom:1px solid var(--line);
 }
 .topbar-count{font-size:.9rem;color:var(--muted)}
@@ -600,14 +600,14 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
 .pcard-badge{
   display:inline-flex;align-items:center;height:26px;padding:0 11px;border-radius:999px;
   font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
-  background:rgba(253,248,244,.92);color:var(--gold-ink);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  background:rgba(253,248,244,.92);color:var(--gold-ink);
 }
 .pcard-badge.promo{background:var(--pink-strong);color:#fff}
 .pcard-badge.out{background:rgba(15,10,15,.78);color:#fff}
 .lb-trigger{
   position:absolute;top:10px;right:10px;z-index:3;width:42px;height:42px;border-radius:50%;border:0;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  background:rgba(253,248,244,.86);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  background:rgba(253,248,244,.86);
   box-shadow:0 4px 14px -6px rgba(15,10,15,.3);transition:transform .25s,background .25s;
 }
 .lb-trigger:hover{transform:scale(1.08);background:#fff}
@@ -620,7 +620,7 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
 .pcard-quick{position:absolute;left:12px;right:12px;bottom:12px;z-index:3}
 .btn-add,.btn-consult,.btn-escolher{
   width:100%;min-height:48px;display:flex;align-items:center;justify-content:center;gap:9px;border:0;border-radius:999px;cursor:pointer;
-  background:rgba(253,248,244,.94);color:var(--ink);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  background:rgba(253,248,244,.94);color:var(--ink);
   font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
   box-shadow:0 10px 24px -12px rgba(15,10,15,.45);transition:background .25s,color .25s;
 }
@@ -870,3 +870,6 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
 [data-theme="dark"] .mk,[data-theme="dark"] .lx-sortlist button::before{border-color:rgba(243,234,238,.35)}
 [data-theme="dark"] .cat-item{color:rgba(243,234,238,.82)}
 [data-theme="dark"] .lx-rtrack input[type=range]::-webkit-slider-thumb{background:#1a1219}
+
+/* fora da tela, animações contínuas param (rolagem mais leve) */
+.lx-off .tk-track,.lx-off .lx-seal svg.ring,.lx-off.tk-track{animation-play-state:paused}
