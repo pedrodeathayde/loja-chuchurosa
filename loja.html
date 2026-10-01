@@ -1630,13 +1630,15 @@ function syncTemaVisibility(){
   // mais peças primeiro; empate fica na ordem do cadastro
   const ord=lis.map((li,k)=>({li,k,n:+(li.querySelector('.hbadge')?.dataset.count||0),on:li.querySelector('.hbadge')?.classList.contains('active')}))
     .sort((a,b)=>(b.on-a.on)||(b.n-a.n)||(a.k-b.k));
+  // celular (painel com abas): todos os temas com peças, sem 'ver todos'
+  const todos=_temaExpandido||matchMedia('(max-width:1099px)').matches;
   let visiveis=0;
   ord.forEach((o,pos)=>{
     o.li.style.order=pos;
     const nome=(o.li.querySelector('.hbadge')?.dataset.name||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
     let mostra;
     if(q) mostra=nome.includes(q);
-    else if(_temaExpandido) mostra=o.n>0||o.on;
+    else if(todos) mostra=o.n>0||o.on;
     else mostra=o.on||(o.n>0&&visiveis<10);
     if(mostra&&!q&&!o.on)visiveis++;
     o.li.hidden=!mostra;
@@ -1644,11 +1646,14 @@ function syncTemaVisibility(){
   const more=document.getElementById('temaMore');
   if(more){
     const comPeca=ord.filter(o=>o.n>0||o.on).length;
-    more.hidden=!_temaExpandido&&comPeca<=10;
+    more.hidden=matchMedia('(max-width:1099px)').matches||(!_temaExpandido&&comPeca<=10);
     more.setAttribute('aria-expanded',String(_temaExpandido));
     more.innerHTML=_temaExpandido?'Mostrar menos':`Ver todos os <span id="temaTotal">${comPeca}</span> temas`;
   }
-  const sw=document.getElementById('temaSearchWrap');if(sw)sw.hidden=!_temaExpandido;
+  const sw=document.getElementById('temaSearchWrap');if(sw)sw.hidden=!_temaExpandido||matchMedia('(max-width:1099px)').matches;
+}
+matchMedia('(max-width:1099px)').addEventListener('change',()=>syncTemaVisibility());
+function _noop(){
 }
 function syncCatVisibility(){
   const lis=[...document.querySelectorAll('#catList li')];let escondidos=0;
