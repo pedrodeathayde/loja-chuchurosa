@@ -171,22 +171,22 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
 .lx-vitrine{position:relative;height:clamp(470px,44vw,640px);perspective:1500px;opacity:0;animation:lxFade 1.2s .25s var(--ease-out) forwards}
 .lx-stage{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .6s var(--ease-out)}
 .lx-card{
-  position:absolute;left:50%;top:46%;width:clamp(230px,20vw,310px);aspect-ratio:2/3;margin:0;
-  border-radius:999px 999px 26px 26px;overflow:hidden;background:#2a1322;cursor:pointer;
+  position:absolute;left:50%;top:46%;width:clamp(260px,25vw,380px);aspect-ratio:1;margin:0;
+  border-radius:50%;overflow:hidden;background:#2a1322;cursor:pointer;
   transform:translate(-50%,-50%);will-change:transform,opacity;
   transition:transform 1s var(--ease-out),opacity 1s var(--ease-out),filter 1s var(--ease-out);
   box-shadow:0 50px 90px -34px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.06);
 }
 .lx-card::after{
-  content:'';position:absolute;inset:7px;border-radius:999px 999px 20px 20px;
+  content:'';position:absolute;inset:8px;border-radius:50%;
   border:1px solid rgba(227,197,144,.5);pointer-events:none;
 }
-.lx-card img{width:100%;height:100%;object-fit:cover;transform:scale(1.04);transition:transform 6s ease}
+.lx-card img{width:100%;height:100%;object-fit:cover;object-position:50% 22%;transform:scale(1.04);transition:transform 6s ease}
 .lx-card.is-active img{transform:scale(1.12)}
 .lx-card figcaption{
-  position:absolute;left:0;right:0;bottom:0;padding:70px 26px 26px;
-  background:linear-gradient(transparent,rgba(20,8,16,.78));
-  display:flex;flex-direction:column;align-items:flex-start;gap:4px;
+  position:absolute;left:0;right:0;bottom:0;padding:90px 20% 13%;text-align:center;
+  background:linear-gradient(transparent,rgba(20,8,16,.8));
+  display:flex;flex-direction:column;align-items:center;gap:2px;
   opacity:0;transform:translateY(10px);transition:opacity .6s .15s,transform .6s .15s var(--ease-out);
 }
 .lx-card.is-active figcaption{opacity:1;transform:none}
@@ -252,7 +252,7 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
   }
   .lx-stage::-webkit-scrollbar{display:none}
   .lx-card{
-    position:relative;left:auto;top:auto;flex:none;width:min(66vw,300px);
+    position:relative;left:auto;top:auto;flex:none;width:min(74vw,310px);
     transform:none!important;opacity:1!important;filter:none!important;scroll-snap-align:center;
   }
   .lx-card figcaption{opacity:1;transform:none}
