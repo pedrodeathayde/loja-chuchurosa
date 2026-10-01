@@ -45,8 +45,9 @@
 /* ── acessibilidade global ─────────────────────────────────────────── */
 :focus-visible{outline:2px solid var(--pink);outline-offset:3px}
 button,input,select,textarea{font-family:inherit}
+/* páginas com data-motion="livre" (o index) cuidam do próprio movimento reduzido */
 @media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{
+  :root:not([data-motion="livre"]) *,:root:not([data-motion="livre"]) *::before,:root:not([data-motion="livre"]) *::after{
     animation-duration:.01ms!important;animation-iteration-count:1!important;
     transition-duration:.01ms!important;scroll-behavior:auto!important;
   }
