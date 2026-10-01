@@ -87,7 +87,7 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
    ══════════════════════════════════════════════════════════════════ */
 .lx-hero{
   position:relative;isolation:isolate;overflow:hidden;color:#fff;background:var(--plum);
-  padding:clamp(28px,3.4vw,48px) 0 clamp(72px,6vw,96px);
+  padding:clamp(28px,3.4vw,48px) 0 clamp(32px,3vw,44px);
 }
 .lx-hero-bg{position:absolute;inset:0;z-index:-1;pointer-events:none}
 .lx-hero-bg::before{
@@ -239,10 +239,9 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
 .lx-heart{position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-9px;pointer-events:none;color:var(--pink2);z-index:16}
 .lx-heart svg{width:100%;height:100%}
 
-.lx-hero-curve{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:clamp(40px,5vw,72px);z-index:2;color:var(--cream)}
 
 @media(max-width:900px){
-  .lx-hero{padding-top:34px;padding-bottom:84px}
+  .lx-hero{padding-top:34px;padding-bottom:36px}
   .lx-hero-inner{grid-template-columns:minmax(0,1fr);gap:30px}
   .lx-title{font-size:clamp(3rem,13vw,4.6rem);margin-top:16px}
   .lx-lede{margin-top:18px}
