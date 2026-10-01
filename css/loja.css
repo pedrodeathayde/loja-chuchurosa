@@ -255,7 +255,13 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
     position:relative;left:auto;top:auto;flex:none;width:min(74vw,310px);
     transform:none!important;opacity:1!important;filter:none!important;scroll-snap-align:center;
   }
-  .lx-card figcaption{opacity:1;transform:none}
+  .lx-card figcaption{opacity:0;transform:none}
+  .lx-card.is-active figcaption{opacity:1}
+  /* celular: círculos sobrepostos, o do centro na frente */
+  .lx-stage{gap:0;padding:10px 13vw 40px;overflow-y:hidden}
+  .lx-card+.lx-card{margin-left:-16vw}
+  .lx-card{transform:scale(.82)!important;filter:brightness(.6) saturate(.8)!important;z-index:1;box-shadow:0 18px 40px -22px rgba(0,0,0,.7);transition:transform .5s var(--ease-out),filter .5s}
+  .lx-card.is-active{transform:none!important;filter:none!important;z-index:3}
   .lx-floor,.lx-seal{display:none}
   .lx-ctrl{position:relative;left:auto;bottom:auto;transform:none;justify-content:center;margin-top:6px}
   .lx-progress{display:none}
