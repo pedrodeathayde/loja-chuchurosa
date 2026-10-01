@@ -205,9 +205,6 @@ img{display:block;max-width:100%}
 
 /* ── ZOOM ── */
 .gallery-main{overflow:hidden}
-.gallery-main img{transition:transform .3s ease;transform-origin:var(--ox,50%) var(--oy,50%)}
-.gallery-main:hover img{transform:scale(1.5)}
-@media(max-width:768px){.gallery-main:hover img{transform:none}}
 
 
 /* ── AVALIAÇÕES ── */
@@ -994,19 +991,6 @@ async function shareNative(){
     catch(e){}
   } else { shareCopy(); }
 }
-
-// ── ZOOM ──────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded',()=>{
-  const gm=document.querySelector('.gallery-main');
-  if(!gm)return;
-  gm.addEventListener('mousemove',e=>{
-    const r=gm.getBoundingClientRect();
-    const x=((e.clientX-r.left)/r.width*100).toFixed(1)+'%';
-    const y=((e.clientY-r.top)/r.height*100).toFixed(1)+'%';
-    gm.style.setProperty('--ox',x);
-    gm.style.setProperty('--oy',y);
-  });
-});
 
 // ── SEO DINÂMICO ─────────────────────────────────────────────────
 function updateSEO(p,imgUrl){
