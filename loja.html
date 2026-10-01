@@ -1528,6 +1528,26 @@ function heroCounts(){
   paint();restart();
 })();
 
+// ── EASTER EGG: selo da hero ─────────────────────────────────────────
+(function(){
+  const seal=document.querySelector('.lx-seal');if(!seal)return;
+  const H='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8-5.2-8-10.4A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 3.6C20 15.8 12 21 12 21z"/></svg>';
+  seal.addEventListener('click',()=>{
+    seal.classList.remove('pop');void seal.offsetWidth;seal.classList.add('pop');
+    if(_reduceMotion)return;
+    const box=seal.parentElement;
+    for(let k=0;k<14;k++){
+      const h=document.createElement('span');h.className='lx-heart';h.innerHTML=H;
+      const r=seal.getBoundingClientRect(),b=box.getBoundingClientRect();
+      h.style.left=(r.left-b.left+r.width/2)+'px';h.style.top=(r.top-b.top+r.height/2)+'px';
+      h.style.color=['#f04d7f','#e3c590','#ff9cc8','#fff'][k%4];
+      box.appendChild(h);
+      const ang=Math.random()*Math.PI*2,dist=70+Math.random()*90,s=.6+Math.random()*.9;
+      h.animate([{transform:'translate(0,0) scale(.2)',opacity:1},{transform:`translate(${Math.cos(ang)*dist}px,${Math.sin(ang)*dist-40}px) scale(${s}) rotate(${(Math.random()-.5)*90}deg)`,opacity:0}],{duration:900+Math.random()*500,easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish=()=>h.remove();
+    }
+  });
+})();
+
 // ══ SUGESTAO DE PRODUTOS ═══════════════════════════════════════════
 (function(){
   var params=new URLSearchParams(window.location.search);
