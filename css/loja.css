@@ -294,10 +294,10 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
 .shop-ticker-i::after{content:'';width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.6)}
 
 /* ══ SERVIÇOS ═════════════════════════════════════════════════════ */
-.lx-service{max-width:var(--wrap);margin:0 auto;padding:clamp(18px,2vw,28px) var(--gut) 0}
+.lx-service{margin-top:clamp(18px,2vw,28px);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .lx-service ul{
   display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
-  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  max-width:var(--wrap);margin:0 auto;padding:0 var(--gut);
 }
 .lx-service li{display:flex;align-items:center;gap:12px;padding:14px clamp(10px,1.4vw,22px)}
 .lx-service li+li{border-left:1px solid var(--line)}
