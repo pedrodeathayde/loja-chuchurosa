@@ -381,7 +381,8 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
   min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--pink-strong);color:#fff;
   font-family:var(--fb);font-size:.75rem;font-weight:600;display:inline-flex;align-items:center;justify-content:center;
 }
-.rail-clear{background:none;border:0;padding:4px 0;cursor:pointer;font-size:.8125rem;font-weight:500;color:var(--rose);text-decoration:underline;text-underline-offset:3px}
+.rail-clear{background:none;border:0;border-bottom:1px solid var(--ink);padding:0 0 3px;cursor:pointer;font-size:.75rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+.rail-clear:hover{color:var(--rose);border-color:var(--rose)}
 .rail-clear[hidden]{display:none}
 .sidebar-close{display:none}
 .lx-f-tabs{display:none}
@@ -398,7 +399,7 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
   list-style:none;display:flex;align-items:center;gap:10px;cursor:pointer;padding:16px 0 14px;color:var(--ink);
 }
 .lx-f-grp>summary::-webkit-details-marker{display:none}
-.lx-f-t{font-family:var(--fd);font-weight:500;font-size:1.08rem;letter-spacing:-.01em}
+.lx-f-t{font-family:var(--fb);font-weight:600;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase}
 .lx-f-sel{min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--pink-strong);color:#fff;font-size:.75rem;font-weight:600;display:inline-flex;align-items:center;justify-content:center}
 .lx-f-sel:empty{display:none}
 .lx-f-grp>summary::after{
@@ -433,9 +434,10 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
 .n.bump{animation:nBump .5s var(--ease-out)}
 @keyframes nBump{0%{opacity:.2;transform:translateY(-3px)}100%{opacity:1;transform:none}}
 .lx-more{
-  margin-top:8px;padding:6px 0;border:0;background:none;cursor:pointer;font-size:.8125rem;font-weight:500;color:var(--rose);
-  text-decoration:underline;text-underline-offset:3px;
+  margin-top:10px;padding:0 0 3px;border:0;border-bottom:1px solid var(--ink);background:none;cursor:pointer;
+  font-size:.75rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);
 }
+.lx-more:hover{color:var(--rose);border-color:var(--rose)}
 .lx-more[hidden]{display:none}
 
 /* tema: grade de etiquetas com ícone */
