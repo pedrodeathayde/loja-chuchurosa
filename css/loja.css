@@ -251,26 +251,14 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
   .lx-ctas .lx-btn{flex:1 1 auto}
   .lx-stats{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:28px;padding-top:18px;gap:14px}
   .lx-stats dt{font-size:.75rem;letter-spacing:.08em}
-  /* vitrine vira carrossel de arrastar */
-  .lx-vitrine{height:auto;perspective:none;margin:0 calc(var(--gut) * -1)}
-  .lx-stage{
-    position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;
-    padding:6px var(--gut) 18px;scrollbar-width:none;transform:none!important;
-  }
-  .lx-stage::-webkit-scrollbar{display:none}
-  .lx-card{
-    position:relative;left:auto;top:auto;flex:none;width:min(74vw,310px);
-    transform:none!important;opacity:1!important;filter:none!important;scroll-snap-align:center;
-  }
-  .lx-card figcaption{opacity:0;transform:none}
-  .lx-card.is-active figcaption{opacity:1}
-  /* celular: círculos sobrepostos, o do centro na frente */
-  .lx-stage{gap:0;padding:10px 13vw 40px;overflow-y:hidden}
-  .lx-card+.lx-card{margin-left:-16vw}
-  .lx-card{transform:scale(.82)!important;filter:brightness(.6) saturate(.8)!important;z-index:1;box-shadow:0 18px 40px -22px rgba(0,0,0,.7);transition:transform .5s var(--ease-out),filter .5s}
-  .lx-card.is-active{transform:none!important;filter:none!important;z-index:3}
+  /* vitrine: mesmo leque de círculos do computador, em escala menor */
+  .lx-vitrine{height:min(100vw,420px);perspective:1200px;margin:0 calc(var(--gut) * -1);overflow:hidden;touch-action:pan-y}
+  .lx-card{width:min(64vw,270px);top:48%}
+  .lx-card figcaption{padding-bottom:12%}
+  .lx-card b{font-size:1.35rem}
+  .lx-card-go{min-height:36px;padding:0 12px;font-size:.7rem}
   .lx-floor,.lx-seal{display:none}
-  .lx-ctrl{position:relative;left:auto;bottom:auto;transform:none;justify-content:center;margin-top:6px}
+  .lx-ctrl{bottom:4px}
   .lx-progress{display:none}
   .lx-wordmark{bottom:auto;top:46%;font-size:9rem}
 }
