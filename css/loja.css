@@ -61,6 +61,7 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
   }
   .site-nav[data-page="loja"] .sn-search>svg{left:28px}
   .site-nav[data-page="loja"] .sn-search input{height:44px;background:#fff;border-color:rgba(15,10,15,.12)}
+  .site-nav[data-page="loja"] .sn-search input:focus{border-color:var(--pink)}
 }
 .search-results,.search-history{
   display:none;position:absolute;top:calc(100% + 8px);left:0;right:0;z-index:20;
