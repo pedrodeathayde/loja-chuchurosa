@@ -163,7 +163,7 @@
     <div><p class="lx-kicker">Coleções</p><h2 class="lx-h2" id="colTitle">Escolha por <em>coleção</em></h2></div>
     <button type="button" class="lx-link" onclick="selectCategoryOnly(null);document.getElementById('loja').scrollIntoView({behavior:'smooth'})">Ver todas as peças →</button>
   </div>
-  <div class="lx-rail" id="colRail"></div>
+  <div class="lx-rail-vp"><div class="lx-rail" id="colRail"></div></div>
 </section>
 
 <div class="featured-strip" id="featuredStrip" style="display:none">
@@ -1548,28 +1548,44 @@ function heroCounts(){
   });
 })();
 
-// ── COLEÇÕES: rolagem suave que para na foto do meio ────────────────
+// ── COLEÇÕES: carrossel infinito, círculos sobrepostos, para no meio ──
 (function(){
-  const rail=document.getElementById('colRail');if(!rail)return;
-  let timer=null,paused=false,raf=0;
-  const tiles=()=>[...rail.querySelectorAll('.lx-col')];
-  function centerIdx(){
-    const mid=rail.scrollLeft+rail.clientWidth/2;let best=0,bd=1e9;
-    tiles().forEach((t,k)=>{const d=Math.abs(t.offsetLeft+t.offsetWidth/2-mid);if(d<bd){bd=d;best=k;}});
-    return best;
+  const vp=document.querySelector('.lx-rail-vp'),track=document.getElementById('colRail');if(!vp||!track)return;
+  let n=0,i=0,timer=null,paused=false,busy=false,built=false;
+  const items=()=>[...track.children];
+  function geo(){const t=items()[0];const w=t?t.offsetWidth:180;return {w,step:w*0.72};}
+  function paint(anim){
+    const {w,step}=geo();
+    track.style.transition=anim?'transform 1.15s cubic-bezier(.65,0,.35,1)':'none';
+    track.style.transform=`translateX(${vp.clientWidth/2-(i*step+w/2)}px)`;
+    items().forEach((el,k)=>{
+      const d=Math.min(Math.abs(k-i),4);
+      el.style.transition=anim?'transform 1.15s cubic-bezier(.65,0,.35,1),filter 1.15s':'none';
+      el.style.transform=`scale(${1-d*.12})`;el.style.zIndex=20-d;
+      el.style.filter=d?`brightness(${1-d*.08})`:'none';
+      el.classList.toggle('is-center',d===0);
+    });
   }
-  function mark(){const c=centerIdx();tiles().forEach((t,k)=>t.classList.toggle('is-center',k===c));}
-  function goTo(k){const t=tiles()[k];if(!t)return;rail.scrollTo({left:t.offsetLeft+t.offsetWidth/2-rail.clientWidth/2,behavior:'smooth'});}
-  function next(){const n=tiles().length;if(!n)return;const c=centerIdx();goTo(c+1>=n?0:c+1);}
-  function start(){clearInterval(timer);if(!paused)timer=setInterval(next,2800);}
-  rail.addEventListener('scroll',()=>{if(raf)return;raf=requestAnimationFrame(()=>{raf=0;mark();});},{passive:true});
-  rail.addEventListener('mouseenter',()=>{paused=true;clearInterval(timer);});
-  rail.addEventListener('mouseleave',()=>{paused=false;start();});
-  rail.addEventListener('touchstart',()=>{paused=true;clearInterval(timer);},{passive:true});
-  rail.addEventListener('touchend',()=>{setTimeout(()=>{paused=false;start();},4000);});
+  function step(dir){
+    if(busy||!n)return;busy=true;i+=dir;paint(true);
+    setTimeout(()=>{if(i>=2*n)i-=n;else if(i<n)i+=n;paint(false);busy=false;},1200);
+  }
+  function start(){clearInterval(timer);if(!paused)timer=setInterval(()=>step(1),3000);}
+  function build(){
+    const orig=items();n=orig.length;if(!n)return;built=true;
+    [0,1].forEach(()=>orig.forEach(el=>{const c=el.cloneNode(true);c.setAttribute('aria-hidden','true');c.tabIndex=-1;track.appendChild(c);}));
+    orig.forEach(el=>{const c=el.cloneNode(true);c.setAttribute('aria-hidden','true');c.tabIndex=-1;track.insertBefore(c,track.firstChild);});
+    // ordem final: [clone][original][clone][clone] → começa no bloco original
+    i=n+Math.floor(n/2);requestAnimationFrame(()=>{paint(false);start();});
+  }
+  new MutationObserver(()=>{if(!built&&track.children.length)build();}).observe(track,{childList:true});
+  vp.addEventListener('mouseenter',()=>{paused=true;clearInterval(timer);});
+  vp.addEventListener('mouseleave',()=>{paused=false;start();});
+  let x0=null;
+  vp.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;paused=true;clearInterval(timer);},{passive:true});
+  vp.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-(x0??0);if(Math.abs(dx)>30)step(dx<0?1:-1);paused=false;setTimeout(start,2500);});
+  addEventListener('resize',()=>paint(false));
   document.addEventListener('visibilitychange',()=>{if(document.hidden)clearInterval(timer);else start();});
-  // espera o trilho ser montado com as coleções do banco
-  new MutationObserver(()=>{if(tiles().length){goTo(Math.floor(tiles().length/2)-1);setTimeout(mark,600);start();}}).observe(rail,{childList:true});
 })();
 
 // ══ SUGESTAO DE PRODUTOS ═══════════════════════════════════════════
