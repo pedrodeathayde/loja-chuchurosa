@@ -662,87 +662,151 @@ a{text-decoration:none;color:inherit}
     radial-gradient(ellipse 900px 500px at 88% -6%,rgba(229,37,100,.07),transparent 60%),
     radial-gradient(ellipse 700px 500px at -6% 104%,rgba(201,169,110,.14),transparent 60%),
     var(--cream2);
-  padding:120px 0 128px;position:relative;overflow:clip;
+  padding:104px 0 112px;position:relative;overflow:clip;
 }
 .spaces::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
-.mag-head{max-width:620px;margin-bottom:72px}
+/* marca d'água "fantasma" */
+.spaces::after{
+  content:'Chuchu Rosa';position:absolute;top:38px;right:-10px;
+  font-family:var(--fd);font-style:italic;font-weight:600;
+  font-size:clamp(3rem,9vw,7rem);color:var(--ink);opacity:.025;
+  letter-spacing:-.02em;pointer-events:none;white-space:nowrap;
+}
+.mag-head{max-width:620px;margin-bottom:52px;position:relative}
 .mag-head .sl-pink{display:inline-flex}
 .mag-head .sl-pink::before{content:'';width:26px;height:1px;background:linear-gradient(90deg,var(--pink),var(--gold))}
 .mag-head .st-dark{margin-top:2px}
 .mag-head .about-body{margin-top:18px;max-width:460px}
 
-.mag-spread{display:grid;gap:clamp(20px,3vw,44px);margin-bottom:clamp(64px,8vw,112px)}
-.mag-ph{margin:0}
-.mag-ph img,.mag-pano img{width:100%;display:block;object-fit:cover;border-radius:14px;background:#efe4e0}
-.mag-ph figcaption{
-  display:flex;align-items:baseline;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(15,10,15,.12);
-  font-family:var(--fd);font-style:italic;font-size:1.05rem;line-height:1.2;color:var(--ink);
+.mag-spread{display:grid;gap:clamp(18px,2.4vw,32px);margin-bottom:clamp(40px,5vw,64px)}
+.mag-ph{margin:0;display:flex;flex-direction:column}
+/* moldura: o zoom fica dentro dos cantos arredondados */
+.mag-im{
+  position:relative;overflow:hidden;border-radius:16px;background:#efe4e0;
+  box-shadow:0 1px 2px rgba(15,10,15,.05),0 20px 44px -12px rgba(15,10,15,.16);
+  transition:transform .5s cubic-bezier(.22,.61,.36,1),box-shadow .5s cubic-bezier(.22,.61,.36,1);
 }
+.mag-im::after{
+  content:'';position:absolute;inset:0;border-radius:16px;pointer-events:none;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.5);
+  background:linear-gradient(155deg,rgba(255,255,255,.06),transparent 40%);
+}
+.mag-im img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .95s cubic-bezier(.22,.61,.36,1)}
+.mag-ph:hover .mag-im{transform:translateY(-6px);box-shadow:0 1px 2px rgba(15,10,15,.06),0 32px 60px -12px rgba(15,10,15,.24)}
+.mag-ph:hover .mag-im img{transform:scale(1.065)}
+.mag-ph figcaption{
+  position:relative;display:flex;align-items:baseline;gap:10px;margin-top:12px;padding-top:10px;
+  font-family:var(--fd);font-style:italic;font-size:1rem;line-height:1.2;color:var(--ink);
+}
+.mag-ph figcaption::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:rgba(15,10,15,.12)}
+.mag-ph figcaption::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--pink),var(--gold));
+  transform:scaleX(0);transform-origin:left;transition:transform .6s cubic-bezier(.22,.61,.36,1);
+}
+.mag-ph:hover figcaption::after{transform:scaleX(1)}
 .mag-ph figcaption small{margin-left:auto;font-family:var(--fb);font-style:normal;font-size:.75rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
 .mag-n{font-size:.9rem;color:var(--rose)}
 
 .mag-q{margin:0}
 .mag-q p{
   font-family:var(--fd);font-style:italic;font-weight:400;
-  font-size:clamp(1.5rem,1.05rem + 1.5vw,2.3rem);line-height:1.22;letter-spacing:-.02em;color:var(--ink);text-wrap:balance;
+  font-size:clamp(1.35rem,1rem + 1.1vw,1.9rem);line-height:1.24;letter-spacing:-.02em;color:var(--ink);text-wrap:balance;
 }
-.mag-q p::before{content:'“';display:block;font-size:3em;line-height:.55;height:.42em;color:var(--pink);font-style:normal}
+.mag-q p::before{content:'“';display:block;font-size:2.6em;line-height:.55;height:.42em;color:var(--pink);font-style:normal}
 .mag-q em{color:var(--pink)}
 .mag-q cite{
-  display:flex;align-items:center;gap:12px;margin-top:20px;
+  display:flex;align-items:center;gap:12px;margin-top:18px;
   font-style:normal;font-size:.75rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
 }
 .mag-q cite::before{content:'';width:28px;height:1px;background:linear-gradient(90deg,var(--pink),var(--gold))}
 
-/* página 1 */
+/* página 1: foto grande | citação + foto que ocupa o resto da altura */
 .mag-s1{grid-template-columns:minmax(0,7fr) minmax(0,5fr);align-items:stretch}
-.mag-a img{aspect-ratio:4/3}
-.mag-side{display:flex;flex-direction:column;justify-content:space-between;gap:40px;padding-top:4%}
-.mag-b{width:74%;align-self:flex-end}
-.mag-b img{aspect-ratio:4/5}
-/* página 2 */
-.mag-s2{grid-template-columns:repeat(3,minmax(0,1fr));align-items:start}
-.mag-c img,.mag-e img{aspect-ratio:3/4}
-.mag-e{margin-top:22%}
-.mag-mid{display:flex;flex-direction:column;gap:40px;padding-top:12%}
-.mag-mid .mag-q p{font-size:clamp(1.35rem,1rem + 1.1vw,1.9rem)}
-.mag-d img{aspect-ratio:3/2}
-/* página 3 */
-.mag-pano{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);margin:0 0 clamp(56px,7vw,96px);border-radius:20px;overflow:hidden;background:var(--ink);box-shadow:0 34px 70px -30px rgba(15,10,15,.45)}
-.mag-pano img{order:2;height:100%;min-height:420px;aspect-ratio:4/3;object-position:45% 40%;border-radius:0}
-.mag-q-over{order:1;align-self:center;padding:clamp(32px,5vw,64px);position:relative}
+.mag-a .mag-im{aspect-ratio:3/2}
+.mag-side{display:flex;flex-direction:column;gap:24px;min-height:0}
+.mag-b{flex:1;min-height:0}
+.mag-b .mag-im{flex:1;min-height:170px}
+.mag-b .mag-im img{position:absolute;inset:0;object-position:50% 45%}
+/* página 2: três colunas da mesma altura */
+.mag-s2{grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch}
+.mag-c .mag-im,.mag-e .mag-im{aspect-ratio:4/5}
+.mag-mid{display:flex;flex-direction:column;justify-content:space-between;gap:22px}
+.mag-mid .mag-q p{font-size:clamp(1.2rem,.95rem + .8vw,1.55rem)}
+.mag-d{flex:1;min-height:0}
+.mag-d .mag-im{flex:1;min-height:150px}
+.mag-d .mag-im img{position:absolute;inset:0}
+/* página 3: citação ao lado da foto larga */
+.mag-pano{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);margin:0;border-radius:20px;overflow:hidden;background:var(--ink);box-shadow:0 34px 70px -30px rgba(15,10,15,.45)}
+.mag-pano img{order:2;width:100%;height:100%;display:block;aspect-ratio:16/10;object-fit:cover;object-position:45% 40%;transition:transform .95s cubic-bezier(.22,.61,.36,1)}
+.mag-pano:hover img{transform:scale(1.04)}
+.mag-q-over{order:1;align-self:center;padding:clamp(28px,4vw,52px);position:relative}
 .mag-q-over p,.mag-q-over em{color:#fff}
 .mag-q-over em{color:var(--pink2)}
 .mag-q-over p::before{color:var(--gold)}
 .mag-q-over cite{color:rgba(255,255,255,.7)}
-.mag-q-over::after{content:'';position:absolute;top:0;bottom:0;right:0;width:1px;background:linear-gradient(transparent,rgba(201,169,110,.5),transparent)}
-/* fecho */
-.mag-foot{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:clamp(24px,4vw,56px);align-items:center;padding-top:40px;border-top:1px solid rgba(201,169,110,.4)}
-.mag-index{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
-.mag-index li{display:flex;align-items:baseline;gap:16px;font-family:var(--fd);font-style:italic;font-size:1.25rem;color:var(--ink)}
-.mag-index span{font-family:var(--fb);font-style:normal;font-size:.75rem;font-weight:600;letter-spacing:.14em;color:var(--rose)}
-.mag-cta{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:30px 34px;border-radius:20px;background:linear-gradient(120deg,var(--ink),#251527);color:#fff;box-shadow:0 30px 60px -22px rgba(15,10,15,.4)}
-.mag-cta p{margin:0;color:rgba(255,255,255,.66);font-size:.95rem;line-height:1.55;max-width:300px}
-.mag-cta strong{display:block;font-family:var(--fd);font-style:italic;font-weight:500;font-size:1.45rem;color:#fff;margin-bottom:4px;letter-spacing:-.01em}
-.mag-cta .btn-p{box-shadow:0 12px 30px rgba(229,37,100,.4),inset 0 0 0 1px rgba(255,255,255,.16)}
 
+/* fecho: ficha técnica + cartão de projeto (versão anterior) */
+.folio-index{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  margin-top:clamp(40px,5vw,56px);background:rgba(201,169,110,.32);
+  border-top:1px solid rgba(201,169,110,.32);border-bottom:1px solid rgba(201,169,110,.32);
+}
+.fx{background:var(--cream2);padding:20px 22px;display:flex;flex-direction:column;gap:6px}
+.fx-k{font-size:.75rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--rose)}
+.fx-v{font-family:var(--fd);font-style:italic;font-size:.98rem;color:var(--ink);line-height:1.35}
+@media(max-width:820px){.folio-index{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.folio-index{grid-template-columns:1fr}}
+.spaces-cta{
+  margin-top:56px;padding:40px 44px;border-radius:22px;position:relative;
+  display:flex;justify-content:space-between;align-items:center;gap:28px;flex-wrap:wrap;
+  background:linear-gradient(120deg,var(--ink) 0%,#251527 100%);
+  box-shadow:0 30px 60px -18px rgba(15,10,15,.35);
+  overflow:hidden;
+}
+.spaces-cta::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 14% -20%,rgba(229,37,100,.35),transparent 55%),
+    radial-gradient(circle at 92% 120%,rgba(201,169,110,.28),transparent 55%);
+  pointer-events:none;
+}
+.spaces-cta::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent)}
+.spaces-cta-copy{position:relative;z-index:1}
+.spaces-cta-copy strong{
+  display:block;font-family:var(--fd);font-style:italic;font-weight:600;
+  font-size:1.5rem;color:#fff;letter-spacing:-.01em;margin-bottom:6px;
+}
+.spaces-cta-copy span{color:rgba(255,255,255,.62);font-size:.9rem;line-height:1.6}
+.spaces-cta-actions{position:relative;z-index:1;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.spaces-cta .btn-p{box-shadow:0 12px 30px rgba(229,37,100,.4),inset 0 0 0 1px rgba(255,255,255,.16)}
+@media(max-width:640px){
+  .spaces-cta{padding:32px 26px;flex-direction:column;align-items:flex-start;text-align:left}
+}
+
+@media(max-width:900px){
+  .spaces{padding:80px 0 88px}
+  /* marca d'água colidia com o kicker no celular */
+  .spaces::after{display:none}
+  .mag-head{margin-bottom:36px}
+  .spaces-cta{margin-top:40px}
+}
 @media(max-width:820px){
-  .spaces{padding:84px 0 92px}
-  .mag-head{margin-bottom:48px}
   .mag-s1{grid-template-columns:minmax(0,1fr)}
-  .mag-side{padding-top:0;gap:36px}
-  .mag-b{width:70%}
+  .mag-side{gap:28px}
+  .mag-b{width:72%;align-self:flex-end;flex:none}
+  .mag-b .mag-im{flex:none;aspect-ratio:4/5;min-height:0}
   .mag-s2{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 14px}
-  .mag-mid{grid-column:1/-1;grid-row:2;padding-top:24px;gap:32px}
-  .mag-e{margin-top:40px}
+  .mag-mid{grid-column:1/-1;grid-row:2;padding-top:20px;gap:28px}
+  .mag-d{flex:none}
+  .mag-d .mag-im{flex:none;aspect-ratio:3/2;min-height:0}
   .mag-ph figcaption{font-size:.95rem;flex-wrap:wrap;gap:4px 8px}
   .mag-ph figcaption small{margin-left:0;width:100%}
   .mag-pano{grid-template-columns:minmax(0,1fr)}
-  .mag-pano img{order:1;min-height:0;aspect-ratio:4/3}
+  .mag-pano img{order:1;aspect-ratio:4/3}
   .mag-q-over{order:2;padding:28px 24px 32px}
-  .mag-q-over::after{display:none}
-  .mag-foot{grid-template-columns:minmax(0,1fr)}
-  .mag-cta{padding:26px 24px}
+}
+@media(hover:none){
+  .mag-ph:hover .mag-im,.mag-ph:hover .mag-im img,.mag-pano:hover img{transform:none}
 }
 
 /* ── FOOTER — DARK ── */
@@ -1325,7 +1389,7 @@ a{text-decoration:none;color:inherit}
     <!-- página 1: foto grande + citação + retrato -->
     <div class="mag-spread mag-s1">
       <figure class="mag-ph mag-a rv">
-        <img src="img/ambiente-mesa-raposa-960.webp" srcset="img/ambiente-mesa-raposa-960.webp 960w, img/ambiente-mesa-raposa-1920.webp 1920w" sizes="(max-width:820px) 100vw, 60vw" loading="lazy" alt="Mesa de festa tema floresta com boneca de raposa, suculentas e caixotes de madeira">
+        <div class="mag-im"><img src="img/ambiente-mesa-raposa-960.webp" srcset="img/ambiente-mesa-raposa-960.webp 960w, img/ambiente-mesa-raposa-1920.webp 1920w" sizes="(max-width:820px) 100vw, 60vw" loading="lazy" alt="Mesa de festa tema floresta com boneca de raposa, suculentas e caixotes de madeira"></div>
         <figcaption><span class="mag-n">01</span>Floresta encantada<small>Mesa temática</small></figcaption>
       </figure>
       <div class="mag-side">
@@ -1334,7 +1398,7 @@ a{text-decoration:none;color:inherit}
           <cite>Ellen, fundadora do estúdio</cite>
         </blockquote>
         <figure class="mag-ph mag-b rv">
-          <img src="img/almofada-unicornio-mesa-480.webp" srcset="img/almofada-unicornio-mesa-480.webp 480w, img/almofada-unicornio-mesa-960.webp 960w" sizes="(max-width:820px) 70vw, 26vw" loading="lazy" alt="Par de almofadas de unicórnio decorando uma mesa de festa">
+          <div class="mag-im"><img src="img/almofada-unicornio-mesa-480.webp" srcset="img/almofada-unicornio-mesa-480.webp 480w, img/almofada-unicornio-mesa-960.webp 960w" sizes="(max-width:820px) 70vw, 26vw" loading="lazy" alt="Par de almofadas de unicórnio decorando uma mesa de festa"></div>
           <figcaption><span class="mag-n">02</span>Unicórnio<small>Cenário de mesa</small></figcaption>
         </figure>
       </div>
@@ -1343,7 +1407,7 @@ a{text-decoration:none;color:inherit}
     <!-- página 2: dois retratos desencontrados com citação no meio -->
     <div class="mag-spread mag-s2">
       <figure class="mag-ph mag-c rv">
-        <img src="img/ambiente-familia-mascaras-480.webp" srcset="img/ambiente-familia-mascaras-480.webp 480w, img/ambiente-familia-mascaras-960.webp 960w" sizes="(max-width:820px) 50vw, 30vw" loading="lazy" alt="Família sorrindo usando máscaras de coruja e raposa em feltro">
+        <div class="mag-im"><img src="img/ambiente-familia-mascaras-480.webp" srcset="img/ambiente-familia-mascaras-480.webp 480w, img/ambiente-familia-mascaras-960.webp 960w" sizes="(max-width:820px) 50vw, 30vw" loading="lazy" alt="Família sorrindo usando máscaras de coruja e raposa em feltro"></div>
         <figcaption><span class="mag-n">03</span>Retrato de família<small>Máscaras</small></figcaption>
       </figure>
       <div class="mag-mid">
@@ -1352,12 +1416,12 @@ a{text-decoration:none;color:inherit}
           <cite>Estúdio Chuchu Rosa</cite>
         </blockquote>
         <figure class="mag-ph mag-d rv">
-          <img src="img/ambiente-festa-maes-480.webp" srcset="img/ambiente-festa-maes-480.webp 480w, img/ambiente-festa-maes-960.webp 960w" sizes="(max-width:820px) 100vw, 30vw" loading="lazy" alt="Mães e criança rindo em festa, usando tiaras de bichos e luvas de pata em feltro">
+          <div class="mag-im"><img src="img/ambiente-festa-maes-480.webp" srcset="img/ambiente-festa-maes-480.webp 480w, img/ambiente-festa-maes-960.webp 960w" sizes="(max-width:820px) 100vw, 30vw" loading="lazy" alt="Mães e criança rindo em festa, usando tiaras de bichos e luvas de pata em feltro"></div>
           <figcaption><span class="mag-n">04</span>Bichos da casa<small>Kit de festa</small></figcaption>
         </figure>
       </div>
       <figure class="mag-ph mag-e rv">
-        <img src="img/ocasiao-festa-topobolo-480.webp" srcset="img/ocasiao-festa-topobolo-480.webp 480w, img/ocasiao-festa-topobolo-960.webp 960w" sizes="(max-width:820px) 50vw, 30vw" loading="lazy" alt="Mesa de festa temática com cogumelos, luzes e decoração de floresta encantada">
+        <div class="mag-im"><img src="img/ocasiao-festa-topobolo-480.webp" srcset="img/ocasiao-festa-topobolo-480.webp 480w, img/ocasiao-festa-topobolo-960.webp 960w" sizes="(max-width:820px) 50vw, 30vw" loading="lazy" alt="Mesa de festa temática com cogumelos, luzes e decoração de floresta encantada"></div>
         <figcaption><span class="mag-n">05</span>Bosque de cogumelos<small>Mesa &amp; painel</small></figcaption>
       </figure>
     </div>
@@ -1372,18 +1436,22 @@ a{text-decoration:none;color:inherit}
       <figcaption class="sr-only">Aniversário unicórnio, projeto completo com montagem no dia</figcaption>
     </figure>
 
-    <div class="mag-foot rv">
-      <ol class="mag-index" aria-label="O que o estúdio cria">
-        <li><span>01</span>Ensaios fotográficos</li>
-        <li><span>02</span>Festas &amp; aniversários</li>
-        <li><span>03</span>Mesas &amp; decoração de quarto</li>
-      </ol>
-      <div class="mag-cta">
-        <p><strong>Vamos desenhar o seu ambiente?</strong>Projetos sob consulta, criados um a um.</p>
-        <a href="https://wa.me/5519993041555?text=Oi!%20Quero%20saber%20mais%20sobre%20os%20ambientes%20e%20festas%20da%20Chuchu%20Rosa" target="_blank" rel="noopener" class="btn-p">Pedir um projeto →</a>
-      </div>
+    <div class="folio-index rv">
+      <div class="fx"><span class="fx-k">Escopo</span><span class="fx-v">Croqui, produção e montagem</span></div>
+      <div class="fx"><span class="fx-k">Formatos</span><span class="fx-v">Mesa, painel, varal e quarto</span></div>
+      <div class="fx"><span class="fx-k">Prazo</span><span class="fx-v">Definido por projeto</span></div>
+      <div class="fx"><span class="fx-k">Atendimento</span><span class="fx-v">Interior de SP e sob consulta</span></div>
     </div>
 
+    <div class="spaces-cta rv">
+      <div class="spaces-cta-copy">
+        <strong>Vamos desenhar o seu ambiente?</strong>
+        <span>Projetos sob consulta, criados um a um — do croqui à montagem no dia do evento.</span>
+      </div>
+      <div class="spaces-cta-actions">
+        <a href="https://wa.me/5519993041555?text=Oi!%20Quero%20saber%20mais%20sobre%20os%20ambientes%20e%20festas%20da%20Chuchu%20Rosa" target="_blank" rel="noopener" class="btn-p">Pedir um projeto de ambiente →</a>
+      </div>
+    </div>
   </div>
 </section>
 
