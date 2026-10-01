@@ -1549,6 +1549,30 @@ function heroCounts(){
   });
 })();
 
+// ── COLEÇÕES: rolagem suave que para na foto do meio ────────────────
+(function(){
+  const rail=document.getElementById('colRail');if(!rail)return;
+  let timer=null,paused=false,raf=0;
+  const tiles=()=>[...rail.querySelectorAll('.lx-col')];
+  function centerIdx(){
+    const mid=rail.scrollLeft+rail.clientWidth/2;let best=0,bd=1e9;
+    tiles().forEach((t,k)=>{const d=Math.abs(t.offsetLeft+t.offsetWidth/2-mid);if(d<bd){bd=d;best=k;}});
+    return best;
+  }
+  function mark(){const c=centerIdx();tiles().forEach((t,k)=>t.classList.toggle('is-center',k===c));}
+  function goTo(k){const t=tiles()[k];if(!t)return;rail.scrollTo({left:t.offsetLeft+t.offsetWidth/2-rail.clientWidth/2,behavior:'smooth'});}
+  function next(){const n=tiles().length;if(!n)return;const c=centerIdx();goTo(c+1>=n?0:c+1);}
+  function start(){clearInterval(timer);if(!paused)timer=setInterval(next,2800);}
+  rail.addEventListener('scroll',()=>{if(raf)return;raf=requestAnimationFrame(()=>{raf=0;mark();});},{passive:true});
+  rail.addEventListener('mouseenter',()=>{paused=true;clearInterval(timer);});
+  rail.addEventListener('mouseleave',()=>{paused=false;start();});
+  rail.addEventListener('touchstart',()=>{paused=true;clearInterval(timer);},{passive:true});
+  rail.addEventListener('touchend',()=>{setTimeout(()=>{paused=false;start();},4000);});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)clearInterval(timer);else start();});
+  // espera o trilho ser montado com as coleções do banco
+  new MutationObserver(()=>{if(tiles().length){goTo(Math.floor(tiles().length/2)-1);setTimeout(mark,600);start();}}).observe(rail,{childList:true});
+})();
+
 // ══ SUGESTAO DE PRODUTOS ═══════════════════════════════════════════
 (function(){
   var params=new URLSearchParams(window.location.search);
