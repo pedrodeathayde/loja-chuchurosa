@@ -629,8 +629,7 @@ function renderGrid(){
     let acao='';
     if(p.esgotado) acao='';
     else if(!p.price) acao=`<button class="btn-consult" type="button" onclick="event.preventDefault();event.stopPropagation();openWA('${p.name.replace(/'/g,"\\'")}')">Consultar</button>`;
-    else if(p._temTamanho) acao=`<span class="btn-add btn-escolher" aria-hidden="true">Escolher tamanho</span>`;
-    else acao=`<button class="btn-add" type="button" onclick="event.preventDefault();event.stopPropagation();addToCart(event,'${p.id}')" aria-label="Adicionar ${alt} à sacola">${BAG_SVG}<span class="btn-add-t">Adicionar<span class="t-long"> à sacola</span></span></button>`;
+    else acao=`<span class="btn-add btn-escolher" aria-hidden="true">Ver peça</span>`;
 
     const priceHtml=p.esgotado
       ?`<div class="pcard-price pcard-price-consult">Esgotado</div>`
