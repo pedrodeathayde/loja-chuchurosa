@@ -1559,10 +1559,12 @@ function heroCounts(){
     track.style.transition=anim?'transform 1.15s cubic-bezier(.65,0,.35,1)':'none';
     track.style.transform=`translateX(${vp.clientWidth/2-(i*step+w/2)}px)`;
     items().forEach((el,k)=>{
-      const d=Math.min(Math.abs(k-i),4);
-      el.style.transition=anim?'transform 1.15s cubic-bezier(.65,0,.35,1),filter 1.15s':'none';
+      const raw=Math.abs(k-i),d=Math.min(raw,4),max=Math.floor((n-1)/2);
+      el.style.transition=anim?'transform 1.15s cubic-bezier(.65,0,.35,1),filter 1.15s,opacity .6s':'none';
       el.style.transform=`scale(${1-d*.12})`;el.style.zIndex=20-d;
       el.style.filter=d?`brightness(${1-d*.08})`:'none';
+      // cada coleção aparece uma vez só na tela
+      el.style.opacity=raw>max?0:1;el.style.pointerEvents=raw>max?'none':'';
       el.classList.toggle('is-center',d===0);
     });
   }
