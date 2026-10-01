@@ -175,39 +175,70 @@
 </div>
 
 <div class="shop-wrap" id="loja">
-  <aside class="sidebar" id="sidebar" aria-label="Filtros">
+  <aside class="sidebar" id="sidebar" aria-label="Filtros" data-tab="cat">
     <div class="lx-f-head">
       <h2>Filtrar<span class="active-count" id="activeCount" style="display:none"></span></h2>
-      <button type="button" class="rail-clear" id="clearFiltersBtn" onclick="clearAllFilters()" hidden>Limpar</button>
+      <button type="button" class="rail-clear" id="clearFiltersBtn" onclick="clearAllFilters()" hidden>Limpar tudo</button>
       <button type="button" class="sidebar-close" onclick="closeSidebar()" aria-label="Fechar filtros">✕</button>
     </div>
+    <div class="lx-f-tabs" role="tablist" aria-label="Grupos de filtro">
+      <button type="button" role="tab" data-tab="cat" aria-selected="true">Tipo</button>
+      <button type="button" role="tab" data-tab="tema" aria-selected="false">Tema</button>
+      <button type="button" role="tab" data-tab="preco" aria-selected="false">Preço</button>
+      <button type="button" role="tab" data-tab="ordem" aria-selected="false">Ordenar</button>
+    </div>
+    <div class="lx-f-active" id="sideActive" hidden></div>
     <div class="lx-f-body">
       <details class="lx-f-grp" data-sec="cat" open>
-        <summary>Tipo de peça</summary>
-        <div class="lx-f-in"><ul class="rail-list" id="catList"></ul></div>
+        <summary><span class="lx-f-t">Tipo de peça</span><span class="lx-f-sel" data-sel="cat"></span></summary>
+        <div class="lx-f-in">
+          <ul class="rail-list" id="catList"></ul>
+          <button type="button" class="lx-more" id="catMore" hidden aria-expanded="false">Mostrar todos</button>
+        </div>
       </details>
       <details class="lx-f-grp" data-sec="tema" open>
-        <summary><span>Tema<em id="temaTotal"></em></span></summary>
+        <summary><span class="lx-f-t">Tema</span><span class="lx-f-sel" data-sel="tema"></span></summary>
         <div class="lx-f-in">
-          <div class="rail-search">
+          <div class="rail-search" id="temaSearchWrap" hidden>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
             <input id="temaSearch" type="search" placeholder="Buscar tema…" aria-label="Buscar tema">
           </div>
-          <ul class="rail-list scroll" id="temaList"></ul>
+          <ul class="lx-temas" id="temaList"></ul>
+          <button type="button" class="lx-more" id="temaMore" aria-expanded="false">Ver todos os <span id="temaTotal"></span> temas</button>
         </div>
       </details>
       <details class="lx-f-grp" data-sec="preco" open>
-        <summary>Preço</summary>
+        <summary><span class="lx-f-t">Preço</span><span class="lx-f-sel" data-sel="preco"></span></summary>
         <div class="lx-f-in">
+          <div class="lx-range" id="priceRange">
+            <div class="lx-hist" id="priceHist" aria-hidden="true"></div>
+            <div class="lx-rtrack">
+              <div class="lx-rfill" id="priceFill"></div>
+              <input type="range" id="rangeMin" min="0" max="300" step="1" value="0" aria-label="Preço mínimo">
+              <input type="range" id="rangeMax" min="0" max="300" step="1" value="300" aria-label="Preço máximo">
+            </div>
+          </div>
+          <div class="price">
+            <label class="price-f"><span>R$</span><input class="price-input" type="number" id="priceMin" placeholder="Mín" min="0" inputmode="numeric" aria-label="Preço mínimo em reais"></label>
+            <span class="price-sep" aria-hidden="true">—</span>
+            <label class="price-f"><span>R$</span><input class="price-input" type="number" id="priceMax" placeholder="Máx" min="0" inputmode="numeric" aria-label="Preço máximo em reais"></label>
+          </div>
           <div class="lx-pchips" id="priceChips">
             <button type="button" class="lx-pchip" data-min="" data-max="80" aria-pressed="false">Até R$ 80</button>
             <button type="button" class="lx-pchip" data-min="80" data-max="150" aria-pressed="false">R$ 80 a 150</button>
             <button type="button" class="lx-pchip" data-min="150" data-max="" aria-pressed="false">Acima de R$ 150</button>
           </div>
-          <div class="price">
-            <input class="price-input" type="number" id="priceMin" placeholder="Mín" min="0" inputmode="numeric" aria-label="Preço mínimo">
-            <span class="price-sep" aria-hidden="true">—</span>
-            <input class="price-input" type="number" id="priceMax" placeholder="Máx" min="0" inputmode="numeric" aria-label="Preço máximo">
+        </div>
+      </details>
+      <details class="lx-f-grp lx-only-m" data-sec="ordem" open>
+        <summary><span class="lx-f-t">Ordenar</span></summary>
+        <div class="lx-f-in">
+          <div class="lx-sortlist" id="sortList" role="radiogroup" aria-label="Ordenar por">
+            <button type="button" role="radio" data-sort="az" aria-checked="true">Nome A–Z</button>
+            <button type="button" role="radio" data-sort="za" aria-checked="false">Nome Z–A</button>
+            <button type="button" role="radio" data-sort="price-asc" aria-checked="false">Menor preço</button>
+            <button type="button" role="radio" data-sort="price-desc" aria-checked="false">Maior preço</button>
+            <button type="button" role="radio" data-sort="newest" aria-checked="false">Novidades</button>
           </div>
         </div>
       </details>
@@ -539,6 +570,9 @@ function syncShopHead(){
     }
     t.textContent=titulo;if(k)k.textContent=kicker;
   }
+  const sel={cat:selectedCats.length,tema:activeDesigns.length,preco:(priceMin!==null||priceMax!==null)?1:0};
+  document.querySelectorAll('.lx-f-sel[data-sel]').forEach(e=>{e.textContent=sel[e.dataset.sel]||'';});
+  if(typeof syncPriceRange==='function'){syncPriceRange();syncSortList();}
   document.querySelectorAll('#priceChips .lx-pchip').forEach(b=>{
     const mn=b.dataset.min===''?null:+b.dataset.min, mx=b.dataset.max===''?null:+b.dataset.max;
     b.setAttribute('aria-pressed',String(mn===priceMin&&mx===priceMax&&(mn!==null||mx!==null)));
@@ -927,21 +961,16 @@ async function loadDesignBadges(){
   }
 
   badgeRow.innerHTML=designs.map(d=>
-    `<li><button type="button" class="hbadge" data-filter="${toSlug(d.nome)}" data-name="${escAttr(d.nome)}" data-type="search" aria-pressed="false"><span class="mk ci" aria-hidden="true"></span>${d.nome}<span class="n"></span></button></li>`
+    `<li><button type="button" class="hbadge" data-filter="${toSlug(d.nome)}" data-name="${escAttr(d.nome)}" data-type="search" aria-pressed="false"><span class="ti" aria-hidden="true">${catIconSVG(d.nome,15)}</span><span class="tl">${d.nome}</span><span class="n"></span></button></li>`
   ).join('');
   const tot=document.getElementById('temaTotal');
   if(tot) tot.textContent=designs.length;
+  if(allProducts.length) updateCatCounts();
 }
 loadDesignBadges();
 
 // busca dentro do eixo Tema — 28 itens sem busca é impraticável
-document.getElementById('temaSearch').addEventListener('input',e=>{
-  const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-  const q=norm(e.target.value);
-  document.querySelectorAll('#temaList li').forEach(li=>{
-    li.hidden = q && !norm(li.textContent).includes(q);
-  });
-});
+document.getElementById('temaSearch').addEventListener('input',()=>syncTemaVisibility());
 
 // "Limpar" só aparece quando há o que limpar
 function syncClearBtn(){
@@ -1151,8 +1180,7 @@ function updateCatCounts(){
   document.querySelectorAll('#catList .cat-item[data-cat]').forEach(li=>{
     const cat=li.dataset.cat;
     const n=base.filter(p=>(p.collections||[]).some(c=>c.toLowerCase()===cat.toLowerCase())).length;
-    const countEl=li.querySelector('.n');
-    if(countEl) countEl.textContent=n;
+    setCount(li.querySelector('.n'),n);
     // esmaece (não esconde) o que não tem resultado com os outros filtros
     li.classList.toggle('cat-item-empty', n===0);
   });
@@ -1164,9 +1192,10 @@ function updateCatCounts(){
   if(priceMax!==null) baseTema=baseTema.filter(p=>p.price===null||p.price<=priceMax);
   document.querySelectorAll('#temaList .hbadge').forEach(b=>{
     const n=baseTema.filter(p=>designMatch(p,b.dataset.filter)).length;
-    const el=b.querySelector('.n'); if(el) el.textContent=n;
+    setCount(b.querySelector('.n'),n);b.dataset.count=n;
     b.classList.toggle('cat-item-empty', n===0);
   });
+  syncCatVisibility();syncTemaVisibility();
 }
 
 function updateActiveFilterCount(){
@@ -1199,7 +1228,7 @@ function renderActiveFilters(){
   if(typeof activeDesigns!=='undefined'){
     activeDesigns.forEach(slug=>{
       const badge=document.querySelector(`#temaList .hbadge[data-filter="${slug}"]`);
-      const label=badge?badge.textContent.trim():slug;
+      const label=badge?badge.dataset.name:slug;
       chips.push({label,onRemove:`document.querySelector('#temaList .hbadge[data-filter="${slug}"]')?.click()`});
     });
   }
@@ -1212,11 +1241,13 @@ function renderActiveFilters(){
   if(searchQ){
     chips.push({label:`"${searchQ}"`,onRemove:`document.getElementById('searchInput').value='';searchQ='';saveFiltersToURL();applyFilters()`});
   }
-  if(!chips.length){ wrap.innerHTML=''; wrap.style.display='none'; return; }
+  const side=document.getElementById('sideActive');
+  if(!chips.length){ wrap.innerHTML=''; wrap.style.display='none'; if(side){side.innerHTML='';side.hidden=true;} return; }
   wrap.style.display='flex';
   wrap.innerHTML=chips.map(c=>
     `<span class="fchip"><span class="fchip-label">${c.label}</span><button type="button" onclick="${c.onRemove}" aria-label="Remover filtro ${c.label.replace(/"/g,'&quot;')}">✕</button></span>`
   ).join('')+(chips.length>1?`<button type="button" class="fchip-clear" onclick="clearAllFilters()">Limpar tudo</button>`:'');
+  if(side){side.innerHTML=wrap.innerHTML;side.hidden=false;}
 }
 
 // ── DARK MODE ─────────────────────────────────────────────────────
@@ -1289,6 +1320,7 @@ async function init(){
   updateCartUI();
   loadFavsFromDB();
   setPriceRangePlaceholders();
+  initPriceRange();
   initScrollObserver();
 }
 init();
@@ -1302,8 +1334,8 @@ function setPriceRangePlaceholders(){
   const max=Math.ceil(Math.max(...withPrice));
   const mnEl=document.getElementById('priceMin');
   const mxEl=document.getElementById('priceMax');
-  if(mnEl&&!mnEl.value) mnEl.placeholder=`R$ ${min}`;
-  if(mxEl&&!mxEl.value) mxEl.placeholder=`R$ ${max}`;
+  if(mnEl&&!mnEl.value) mnEl.placeholder=String(min);
+  if(mxEl&&!mxEl.value) mxEl.placeholder=String(max);
 }
 
 
@@ -1589,6 +1621,115 @@ function heroCounts(){
   addEventListener('resize',()=>paint(false));
   document.addEventListener('visibilitychange',()=>{if(document.hidden)clearInterval(timer);else start();});
 })();
+
+// ── LATERAL: temas em destaque, tipos vazios recolhidos, régua de preço ──
+let _temaExpandido=false,_catExpandido=false;
+function syncTemaVisibility(){
+  const q=(document.getElementById('temaSearch')?.value||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
+  const lis=[...document.querySelectorAll('#temaList li')];
+  // mais peças primeiro; empate fica na ordem do cadastro
+  const ord=lis.map((li,k)=>({li,k,n:+(li.querySelector('.hbadge')?.dataset.count||0),on:li.querySelector('.hbadge')?.classList.contains('active')}))
+    .sort((a,b)=>(b.on-a.on)||(b.n-a.n)||(a.k-b.k));
+  let visiveis=0;
+  ord.forEach((o,pos)=>{
+    o.li.style.order=pos;
+    const nome=(o.li.querySelector('.hbadge')?.dataset.name||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+    let mostra;
+    if(q) mostra=nome.includes(q);
+    else if(_temaExpandido) mostra=o.n>0||o.on;
+    else mostra=o.on||(o.n>0&&visiveis<10);
+    if(mostra&&!q&&!o.on)visiveis++;
+    o.li.hidden=!mostra;
+  });
+  const more=document.getElementById('temaMore');
+  if(more){
+    const comPeca=ord.filter(o=>o.n>0||o.on).length;
+    more.hidden=!_temaExpandido&&comPeca<=10;
+    more.setAttribute('aria-expanded',String(_temaExpandido));
+    more.innerHTML=_temaExpandido?'Mostrar menos':`Ver todos os <span id="temaTotal">${comPeca}</span> temas`;
+  }
+  const sw=document.getElementById('temaSearchWrap');if(sw)sw.hidden=!_temaExpandido;
+}
+function syncCatVisibility(){
+  const lis=[...document.querySelectorAll('#catList li')];let escondidos=0;
+  lis.forEach(li=>{
+    const b=li.querySelector('.cat-item');if(!b)return;
+    const vazio=b.classList.contains('cat-item-empty')&&!b.classList.contains('active');
+    li.hidden=vazio&&!_catExpandido;if(vazio)escondidos++;
+  });
+  const more=document.getElementById('catMore');
+  if(more){more.hidden=!escondidos;more.textContent=_catExpandido?'Mostrar menos':`Mostrar todos (${escondidos} sem peças agora)`;more.setAttribute('aria-expanded',String(_catExpandido));}
+}
+document.getElementById('temaMore').addEventListener('click',()=>{
+  _temaExpandido=!_temaExpandido;
+  if(!_temaExpandido){const s=document.getElementById('temaSearch');if(s)s.value='';}
+  syncTemaVisibility();
+  if(_temaExpandido)document.getElementById('temaSearch')?.focus({preventScroll:true});
+});
+document.getElementById('catMore').addEventListener('click',()=>{_catExpandido=!_catExpandido;syncCatVisibility();});
+// número que muda dá um leve pulo
+function setCount(el,n){if(!el)return;const t=String(n);if(el.textContent!==t){el.textContent=t;el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump');}}
+
+// régua de preço
+let _pMin=0,_pMax=300;
+function initPriceRange(){
+  const ps=allProducts.map(p=>+(p.preco_promocional||p.price||0)).filter(v=>v>0);
+  if(!ps.length)return;
+  _pMin=Math.floor(Math.min(...ps));_pMax=Math.ceil(Math.max(...ps));
+  ['rangeMin','rangeMax'].forEach(id=>{const r=document.getElementById(id);r.min=_pMin;r.max=_pMax;});
+  syncPriceRange();
+}
+function priceHistogram(){
+  const h=document.getElementById('priceHist');if(!h)return;
+  // distribuição considerando os outros filtros (sem o próprio preço)
+  let base=[...allProducts];
+  if(selectedCats.length)base=base.filter(p=>(p.collections||[]).some(c=>selectedCats.some(sc=>sc.toLowerCase()===c.toLowerCase())));
+  if(searchQ)base=base.filter(p=>fuzzyMatch(p.name,searchQ));
+  if(activeDesigns.length)base=base.filter(p=>activeDesigns.some(s=>designMatch(p,s)));
+  const B=24,cnt=Array(B).fill(0),span=Math.max(1,_pMax-_pMin);
+  base.forEach(p=>{const v=+(p.preco_promocional||p.price||0);if(v>0){cnt[Math.min(B-1,Math.floor((v-_pMin)/span*B))]++;}});
+  const mx=Math.max(1,...cnt),lo=priceMin??_pMin,hi=priceMax??_pMax;
+  h.innerHTML=cnt.map((c,k)=>{const a=_pMin+k*span/B,b=a+span/B;return `<i style="height:${c?Math.max(8,c/mx*100):3}%" class="${b>=lo&&a<=hi?'on':''}"></i>`;}).join('');
+}
+function syncPriceRange(){
+  const rMin=document.getElementById('rangeMin'),rMax=document.getElementById('rangeMax'),fill=document.getElementById('priceFill');
+  if(!rMin||!rMax)return;
+  rMin.value=priceMin??_pMin;rMax.value=priceMax??_pMax;
+  paintRangeFill();priceHistogram();
+}
+function paintRangeFill(){
+  const rMin=document.getElementById('rangeMin'),rMax=document.getElementById('rangeMax'),fill=document.getElementById('priceFill');
+  const span=Math.max(1,_pMax-_pMin),a=(+rMin.value-_pMin)/span*100,b=(+rMax.value-_pMin)/span*100;
+  fill.style.left=a+'%';fill.style.width=Math.max(0,b-a)+'%';
+}
+['rangeMin','rangeMax'].forEach(id=>{
+  const r=document.getElementById(id);
+  r.addEventListener('input',()=>{
+    const rMin=document.getElementById('rangeMin'),rMax=document.getElementById('rangeMax');
+    if(+rMin.value>+rMax.value-1){if(id==='rangeMin')rMin.value=+rMax.value-1;else rMax.value=+rMin.value+1;}
+    document.getElementById('priceMin').value=+rMin.value<=_pMin?'':rMin.value;
+    document.getElementById('priceMax').value=+rMax.value>=_pMax?'':rMax.value;
+    paintRangeFill();
+  });
+  r.addEventListener('change',()=>onPriceTextInput());
+});
+
+// ordenar dentro do painel do celular
+document.getElementById('sortList').addEventListener('click',e=>{
+  const b=e.target.closest('[data-sort]');if(!b)return;
+  const sel=document.getElementById('sortSelect');sel.value=b.dataset.sort;sel.dispatchEvent(new Event('change'));
+  syncSortList();
+});
+function syncSortList(){document.querySelectorAll('#sortList [data-sort]').forEach(b=>b.setAttribute('aria-checked',String(b.dataset.sort===currentSort)));}
+
+// abas do painel do celular
+document.querySelector('.lx-f-tabs').addEventListener('click',e=>{
+  const t=e.target.closest('[data-tab]');if(!t)return;
+  const sb=document.getElementById('sidebar');sb.dataset.tab=t.dataset.tab;
+  document.querySelectorAll('.lx-f-tabs [data-tab]').forEach(b=>b.setAttribute('aria-selected',String(b===t)));
+  sb.querySelectorAll('.lx-f-grp').forEach(d=>d.open=true);
+  sb.querySelector('.lx-f-body').scrollTop=0;
+});
 
 // ══ SUGESTAO DE PRODUTOS ═══════════════════════════════════════════
 (function(){
