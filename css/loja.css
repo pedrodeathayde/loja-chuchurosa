@@ -19,7 +19,6 @@
 
 /* ── base ──────────────────────────────────────────────────────────── */
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 body{
   margin:0;background:var(--cream);color:var(--ink);font-family:var(--fb);
   font-size:1rem;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:clip;
@@ -772,13 +771,3 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
 [data-theme="dark"] .lx-link{border-color:#f3eaee}
 [data-theme="dark"] .chr-ticker{background:#000}
 
-/* ══ MOVIMENTO REDUZIDO ═══════════════════════════════════════════ */
-@media(prefers-reduced-motion:reduce){
-  .lx-title .ln>span{transform:none;animation:none}
-  .lx-lede,.lx-ctas,.lx-stats,.lx-vitrine{opacity:1;animation:none}
-  .lx-wordmark,.tk-track,.shop-ticker-t,.lx-seal svg.ring{animation:none}
-  .lx-card img,.lx-card.is-active img{transform:none}
-  .pcard.rv{opacity:1;transform:none}
-  .tk-track{flex-wrap:wrap;justify-content:center;width:100%}
-  .tk-seq[aria-hidden]{display:none}
-}

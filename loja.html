@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-motion="livre">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -1105,7 +1105,7 @@ document.getElementById('colRail').addEventListener('click',e=>{
   const b=e.target.closest('.lx-col');if(!b)return;
   const ativo=selectedCats.length===1&&normTxt(selectedCats[0])===normTxt(b.dataset.cat);
   selectCategoryOnly(ativo?null:b.dataset.cat);
-  document.getElementById('loja').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+  document.getElementById('loja').scrollIntoView({behavior:'smooth'});
 });
 
 function toggleSubtags(btn,catName){
@@ -1414,7 +1414,8 @@ document.getElementById('priceChips').addEventListener('click',e=>{
 })();
 
 // ── REVELAR CARDS AO ROLAR ───────────────────────────────────────────
-const _reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+// a loja anima sempre, como o index (pedido da marca)
+const _reduceMotion=false;
 const _revealIO=('IntersectionObserver' in window&&!_reduceMotion)?new IntersectionObserver(es=>{
   es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');_revealIO.unobserve(e.target);}});
 },{rootMargin:'0px 0px -6% 0px'}):null;
