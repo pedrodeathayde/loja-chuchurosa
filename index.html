@@ -1683,7 +1683,7 @@ fetch(SB+'/rest/v1/produtos?select=id&ativo=eq.true&oculto=eq.false',{
   }catch(e){console.log('cat counts:',e.message);}
 })();
 
-// ── EASTER EGG: clique nos 4 passos na ordem 1→2→3→4 para confete ──
+// ── EASTER EGG: clique nos 4 passos na ordem 1→2→3→4 para chuva de corações ──
 (function(){
   var steps = Array.prototype.slice.call(document.querySelectorAll('.step[data-step]'));
   if(!steps.length) return;
@@ -1694,31 +1694,26 @@ fetch(SB+'/rest/v1/produtos?select=id&ativo=eq.true&oculto=eq.false',{
   function burst(){
     if(fired) return;
     fired = true;
-    var colors = ['#e52564','#f0995a','#c9a96e','#7fb88f','#4f7fc9','#ffd6e3','#ffffff'];
-    var count = 400;
+    var colors = ['#f04d7f','#e3c590','#ff9cc8','#ffffff'];
+    var H = '<svg viewBox="0 0 24 24" fill="currentColor" style="display:block;width:100%;height:100%"><path d="M12 21s-8-5.2-8-10.4A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 3.6C20 15.8 12 21 12 21z"/></svg>';
+    var count = 160;
     for(var i=0;i<count;i++){
       (function(){
         var el = document.createElement('div');
-        var size = 7 + Math.random()*8;
-        var shape = Math.random();
-        var color = colors[Math.floor(Math.random()*colors.length)];
-        var w = size, h = size, radius = '2px';
-        if(shape < .34){ radius = '50%'; }
-        else if(shape < .67){ h = size*1.7; radius = '2px'; }
-        else { w = size*1.5; h = size*0.55; radius = '1px'; }
+        var size = 14 + Math.random()*16;
+        el.innerHTML = H;
         el.style.cssText =
-          'position:fixed;top:-30px;left:'+(Math.random()*100)+'vw;'+
-          'width:'+w+'px;height:'+h+'px;'+
-          'background:'+color+';'+
-          'border-radius:'+radius+';'+
+          'position:fixed;top:-40px;left:'+(Math.random()*100)+'vw;'+
+          'width:'+size+'px;height:'+size+'px;'+
+          'color:'+colors[i%colors.length]+';'+
           'z-index:9999;pointer-events:none;will-change:transform,opacity;'+
-          'box-shadow:0 2px 6px rgba(15,10,15,.18);';
+          'filter:drop-shadow(0 2px 4px rgba(15,10,15,.18));';
         document.body.appendChild(el);
         var duration = 2400 + Math.random()*2600;
         var delay = Math.random()*700;
         var drift = (Math.random()-.5)*320;
-        var spinX = 360 + Math.random()*1080;
-        var spinZ = (Math.random()-.5)*900;
+        var spinX = 0;
+        var spinZ = (Math.random()-.5)*200;
         el.animate([
           { transform:'translate(0,0) rotateX(0deg) rotateZ(0deg)', opacity:1 },
           { transform:'translate('+(drift*.5)+'px,45vh) rotateX('+(spinX*.5)+'deg) rotateZ('+(spinZ*.5)+'deg)', opacity:1, offset:.45 },
