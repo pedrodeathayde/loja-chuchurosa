@@ -629,8 +629,8 @@ function renderGrid(){
     let acao='';
     if(p.esgotado) acao='';
     else if(!p.price) acao=`<button class="pc-act pc-consult" type="button" onclick="event.preventDefault();event.stopPropagation();openWA('${p.name.replace(/'/g,"\\'")}')">Consultar</button>`;
-    else if(p._temTamanho) acao=`<span class="pc-act pc-bag" title="Escolher tamanho" aria-hidden="true">Comprar</span>`;
-    else acao=`<button class="pc-act pc-bag" type="button" title="Adicionar à sacola" onclick="event.preventDefault();event.stopPropagation();addToCart(event,'${p.id}')" aria-label="Comprar ${alt}: adicionar à sacola">Comprar</button>`;
+    else if(p._temTamanho) acao=`<span class="pc-act pc-bag" title="Escolher tamanho" aria-hidden="true">${BAG_SVG}Comprar</span>`;
+    else acao=`<button class="pc-act pc-bag" type="button" title="Adicionar à sacola" onclick="event.preventDefault();event.stopPropagation();addToCart(event,'${p.id}')" aria-label="Comprar ${alt}: adicionar à sacola">${BAG_SVG}Comprar</button>`;
 
     const priceHtml=p.esgotado
       ?`<div class="pcard-price pcard-price-consult">Esgotado</div>`

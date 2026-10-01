@@ -613,9 +613,10 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
 .pcard-footer{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}
 .pc-act{flex:none;display:inline-flex;align-items:center;justify-content:center;border:0;cursor:pointer;color:#fff;background:var(--pink-strong);
   transition:background .25s,transform .3s var(--ease-out),box-shadow .25s}
-.pc-bag{min-height:42px;padding:0 20px;border-radius:999px;font-size:.75rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;box-shadow:0 10px 22px -10px rgba(229,37,100,.7)}
+.pc-bag{min-height:42px;padding:0 20px;gap:8px;border-radius:999px;font-size:.75rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;box-shadow:0 10px 22px -10px rgba(229,37,100,.7)}
 @media(hover:hover){.pc-act:hover,.pcard:hover .pc-bag{background:var(--rose);transform:translateY(-2px)}}
 .pc-act:active{transform:scale(.94)}
+.pc-bag svg{width:17px;height:17px;flex:none}
 .pc-consult{min-height:40px;padding:0 16px;border-radius:999px;font-size:.75rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
 .pcard-price{font-family:var(--fd);font-size:1.2rem;font-weight:500;font-variant-numeric:tabular-nums lining-nums;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
 .pcard-price.promo{color:var(--rose)}
