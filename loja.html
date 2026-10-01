@@ -628,8 +628,9 @@ function renderGrid(){
 
     let acao='';
     if(p.esgotado) acao='';
-    else if(!p.price) acao=`<button class="btn-consult" type="button" onclick="event.preventDefault();event.stopPropagation();openWA('${p.name.replace(/'/g,"\\'")}')">Consultar</button>`;
-    else acao=`<span class="btn-add btn-escolher" aria-hidden="true">Ver peça</span>`;
+    else if(!p.price) acao=`<button class="pc-act pc-consult" type="button" onclick="event.preventDefault();event.stopPropagation();openWA('${p.name.replace(/'/g,"\\'")}')">Consultar</button>`;
+    else if(p._temTamanho) acao=`<span class="pc-act pc-bag" title="Escolher tamanho" aria-hidden="true">${BAG_SVG}</span>`;
+    else acao=`<button class="pc-act pc-bag" type="button" title="Adicionar à sacola" onclick="event.preventDefault();event.stopPropagation();addToCart(event,'${p.id}')" aria-label="Adicionar ${alt} à sacola">${BAG_SVG}</button>`;
 
     const priceHtml=p.esgotado
       ?`<div class="pcard-price pcard-price-consult">Esgotado</div>`
@@ -644,13 +645,12 @@ function renderGrid(){
         </div>
         ${badges?`<div class="pcard-badges">${badges}</div>`:''}
         ${p.url?`<button class="lb-trigger${favs.has(p.id)?' active':''}" type="button" onclick="event.preventDefault();event.stopPropagation();toggleFavLoja(${p.id},this)" title="Favoritar" aria-label="${favs.has(p.id)?'Remover dos favoritos':'Adicionar aos favoritos'}" aria-pressed="${favs.has(p.id)?'true':'false'}">${HEART_SVG}</button>`:''}
-        ${acao?`<div class="pcard-quick">${acao}</div>`:''}
       </div>
       <div class="pcard-body">
         <p class="pcard-cat">${cats}</p>
         <h3 class="pcard-name">${p.name}</h3>
         ${swatchHtml}
-        <div class="pcard-footer">${priceHtml}</div>
+        <div class="pcard-footer">${priceHtml}${acao}</div>
       </div>
     </a>`;
   }).join('');
