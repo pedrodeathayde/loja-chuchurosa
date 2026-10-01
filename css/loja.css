@@ -329,12 +329,12 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
   border-bottom:1px solid var(--ink);background:none;border-top:0;border-left:0;border-right:0;cursor:pointer;
 }
 .lx-link:hover{color:var(--rose);border-color:var(--rose)}
-.lx-rail-vp{position:relative;width:100vw;margin-left:calc(50% - 50vw);overflow:hidden;padding:12px 0 4px}
-.lx-rail{--tile:clamp(150px,14vw,200px);display:flex;width:max-content;will-change:transform}
+.lx-rail-vp{position:relative;width:100vw;margin-left:calc(50% - 50vw);overflow:hidden;padding:14px 0 12px}
+.lx-rail{--tile:clamp(170px,17vw,230px);display:flex;width:max-content;will-change:transform}
 .lx-rail>.lx-col{width:var(--tile);flex:none;transform-origin:50% 40%}
 .lx-rail>.lx-col+.lx-col{margin-left:calc(var(--tile) * -.28)}
 .lx-col{
-  display:flex;flex-direction:column;align-items:center;gap:10px;position:relative;
+  display:flex;flex-direction:column;align-items:center;gap:14px;position:relative;
   padding:0;border:0;background:none;cursor:pointer;text-align:center;
 }
 .lx-col-img{
@@ -344,8 +344,8 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
 .lx-col-img img{width:100%;height:100%;object-fit:cover;transition:transform 1.1s var(--ease-out)}
 .lx-col:hover .lx-col-img img{transform:scale(1.07)}
 .lx-col:hover .lx-col-img,.lx-col.is-active .lx-col-img{box-shadow:0 0 0 2px var(--pink),0 18px 40px -18px rgba(229,37,100,.5)}
-.lx-col-name{font-family:var(--fd);font-weight:400;font-size:1.05rem;line-height:1.2;letter-spacing:-.01em}
-.lx-col-n{display:block;margin-top:2px;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-variant-numeric:tabular-nums}
+.lx-col-name{font-family:var(--fd);font-weight:500;font-size:1.08rem;line-height:1.2;letter-spacing:-.01em}
+.lx-col-n{display:block;margin-top:3px;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-variant-numeric:tabular-nums}
 .lx-col.is-active .lx-col-name{color:var(--rose)}
 @media(max-width:640px){.lx-sec-head{flex-direction:column;align-items:flex-start;gap:16px}}
 .lx-col.is-center .lx-col-img{box-shadow:0 0 0 2px var(--gold),0 22px 44px -18px rgba(229,37,100,.45)}
