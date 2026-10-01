@@ -588,11 +588,13 @@ function renderGrid(){
   if(isFirstBatch && !slice.length){
     const suggestedCats=['Fantasias','Almofadas','Para bebês','Decoração','Educativo'];
     const catBtns=suggestedCats.map(c=>'<span class="empty-cat" onclick="selectCategoryOnly(\''+c+'\')" data-cat="'+c+'">'+c+'</span>').join('');
-    const emptyIcon=activeDesigns.length?'🎨':'🔍';
-    const emptyMsg=activeDesigns.length?'Nenhum produto para este design':'Nenhum produto encontrado';
-    const emptySub=activeDesigns.length?'Tente outro design ou explore uma coleção:':'Tente outro termo ou explore uma coleção:';
+    const temFiltro=selectedCats.length||activeDesigns.length||priceMin!==null||priceMax!==null||searchQ;
+    const emptyIcon='<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
+    const emptyMsg='Nenhuma peça com esses filtros';
+    const emptySub=temFiltro?'Afrouxe algum filtro, ou comece de novo e explore uma coleção:':'Explore uma coleção:';
+    const limpar=temFiltro?'<button type="button" class="lx-link" onclick="clearAllFilters()">Limpar todos os filtros</button>':'';
     grid.className='prod-grid view-'+currentView;
-    grid.innerHTML='<div class="empty-state"><div class="empty-icon">'+emptyIcon+'</div><div class="empty-title">'+emptyMsg+'</div><p class="empty-sub">'+emptySub+'</p><div class="empty-cats">'+catBtns+'</div></div>';
+    grid.innerHTML='<div class="empty-state"><div class="empty-icon">'+emptyIcon+'</div><div class="empty-title">'+emptyMsg+'</div><p class="empty-sub">'+emptySub+'</p>'+(limpar?'<div class="empty-clear">'+limpar+'</div>':'')+'<div class="empty-cats">'+catBtns+'</div></div>';
     updateScrollSentinel();
     return;
   }
@@ -1531,8 +1533,14 @@ function heroCounts(){
   });
   // celular: arrastar de lado troca o personagem
   (function(){let x0=null;
-    v.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;},{passive:true});
-    v.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>40)go(i+(dx<0?1:-1),true);},{passive:true});
+    let back=null;
+    v.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;paused=true;clearInterval(timer);timer=null;clearTimeout(back);},{passive:true});
+    v.addEventListener('touchend',e=>{
+      const dx=x0==null?0:e.changedTouches[0].clientX-x0;x0=null;
+      if(Math.abs(dx)>40)go(i+(dx<0?1:-1));
+      clearTimeout(back);back=setTimeout(()=>{paused=false;restart();},4000);  // volta a girar depois de uma pausa
+    },{passive:true});
+    v.addEventListener('touchcancel',()=>{x0=null;clearTimeout(back);back=setTimeout(()=>{paused=false;restart();},4000);},{passive:true});
   })();
   v.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(i+1,true);if(e.key==='ArrowLeft')go(i-1,true);});
   v.addEventListener('mouseenter',()=>{paused=true;prog.classList.remove('run');restart();});

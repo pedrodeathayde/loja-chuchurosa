@@ -659,9 +659,10 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
 
 /* vazio */
 .empty-state{grid-column:1/-1;text-align:center;padding:72px 20px}
-.empty-icon{font-size:2.4rem;opacity:.5;margin-bottom:10px}
+.empty-icon{color:var(--muted);opacity:.7;margin-bottom:12px;display:flex;justify-content:center}
+.empty-clear{margin:0 0 22px}
 .empty-title{font-family:var(--fd);font-weight:400;font-size:1.6rem;letter-spacing:-.02em}
-.empty-sub{color:var(--muted);margin:8px 0 22px}
+.empty-sub{color:var(--muted);margin:8px 0 20px}
 .empty-cats{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .empty-cat{min-height:40px;padding:0 18px;border-radius:999px;border:1px solid var(--line2);display:inline-flex;align-items:center;cursor:pointer;font-size:.9375rem;background:var(--paper)}
 .empty-cat:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
