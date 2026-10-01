@@ -103,18 +103,9 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 /* letreiro gigante vazado ao fundo */
-.lx-wordmark{
-  position:absolute;left:0;bottom:clamp(40px,7vw,96px);display:flex;width:max-content;
-  font-family:var(--fd);font-style:italic;font-weight:400;line-height:1;white-space:nowrap;
-  font-size:clamp(7rem,20vw,19rem);letter-spacing:-.04em;
-  color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.08);
-  animation:lxDrift 70s linear infinite;
-}
-.lx-wordmark span{padding-right:.35em}
-@keyframes lxDrift{to{transform:translateX(-50%)}}
+
 /* linhas finas douradas */
-.lx-hero-bg .lx-rule{position:absolute;left:var(--gut);right:var(--gut);height:1px;background:linear-gradient(90deg,transparent,rgba(227,197,144,.28),transparent)}
-.lx-hero-bg .lx-rule.t{top:18px}
+
 
 .lx-hero-inner{
   max-width:var(--wrap);margin:0 auto;padding:0 var(--gut);
@@ -260,7 +251,6 @@ body.sidebar-open,body.lx-lock{overflow:hidden}
   .lx-floor,.lx-seal{display:none}
   .lx-ctrl{bottom:4px}
   .lx-progress{display:none}
-  .lx-wordmark{bottom:auto;top:46%;font-size:9rem}
 }
 
 /* ══ TICKER (sem degradê nas bordas) ══════════════════════════════ */
