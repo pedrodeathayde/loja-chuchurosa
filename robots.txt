@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /checkout.html
+Disallow: /minha-conta.html
+Disallow: /rastreio.html
+Disallow: /avaliar.html
+
+Sitemap: https://chuchurosa.com.br/sitemap.xml

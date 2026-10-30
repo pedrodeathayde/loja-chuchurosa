@@ -560,9 +560,9 @@ function renderProduct(){
   updateSEO(prod, window._prodFotos?.[0]||getUrl(prod.name));
 
   // Dynamic SEO
-  const prodUrl=`https://loja.chuchurosa.com.br/produto.html?id=${prod.id}`;
+  const prodUrl=`https://chuchurosa.com.br/produto.html?id=${prod.id}`;
   const prodImg=getUrl(prod.name)||'https://chuchurosa.com.br/img/og-chuchurosa-1200x630.jpg';
-  const prodDesc=prod.descricao||`${prod.name} — produto Chuchu Rosa, feito com carinho sob encomenda.`;
+  const prodDesc=prod.descricao||`${prod.name} — design próprio da Chuchu Rosa, sob medida em 3 a 5 dias úteis e enviado para todo o Brasil.`;
 
   document.querySelector('meta[name="description"]').content=prodDesc;
   document.querySelector('link[rel="canonical"]')?.remove();
@@ -583,23 +583,30 @@ function renderProduct(){
     el.content=val;
   });
 
-  // Schema.org Product
+  // Schema.org Product (sem preço não declara oferta, para não gerar erro no Google)
+  const fotosSchema=(window._prodFotos&&window._prodFotos.length?window._prodFotos:[prodImg]).slice(0,6);
   const schema={
     '@context':'https://schema.org',
     '@type':'Product',
     name:prod.name,
+    sku:String(prod.id),
+    url:prodUrl,
     description:prodDesc,
-    image:prodImg,
+    image:fotosSchema,
     brand:{'@type':'Brand',name:'Chuchu Rosa'},
-    offers:{
+    category:(prod.collections||[])[0]||undefined
+  };
+  if(prod.price){
+    schema.offers={
       '@type':'Offer',
       priceCurrency:'BRL',
-      price:prod.price||'0',
+      price:String(prod.price),
       availability:prod.esgotado?'https://schema.org/OutOfStock':'https://schema.org/InStock',
+      itemCondition:'https://schema.org/NewCondition',
       url:prodUrl,
       seller:{'@type':'Organization',name:'Chuchu Rosa'}
-    }
-  };
+    };
+  }
   const schemaEl=document.getElementById('productSchema');
   if(schemaEl)schemaEl.textContent=JSON.stringify(schema);
 

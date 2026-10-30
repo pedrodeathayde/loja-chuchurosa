@@ -3,22 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Loja — Chuchu Rosa</title>
-<meta name="description" content="Fantasias, brinquedos educativos e decoração infantil sob medida. Flamingos, raposas, unicórnios e muito mais.">
+<title>Loja de fantasias, decoração e peças infantis sob medida | Chuchu Rosa</title>
+<meta name="description" content="Compre fantasias infantis, almofadas, decoração, enxoval de bebê e brinquedos educativos com design próprio. Peças sob medida, prontas em 3 a 5 dias úteis, enviadas para todo o Brasil.">
 <script src="js/vendor/supabase-2.117.2.min.js"></script>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#e52564">
 <link rel="canonical" href="https://chuchurosa.com.br/loja.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Chuchu Rosa">
-<meta property="og:title" content="Loja — Chuchu Rosa">
-<meta property="og:description" content="Fantasias, brinquedos educativos e decoração infantil sob medida. Flamingos, raposas, unicórnios e muito mais.">
+<meta property="og:title" content="Loja de fantasias, decoração e peças infantis sob medida | Chuchu Rosa">
+<meta property="og:description" content="Compre fantasias infantis, almofadas, decoração, enxoval de bebê e brinquedos educativos com design próprio. Peças sob medida, prontas em 3 a 5 dias úteis, enviadas para todo o Brasil.">
 <meta property="og:image" content="https://chuchurosa.com.br/img/og-chuchurosa-1200x630.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:url" content="https://chuchurosa.com.br/loja.html">
 <meta property="og:locale" content="pt_BR">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Loja de fantasias, decoração e peças infantis sob medida | Chuchu Rosa">
+<meta name="twitter:description" content="Compre fantasias infantis, almofadas, decoração, enxoval de bebê e brinquedos educativos com design próprio. Peças sob medida, prontas em 3 a 5 dias úteis, enviadas para todo o Brasil.">
+<meta name="twitter:image" content="https://chuchurosa.com.br/img/og-chuchurosa-1200x630.jpg">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Chuchu Rosa">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -27,6 +31,7 @@
 <link rel="stylesheet" href="css/fonts.css">
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/loja.css">
+<script type="application/ld+json" id="lojaSchema">{"@context":"https://schema.org","@graph":[{"@type":"CollectionPage","@id":"https://chuchurosa.com.br/loja.html#pagina","url":"https://chuchurosa.com.br/loja.html","name":"Loja Chuchu Rosa","inLanguage":"pt-BR","isPartOf":{"@id":"https://chuchurosa.com.br/#business"},"description":"Fantasias infantis, almofadas, decoração, enxoval de bebê e brinquedos educativos com design próprio."},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Início","item":"https://chuchurosa.com.br/"},{"@type":"ListItem","position":2,"name":"Loja","item":"https://chuchurosa.com.br/loja.html"}]}]}</script>
 <link rel="icon" type="image/x-icon" href="img/favicon.ico">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 </head>
@@ -508,6 +513,7 @@ function applyFiltersExceptCategory(){
 }
 
 function applyFilters(){
+  updateSeoLoja();
   let res=[...allProducts];
   if(selectedCats.length) res=res.filter(p=>(p.collections||[]).some(c=>selectedCats.some(sc=>sc.toLowerCase()===c.toLowerCase())));
   if(searchQ){ res=res.filter(p=>fuzzyMatch(p.name,searchQ)); }
@@ -899,6 +905,23 @@ function saveFiltersToURL(){
   const newUrl=window.location.pathname+(p.toString()?'?'+p.toString():'');
   history.replaceState(null,'',newUrl);
   localStorage.setItem('cr_filters',JSON.stringify({cats:selectedCats,min:priceMin,max:priceMax,designs:activeDesigns}));
+  updateSeoLoja();
+}
+// título, canonical e indexação acompanham o filtro: uma coleção é uma página própria;
+// busca, preço e tema são variações e não entram no Google
+function updateSeoLoja(){
+  const base='https://chuchurosa.com.br/loja.html';
+  const comVariacao=!!(searchQ||priceMin!==null||priceMax!==null||(typeof activeDesigns!=='undefined'&&activeDesigns.length)||selectedCats.length>1);
+  const cat=selectedCats.length===1?selectedCats[0]:'';
+  const can=document.querySelector('link[rel="canonical"]');
+  if(can) can.href=cat&&!comVariacao?base+'?cat='+encodeURIComponent(cat):base;
+  document.title=cat&&!comVariacao
+    ?cat+' infantis sob medida | Chuchu Rosa'
+    :'Loja de fantasias, decoração e peças infantis sob medida | Chuchu Rosa';
+  const rb=document.querySelector('meta[name="robots"]');
+  if(rb) rb.content=comVariacao?'noindex,follow':'index,follow,max-image-preview:large,max-snippet:-1';
+  const md=document.querySelector('meta[name="description"]');
+  if(md&&cat&&!comVariacao) md.content='Veja '+cat.toLowerCase()+' da Chuchu Rosa: design próprio, feitas sob medida em 3 a 5 dias úteis e enviadas para todo o Brasil.';
 }
 
 // ── EVENTS ────────────────────────────────────────────────────────────
