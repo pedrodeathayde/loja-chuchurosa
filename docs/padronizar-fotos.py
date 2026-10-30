@@ -33,7 +33,7 @@ em admin.html), então só é preciso rodar isto de novo para fotos antigas ou
 enviadas por outro caminho. Rodar de novo é seguro: o que já está em
 padronizadas/ é pulado.
 """
-import html, json, os, re, sys, urllib.parse, urllib.request
+import html, json, os, re, sys, time, urllib.parse, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -201,10 +201,14 @@ def baixar():
 
     def um(item):
         n, url = item
-        try:
-            (ORIG / n).write_bytes(urllib.request.urlopen(url_segura(url), timeout=60).read())
-        except Exception as e:
-            print('  falhou', n, e)
+        for tentativa in range(5):
+            try:
+                (ORIG / n).write_bytes(urllib.request.urlopen(url_segura(url), timeout=60).read())
+                return
+            except Exception as e:
+                erro = e
+                time.sleep(2 ** tentativa)  # 429 = muitas requisições: espera e tenta de novo
+        print('  falhou', n, erro, '(rode "baixar" de novo para tentar só as que faltam)')
 
     print(f'{len(rows)} fotos na tabela; baixando {len(alvos)} novas...')
     with ThreadPoolExecutor(8) as ex:
