@@ -26,7 +26,12 @@ Uso (na raiz do repositório; precisa de Pillow e numpy: pip install pillow nump
        A chave service_role fica no painel do Supabase (Project Settings → API).
        Nunca coloque essa chave em arquivo do repositório.
 
-  Para voltar atrás: SUPABASE_SERVICE_ROLE_KEY=... python3 docs/padronizar-fotos.py desfazer
+  4. SUPABASE_SERVICE_ROLE_KEY=... python3 docs/padronizar-fotos.py limpar
+       Depois de conferir o site, apaga do Storage as originais que foram
+       trocadas (só as que nenhuma linha de `fotos` usa mais), para ficar uma
+       versão só de cada foto. Cópia local continua em fotos-padronizacao/originais/.
+
+  Para voltar atrás (antes do limpar): SUPABASE_SERVICE_ROLE_KEY=... python3 docs/padronizar-fotos.py desfazer
 
 Fotos novas: o admin já aplica a mesma correção ao enviar (padronizarFotoAdmin
 em admin.html), então só é preciso rodar isto de novo para fotos antigas ou
@@ -312,6 +317,22 @@ def desfazer():
     print(f'{len(log) - len(resta)} fotos voltaram para a original')
 
 
+def limpar():
+    chave = chave_servico()
+    log = json.loads((DIR / 'log-envio.json').read_text())
+    em_uso = {r['url'] for r in linhas_fotos(chave)}
+    caminhos = sorted({urllib.parse.unquote(e['antes'][len(PUB):]) for e in log
+                       if e['antes'].startswith(PUB) and e['antes'] not in em_uso
+                       and not e['antes'].startswith(PUB + PASTA_NOVA)})
+    print(f'{len(caminhos)} originais sem uso para apagar do Storage...')
+    for i in range(0, len(caminhos), 100):
+        lote = caminhos[i:i + 100]
+        req(f'{SB}/storage/v1/object/Fotos', chave, 'DELETE', json.dumps({'prefixes': lote}).encode(),
+            {'Content-Type': 'application/json'})
+        print('  apagadas', i + len(lote))
+    print('ok (desfazer não funciona mais para estas; a cópia local fica em', ORIG, ')')
+
+
 if __name__ == '__main__':
     args = sys.argv[1:]
     cmd = args[0] if args else ''
@@ -322,6 +343,8 @@ if __name__ == '__main__':
         processar(max(0.0, min(forca, 1.5)))
     elif cmd == 'enviar':
         enviar()
+    elif cmd == 'limpar':
+        limpar()
     elif cmd == 'desfazer':
         desfazer()
     else:
